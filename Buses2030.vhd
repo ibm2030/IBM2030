@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -27,8 +27,8 @@
 --    Revision History:
 --    Revision 1.0 2010-07-09
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Add Storage and 1050 interfaces
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -136,5 +136,103 @@ end record MPX_TAGS_IN;
 
 -- List of front panel indicators
 subtype IndicatorRange is integer range 0 to 249; -- 218 through 249 are temp debug items
+
+type STORAGE_IN_INTERFACE is record
+				ReadData : std_logic_vector(0 to 8);
+end record STORAGE_IN_INTERFACE;
+
+type STORAGE_OUT_INTERFACE is record
+				MSAR : std_logic_vector(0 to 15);
+				MainStorage : std_logic;
+				WritePulse : std_logic;
+				ReadPulse : std_logic;
+				WriteData : std_logic_vector(0 to 8);
+end record STORAGE_OUT_INTERFACE;
+
+-- CE connections on 1050 interface
+type CE_IN is record
+	CE_BIT : STD_LOGIC_VECTOR(0 to 7);
+	CE_MODE : STD_LOGIC;
+	CE_TI_OR_TE_RUN_MODE : STD_LOGIC;
+	CE_SEL_OUT : STD_LOGIC;
+	CE_EXIT_MPLX_SHARE : STD_LOGIC;
+	CE_DATA_ENTER_NO : STD_LOGIC;
+	CE_DATA_ENTER_NC : STD_LOGIC;
+	CE_TI_DECODE : STD_LOGIC;
+	CE_TE_DECODE : STD_LOGIC;
+	CE_TA_DECODE : STD_LOGIC;
+	CE_RESET : STD_LOGIC;
+end record CE_IN ;
+	
+type CE_OUT is record
+		PTT_BITS : STD_LOGIC_VECTOR(0 to 6);
+		DATA_REG : STD_LOGIC_VECTOR(0 to 7);
+		RDR_1_CLUTCH : STD_LOGIC;
+		WRITE_UC : STD_LOGIC;
+		XLATE_UC : STD_LOGIC;
+		PUNCH_1_CLUTCH : STD_LOGIC;
+		NPL : STD_LOGIC_VECTOR(0 to 7);
+		OUTPUT_SEL_AND_RDY : STD_LOGIC;
+		TT : STD_LOGIC_VECTOR(0 to 7);
+		CPU_REQUEST_IN : STD_LOGIC;
+		n1050_OP_IN : STD_LOGIC;
+		HOME_RDR_STT_LCH : STD_LOGIC;
+		RDR_ON_LCH : STD_LOGIC;
+		MICRO_SHARE_LCH : STD_LOGIC;
+		PROCEED_LCH : STD_LOGIC;
+		TA_REG_POS_4 : STD_LOGIC;
+		CR_LF : STD_LOGIC;
+		TA_REG_POS_6 : STD_LOGIC;
+		n1050_RST : STD_LOGIC;
+end record CE_OUT;
+
+type PCH_CONN is record -- serialIn @ 1050 -> CPU signals
+	-- Input device (keyboard) input connections:
+	PCH_BITS : STD_LOGIC_VECTOR(0 to 6);
+	PCH_1_CLUTCH_1050 : STD_LOGIC;
+	-- Output device (printer) input connections:
+	RDR_2_READY : STD_LOGIC;
+	HOME_RDR_STT_LCH : STD_LOGIC;
+	HOME_OUTPUT_DEV_RDY : STD_LOGIC;
+	RDR_1_CLUTCH_1050 : STD_LOGIC;
+	-- Other inputs
+	CPU_CONNECTED : STD_LOGIC;
+	REQ_KEY : STD_LOGIC;
+end record PCH_CONN;
+
+type RDR_CONN is record -- serialOut : CPU -> 1050 signals
+	-- Output device (printer) output connections:
+	RDR_BITS : STD_LOGIC_VECTOR(0 to 6);
+	RD_STROBE : STD_LOGIC;
+end record RDR_CONN;
+
+type CONN_1050 is record -- serialControl : CPU -> 1050 signals
+	n1050_RST_LCH,
+	n1050_RESET,
+	HOME_RDR_START,
+	PROCEED,
+	RDR_2_HOLD,
+	CARR_RETURN_AND_LINE_FEED,
+	RESTORE : STD_LOGIC;
+end record CONN_1050;
+
+type Serial_Output_Lines is record
+	SerialTx : STD_LOGIC;	-- Printer data
+	RTS : STD_LOGIC;	-- Request to send - Keyboard ok to send
+	DTR : STD_LOGIC;	-- Data terminal ready - Printer activated
+end record Serial_Output_Lines;
+
+type Serial_Input_Lines is record
+	SerialRx : STD_LOGIC;
+	DCD : STD_LOGIC;	-- Carrier Detect - Keyboard ready
+	DSR : STD_LOGIC;	-- Data Set Ready - 1050 Ready
+	RI : STD_LOGIC;	-- Ring Indicator - Unused
+	CTS : STD_LOGIC;	-- Clear to send - Printer ready to accept data
+end record Serial_Input_Lines;
+
+type DEBUG_BUS is record
+	Selection : integer range 0 to 15;
+	Probe : STD_LOGIC;
+end record DEBUG_BUS;
 
 end package Buses_package;

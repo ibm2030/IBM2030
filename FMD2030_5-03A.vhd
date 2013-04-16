@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -33,8 +33,8 @@
 --    Revision History:
 --    Revision 1.0 2010-07-13
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Change Priority Reset latch signal name
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -152,7 +152,7 @@ signal sMACH_CHK_PULSE : STD_LOGIC;
 signal sFORCE_IJ_PULSE : STD_LOGIC;
 signal sANY_PRIORITY_PULSE : STD_LOGIC;
 signal sMPX_SHARE_PULSE : STD_LOGIC;
-signal SUPPR_MACH_TRAP_L,PRIOR_RST_Reset,MEMP_LCH_Set,MEMP_LCH_Reset,PRI_LCH_Set,
+signal SUPPR_MACH_TRAP_L,PRIOR_RST_Latch,MEMP_LCH_Set,MEMP_LCH_Reset,PRI_LCH_Set,
 		PRI_LCH_Reset,PRISTK_LCH_Latch : STD_LOGIC;
 
 BEGIN
@@ -170,8 +170,8 @@ S1_DLYD: PH port map(S_REG_1_BIT,T1,S_REG_1_DLYD); -- AB3J2
 WX_SABC: PH port map(sGT_SWS_TO_WX_LCH,T1,sGT_SW_TO_WX_LCH); -- AB3J2
 GT_SW_TO_WX_LCH <= sGT_SW_TO_WX_LCH;
 CD0101 <= '1' when SALS_CDREG="0101" else '0';
-PRIOR_RST_Reset <= T4 or MACH_RST_SW;
-PRIOR_RST_CTRL_PH: PHR port map(CD0101,PRIOR_RST_Reset,sANY_PRIORITY_PULSE,PRIOR_RST_CTRL); -- AB3J2
+PRIOR_RST_Latch <= T4 or MACH_RST_SW;
+PRIOR_RST_CTRL_PH: PHR port map(D=>CD0101,L=>PRIOR_RST_Latch,R=>sANY_PRIORITY_PULSE,Q=>PRIOR_RST_CTRL); -- AB3J2
 MEMP_LCH_Set <= sDATA_READY and ALLOW_PROTECT and PROT_LOC_CPU_OR_MPX;
 MEMP_LCH_Reset <= READ_CALL or RECYCLE_RST;
 STG_PROT_REQ: FLL port map(MEMP_LCH_Set,MEMP_LCH_Reset,sMEM_PROTECT_REQ); -- AA1K7
@@ -186,7 +186,7 @@ DATA_READY <= sDATA_READY;
 
 PRI_LCH_Set <= (T1 and DIAGNOSTIC_SW) or MACH_RST_LCH or (not HARD_STOP_LCH and T3 and sANY_PRIORITY_LCH);
 PRI_LCH_Reset <= sHZ_DEST_RST or sGT_SW_MACH_RST;
-PRIORITY: FLL port map(PRI_LCH_Set,PRI_LCH_Reset,PRIORITY_LCH); -- AB3J4,AB3L4
+PRIORITY: FLL port map(S=>PRI_LCH_Set,R=>PRI_LCH_Reset,Q=>PRIORITY_LCH); -- AB3J4,AB3L4
 
 -- Priority stack register - all inputs are inverted AB3L2
 PRIORITY_STACK_IN(0) <= GT_SWS_TO_WX_PWR;

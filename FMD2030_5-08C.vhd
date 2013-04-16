@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -33,8 +33,8 @@
 --    Revision History:
 --    Revision 1.0 2010-07-13
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Revise XH & XL BU latches amd MPX_INTRPT signal
 ---------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -85,7 +85,7 @@ signal	CK11XX, CKX11X,CKX1X1,CK1X1X,CKXX11 : STD_LOGIC;
 signal	CHNL_L,OPN_L,SUPPR_L,OUT_L : STD_LOGIC;
 signal	notOP_OUT_SIG,MpxMask : STD_LOGIC;
 alias		KP is PK_SALS;
-signal	sFAK,sSET_BUS_O_CTRL,ResetBusO : STD_LOGIC;
+signal	sFAK,sSET_BUS_O_CTRL : STD_LOGIC;
 signal	BusO_Set,BusO_Reset : STD_LOGIC_VECTOR (0 to 8);
 signal	sFT_7_BIT_MPX_CHNL_INTRP,sFT_2_BIT_MPX_OPN_LCH,sSUPPR_CTRL_LCH : STD_LOGIC;
 begin
@@ -99,12 +99,14 @@ XXH_PH: entity PH port map (D=>XXH_IN, L=>X_SET, Q=> sXXH);
 XXH <= sXXH;
 
 XH_BU: entity PH port map (D=>sXH, L=>SET_FW, Q=> XHBU);
-XH_IN <= (XHBU and MPX_ROS_LCH) or (not S_REG_1 and not MPX_ROS_LCH);
+-- XH_IN <= (XHBU and MPX_ROS_LCH) or (not S_REG_1 and not MPX_ROS_LCH);
+XH_IN <= (XHBU and MPX_ROS_LCH) or (S_REG_1 and not MPX_ROS_LCH);
 XH_PH: entity PH port map (D=>XH_IN, L=>X_SET, Q=>sXH);
 XH <= sXH;
 
 XL_BU: entity PH port map (D=>sXL, L=>SET_FW, Q=> XLBU);
-XL_IN <= (XLBU and MPX_ROS_LCH) or (not S_REG_2 and not MPX_ROS_LCH);
+-- XL_IN <= (XLBU and MPX_ROS_LCH) or (not S_REG_2 and not MPX_ROS_LCH);
+XL_IN <= (XLBU and MPX_ROS_LCH) or (S_REG_2 and not MPX_ROS_LCH);
 XL_PH: entity PH port map (D=>XL_IN, L=>X_SET, Q=>sXL);
 XL <= sXL;
 
@@ -140,7 +142,7 @@ MPX_OPN_LT_GATE <= CKX11X;
 -- ?? Should the R_REG bits be inverted before use?
 CKXX11 <= CK_SALS(2) and CK_SALS(3) and FBK_T2;
 MPX_MASK: entity PH port map (D=>R_REG(0),L=>CKXX11,Q=>MPXMask);
-MPX_INTRPT <= not (sFT_7_BIT_MPX_CHNL_INTRP and MPXMask);
+MPX_INTRPT <= sFT_7_BIT_MPX_CHNL_INTRP and MPXMask;
 SX1MASK: entity PH port map (D=>R_REG(1),L=>CKXX11,Q=>SX1_MASK);
 EXT_MASK: entity PH port map (D=>R_REG(7),L=>CKXX11,Q=>EXT_TRAP_MASK_ON);
 SX2MASK: entity PH port map (D=>R_REG(2),L=>CKXX11,Q=>SX2_MASK);

@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -34,7 +34,9 @@
 --    Revision History:
 --    Revision 1.0 2010-07-09
 --    Initial release - no I/O
---    
+--    Revision 1.1 2012-04-07
+--    1050 Serial console added
+--    External main and aux storage, with pre-loading from platform flash
 --
 ---------------------------------------------------------------------------
 library IEEE;
@@ -48,21 +50,53 @@ use work.all;
 
 entity ibm2030 is
     Port ( -- Physical I/O on Digilent S3 Board
+				-- Seven-segment displays
 --	        ssd : out std_logic_vector(7 downto 0); -- 7-segment segment cathodes (not used)
 --         ssdan : out std_logic_vector(3 downto 0); -- 7-segment digit anodes (not used)
+
+				-- Discrete LEDs
            led : out std_logic_vector(7 downto 0); -- 8 LEDs
+			  
+			  -- Pushbuttons and switches
            pb : in std_logic_vector(3 downto 0); -- 4 pushbuttons
            sw : in std_logic_vector(7 downto 0); -- 8 slide switches
+			  
+			  -- Connections to scanned front panel switches
 			  pa_io1,pa_io2,pa_io3,pa_io4 : in std_logic := '0'; -- 4 digital inputs
 			  pa_io5,pa_io6,pa_io7,pa_io8,pa_io9,
 			  pa_io10,pa_io11,pa_io12,pa_io13,pa_io14 : out std_logic; -- 10 digital switch scanning outputs
 			  pa_io15,pa_io16,pa_io17,pa_io18,ma2_db0,ma2_db1,
 			  ma2_db2,ma2_db3,ma2_db4,ma2_db5: in std_logic := '0'; -- 10 digital switch scan inputs
 --			  ma2_db6,ma2_db7,ma2_astb,ma2_dstb,ma2_write, ma2_wait, ma2_reset, ma2_int : in std_logic := '0'; -- 8 digital inputs (not used)
---			  ps2_clk : inout std_logic; -- Keyboard/Mouse clock (not used)
---			  ps2_data : inout std_logic; -- Keyboard/Mouse data (not used)
-			  vga_r,vga_g,vga_b,vga_hs,vga_vs : out std_logic; -- VGA output RGB+Sync
-			  clk : in std_logic);
+
+				-- Keyboard connection
+--				ps2_clk : inout std_logic; -- Keyboard/Mouse clock (not used)
+--				ps2_data : inout std_logic; -- Keyboard/Mouse data (not used)
+
+				-- Video output
+				vga_r,vga_g,vga_b,vga_hs,vga_vs : out std_logic; -- VGA output RGB+Sync
+				
+			  -- Static RAM interface
+			  sramaddr : out std_logic_vector(17 downto 0);
+			  srama : inout std_logic_vector(8 downto 0);
+			  sramace : out std_logic;
+			  sramwe : out std_logic;
+			  sramoe : out std_logic;
+			  sramaub : out std_logic;
+			  sramalb : out std_logic;
+			  
+			  -- Serial I/O
+			  serialRx : in std_logic;
+			  serialTx : out std_logic := '1';
+			  
+			  -- 50Mhz clock
+			  clk : in std_logic;
+			  
+			  -- Configuration PROM interface
+			  din : in std_logic;
+			  reset_prom : out std_logic;
+			  rclk : out std_logic);
+			  
 end ibm2030;
 
 architecture FMD of ibm2030 is
@@ -123,12 +157,23 @@ signal	SW_AP,SW_BP,SW_CP,SW_DP,SW_FP,SW_GP,SW_HP,SW_JP : STD_LOGIC;
 signal	E_SW : E_SW_BUS_Type;
 
 -- Misc stuff
+signal	StorageIn : STORAGE_IN_INTERFACE;  -- CPU interface to storage
+signal	StorageOut : STORAGE_OUT_INTERFACE;  -- CPU interface to storage
+signal	SerialIn : PCH_CONN;
+signal	SerialOut : RDR_CONN;
+signal	SerialControl : CONN_1050;
+signal	SerialBusUngated : STD_LOGIC_VECTOR(7 downto 0);
+signal	RxDataAvailable : STD_LOGIC;
+signal	RxAck, PunchGate : STD_LOGIC;
+
+signal	SO : Serial_Output_Lines;
+
 signal	SwSlow : STD_LOGIC := '0'; -- Set to '1' to slow clock down to 1Hz, not used
 
 signal	N60_CY_TIMER_PULSE : STD_LOGIC; -- Used for the Interval Timer
+signal	Clock1ms : STD_LOGIC; -- 1kHz clock for single-shots etc.
 
-signal	DEBUG : STD_LOGIC := '0'; -- Spare variable for debug purposes
-
+signal	DEBUG : DEBUG_BUS; -- Passed to all modeles to probe signals
 begin
 
 	cpu : entity cpu port map (
@@ -230,6 +275,18 @@ begin
 			SW_JP => SW_JP,
 			E_SW => E_SW,
 			
+			-- Storage interface
+			StorageIn => StorageIn,
+			StorageOut => StorageOut,
+			
+			-- Serial interface for 1050
+			serialInput.SerialRx => SerialRx,
+			serialInput.DCD => '1',
+			serialInput.DSR => '1',
+			serialInput.RI => '0',
+			serialInput.CTS => '1',
+			serialOutput => SO,
+			
 			-- Multiplexor interface not connected to anything yet
 			MPX_BUS_O => open,
 			MPX_BUS_I => (others=>'0'),
@@ -238,6 +295,7 @@ begin
 			
 			DEBUG => DEBUG, -- Used to pass debug signals up to the top level for output
 			N60_CY_TIMER_PULSE => N60_CY_TIMER_PULSE, -- Actually 50Hz
+			Clock1ms => Clock1ms,
 			SwSlow => SwSlow,
 			clk => clk -- 50Mhz clock
 			);
@@ -343,7 +401,7 @@ begin
 	led(4) <= IND_SYST;
 	led(5) <= '0';
  	led(6) <= '0';
-	led(7) <= DEBUG;
+	led(7) <= DEBUG.Probe;
 	
 	frontPanel_switches: entity switches port map (
 	   -- Hardware switch inputs and scan outputs
@@ -421,7 +479,40 @@ begin
 		
 		-- Clocks etc.
 		clk => clk, -- 50MHz clock
+		Clock1ms => Clock1ms,
 		Timer => N60_CY_TIMER_PULSE -- Output from Switches is actually 50Hz
 		);
 
+      core_storage : entity storage port map(
+				phys_address => sramaddr(16 downto 0),
+				phys_data => srama(8 downto 0),
+				phys_CE => sramace,
+				phys_OE => sramoe,
+				phys_WE => sramwe,
+				phys_UB => sramaub,
+				phys_LB => sramalb,
+				-- Interface to config ROM
+				din => din,
+				reset_prom => reset_prom,
+				cclk => rclk,
+				-- Storage interface to CPU
+				StorageIn => StorageIn,
+				StorageOut => StorageOut,
+--				Debug => Debug,
+				-- Other inputs
+				clk => clk
+				);
+		sramaddr(17) <= '0';
+		
+		
+		DEBUG.Selection <= CONV_INTEGER(unsigned(SW_J));
+		
+		SerialTx <= SO.SerialTx;
+		
+-- with DEBUG.Selection select
+--	DEBUG.Probe <=
+--		SerialBusUngated(0) when 0, SerialBusUngated(1) when 1, SerialBusUngated(2) when 2, SerialBusUngated(3) when 3,
+--		SerialBusUngated(4) when 4, SerialBusUngated(5) when 5, SerialBusUngated(6) when 6, SerialBusUngated(7) when 7,
+--		RxDataAvailable when others;
+				
 end FMD;

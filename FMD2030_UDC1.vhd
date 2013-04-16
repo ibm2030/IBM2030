@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -34,8 +34,8 @@
 --    Revision History:
 --    Revision 1.0 2010-07-09
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Minor changes, and add DEBUG facility
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -239,7 +239,7 @@ port(
 		STG_MEM_SEL : OUT STD_LOGIC; -- to 08D
 		
 		-- Debug
-		DEBUG : OUT STD_LOGIC;
+		DEBUG : INOUT DEBUG_BUS;
 
 		-- Clocks
 		T1,T2,T3,T4 : IN STD_LOGIC;
@@ -393,6 +393,7 @@ wx_sect: entity WX_Regs (FMD) port map (
         CROS_STROBE             => CROS_STROBE,
         CROS_GO_PULSE           => CROS_GO_PULSE,
         SALS                    =>  sSALS,
+		  T1                      =>  T1,
         T2                      =>  T2,
         T3                      =>  T3,
         T4                      =>  T4,
@@ -456,7 +457,9 @@ wx_sect: entity WX_Regs (FMD) port map (
         SAL_PC                  =>  SAL_PC,
         SET_IND_ROSAR           =>  SET_IND_ROSAR,
 		  GT_BU_ROSAR_TO_WX_REG   =>  GT_BU_ROSAR_TO_WX_REG,
-		  SET_FW							=>	SET_FW
+		  SET_FW                  =>  SET_FW,
+		  
+		  DEBUG                   =>  DEBUG
 		  );
 
     -- CCROS microcode storage
@@ -533,7 +536,7 @@ x6x7_sect: entity X6X7 (FMD) port map (
         GT_UV_TO_WX_REG =>  GT_UV_TO_WX_REG,
 		  DIAG_LATCH_RST => DIAG_LATCH_RST,
 		  -- Debug
-		  DEBUG                   =>	DEBUG,
+		  DEBUG                   =>	open,
 
 		-- Clocks
         T1  =>  T1,
@@ -550,7 +553,7 @@ priority_sect: entity Priority (FMD) port map (
         -- Inputs        
         RECYCLE_RST             => sRECYCLE_RST,
         S_REG_1_BIT             => S(1),
-        SALS_CDREG              => sSALS.SALS_CD,
+        SALS_CDREG              => sCTRL.CTRL_CD,
         MACH_RST_SW             => sMACH_RST_SW,
         DATA_READY_1            => DATA_READY_1,
         DATA_READY_2            => DATA_READY_2,
@@ -735,7 +738,7 @@ css_sect: entity ClockStartStop port map (
 		CLOCK_START => CLOCK_START,
 		EARLY_ROAR_STOP => EARLY_ROAR_STOP,
 		HARD_STOP_LCH => HARD_STOP_LCH,
---		DEBUG => DEBUG,
+		DEBUG => open,
         
 		-- Clocks
 		T2 => T2,
@@ -1221,13 +1224,13 @@ RW1st32k: entity RWStgClk1st32k port map(
 		DATA_READY_1 => DATA_READY_1,
 		DATA_READY_2 => DATA_READY_2,
 
---		DEBUG => DEBUG,
+		DEBUG => open,
 
 		-- Clocks
 		T1 => T1,T2 => T2,T3 => T3,T4 => T4,
 		CLK => CLK
 	);
-	
+
 READ_ECHO_1 <= sREAD_ECHO_1;
 READ_ECHO_2 <= sREAD_ECHO_2;
 WRITE_ECHO_1 <= sWRITE_ECHO_1;

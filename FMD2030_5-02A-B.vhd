@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -33,8 +33,8 @@
 --    Revision History:
 --    Revision 1.0 2010-07-09
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Enable MPX interruptions
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -149,7 +149,7 @@ DEBUG <= ASCII_LCH;
 
 -- ?? Debug remove other interrupt sources
 -- sINTERRUPT <= TIMER_UPDATE or EXTERNAL_INT or MPX_INTERRUPT or SX1_INTERRUPT or SX2_INTERRUPT; -- AA3K4
-sINTERRUPT <= EXTERNAL_INT;
+sINTERRUPT <= EXTERNAL_INT or MPX_INTERRUPT;
 INTERRUPT <= sINTERRUPT;
 
 

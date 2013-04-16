@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -33,10 +33,12 @@
 --    Revision History:
 --    Revision 1.0 2010-07-13
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Add registers to all clock outputs and delay rising edge of Px and Tx clocks
 ---------------------------------------------------------------------------
 library IEEE;
+Library UNISIM;
+use UNISIM.vcomponents.all;
 use IEEE.STD_LOGIC_1164.ALL;
 -- use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
@@ -74,6 +76,8 @@ signal DIVIDER_MAX : DividerSize;
 signal OSC2,OSC,M_DLYD_OSC,DLYN_OSC,T1A,T2A,T3A,T4A,OSC2_DLYD : STD_LOGIC := '0';
 -- signal SETS,RSTS : STD_LOGIC_VECTOR(1 to 4);
 signal CLK : STD_LOGIC_VECTOR(1 to 4) := "0001";
+signal P1D,P2D,P3D,P4D : STD_LOGIC;
+signal OSC_T_LINEA, CLOCK_ONA, CLOCK_OFFA, P_CONV_OSCA,M_CONV_OSC_2A : STD_LOGIC;
 
 begin
 -- Divide the 50MHz FPGA clock down
@@ -148,24 +152,43 @@ process (OSC2, MACH_RST_3, CLOCK_START)
 	end if;
 end process;
 
-OSC_T_LINE <= OSC; -- AC1B6
-M_CONV_OSC <= not OSC; -- AC1C6
+OSC_T_LINEA <= OSC; -- AC1B6
+OSC_T_LINED : FDCE port map(D=>OSC_T_LINEA,Q=>OSC_T_LINE,CE=>'1',C=>CLOCK_IN);
+M_CONV_OSCD : FDCE port map(D=>not OSC,Q=>M_CONV_OSC,CE=>'1',C=>CLOCK_IN); -- AC1C6
 M_DLYD_OSC <= not OSC; -- AC1C6
 DLYN_OSC <= OSC; -- AC1C6
 
-P1 <= CLK(1);
-P2 <= CLK(2);
-P3 <= CLK(3);
-P4 <= CLK(4);
+-- P1 <= CLK(1);
+-- P2 <= CLK(2);
+-- P3 <= CLK(3);
+-- P4 <= CLK(4);
+-- Delay the rising edge of each P pulse to ensure that the T pulses never overlap
+P1DLY: entity DelayRisingEdgeX port map (D=>CLK(1),CLK=>CLOCK_IN,Q=>P1D);
+P2DLY: entity DelayRisingEdgeX port map (D=>CLK(2),CLK=>CLOCK_IN,Q=>P2D);
+P3DLY: entity DelayRisingEdgeX port map (D=>CLK(3),CLK=>CLOCK_IN,Q=>P3D);
+P4DLY: entity DelayRisingEdgeX port map (D=>CLK(4),CLK=>CLOCK_IN,Q=>P4D);
 
-T1 <= CLK(4) and CLK(1);
-T2 <= CLK(1) and CLK(2);
-T3 <= CLK(2) and CLK(3);
-T4 <= CLK(3) and CLK(4);
+T1A <= P4D and P1D;
+T2A <= P1D and P2D;
+T3A <= P2D and P3D;
+T4A <= P3D and P4D;
 
-CLOCK_ON <= CLK(1) or CLK(2) or CLK(3);
-CLOCK_OFF <= not (CLK(1) or CLK(2) or CLK(3));
-P_CONV_OSC <= OSC and not (CLK(1) or CLK(2) or CLK(3));
-M_CONV_OSC_2 <= not(OSC and not (CLK(1) or CLK(2) or CLK(3)));
+T1D : FDCE port map(D=>T1A,Q=>T1,CE=>'1',C=>CLOCK_IN);
+T2D : FDCE port map(D=>T2A,Q=>T2,CE=>'1',C=>CLOCK_IN);
+T3D : FDCE port map(D=>T3A,Q=>T3,CE=>'1',C=>CLOCK_IN);
+T4D : FDCE port map(D=>T4A,Q=>T4,CE=>'1',C=>CLOCK_IN);
+P1C : FDCE port map(D=>P1D,Q=>P1,CE=>'1',C=>CLOCK_IN);
+P2C : FDCE port map(D=>P2D,Q=>P2,CE=>'1',C=>CLOCK_IN);
+P3C : FDCE port map(D=>P3D,Q=>P3,CE=>'1',C=>CLOCK_IN);
+P4C : FDCE port map(D=>P4D,Q=>P4,CE=>'1',C=>CLOCK_IN);
+
+CLOCK_ONA <= CLK(1) or CLK(2) or CLK(3);
+CLOCK_OND : FDCE port map(D=>CLOCK_ONA,Q=>CLOCK_ON,CE=>'1',C=>CLOCK_IN);
+CLOCK_OFFA <= not CLOCK_ONA;
+CLOCK_OFFD : FDCE port map(D=>CLOCK_OFFA,Q=>CLOCK_OFF,CE=>'1',C=>CLOCK_IN);
+P_CONV_OSCA <= OSC and CLOCK_OFFA;
+P_CONV_OSCD : FDCE port map(D=>P_CONV_OSCA,Q=>P_CONV_OSC,CE=>'1',C=>CLOCK_IN);
+M_CONV_OSC_2A <= not(P_CONV_OSCA);
+M_CONV_OSC_2D : FDCE port map(D=>M_CONV_OSC_2A,Q=>M_CONV_OSC_2,CE=>'1',C=>CLOCK_IN);
 
 end FMD;

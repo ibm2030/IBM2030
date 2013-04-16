@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -33,8 +33,8 @@
 --    Revision History:
 --    Revision 1.0 2010-07-13
 --    Initial Release
---    
---
+--    Revision 1.01 2012-04-07
+--		Fix typo in comment
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -166,7 +166,7 @@ CNTR_FULL <= C_BINARY_CNTR(4) and C_BINARY_CNTR(5) and C_BINARY_CNTR(6) and C_BI
 sTIMER_UPDATE <= C_BINARY_CNTR(4) and C_BINARY_CNTR(5) and C_BINARY_CNTR(6) and C_BINARY_CNTR(7); -- BE3G6,BE3G5
 TIMER_UPDATE <= sTIMER_UPDATE;
 -- TIMER_UPDATE_OR_EXT_INT <= sTIMER_UPDATE or EXT_INT; -- AC1D5
-TIMER_UPDATE_OR_EXT_INT <= EXT_INT; -- AC1D5 ?? Temporary prevent Timer
+TIMER_UPDATE_OR_EXT_INT <= EXT_INT; -- AC1D5 ?? Temporarily prevent Timer
 EXT_INT <= (F_REGISTER(0) or F_REGISTER(1) or F_REGISTER(2) or F_REGISTER(3) or
 	F_REGISTER(4) or F_REGISTER(5) or F_REGISTER(6) or F_REGISTER(7)) and EXT_TRAP_MASK_ON;  -- AC1G2 ?? Should this include EXT_TRAP_MASK_ON ?
 EI_LCH_Reset <= MACH_RST_SW or RESET_F_REG;

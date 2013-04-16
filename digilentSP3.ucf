@@ -2,7 +2,8 @@
 # pin locations
 # Original by Pierre Langlois, 2004/07/22
 #   minimal translation by Capt. LeSauvage 2004/09/23
-# LJW2030 version by Lawrence Wilkinson, 2010/07/16
+# LJW2030 V1.0 by Lawrence Wilkinson, 2010/07/16
+# V1.1 2012-04-07
 #
 # Remove the comment symbols (#) in front of the desired lines.
 # The names of the ports must match exactly between this file and the design.
@@ -126,52 +127,54 @@ NET "ma2_db5" PULLDOWN;
 #NET "ma2_reset" PULLDOWN;
 #NET "ma2_int" LOC="D9"; # Check Reset
 #NET "ma2_int" PULLDOWN;
-#NET "progb" LOC="B3";
-#NET "fpgadone" LOC="R14";
-#NET "fpgainitb" LOC="N9";
-#NET "fpgacclk" LOC="T15";
-#NET "din" LOC="M11";
 
 #A3
 
 # SRAM
-# NET "sramaddr<17>" LOC="L3";
-# NET "sramaddr<16>" LOC="K5";
-# NET "sramaddr<15>" LOC="K3";
-# NET "sramaddr<14>" LOC="J3";
-# NET "sramaddr<13>" LOC="J4";
-# NET "sramaddr<12>" LOC="H4";
-# NET "sramaddr<11>" LOC="H3";
-# NET "sramaddr<10>" LOC="G5";
-# NET "sramaddr<09>" LOC="E4";
-# NET "sramaddr<08>" LOC="E3";
-# NET "sramaddr<07>" LOC="F4";
-# NET "sramaddr<06>" LOC="F3";
-# NET "sramaddr<05>" LOC="G4";
-# NET "sramaddr<04>" LOC="L4";
-# NET "sramaddr<03>" LOC="M3";
-# NET "sramaddr<02>" LOC="M4";
-# NET "sramaddr<01>" LOC="N3";
-# NET "sramaddr<00>" LOC="L5";
-# NET "srama<15>" LOC="R1";
-# NET "srama<14>" LOC="P1";
-# NET "srama<13>" LOC="L2";
-# NET "srama<12>" LOC="J2";
-# NET "srama<11>" LOC="H1";
-# NET "srama<10>" LOC="F2";
-# NET "srama<09>" LOC="P8";
-# NET "srama<08>" LOC="D3";
-# NET "srama<07>" LOC="B1";
-# NET "srama<06>" LOC="C1";
-# NET "srama<05>" LOC="C2";
-# NET "srama<04>" LOC="R5";
-# NET "srama<03>" LOC="T5";
-# NET "srama<02>" LOC="R6";
-# NET "srama<01>" LOC="T8";
-# NET "srama<00>" LOC="N7";
-# NET "sramace" LOC="P7";
-# NET "sramaub" LOC="T4";
-# NET "sramalb" LOC="P6";
+NET "sramaddr<17>" LOC="L3";
+NET "sramaddr<16>" LOC="K5";
+NET "sramaddr<15>" LOC="K3";
+NET "sramaddr<14>" LOC="J3";
+NET "sramaddr<13>" LOC="J4";
+NET "sramaddr<12>" LOC="H4";
+NET "sramaddr<11>" LOC="H3";
+NET "sramaddr<10>" LOC="G5";
+NET "sramaddr<9>" LOC="E4";
+NET "sramaddr<8>" LOC="E3";
+NET "sramaddr<7>" LOC="F4";
+NET "sramaddr<6>" LOC="F3";
+NET "sramaddr<5>" LOC="G4";
+NET "sramaddr<4>" LOC="L4";
+NET "sramaddr<3>" LOC="M3";
+NET "sramaddr<2>" LOC="M4";
+NET "sramaddr<1>" LOC="N3";
+NET "sramaddr<0>" LOC="L5";
+#NET "srama<15>" LOC="R1";
+#NET "srama<15>" PULLDOWN;
+#NET "srama<14>" LOC="P1";
+#NET "srama<14>" PULLDOWN;
+#NET "srama<13>" LOC="L2";
+#NET "srama<13>" PULLDOWN;
+#NET "srama<12>" LOC="J2";
+#NET "srama<12>" PULLDOWN;
+#NET "srama<11>" LOC="H1";
+#NET "srama<11>" PULLDOWN;
+#NET "srama<10>" LOC="F2";
+#NET "srama<10>" PULLDOWN;
+#NET "srama<9>" LOC="P8";
+#NET "srama<9>" PULLDOWN;
+NET "srama<8>" LOC="D3";
+NET "srama<7>" LOC="B1";
+NET "srama<6>" LOC="C1";
+NET "srama<5>" LOC="C2";
+NET "srama<4>" LOC="R5";
+NET "srama<3>" LOC="T5";
+NET "srama<2>" LOC="R6";
+NET "srama<1>" LOC="T8";
+NET "srama<0>" LOC="N7";
+NET "sramace" LOC="P7";
+NET "sramaub" LOC="T4";
+NET "sramalb" LOC="P6";
 # NET "sramb<15>" LOC="N1";
 # NET "sramb<14>" LOC="M1";
 # NET "sramb<13>" LOC="K2";
@@ -191,8 +194,25 @@ NET "ma2_db5" PULLDOWN;
 # NET "srambce" LOC="N5";
 # NET "srambub" LOC="R4";
 # NET "sramblb" LOC="P5";
+NET "sramwe" LOC="G3";
+NET "sramoe" LOC="K4";
 
 # For the other peripherals and ports listed here,
 # consult the Xilinx documentation.
 # RS-232 port
+NET "serialRx" LOC="T13";
+NET "serialTx" LOC="R13";
+
 # expansion connectors
+#
+
+#
+# XCF04S Serial PROM connections
+#
+NET "din" LOC = "M11";
+NET "reset_prom" LOC = "N9";
+NET "rclk" LOC = "A14";
+#NET "progb" LOC="B3";
+#NET "fpgadone" LOC="R14";
+#NET "fpgacclk" LOC="T15";
+

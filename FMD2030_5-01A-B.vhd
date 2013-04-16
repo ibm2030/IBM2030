@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -33,8 +33,9 @@
 --    Revision History:
 --    Revision 1.0 2010-07-09
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Changes to PA check latch
+--		Use T1 rather than P1 to latch WX
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -61,7 +62,7 @@ port (
 		SALS : IN SALS_Bus; -- 01C
 
 		-- Clock inputs
-		T2,T3,T4 : IN STD_LOGIC;
+		T1,T2,T3,T4 : IN STD_LOGIC;
 		P1 : IN STD_LOGIC;
 		clk : IN STD_LOGIC;
 		
@@ -116,7 +117,7 @@ port (
 		TEST_LAMP : IN STD_LOGIC; -- ?????
 		
 		-- Debug
-		DEBUG : OUT STD_LOGIC;
+		DEBUG : INOUT DEBUG_BUS;
 		
 		-- Outputs
 		SET_IND_ROSAR : OUT STD_LOGIC; --- 01AB2 to 07AB3
@@ -144,6 +145,7 @@ signal  sWX : STD_LOGIC_VECTOR(0 to 12);
 signal  sINH_NORM_ENTRY : STD_LOGIC;
 signal  sCTRL_REG_CHK : STD_LOGIC;
 signal  sSAL_PC : STD_LOGIC;
+signal  PA_LCH : STD_LOGIC;
 -- WX display
 signal	WX_IND_X : STD_LOGIC_VECTOR(0 to 12);
 signal	W_IND_P_X, X_IND_P_X : STD_LOGIC;
@@ -172,10 +174,9 @@ BEGIN
 -- ROS Indicator register
 ROSAR_IND_LATCH_Set <= (ANY_MACH_CHK and CHK_OR_DIAG_STOP_SW) or EARLY_ROAR_STOP;
 ROSAR_IND_LATCH: FLL port map(ROSAR_IND_LATCH_Set,MACH_START_RST,FL_ROSAR_IND); -- AA3G4,AA3H4
--- sSET_IND_ROSAR <= (not ALU_CHK or not CHK_OR_DIAG_STOP_SW) and not FL_ROSAR_IND; -- AA3H4
-sSET_IND_ROSAR <= '1'; -- Debug
+sSET_IND_ROSAR <= (not ALU_CHK or not CHK_OR_DIAG_STOP_SW) and not FL_ROSAR_IND; -- AA3H4
+-- sSET_IND_ROSAR <= '1'; -- Debug
 SET_IND_ROSAR <= sSET_IND_ROSAR;
-DEBUG <= FL_ROSAR_IND;
 SET_IND <= (T4 and sSET_IND_ROSAR) or MACH_RST_SET_LCH; -- AA3J4
 
 WINDP: PH port map(W_P,SET_IND,W_IND_P_X); -- AA3J2
@@ -186,8 +187,11 @@ WXIND: PHV13 port map(sWX,SET_IND,WX_IND_X); -- AA3J2,AA3J3
 WX_IND <= WX_IND_X or (WX_IND'range=>TEST_LAMP);
 
 -- SALS parity checking
-WX_CHK <= not(SALS.SALS_PA xor W_IND_P_X xor X_IND_P_X); -- AA2J4 ?? Inverted ??
--- WX_CHK <= not(SALS.SALS_PA xor W_P xor X_P); -- AA2J4 ?? or W_IND_P_X, X_IND_P_X as shown in diagram ??
+-- ?? I have added a latch (FL) on PA to hold it at T4, as are W_IND_P and X_IND_P
+-- This keeps WX_CHK valid during T1, T2 and T3 - it is checked during T2 of the following cycle
+-- Without this, spurious ROS_ADDR checks are generated  because PA is not always valid at the next T2
+PA_PH: PH port map(SALS.SALS_PA,T4,PA_LCH);
+WX_CHK <= not(PA_LCH xor W_IND_P_X xor X_IND_P_X); -- AA2J4 ?? Inverted ??
 sSAL_PC <= not EvenParity(USE_BASIC_CA_DECODER & SALS.SALS_AK & SALS.SALS_PK & SALS.SALS_CH & SALS.SALS_CL & 
 		SALS.SALS_CM & SALS.SALS_CU & SALS.SALS_CA & SALS.SALS_CB & SALS.SALS_CK & SALS.SALS_PA & SALS.SALS_PS)
 		or
@@ -212,7 +216,7 @@ mux(GT_CA_TO_W_REG, (SALS.SALS_AA & SALS.SALS_CA & SALS.SALS_PK)) or -- AA2H2,AA
 mux(GT_FWX_TO_WX_REG, FW & FW_P)); -- AA2H2,AA2J2,AA2F2
 
 -- X Reg assembly
-sINH_NORM_ENTRY <= '1' when SALS.SALS_CK="0101" and SALS.SALS_AK='1' and CARRY_0_LCHD='1' else '0'; -- AB3H7,AA2F5
+sINH_NORM_ENTRY <= '1' when SALS.SALS_CK="0101" and SALS.SALS_AK='1' and CARRY_0_LCHD='1' else '0'; -- AB3H7,AA2F5 CK=0101 AK=1 ACFORCE
 
 X_ASSM <= (
 mux(GT_FWX_TO_WX_REG, FX & FX_P) or -- AA2G3
@@ -221,7 +225,7 @@ mux(GT_GWX_TO_WX_REG, GX & GX_P) or -- AA2G3
 mux(GT_SWS_TO_WX_PWR, SWS_H & SWS_J & SWS_HJP) or -- AA2F3
 mux(GT_UV_TO_WX_REG, V & V_P) or -- AA2F3
 mux(NORMAL_ENTRY and not sINH_NORM_ENTRY, (SALS.SALS_CN & X6 & X7 & (SALS.SALS_PN xor X6 xor X7))) or -- AA2F3
-mux(not SALS.SALS_CK(0) and SALS.SALS_CK(1) and not SALS.SALS_CK(2) and SALS.SALS_CK(3) and SALS.SALS_AK and CARRY_0_LCHD ,"000000001") or -- AA2H5
+mux(sINH_NORM_ENTRY, "000000001") or -- AA2H5 XP=1 for ACFORCE
 mux(ANY_PRIORITY_PULSE_PWR and SEL_CC_ROS_REQ and SX_CHAIN_PULSE, "000000110") or -- AA2H3
 mux(HSMPX_TRAP and SX_CHAIN_PULSE, "000001001") -- AA2E7
 );
@@ -237,12 +241,12 @@ SET_W2A <= not ANY_PRIORITY_PULSE_PWR or not ALU_CHK_LCH or not CHK_SW_PROC_SW; 
 -- SET_W2A <= '1';
 SET_W2B <= sGT_BU_ROSAR_TO_WX_REG or not NORMAL_ENTRY; -- AA2F2
 SET_W2 <= SET_W2A and SET_W2B; -- AA2H5,AA2F2 Wired-AND
-SET_W_REG <= ((GT_CA_TO_W_REG or GT_CK_TO_W_REG or SET_W2) and P1) or MACH_RST_SET_LCH_DLY; -- AA2D2
+SET_W_REG <= ((GT_CA_TO_W_REG or GT_CK_TO_W_REG or SET_W2) and T1) or MACH_RST_SET_LCH_DLY; -- AA2D2 ?? P1 or T1 ??
 REG_W: PHV5 port map(W_ASSM(3 to 7),SET_W_REG,sWX(0 to 4)); -- AA2D2
 REG_WP: PH port map(W_ASSM(8),SET_W_REG,W_P); -- AA2D2
 
 -- X_LATCH: 
-SET_X_REG <= (not INH_ROSAR_SET and P1) or MACH_RST_SET_LCH_DLY; -- AA2D2
+SET_X_REG <= (not INH_ROSAR_SET and T1) or MACH_RST_SET_LCH_DLY; -- AA2D2 ?? P1 or T1 ??
 REG_X: PHV8 port map(X_ASSM(0 to 7),SET_X_REG,sWX(5 to 12)); -- AA2D3
 REG_XP: PH port map(X_ASSM(8),SET_X_REG,X_P); -- AA2D3
 
@@ -250,6 +254,7 @@ WX <= sWX;
 
 -- Backup ROSAR regs
 SET_F <= (MPX_SHARE_PULSE and T4) or MACH_RST_4; -- AA3G3
+SET_FW <= SET_F;
 FWX_LCH: PHV13 port map(sWX,SET_F,FWX); -- AA3H2,AA3H3
 FWP_LCH: PH port map(W_P,SET_F,FW_P); -- AA3H2
 FXP_LCH: PH port map(X_P,SET_F,FX_P); -- AA3H3
@@ -265,5 +270,24 @@ GXP_LCH: PH port map(X_P,SET_G,GX_P); -- AA2L2
 -- This is what I think it should be
 CROS_GO_PULSE <= T2 and not (CHK_OR_DIAG_STOP_SW and ALLOW_PC_SALS and (sSAL_PC or sCTRL_REG_CHK)); -- AA2E7,AA2E2,AA2C2 ??
 CROS_STROBE <= T3; -- AA3L6
+
+with DEBUG.SELECTION select
+	DEBUG.PROBE <=
+		FWX(0) when 0,
+		FWX(1) when 1,
+		FWX(2) when 2,
+		FWX(3) when 3,
+		FWX(4) when 4,
+		FWX(5) when 5,
+		FWX(6) when 6,
+		FWX(7) when 7,
+		FWX(8) when 8,
+		FWX(9) when 9,
+		FWX(10) when 10,
+		FWX(11) when 11,
+		FWX(12) when 12,
+		FW_P when 13,
+		FX_P when 14,
+		MPX_SHARE_PULSE when 15;
 
 end FMD;

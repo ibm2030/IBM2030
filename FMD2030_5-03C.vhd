@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -33,8 +33,8 @@
 --    Revision History:
 --    Revision 1.0 2010-07-13
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Change PROC_STOP_LOOP condition to make STOP/START buttons happier
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -221,7 +221,8 @@ PS_LCH_Set <= sSET_IC_ALLOWED or SW_STOP or (SAR_DLYD_STOP_SW and MATCH) or (INS
 PS_LCH_Reset <= sSTART_SW_RST or '0'; -- ?? What is second reset input?
 PS_LCH: FLL port map(S=>PS_LCH_Set, R=>PS_LCH_Reset, Q=>PROCESS_STOP); -- AC1E5
 DEBUG <= PROCESS_STOP; -- ?? DEBUG ??
-PROC_STOP_LOOP_ACTIVE <= (not (USE_BASIC_CA_DECO and SALS.SALS_CA(0) and SALS.SALS_CA(1) and SALS.SALS_CA(2) and not SALS.SALS_CA(3)) and PROCESS_STOP and CF_STOP); -- AA2G5,AC1D5,AC1F5-removed??
+-- PROC_STOP_LOOP_ACTIVE <= (not (USE_BASIC_CA_DECO and SALS.SALS_CA(0) and SALS.SALS_CA(1) and SALS.SALS_CA(2) and not SALS.SALS_CA(3)) and PROCESS_STOP and CF_STOP); -- AA2G5,AC1D5,AC1F5-removed??
+PROC_STOP_LOOP_ACTIVE <= ((USE_BASIC_CA_DECO and SALS.SALS_CA(0) and SALS.SALS_CA(1) and SALS.SALS_CA(2) and not SALS.SALS_CA(3)) and PROCESS_STOP and CF_STOP); -- AA2G5,AC1D5,AC1F5-removed?? and inverter on AA2G5 removed??
 INH_ROSAR_SET <= PROC_STOP_LOOP_ACTIVE and not ANY_PRIORITY_PULSE; -- AC1D5
 STOP_REQ <= PROCESS_STOP and not S_REG_1_DLYD and not INTERRUPT and END_OF_E_CY_LCH; -- AC1H7
 -- CF STOP

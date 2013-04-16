@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -33,8 +33,8 @@
 --    Revision History:
 --    Revision 1.0 2010-07-13
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Implement external 64k + aux storage using StorageIn / StorageOut
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -107,6 +107,10 @@ ENTITY RREG_STG IS
       ALLOW_PROTECT : OUT STD_LOGIC; -- 03A7
 		STORE_BITS : OUT STD_LOGIC_VECTOR(0 TO 8); -- 11C
 
+      -- Interface to hardware
+		StorageIn : IN STORAGE_IN_INTERFACE;
+		StorageOut : OUT STORAGE_OUT_INTERFACE;
+		
 		-- Clocks
 --		P3 : IN STD_LOGIC;
 		T1,T2,T3,T4 : IN STD_LOGIC;
@@ -117,7 +121,8 @@ END RREG_STG;
 
 ARCHITECTURE FMD OF RREG_STG IS 
 
-TYPE MAIN_STG_TYPE is ARRAY(0 to 8191) of STD_LOGIC_VECTOR(0 to 8);
+TYPE MAIN_STG_TYPE is ARRAY(0 to 1023) of STD_LOGIC_VECTOR(0 to 8);
+-- TYPE MAIN_STG_TYPE is ARRAY(0 to 8191) of STD_LOGIC_VECTOR(0 to 8);
 TYPE LOCAL_STG_TYPE is ARRAY(0 to 511) of STD_LOGIC_VECTOR(0 to 8);
 
 SIGNAL SX1_STOR,SX2_STOR : STD_LOGIC;
@@ -137,17 +142,7 @@ SIGNAL sALLOW_PROTECT : STD_LOGIC;
 signal sSTORE_BITS : STD_LOGIC_VECTOR(0 to 8);
 signal SX1_STOR_INPUT_DATA_Set,SX1_STOR_INPUT_DATA_Reset,SX2_STOR_INPUT_DATA_Set,SX2_STOR_INPUT_DATA_Reset,
 	PROT_MEM_Set,PROT_MEM_Reset,P_8F_DETECT_Set,P_8F_DETECT_Reset : STD_LOGIC;
-SIGNAL LOCAL_STG_ARRAY : LOCAL_STG_TYPE := (
-336 => "000000001",
-337 => "000000001",
-338 => "000000001",
-339 => "010111010", -- R5 = 0000005D
-368 => "000000001",
-369 => "000000001",
-370 => "000000001",
-371 => "100110011", -- R7 = 00000099
-others => "000000001"
-);
+SIGNAL LOCAL_STG_ARRAY : LOCAL_STG_TYPE;
 SIGNAL MAIN_STG_ARRAY : MAIN_STG_TYPE := (
 16#000# => "000000001", -- 00
 16#001# => "000000010", -- 01
@@ -325,27 +320,36 @@ P_8F_DETECT_Set <= STORAGE_BUS(0) and MAIN_STG and N1401_MODE and DET0F;
 P_8F_DETECT_Reset <= MACH_RST_SW or GMWM_DETECTED;
 P_8F_DETECT: FLL port map(P_8F_DETECT_Set,P_8F_DETECT_Reset,P_8F_DETECTED); -- AA1F5
 
+StorageOut.WriteData <= sSTORE_BITS;
+StorageOut.MainStorage <= USE_MAIN_MEM;
+StorageOut.ReadPulse <= PHASE_RD_1 and not DATA_READY; -- Drop ReadPulse when Data Ready goes active, this will latch input data
+StorageOut.WritePulse <= PHASE_WR_1;
+StorageOut.MSAR <= MN;
+STORAGE_BUS <= StorageIn.ReadData when PHASE_RD_1='1' else "000000000"; -- Data is retained a bit after DATA_READY falls
+
 STG_Wr: process (PHASE_WR_1)
 begin
 	if (PHASE_WR_1'EVENT AND PHASE_WR_1='1') then
 		if (USE_MAIN_MEM='1') then
-			MAIN_STG_ARRAY(TO_INTEGER(UNSIGNED(MN(3 to 15)))) <= sSTORE_BITS;
+--			MAIN_STG_ARRAY(TO_INTEGER(UNSIGNED(MN(3 to 15)))) <= sSTORE_BITS;
 		else
-			LOCAL_STG_ARRAY(TO_INTEGER(UNSIGNED(MN(3) & MN(8 to 15)))) <= sSTORE_BITS;
+--			LOCAL_STG_ARRAY(TO_INTEGER(UNSIGNED(MN(3) & MN(8 to 15)))) <= sSTORE_BITS;
 		end if;
 	end if;
 end process;
 
-STG_Rd: process (PHASE_RD_1,USE_MAIN_MEM,MAIN_STG_ARRAY,LOCAL_STG_ARRAY,MN)
+STG_Rd: process (PHASE_RD_1,USE_MAIN_MEM,MAIN_STG_ARRAY,LOCAL_STG_ARRAY,MN,StorageIn.ReadData)
 begin
 	if (PHASE_RD_1='1') then
 		if (USE_MAIN_MEM='1') then
-			STORAGE_BUS <= MAIN_STG_ARRAY(TO_INTEGER(UNSIGNED(MN(3 to 15))));
+--			STORAGE_BUS <= StorageIn.ReadData;
+--			STORAGE_BUS <= MAIN_STG_ARRAY(TO_INTEGER(UNSIGNED(MN(3 to 15))));
 		else
-			STORAGE_BUS <= LOCAL_STG_ARRAY(TO_INTEGER(UNSIGNED(MN(3) & MN(8 to 15))));
+--			STORAGE_BUS <= StorageIn.ReadData;
+--			STORAGE_BUS <= LOCAL_STG_ARRAY(TO_INTEGER(UNSIGNED(MN(3) & MN(8 to 15))));
 		end if;
 	else
-		STORAGE_BUS <= "000000000";
+--		STORAGE_BUS <= "000000000";
 	end if;		
 end process;
 

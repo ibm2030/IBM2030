@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -34,8 +34,8 @@
 --    Revision History:
 --    Revision 1.0 2010-07-09
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Add Mpx and 1050 buses, and Storage interface
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -60,6 +60,7 @@ port(
 			MN : OUT STD_LOGIC_VECTOR(0 to 15);
 --			M_P, N_P : OUT STD_LOGIC;
 			E_BUS : IN E_SW_BUS_Type;
+			-- External MPX connections:
 			MPX_BUS_O : OUT STD_LOGIC_VECTOR(0 to 8);
          MPX_BUS_I : IN STD_LOGIC_VECTOR(0 to 8);
 			MPX_TAGS_O : OUT MPX_TAGS_OUT;
@@ -90,6 +91,10 @@ port(
 			IND_MAIN_STG, IND_LOC_STG, IND_COMP_MODE : OUT STD_LOGIC;
 			IND_CHK_A_REG, IND_CHK_B_REG, IND_CHK_STOR_ADDR, IND_CHK_CTRL_REG,
 			IND_CHK_ROS_SALS, IND_CHK_ROS_ADDR, IND_CHK_STOR_DATA, IND_CHK_ALU : OUT STD_LOGIC;
+
+			-- Hardware interface
+			StorageIn : IN STORAGE_IN_INTERFACE;
+			StorageOut : OUT STORAGE_OUT_INTERFACE;
 
 		  -- Controls
 		  CLOCK_START : IN STD_LOGIC;        
@@ -228,10 +233,21 @@ port(
 		  N_SEL_SHARE_HOLD : IN STD_LOGIC;
 		  GK,HK : IN STD_LOGIC_VECTOR(0 to 3);
 		  PROTECT_LOC_CPU_OR_MPX, PROTECT_LOC_SEL_CHNL : OUT STD_LOGIC;
-		  FO : OUT STD_LOGIC_VECTOR(0 to 8);
+		  FO, FI : OUT STD_LOGIC_VECTOR(0 to 8);
+		  MPX_OPN_LT_GATE : OUT STD_LOGIC;
+		  ADDR_OUT : OUT STD_LOGIC;
+		  MPX_BUS_IN_TO_CPU : OUT STD_LOGIC_VECTOR(0 to 8);
+		n1050_SEL_IN : OUT STD_LOGIC;
+		n1050_INSTALLED : IN STD_LOGIC;
+      n1050_REQ_IN : IN STD_LOGIC;
+      n1050_OP_IN : IN STD_LOGIC;
+      n1050_CE_MODE : IN STD_LOGIC;
+		n1050_SEL_O : IN STD_LOGIC;
+		P_1050_SEL_OUT : OUT STD_LOGIC;
+		P_1050_SEL_IN : OUT STD_LOGIC;
 
         -- Debug
-		  DEBUG : OUT STD_LOGIC;
+		  DEBUG : INOUT DEBUG_BUS;
 		  
 		  -- Clocks
 		  CLOCK_IN : IN STD_LOGIC;
@@ -252,7 +268,7 @@ signal	ADDR_IN : STD_LOGIC;
 signal	STATUS_IN : STD_LOGIC;
 signal	SERVICE_IN : STD_LOGIC;
 signal	SELECT_OUT : STD_LOGIC;
-signal	ADDR_OUT : STD_LOGIC;
+signal	sADDR_OUT : STD_LOGIC;
 signal	COMMAND_OUT : STD_LOGIC;
 signal	SERVICE_OUT : STD_LOGIC;
 signal	SUPPRESS_OUT : STD_LOGIC;
@@ -298,7 +314,7 @@ signal  sZ_BUS_LO_DIGIT_PARITY : STD_LOGIC;
 signal  sMN_PC : STD_LOGIC;
 signal  sPROTECT_LOC_CPU_OR_MPX : STD_LOGIC;
 signal  sXL,sXH,sXXH : STD_LOGIC;
-signal  SUPPR_CTRL_LCH,OP_OUT_SIG,MPX_OPN_LT_GATE,SX1_MASK,SX2_MASK,FAK,SET_BUS_O_CTRL_LCH : STD_LOGIC;
+signal  SUPPR_CTRL_LCH,OP_OUT_SIG,SX1_MASK,SX2_MASK,FAK,SET_BUS_O_CTRL_LCH : STD_LOGIC;
 -- signal	sMPX_BUS_O_REG : STD_LOGIC_VECTOR(0 to 8);
 signal	sFT2, sFT7 : STD_LOGIC;
 
@@ -346,7 +362,7 @@ MpxInd_sect: entity MpxInd (FMD) port map (
 	STATUS_IN => STATUS_IN,
 	SERVICE_IN => SERVICE_IN,
 	SELECT_OUT => SELECT_OUT,
-	ADDR_OUT => ADDR_OUT,
+	ADDR_OUT => sADDR_OUT,
 	COMMAND_OUT => COMMAND_OUT,
 	SERVICE_OUT => SERVICE_OUT,
 	SUPPRESS_OUT => SUPPRESS_OUT,
@@ -518,7 +534,9 @@ r_reg: entity RREG_STG port map (
 		R_REG_BUS => sR,
 		P_8F_DETECTED => P_8F_DETECTED,
 
-	
+		StorageIn => StorageIn,
+		StorageOut => StorageOut,
+		
 		-- Clocks
 		T1 => sT1,
 		T2 => sT2,
@@ -768,8 +786,8 @@ MpxReg1 : entity MpxFOFB port map (
 		XXH <= sXXH;
 		FO <= sFO & sFO_P;
 		FT7 <= sFT7;
-		
-MpxChnlCtrls: entity MpxFA port map (
+
+MpxChnlCtrls: entity MpxFA port map (	-- 5-08D
 				BUS_O_REG(0 to 7) => sFO,
 				BUS_O_REG(8) => sFO_P,
 			  DIAG_SW => DIAG_SW,
@@ -780,7 +798,8 @@ MpxChnlCtrls: entity MpxFA port map (
            TAGS_OUT => MPX_TAGS_O,
            TAGS_IN => MPX_TAGS_I,
 			  
-           FAK => FAK,
+           FI => FI,
+			  FAK => FAK,
            RECYCLE_RST => RECYCLE_RST,
            CK_P_BIT => SALS.SALS_PK,
            ALU_CHK_LCH => sALU_CHK_LCH,
@@ -800,37 +819,41 @@ MpxChnlCtrls: entity MpxFA port map (
            SET_BUS_O_CTRL_LCH => SET_BUS_O_CTRL_LCH,
            N1401_MODE => N1401_MODE,
 			  -- 1050 attachment
-			  N1050_INSTALLED => '1',
-           N1050_REQ_IN => '0',
-           N1050_OP_IN => '0',
-           N1050_CE_MODE => '0',
-			  N1050_SEL_IN => '0',
-			  N1050_SEL_O => '0',
+			  N1050_INSTALLED => n1050_INSTALLED,
+           N1050_REQ_IN => n1050_REQ_IN,
+           N1050_OP_IN => n1050_OP_IN,
+           N1050_CE_MODE => n1050_CE_MODE,
+			  N1050_SEL_IN => n1050_SEL_IN,
+			  N1050_SEL_O => n1050_SEL_O,
+			  P_1050_SEL_OUT => P_1050_SEL_OUT,
+			  P_1050_SEL_IN => P_1050_SEL_IN,
 			  
            MPX_METERING_IN => MPX_METERING_IN,
            FT7_MPX_CHNL_IN => sFT7,
            LOAD_IND => LOAD_IND,
            SUPPR_CTRL_LCH => SUPPR_CTRL_LCH,
            OP_OUT_SIGNAL => OP_OUT_SIG,
-           RECYCLE_RESET => RECYCLE_RST,
+--           RECYCLE_RESET => RECYCLE_RST,
            OP_OUT_SIG => OP_OUT_SIG,
            SEL_O_FT6 => FT6,
 --           N1050_SEL_OUT => N1050_SEL_OUT,
---           SUPPR_O => SUPPR_O ,
-           SUPPR_O_FT0 => FT0,
+           SUPPR_O => FT0 ,
+--           SUPPR_O_FT0 => FT0,
 --           OP_OUT => OP_OUT,
            METERING_OUT => METERING_OUT,
            CLOCK_OUT => CLOCK_OUT,
 			  CLK => CLK,
+			  DEBUG => DEBUG,
 			  -- Mpx Indicators
 				OPNL_IN => OPNL_IN,
 				ADDR_IN => ADDR_IN,
 				STATUS_IN => STATUS_IN,
 				SERVICE_IN => SERVICE_IN,
 				SELECT_OUT => SELECT_OUT,
-				ADDR_OUT => ADDR_OUT,
+				ADDR_OUT => sADDR_OUT,
 				COMMAND_OUT => COMMAND_OUT,
 				SERVICE_OUT => SERVICE_OUT,
 				SUPPRESS_OUT => SUPPRESS_OUT
 				);
+ADDR_OUT <= sADDR_OUT;				
 end FMD;

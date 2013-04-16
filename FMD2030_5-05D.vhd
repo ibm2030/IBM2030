@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -33,8 +33,8 @@
 --    Revision History:
 --    Revision 1.0 2010-07-13
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Changed for 64k storage: START_1ST_32K triggered for 1st *and* 2nd 32k
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -84,7 +84,7 @@ END RWStgClk1st32k;
 ARCHITECTURE FMD OF RWStgClk1st32k IS 
 
 signal START_RD,START_WR : STD_LOGIC;
-signal START_1ST_32K : STD_LOGIC;
+signal START_1ST_32K, START_2ND_32K : STD_LOGIC;
 signal READ_CALL_TO_MEM,WRITE_CALL_TO_MEM : STD_LOGIC;
 signal sREAD_CALL : STD_LOGIC;
 signal sUSE_LOCAL_MAIN_MEM : STD_LOGIC;
@@ -123,8 +123,9 @@ USE_LOCAL: FLL port map(USE_LOCAL_Set,USE_LOCAL_Reset,sUSE_LOCAL_MAIN_MEM); -- C
 USE_LOCAL_MAIN_MEM <= sUSE_LOCAL_MAIN_MEM;
 USE_MAIN_MEMORY <= not sUSE_LOCAL_MAIN_MEM; -- CB1H2
 
-START_1ST_32K <= (not EARLY_M_REG_0 and READ_CALL_TO_MEM) or (READ_CALL_TO_MEM and EARLY_LOCAL_STG) or (not M_REG_0 and WRITE_CALL_TO_MEM) or (WRITE_CALL_TO_MEM and sUSE_LOCAL_MAIN_MEM); -- CB1E2
+-- START_1ST_32K <= (not EARLY_M_REG_0 and READ_CALL_TO_MEM) or (READ_CALL_TO_MEM and EARLY_LOCAL_STG) or (not M_REG_0 and WRITE_CALL_TO_MEM) or (WRITE_CALL_TO_MEM and sUSE_LOCAL_MAIN_MEM); -- CB1E2
 -- START_2ND_32K <= (READ_CALL_TO_MEM and EARLY_M_REG_0 and not sUSE_LOCAL_MAIN_MEM) or (WRITE_CALL_TO_MEM and M_REG_0 and not sUSE_LOCAL_MAIN_MEM); -- CB1E2
+START_1ST_32K <= READ_CALL_TO_MEM or WRITE_CALL_TO_MEM; -- CB1E2 combined 1st & 2nd 32k
 
 -- Generate timing signals relative to START_xxx_32K
 -- READ_ECHO_n ON at 150ns OFF at 720ns (or MACH_RST_SW)

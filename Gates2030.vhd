@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -33,9 +33,10 @@
 --
 --    Revision History:
 --    Revision 1.0
---    
---    
---
+--    Initial release
+--    Revision 1.1 2012-04-07
+--		Add SingleShot (SS) and XilinxIOVector
+--		Revise DelayRisingEdgeX implementation
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -59,9 +60,11 @@ component FLVL is port(S,R: in STD_LOGIC_VECTOR; signal Q:out STD_LOGIC_VECTOR);
 function mux(sel : in STD_LOGIC; D : in STD_LOGIC_VECTOR) return STD_LOGIC_VECTOR;
 function EvenParity(v : in STD_LOGIC_VECTOR) return STD_LOGIC;
 component AR is port( D,Clk: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
+component SS is port( Clk : in STD_LOGIC; Count : in integer; D: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
 component DEGLITCH is port( D,Clk: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
 component DEGLITCH2 is port( D,Clk: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
 component DelayRisingEdge is port( D,Clk: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
+component XilinxIOVector is port( I : in STD_LOGIC_VECTOR; T : in STD_LOGIC; O : out STD_LOGIC_VECTOR; IO : inout STD_LOGIC_VECTOR); end component;
 end Gates_package;
 
 LIBRARY ieee;
@@ -346,6 +349,39 @@ end if;
 end process;
 end slt;
 
+-- Simple single-shot (SS)
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+entity SS is port( Clk : in STD_LOGIC; Count : in integer; D: in STD_LOGIC; signal Q:out STD_LOGIC); end;
+
+architecture slt of SS is
+signal C : integer;
+begin
+process(D,Clk)
+begin
+if (rising_edge(Clk)) then
+	if (C = 0) then
+		if D='1' then
+			C <= Count;
+			Q <= '1';
+		else
+			Q <= '0';
+		end if;
+	else
+		if (C = 1) then
+			Q <= '0';
+			if D='0' then
+				C <= 0;
+			end if;
+		else
+			C <= C - 1;
+			Q <= '1';
+		end if;
+	end if;
+end if;
+end process;
+end slt;
+
 -- Simple 1 cycle de-glitch
 -- LIBRARY ieee;
 -- USE ieee.std_logic_1164.all;
@@ -387,24 +423,35 @@ USE ieee.std_logic_1164.all;
 entity DelayRisingEdgeX is port( D,Clk: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 
 architecture slt of DelayRisingEdgeX is
-signal Q1 : std_logic_vector(1 to 3) := "000";
+signal Q1 : std_logic_vector(1 to 4) := "0000";
 begin
 process(D,Clk)
 begin
 if (rising_edge(Clk)) then
 	if (D='0') then
 		Q <= '0';
-		Q1 <= "000";
-	else if (D='1') and (Q1="111") then
+		Q1 <= "0000";
+	else if (D='1') and (Q1="1111") then
 		Q <= '1';
-		Q1 <= "111";
+		Q1 <= "1111";
 	else
 		Q <= '0';
-		Q1 <= Q1(2 to 3) & '1';
+		Q1 <= Q1(2 to 4) & '1';
 	end if;
 	end if;
 end if;
 end process;
 end slt;
 
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+entity XilinxIOVector is port( I : in STD_LOGIC_VECTOR(0 to 8); T : in STD_LOGIC; O : out STD_LOGIC_VECTOR(0 to 8); IO : inout STD_LOGIC_VECTOR(0 to 8)); end;
 
+architecture slt of XilinxIOVector is
+component IOBUF port (I, T: in std_logic; O: out std_logic; IO: inout std_logic); end component;
+begin
+word_generator: for b in 0 to 8 generate
+	begin
+		U1: IOBUF port map (I => I(b), T => T, O => O(b), IO => IO(b));
+	end generate;
+end slt;

@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -33,8 +33,9 @@
 --    Revision History:
 --    Revision 1.0 2010-07-13
 --    Initial Release
---    
---
+--    Revision 1.1 2012-04-07
+--		Reset UMPX latch on RECYCLE_RST
+--		Change to 64k wrap
 ---------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
@@ -119,7 +120,7 @@ UWRAP_LCH_Reset <= RECYCLE_RST or RESET_WRAP;
 UWRAP_LCH: PHR port map(D=>WRAP_TRUE,L=>CHECK_U_WRAP,R=>UWRAP_LCH_Reset,Q=>U_WRAP_CPU); -- AB2M4
 IWRAP_LCH: PHR port map(D=>WRAP_TRUE,L=>CHECK_I_WRAP,R=>RECYCLE_RST,Q=>sI_WRAPPED_CPU); -- AB2M4
 I_WRAPPED_CPU <= sI_WRAPPED_CPU;
-UMPX_LCH: PH port map(D=>CARRY_OUT,L=>CHECK_MPX_WRAP,Q=>sU_WRAPPED_MPX); -- AB2M4
+UMPX_LCH: PHR port map(D=>CARRY_OUT,L=>CHECK_MPX_WRAP,R=>RECYCLE_RST,Q=>sU_WRAPPED_MPX); -- AB2M4 ?? Doesn't have reset in FMD - causes Diag failure
 U_WRAPPED_MPX <= sU_WRAPPED_MPX;
 WBUFF_LCH: PH port map(D=>sI_WRAPPED_CPU,L=>STORE_WRAP,Q=>WRAP_BUFF); -- AB2M4 ?? *not* sI_WRAPPED_CPU ??
 
@@ -128,10 +129,10 @@ WRAP64 <= (not H_REG_6 and GT_V_TO_N_REG and U_WRAP_CPU) or
 	(GT_V_TO_N_REG and H_REG_6 and sU_WRAPPED_MPX);
 
 -- Select the appropriate wrap condition based on storage size:
-sMEM_WRAP <= M012(0) or M012(1) or M012(2); -- 8k
+-- sMEM_WRAP <= M012(0) or M012(1) or M012(2); -- 8k
 -- sMEM_WRAP <= M012(0) or M012(1); -- 16k
 -- sMEM_WRAP <= M012(0); -- 32k
--- sMEM_WRAP <= WRAP64; -- 64k
+sMEM_WRAP <= WRAP64; -- 64k
 MEM_WRAP <= sMEM_WRAP;
 
 MWR_LCH_Set <= MAIN_STORAGE and T2 and (sMEM_WRAP and not ALLOW_WRITE);	-- ?? ALLOW_WRITE use unclear - dot logic
