@@ -1,0 +1,1236 @@
+---------------------------------------------------------------------------
+--    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--
+--    This file is part of LJW2030, a VHDL implementation of the IBM
+--    System/360 Model 30.
+--
+--    LJW2030 is free software: you can redistribute it and/or modify
+--    it under the terms of the GNU General Public License as published by
+--    the Free Software Foundation, either version 3 of the License, or
+--    (at your option) any later version.
+--
+--    LJW2030 is distributed in the hope that it will be useful,
+--    but WITHOUT ANY WARRANTY; without even the implied warranty of
+--    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+--    GNU General Public License for more details.
+--
+--    You should have received a copy of the GNU General Public License
+--    along with LJW2030 .  If not, see <http://www.gnu.org/licenses/>.
+--
+---------------------------------------------------------------------------
+--
+--    File: fmd2030_udc1.vhd
+--    Creation Date: 
+--    Description:
+--    First section of the 360/30, corresponding to Unit Data & Control Diagram 1
+--    in the MDM.
+--    Page references like "5-01A" refer to the IBM Maintenance Diagram Manual (MDM)
+--    for the 360/30 R25-5103-1
+--    References like "02AE6" refer to coordinate "E6" on page "5-02A"
+--    Logic references like "AB3D5" refer to card "D5" in board "B3" in gate "A"
+--    Gate A is the main logic gate, B is the second (optional) logic gate,
+--    C is the core storage and X is the CCROS unit
+--
+--    Revision History:
+--    Revision 1.0 2010-07-09
+--    Initial Release
+--    
+--
+---------------------------------------------------------------------------
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+LIBRARY work;
+USE work.Gates_package.all;
+USE work.Buses_package.all;
+USE work.all;
+
+entity UDC1 is
+port(
+		-- Buses
+		SALS : OUT SALS_Bus;
+		CTRL : OUT CTRL_REG;
+		Z_BUS : IN STD_LOGIC_VECTOR(0 to 8);
+		A_BUS : OUT STD_LOGIC_VECTOR(0 to 8);
+		B_BUS : OUT STD_LOGIC_VECTOR(0 to 8);
+		M_ASSM_BUS,N_ASSM_BUS : OUT STD_LOGIC_VECTOR(0 to 8);
+		MN : IN STD_LOGIC_VECTOR(0 to 15);
+		MPX_BUS : IN STD_LOGIC_VECTOR(0 to 8);
+		R : IN STD_LOGIC_VECTOR(0 to 8);
+		S : IN STD_LOGIC_VECTOR(0 to 7);
+        
+		-- Indicators
+		W_IND_P : OUT STD_LOGIC;
+		X_IND_P : OUT STD_LOGIC;
+		WX_IND :  OUT  STD_LOGIC_VECTOR(0 to 12);
+		IND_LOAD : OUT STD_LOGIC;
+		IND_SYST,IND_MAN,IND_WAIT,IND_TEST,IND_EX,IND_CY_MATCH,IND_ALLOW_WR : OUT STD_LOGIC;
+		IND_1050_INTRV,IND_1050_REQ,IND_MPX,IND_SEL_CHNL : OUT STD_LOGIC;
+		IND_MSDR : OUT STD_LOGIC_VECTOR(0 to 7);
+		IND_MSDR_P : OUT STD_LOGIC;
+
+		-- Hardware Switches
+		-- ABCD FGHJ
+		SW_A,SW_B,SW_C,SW_D,SW_F,SW_G,SW_H,SW_J : IN STD_LOGIC_VECTOR(0 to 3);
+		SW_AP,SW_BP,SW_CP,SW_DP,SW_FP,SW_GP,SW_HP,SW_JP : IN STD_LOGIC;
+		-- E
+		E_SW : IN E_SW_BUS_Type;
+		
+		SW_START,SW_LOAD,SW_SET_IC,SW_STOP : IN STD_LOGIC;
+		SW_PWR_OFF,SW_LAMP_TEST : IN STD_LOGIC;
+		SW_CONS_INTRP,SW_INTRP_TIMER : STD_LOGIC;
+		
+		SW_INH_CF_STOP,SW_PROC,SW_SCAN : IN STD_LOGIC;
+
+		SW_SINGLE_CYCLE,SW_INSTRUCTION_STEP,SW_RATE_SW_PROCESS : IN STD_LOGIC;
+
+		SW_DSPLY,SW_STORE,SW_SYS_RST : IN STD_LOGIC;
+
+		SW_CHK_RST,SW_ROAR_RST,SW_CHK_RESTART,SW_DIAGNOSTIC : IN STD_LOGIC;
+		SW_CHK_STOP,SW_CHK_SW_PROCESS,SW_CHK_SW_DISABLE,SW_ROAR_RESTT_STOR_BYPASS : IN STD_LOGIC;
+		SW_ROAR_RESTT,SW_ROAR_RESTT_WITHOUT_RST,SW_EARLY_ROAR_STOP,SW_ROAR_STOP : IN STD_LOGIC;
+		SW_ROAR_SYNC,SW_ADDR_COMP_PROC,SW_SAR_DLYD_STOP,SW_SAR_STOP,SW_SAR_RESTART : IN STD_LOGIC;
+
+		-- Other hard I/O
+		MPX_METERING_IN : IN STD_LOGIC;
+		METER_IN_SX1,METER_IN_SX2 : IN STD_LOGIC;
+		KEY_SW : IN STD_LOGIC;
+		TO_KEY_SW : OUT STD_LOGIC;
+		METERING_OUT : OUT STD_LOGIC;
+		N60_CY_TIMER_PULSE : IN STD_LOGIC;
+
+		-- Signals to UDC2,UDC3
+		CARRY_0 : IN STD_LOGIC;
+		COMPLEMENT : IN STD_LOGIC;
+		NTRUE : IN STD_LOGIC;
+		CLOCK_ON : IN STD_LOGIC;
+		N1050_INTRV_REQ : IN STD_LOGIC;
+		TT6_POS_ATTN : IN STD_LOGIC;
+		FT2_MPX_OPNL : IN STD_LOGIC;
+		EXT_TRAP_MASK_ON : IN STD_LOGIC;
+		GT_1050_TAGS : OUT STD_LOGIC;
+		GT_1050_BUS : OUT STD_LOGIC;
+		SYS_RST_PRIORITY_LCH : OUT STD_LOGIC;
+		STORE_R : OUT STD_LOGIC;
+		MACH_RST_3 : OUT STD_LOGIC;
+		
+		FT0,FT1,FT2,FT3,FT5,FT6,FT7 : IN STD_LOGIC;
+		MANUAL_STORE : OUT STD_LOGIC;
+		CARRY_0_LCHD : IN STD_LOGIC;
+		CARRY_1_LCHD : IN STD_LOGIC;
+		RECYCLE_RST : OUT STD_LOGIC;
+		ALU_CHK : IN STD_LOGIC;
+		N_CTRL_LM : IN STD_LOGIC;
+		CTRL_N : IN STD_LOGIC;
+		N_CTRL_N : IN STD_LOGIC;
+		STORE_S_REG_RST : OUT STD_LOGIC;
+		MAIN_STORAGE_CP : OUT STD_LOGIC;
+		LOCAL_STORAGE_CP : OUT STD_LOGIC;
+		SET_IND_ROSAR : OUT STD_LOGIC;		
+		N_STACK_MEM_SELECT : OUT STD_LOGIC;
+		STACK_RD_WR_CONTROL : OUT STD_LOGIC;
+		H_REG_5_PWR : OUT STD_LOGIC;
+		FORCE_M_REG_123 : OUT STD_LOGIC;
+		GT_T_TO_MN_REG : OUT STD_LOGIC;
+		GT_CK_TO_MN_REG : OUT STD_LOGIC;
+		WX_CHK : OUT STD_LOGIC;
+		SAL_PC : OUT STD_LOGIC;
+		R_REG_PC : OUT STD_LOGIC;
+		RST_LOAD : OUT STD_LOGIC;
+		N2ND_ERROR_STOP : OUT STD_LOGIC;
+		MEM_WRAP : OUT STD_LOGIC;
+		LOAD_IND : OUT STD_LOGIC;
+		DIAGNOSTIC_SW : OUT STD_LOGIC;
+
+		-- Signals from UDC2
+		PROT_LOC_CPU_OR_MPX : IN STD_LOGIC;
+		ODD : IN STD_LOGIC;
+		EARLY_M_REG_0 : IN STD_LOGIC;
+		XH,XXH,XL : IN STD_LOGIC;
+		SUPPR_A_REG_CHK : IN STD_LOGIC;
+		STATUS_IN_LCHD : IN STD_LOGIC;
+		M_REG_0 : IN STD_LOGIC;
+		MACH_RST_PROT : IN STD_LOGIC;
+		MACH_RST_MPX : IN STD_LOGIC;
+		MACH_RST_2A,MACH_RST_2B : IN STD_LOGIC;
+		GM_WM_DETECTED : IN STD_LOGIC; -- 06CE4 to 05AB5
+		FIRST_MACH_CHK_REQ : IN STD_LOGIC;
+		FIRST_MACH_CHK : IN STD_LOGIC;
+		DECIMAL : IN STD_LOGIC;
+		INTRODUCE_ALU_CHK : IN STD_LOGIC;
+		SERV_IN_LCHD, ADDR_IN_LCHD, OPNL_IN_LCHD : IN STD_LOGIC;
+		MPX_SHARE_REQ : IN STD_LOGIC;
+		MPX_INTERRUPT : IN STD_LOGIC;
+		CS_DECODE_X001 : IN STD_LOGIC;
+		CLOCK_OFF : IN STD_LOGIC;
+		CONNECT : IN STD_LOGIC;
+		P_8F_DETECTED : IN STD_LOGIC;
+		BASIC_CS0 : IN STD_LOGIC;
+		ANY_MACH_CHK : IN STD_LOGIC;
+		ALU_CHK_LCH : IN STD_LOGIC;
+		ALLOW_PROTECT : IN STD_LOGIC;
+		ALLOW_PC_SALS : IN STD_LOGIC;
+		Z0_BUS_0 : IN STD_LOGIC;
+		Z_0 : IN STD_LOGIC;
+		SELECT_CPU_BUMP : IN STD_LOGIC;
+
+		-- Signals to UDC2
+		GT_MAN_SET_MN : OUT STD_LOGIC;
+		MPX_ROS_LCH : OUT STD_LOGIC;
+		SET_FW : OUT STD_LOGIC;
+		MANUAL_DISPLAY : OUT STD_LOGIC;
+		CTRL_REG_RST : OUT STD_LOGIC;
+		CTRL_REG_CHK : OUT STD_LOGIC;
+		CPU_WRITE_IN_R_REG : OUT STD_LOGIC; -- to 07A
+		CK_SAL_P_BIT_TO_MPX : OUT STD_LOGIC;
+		CHANNEL_RD_CALL : OUT STD_LOGIC; -- to 07B
+		USE_R : OUT STD_LOGIC;
+		USE_BASIC_CA_DECODER : OUT STD_LOGIC; -- 02A
+		USE_ALT_CA_DECODER : OUT STD_LOGIC; -- 02B
+		SUPPR_MACH_CHK_TRAP : OUT STD_LOGIC; -- 03A
+		N1401_MODE : OUT STD_LOGIC; -- 05A
+		MEM_PROT_REQUEST : OUT STD_LOGIC; -- 03A
+		MAIN_STORAGE : OUT STD_LOGIC; -- 04D
+		MACH_RST_SW : OUT STD_LOGIC; -- 03D
+		MACH_RST_SET_LCH : OUT STD_LOGIC;
+		MACH_RST_SET_LCH_DLY : OUT STD_LOGIC; -- 04B
+		MACH_CHK_RST : OUT STD_LOGIC; -- 04A
+		MACH_CHK_PULSE : OUT STD_LOGIC; -- 03A
+		GT_LOCAL_STORAGE : OUT STD_LOGIC; -- 04D
+		GT_D_REG_TO_A_BUS : OUT STD_LOGIC; -- 05C
+		GT_CA_TO_W_REG : OUT STD_LOGIC; -- 02B
+		DATA_READY : OUT STD_LOGIC; -- 03A
+		CPU_SET_ALLOW_WR_LCH : OUT STD_LOGIC; -- 03D
+		ANY_PRIORITY_LCH : OUT STD_LOGIC; -- 03A
+		ALLOW_WRITE : OUT STD_LOGIC; -- 03D
+		ALLOW_WRITE_DLYD : OUT STD_LOGIC; -- 03D
+		USE_MANUAL_DECODER : OUT STD_LOGIC;
+		GTD_CA_BITS : OUT STD_LOGIC_VECTOR(0 to 3);
+		USE_MAIN_MEMORY, USE_LOC_MAIN_MEM : OUT STD_LOGIC;
+		MAN_STOR_OR_DSPLY : OUT STD_LOGIC;
+		MACH_RST_6 : OUT STD_LOGIC;
+		GT_SWS_TO_WX_PWR : OUT STD_LOGIC;
+		CPU_RD_PWR : OUT STD_LOGIC;
+		READ_ECHO_1,READ_ECHO_2,WRITE_ECHO_1,WRITE_ECHO_2 : OUT STD_LOGIC;
+		
+		-- Signals from UDC3
+		SX1_SHARE_CYCLE, SX2_SHARE_CYCLE : IN STD_LOGIC := '0';
+		SEL_WR_CALL, SEL_AUX_WR_CALL, SEL_AUX_RD_CALL : IN STD_LOGIC := '0';
+		SEL_T1, SEL_T4, SEL_CONV_OSC,SEL_BASIC_CLOCK_OFF : IN STD_LOGIC := '0';
+		SEL_SHARE_HOLD, SEL_SHARE_CYCLE, SEL_CHNL_DATA_XFER : IN STD_LOGIC := '0';
+		SEL_ROS_REQ, SEL_READ_CALL, SEL_RD_WR_CTRL, SEL_RD_CALL_TO_STP : IN STD_LOGIC := '0';
+		SEL_CC_ROS_REQ : IN STD_LOGIC := '0';
+		MAN_DSPLY_GUV_HUV : IN STD_LOGIC := '0';
+		HSMPX_TRAP : IN STD_LOGIC := '0';
+		SX1_INTERRUPT, SX2_INTERRUPT : IN STD_LOGIC := '0';
+		SX_1_GATE, SX_1_R_W_CTRL : IN STD_LOGIC := '0';
+		SX_2_GATE, SX_2_R_W_CTRL : IN STD_LOGIC := '0';
+		SX_2_BUMP_SW_GT : IN STD_LOGIC := '0';
+
+		-- Signals to UDC3
+		SEL_DATA_READY, SEL_CHNL_CPU_CLOCK_STOP, RST_SEL_CHNL_DIAG_LCHS : OUT STD_LOGIC;
+		LOAD_REQ_LCH : OUT STD_LOGIC;
+		USE_GR_OR_HR : OUT STD_LOGIC;
+		SX_CHAIN_PULSE_1 : OUT STD_LOGIC;
+		CLOCK_START_LCH : OUT STD_LOGIC;
+		CLOCK_OUT : OUT STD_LOGIC;
+		CHK_RST_SW : OUT STD_LOGIC;
+		STG_MEM_SEL : OUT STD_LOGIC; -- to 08D
+		
+		-- Debug
+		DEBUG : OUT STD_LOGIC;
+
+		-- Clocks
+		T1,T2,T3,T4 : IN STD_LOGIC;
+		P1,P4 : IN STD_LOGIC;
+		M_CONV_OSC,P_CONV_OSC,M_CONV_OSC_2 : IN STD_LOGIC;
+		CLOCK_START : OUT STD_LOGIC;
+		USE_MAN_DECODER_PWR : OUT STD_LOGIC;
+		CLK : IN STD_LOGIC -- 50MHz
+      );
+end entity UDC1;
+
+architecture FMD of UDC1 is
+
+-- Timing
+signal CROS_STROBE : STD_LOGIC;
+signal CROS_GO_PULSE : STD_LOGIC;
+
+-- Registers
+signal  WX : STD_LOGIC_VECTOR(0 to 12);
+signal  H : STD_LOGIC_VECTOR(0 to 8);
+signal  sH_REG_5_PWR : STD_LOGIC;
+signal  H_REG_6 : STD_LOGIC;
+signal  I : STD_LOGIC_VECTOR(0 to 8);
+signal  J : STD_LOGIC_VECTOR(0 to 8);
+signal  U   : STD_LOGIC_VECTOR(0 to 8);
+signal  V   : STD_LOGIC_VECTOR(0 to 8);
+signal  T : STD_LOGIC_VECTOR(0 to 8);
+signal  G : STD_LOGIC_VECTOR(0 to 8);
+signal  L : STD_LOGIC_VECTOR(0 to 8);
+signal  HU,HV,GU,GV : STD_LOGIC_VECTOR(0 to 8) := "000000000";
+signal  sCTRL : CTRL_REG;
+
+-- Switch buses
+signal FGHJ_SW_BUS,ABCD_SW_BUS : STD_LOGIC_VECTOR(0 to 15);
+signal SW_ABP,SW_CDP,SW_FGP,SW_HJP : STD_LOGIC;
+
+-- Other logic
+signal  ALLOW_MAN_OPERATION : STD_LOGIC;
+signal  sALLOW_WRITE : STD_LOGIC;
+signal  sALLOW_WRITE_DLYD : STD_LOGIC;
+signal  sANY_PRIORITY_LCH : STD_LOGIC;
+signal  ANY_PRIORITY_PULSE : STD_LOGIC;
+signal  ANY_PRIORITY_PULSE_2 : STD_LOGIC;
+signal  ANY_PRIORITY_PULSE_PWR : STD_LOGIC;
+signal  AUX_WRITE_CALL : STD_LOGIC;
+signal  A_BUS1,A_BUS2 : STD_LOGIC_VECTOR(0 to 8);
+signal  CD_REG_2 : STD_LOGIC;
+signal  CHK_OR_DIAG_STOP_SW : STD_LOGIC;
+signal  COMPUTE : STD_LOGIC;
+signal  sCPU_READ_PWR : STD_LOGIC;
+signal  CPU_WR_PWR : STD_LOGIC;
+signal  CU_DECODE_UCW : STD_LOGIC;
+signal  DATA_READY_1 : STD_LOGIC;
+signal  DATA_READY_2 : STD_LOGIC;
+signal  sDIAGNOSTIC_SW : STD_LOGIC;
+signal  EARLY_LOCAL_STG : STD_LOGIC;
+signal  EARLY_ROAR_STOP : STD_LOGIC;
+signal  END_OF_E_CY_LCH : STD_LOGIC;
+signal  EXTERNAL_INT : STD_LOGIC;
+signal  E_CY_STOP_SAMPLE : STD_LOGIC;
+signal  FORCE_DEAD_CY_LCH : STD_LOGIC;
+signal  FORCE_IJ_PULSE : STD_LOGIC;
+signal  FORCE_IJ_REQ : STD_LOGIC;
+signal  FORCE_IJ_REQ_LCH : STD_LOGIC;
+signal  sFORCE_M_REG_123 : STD_LOGIC;
+signal  sGTD_CA_BITS : STD_LOGIC_VECTOR(0 to 3);
+signal  FT_4_LD_IND : STD_LOGIC;
+signal  sGT_SWS_TO_WX_PWR : STD_LOGIC;
+signal  GT_BU_ROSAR_TO_WX_REG : STD_LOGIC;
+signal  sGT_CA_TO_W_REG : STD_LOGIC;
+signal  GT_CK_DECO : STD_LOGIC;
+signal  GT_FWX_TO_WX_REG,GT_GWX_TO_WX_REG : STD_LOGIC;
+signal  GT_J_REG_TO_A_BUS : STD_LOGIC;
+signal  GT_J_TO_N_REG,GT_V_TO_N_REG : STD_LOGIC;
+signal  GT_SW_TO_WX_LCH,GT_SWS_TO_WX_LCH : STD_LOGIC;
+signal  GT_SW_MACH_RST : STD_LOGIC;
+signal  GT_UV_TO_WX_REG : STD_LOGIC;
+signal  G_REG_1_OR_R_REG_3 : STD_LOGIC;
+signal  HARD_STOP_LCH : STD_LOGIC;
+signal  HZ_DEST_RST : STD_LOGIC;
+signal  INH_ROSAR_SET : STD_LOGIC;
+signal  INTERRUPT : STD_LOGIC;
+signal  I_WRAPPED_CPU : STD_LOGIC;
+signal  LAMP_TEST : STD_LOGIC;
+signal  sLOAD_IND : STD_LOGIC;
+signal  LOAD_KEY_SW,LOAD_KEY_INLK : STD_LOGIC;
+signal  sMACH_CHK_PULSE : STD_LOGIC;
+signal  sMACH_CHK_RST : STD_LOGIC;
+signal  MACH_RST_1,sMACH_RST_3,MACH_RST_4,MACH_RST_5,sMACH_RST_6 : STD_LOGIC;
+signal  MACH_RST_LCH : STD_LOGIC;
+signal  sMACH_RST_SET_LCH : STD_LOGIC;
+signal  sMACH_RST_SW : STD_LOGIC;
+signal  sMACH_RST_SET_LCH_DLY : STD_LOGIC;
+signal  MACH_START_RST : STD_LOGIC;
+signal  sMAIN_STORAGE : STD_LOGIC;
+signal  sMAIN_STORAGE_CP : STD_LOGIC;
+signal  MANUAL_OPERATION : STD_LOGIC;
+signal  MANUAL_READ_CALL : STD_LOGIC;
+signal  sMANUAL_STORE : STD_LOGIC;
+signal  MANUAL_STORE_PWR : STD_LOGIC;
+signal  sMAN_STOR_OR_DSPLY : STD_LOGIC;
+signal  MANUAL_WRITE_CALL : STD_LOGIC;
+signal  MATCH,MATCH_LCH : STD_LOGIC;
+signal  sSTG_MEM_SEL : STD_LOGIC;
+signal  MEM_WRAP_REQ : STD_LOGIC;
+signal  sN1401_MODE : STD_LOGIC;
+signal  N1BC_OR_R1 : STD_LOGIC;
+signal  POWER_OFF_SW : STD_LOGIC := '0';
+signal  POWER_ON_RESET : STD_LOGIC := '0';
+signal  PRIORITY_BUS : STD_LOGIC_VECTOR(0 to 7);
+signal  PRIORITY_BUS_P : STD_LOGIC;
+signal  READ_CALL : STD_LOGIC;
+signal  sREAD_ECHO_1,sREAD_ECHO_2 : STD_LOGIC;
+signal  sRECYCLE_RST : STD_LOGIC;
+signal  ROS_CTRL_PROC_SW : STD_LOGIC;
+signal  ROS_SCAN : STD_LOGIC;
+signal  DIAG_LATCH_RST : STD_LOGIC;
+signal  R_REG_VAL_DEC_DIG : STD_LOGIC;
+signal  sSALS : SALS_Bus;
+signal  SET_IC_ALLOWED : STD_LOGIC;
+signal  START_SW_RST : STD_LOGIC;
+signal  STOP_REQ : STD_LOGIC;
+signal  sSUPPR_MACH_CHK_TRAP : STD_LOGIC;
+signal  SYSTEM_RESET_SW : STD_LOGIC;
+signal  S_REG_1_DLYD : STD_LOGIC;
+signal  S_REG_1_OR_R_REG_2 : STD_LOGIC;
+signal  TIMER_UPDATE : STD_LOGIC;
+signal  TIMER_UPDATE_OR_EXT_INT : STD_LOGIC;
+signal  sUSE_ALT_CA_DECODER : STD_LOGIC;
+signal  USE_ALT_CU_DECODER : STD_LOGIC;
+signal  sUSE_BASIC_CA_DECODER : STD_LOGIC;
+signal  USE_CPU_DECODER : STD_LOGIC;
+signal  sUSE_MANUAL_DECODER : STD_LOGIC;
+signal  sUSE_R : STD_LOGIC;
+signal  sUSE_MAN_DECODER_PWR : STD_LOGIC;
+signal  U_WRAPPED_MPX : STD_LOGIC;
+signal  V67_00_OR_GM_WM : STD_LOGIC;
+signal  sWRITE_ECHO_1,sWRITE_ECHO_2 : STD_LOGIC;
+signal  X6,X7   : STD_LOGIC;
+signal  XOR_OR_OR : STD_LOGIC;
+signal  IJ_SEL, UV_SEL : STD_LOGIC;
+
+begin
+
+    -- Microcode sequencer
+wx_sect: entity WX_Regs (FMD) port map (
+        W_IND_P                 =>  W_IND_P,
+        X_IND_P                 =>  X_IND_P,
+        WX_IND                  =>  WX_IND,
+        WX                      =>  WX,
+        CROS_STROBE             => CROS_STROBE,
+        CROS_GO_PULSE           => CROS_GO_PULSE,
+        SALS                    =>  sSALS,
+        T2                      =>  T2,
+        T3                      =>  T3,
+        T4                      =>  T4,
+        P1                      =>  P1,
+		  CLK                     =>  clk,
+
+        SWS_FGP                 =>  SW_FGP,
+        SWS_HJP                 =>  SW_HJP,
+        SWS_F3                  =>  SW_F(3),
+        SWS_G                   =>  SW_G,
+        SWS_H                   =>  SW_H,
+        SWS_J                   =>  SW_J,
+
+        U_P                     =>  U(8),
+        V_P                     =>  V(8),
+        U3_7                    =>  U(3 to 7),
+        V                       =>  V(0 to 7),
+
+        PRIORITY_BUS_P          =>  PRIORITY_BUS_P,
+        PRIORITY_BUS            =>  PRIORITY_BUS,
+		  SX_CHAIN_PULSE          =>	PRIORITY_BUS(4),
+		  MPX_SHARE_PULSE         =>	PRIORITY_BUS(3),
+
+        X6                      =>  X6,
+        X7                      =>  X7,
+        
+        ANY_MACH_CHK            =>  ANY_MACH_CHK,
+        CHK_OR_DIAG_STOP_SW     =>  CHK_OR_DIAG_STOP_SW,
+        EARLY_ROAR_STOP         =>  EARLY_ROAR_STOP,
+        MACH_START_RST          =>  MACH_START_RST,
+        ALU_CHK                 =>  ALU_CHK,
+        ALU_CHK_LCH             =>  ALU_CHK_LCH,
+        MACH_RST_SET_LCH        =>  sMACH_RST_SET_LCH,
+        MACH_RST_SET_LCH_DLY    =>  sMACH_RST_SET_LCH_DLY,
+        USE_ALT_CU_DECODER      =>  USE_ALT_CU_DECODER,
+        USE_BASIC_CA_DECODER    =>  sUSE_BASIC_CA_DECODER,
+        GT_UV_TO_WX_REG         =>  GT_UV_TO_WX_REG,
+        GT_CA_TO_W_REG          =>  sGT_CA_TO_W_REG,
+        GT_FWX_TO_WX_REG        =>  GT_FWX_TO_WX_REG,
+        GT_GWX_TO_WX_REG        =>  GT_GWX_TO_WX_REG,
+        GT_SWS_TO_WX_PWR        =>  sGT_SWS_TO_WX_PWR,
+        GT_SWS_TO_WX_LCH        =>  GT_SWS_TO_WX_LCH,
+        ANY_PRIORITY_PULSE      =>  ANY_PRIORITY_PULSE,
+        ANY_PRIORITY_PULSE_PWR  =>  ANY_PRIORITY_PULSE_PWR,
+        INH_ROSAR_SET           =>  INH_ROSAR_SET,
+        CHK_SW_PROC_SW          =>  SW_CHK_SW_PROCESS,
+        ROS_SCAN                =>  ROS_SCAN,
+        MACH_RST_2A             =>  MACH_RST_2A,
+        MACH_RST_4              =>  MACH_RST_4,
+        MACH_RST_5              =>  MACH_RST_5,
+        N1401_MODE              =>  sN1401_MODE,
+        CARRY_0_LCHD            =>  CARRY_0_LCHD,
+        HSMPX_TRAP              =>  HSMPX_TRAP,
+        SEL_CC_ROS_REQ          =>  SEL_CC_ROS_REQ,
+        ALLOW_PC_SALS           =>  ALLOW_PC_SALS,
+		  TEST_LAMP               =>  LAMP_TEST,
+		  
+        -- Outputs
+        CTRL_REG_CHK            =>  CTRL_REG_CHK,
+        WX_CHK                  =>  WX_CHK,
+        SAL_PC                  =>  SAL_PC,
+        SET_IND_ROSAR           =>  SET_IND_ROSAR,
+		  GT_BU_ROSAR_TO_WX_REG   =>  GT_BU_ROSAR_TO_WX_REG,
+		  SET_FW							=>	SET_FW
+		  );
+
+    -- CCROS microcode storage
+ccros_sect: entity CCROS (FMD) port map (
+			-- Inputs
+			WX                  =>  WX,
+			MACH_RST_SW         =>  sMACH_RST_SW,
+			MANUAL_STORE        =>  sMANUAL_STORE,
+			ANY_PRIORITY_LCH    =>  sANY_PRIORITY_LCH,
+			COMPUTE             =>  COMPUTE,
+			MACH_RST_MPX        =>  MACH_RST_MPX,
+			CROS_STROBE         =>  CROS_STROBE,
+			CROS_GO_PULSE       =>  CROS_GO_PULSE,
+			-- Outputs
+			SALS                =>  sSALS,
+			CTRL                =>  sCTRL,
+			CTRL_REG_RST        =>  CTRL_REG_RST,
+			CK_SAL_P_BIT_TO_MPX =>  CK_SAL_P_BIT_TO_MPX,
+			-- Clocks
+			T1                  =>  T1,
+			P1                  =>  P1,
+			Clk                 =>	Clk );
+SALS <= sSALS;
+CTRL <= sCTRL;
+
+    -- X6,X7 computation
+x6x7_sect: entity X6X7 (FMD) port map (
+        SALS    =>  sSALS,
+        DECIMAL =>  DECIMAL,
+        CONNECT =>  CONNECT,
+        N_CTRL_LM =>  N_CTRL_LM,
+        CTRL_N  =>  CTRL_N,
+        R_REG_0_BIT =>  R(0),
+        V67_00_OR_GM_WM =>  V67_00_OR_GM_WM,
+        STATUS_IN_LCHD  =>  STATUS_IN_LCHD,
+        OPNL_IN_LCHD    =>  OPNL_IN_LCHD,
+        CARRY_0_LCHD    =>  CARRY_0_LCHD,
+        S_REG_1_OR_R_REG_2  =>  S_REG_1_OR_R_REG_2,
+        S   =>  S,
+        G   =>  G(0 to 7),
+        TIMER_UPDATE    =>  TIMER_UPDATE,
+        EXTERNAL_INT    =>  EXTERNAL_INT,
+        MPX_INTERRUPT   =>  MPX_INTERRUPT,
+        SX1_INTERRUPT   =>  SX1_INTERRUPT,
+        SX2_INTERRUPT   =>  SX2_INTERRUPT,
+        I_WRAPPED_CPU   =>  I_WRAPPED_CPU,
+        TIMER_UPDATE_OR_EXT_INT =>  TIMER_UPDATE_OR_EXT_INT,
+        U_WRAPPED_MPX   =>  U_WRAPPED_MPX,
+        H_REG_6_BIT     =>  H_REG_6,
+        ADDR_IN_LCHD    =>  ADDR_IN_LCHD,
+        SERV_IN_LCHD    =>  SERV_IN_LCHD,
+        R_REG_VAL_DEC_DIG   =>  R_REG_VAL_DEC_DIG,
+        N1BC_OR_R1  =>  N1BC_OR_R1,
+        Z_BUS_0     =>  Z0_BUS_0, -- Different to MDM - see 06AE3
+        G_REG_1_OR_R_REG_3  => G_REG_1_OR_R_REG_3,
+        GT_BU_ROSAR_TO_WX_REG   => GT_BU_ROSAR_TO_WX_REG,
+        H_REG_5_PWR =>  sH_REG_5_PWR,
+        MPX_SHARE_PULSE =>  PRIORITY_BUS(3),
+        SX_CHAIN_PULSE  =>  PRIORITY_BUS(4),
+        MACH_RST_SW =>  sMACH_RST_SW,
+        R_REG_4_BIT =>  R(4),
+        ANY_PRIORITY_PULSE  =>  ANY_PRIORITY_PULSE,
+        -- Outputs
+        XOR_OR_OR    =>  XOR_OR_OR,
+        INTERRUPT   =>  INTERRUPT,
+        GT_GWX_TO_WX_REG    =>  GT_GWX_TO_WX_REG,
+        GT_FWX_TO_WX_REG    =>  GT_FWX_TO_WX_REG,
+        MPX_ROS_LCH =>  MPX_ROS_LCH,
+        X6  =>  X6,
+        X7  =>  X7,
+        USE_ALT_CA_DECODER  =>  sUSE_ALT_CA_DECODER,
+		  USE_CA_BASIC_DECODER	=>	sUSE_BASIC_CA_DECODER,
+        GT_CA_TO_W_REG  =>  sGT_CA_TO_W_REG,
+        GT_UV_TO_WX_REG =>  GT_UV_TO_WX_REG,
+		  DIAG_LATCH_RST => DIAG_LATCH_RST,
+		  -- Debug
+		  DEBUG                   =>	DEBUG,
+
+		-- Clocks
+        T1  =>  T1,
+        T2  =>  T2,
+        T3  =>  T3,
+        T4  =>  T4,
+		  CLK =>  CLK );
+USE_BASIC_CA_DECODER <= sUSE_BASIC_CA_DECODER;
+USE_ALT_CA_DECODER <= sUSE_ALT_CA_DECODER;
+GT_CA_TO_W_REG <= sGT_CA_TO_W_REG;
+    
+    -- Priority control (microcode interrupts)
+priority_sect: entity Priority (FMD) port map (
+        -- Inputs        
+        RECYCLE_RST             => sRECYCLE_RST,
+        S_REG_1_BIT             => S(1),
+        SALS_CDREG              => sSALS.SALS_CD,
+        MACH_RST_SW             => sMACH_RST_SW,
+        DATA_READY_1            => DATA_READY_1,
+        DATA_READY_2            => DATA_READY_2,
+        MEM_WRAP_REQ            => MEM_WRAP_REQ,
+        ALLOW_PROTECT           => ALLOW_PROTECT,
+        PROT_LOC_CPU_OR_MPX     => PROT_LOC_CPU_OR_MPX,
+        READ_CALL               => READ_CALL,
+        XOR_OR_OR               => XOR_OR_OR,
+        CTRL_N                  => CTRL_N,
+        STOP_REQ                => STOP_REQ,
+        SUPPR_A_REG_CHK         => SUPPR_A_REG_CHK,
+        H_REG_5_PWR             => sH_REG_5_PWR,
+        SEL_ROS_REQ             => SEL_ROS_REQ,
+        FT_3_MPX_SHARE_REQ      => FT3,
+        H_REG_6                 => H_REG_6,
+        P_8F_DETECTED           => P_8F_DETECTED,
+        LOAD_IND                => sLOAD_IND,
+        FORCE_IJ_REQ            => FORCE_IJ_REQ,
+        FIRST_MACH_CHK_REQ      => FIRST_MACH_CHK_REQ,
+        MACH_RST_6              => sMACH_RST_6,
+        ALLOW_WRITE             => sALLOW_WRITE_DLYD,
+        GT_SWS_TO_WX_PWR        => sGT_SWS_TO_WX_PWR,
+        DIAGNOSTIC_SW           => sDIAGNOSTIC_SW,
+        MACH_RST_LCH            => MACH_RST_LCH,
+        HARD_STOP_LCH           => HARD_STOP_LCH,
+        R_REG_5                 => R(5),
+        H                       => H(0 to 7),
+        FORCE_DEAD_CY_LCH       => FORCE_DEAD_CY_LCH,
+        
+        -- Outputs
+        SUPPR_MACH_CHK_TRAP     => sSUPPR_MACH_CHK_TRAP,
+        ANY_PRIORITY_PULSE_2    => ANY_PRIORITY_PULSE_2,
+        ANY_PRIORITY_LCH        => sANY_PRIORITY_LCH,
+        S_REG_1_DLYD            => S_REG_1_DLYD,
+        GT_SW_TO_WX_LCH         => GT_SW_TO_WX_LCH, -- to 04A
+        DATA_READY              => DATA_READY,
+		  MEM_PROTECT_REQ         => MEM_PROT_REQUEST,
+        HZ_DEST_RST             => HZ_DEST_RST,
+        GT_SW_MACH_RST          => GT_SW_MACH_RST,
+        GT_SWS_TO_WX_LCH        => GT_SWS_TO_WX_LCH, -- to 01B
+        FORCE_IJ_REQ_LCH        => FORCE_IJ_REQ_LCH,
+        SYS_RST_PRIORITY_LCH    => SYS_RST_PRIORITY_LCH,
+        MACH_CHK_PULSE          => sMACH_CHK_PULSE,
+        FORCE_IJ_PULSE          => FORCE_IJ_PULSE,
+        SX_CHAIN_PULSE_1        => SX_CHAIN_PULSE_1,
+        ANY_PRIORITY_PULSE      => ANY_PRIORITY_PULSE,
+        ANY_PRIORITY_PULSE_PWR  => ANY_PRIORITY_PULSE_PWR,
+        PRIORITY_BUS            => PRIORITY_BUS,
+        PRIORITY_BUS_P          => PRIORITY_BUS_P,
+        
+		-- Clocks
+        T1 => T1,
+        T3 => T3,
+        T4 => T4,
+        P4 => P4,
+		  CLK => CLK
+);
+ANY_PRIORITY_LCH <= sANY_PRIORITY_LCH;
+SUPPR_MACH_CHK_TRAP <= sSUPPR_MACH_CHK_TRAP;
+MACH_CHK_PULSE <= sMACH_CHK_PULSE;
+
+wrap_sect: entity StorageWrap port map (
+      -- Inputs        
+      SALS => sSALS,
+		CTRL => sCTRL,
+		ANY_PRIORITY_PULSE_2 => ANY_PRIORITY_PULSE_2,
+		H_REG_5_PWR => sH_REG_5_PWR,
+		H_REG_6 => H_REG_6,
+		NTRUE => NTRUE,
+		CARRY_0 => CARRY_0,
+		COMPLEMENT => COMPLEMENT,
+		GT_J_TO_N_REG => GT_J_TO_N_REG,
+		GT_V_TO_N_REG => GT_V_TO_N_REG,
+		M012 => MN(0 to 2),
+		RECYCLE_RST => sRECYCLE_RST,
+		ALLOW_WRITE => sALLOW_WRITE,
+		READ_CALL => READ_CALL,
+		MAIN_STORAGE => sMAIN_STORAGE,
+		DATA_READY_1 => DATA_READY_1,
+		DATA_READY_2 => DATA_READY_2,
+		        
+		-- Outputs
+		GT_CK_DECO => GT_CK_DECO,
+		SEL_DATA_READY => SEL_DATA_READY,
+		MEM_WRAP_REQ => MEM_WRAP_REQ,
+		MEM_WRAP => MEM_WRAP,
+		I_WRAPPED_CPU => I_WRAPPED_CPU,
+		U_WRAPPED_MPX => U_WRAPPED_MPX,
+        
+		-- Clocks
+		T1 => T1,
+		T2 => T2,
+		T4 => T4,
+		P1 => P1,
+		CLK => CLK
+	);
+
+css_sect: entity ClockStartStop port map (
+		-- Switches
+		SW_START => SW_START,
+		SW_LOAD => SW_LOAD,
+		SW_SET_IC => SW_SET_IC,
+		SW_STOP => SW_STOP,
+		SW_INH_CF_STOP => SW_INH_CF_STOP,
+		SW_PROC => SW_PROC,
+		SW_SCAN => SW_SCAN,
+		SW_SINGLE_CYCLE => SW_SINGLE_CYCLE,
+		SW_INSTRUCTION_STEP => SW_INSTRUCTION_STEP,
+		SW_RATE_SW_PROCESS => SW_RATE_SW_PROCESS,
+		SW_PWR_OFF => SW_PWR_OFF,
+
+		-- Other inputs
+		ALLOW_MAN_OPER => ALLOW_MAN_OPERATION,
+		FT3_MPX_SHARE_REQ => FT3,
+		M_CONV_OSC => M_CONV_OSC,
+		SEL_ROS_REQ => SEL_ROS_REQ,
+		MACH_RST_3 => sMACH_RST_3,
+		CLOCK_ON => CLOCK_ON,
+		SAR_DLYD_STOP_SW => SW_SAR_DLYD_STOP,
+		MATCH => MATCH,
+		SALS => sSALS,
+		FORCE_IJ_REQ => FORCE_IJ_REQ,
+		MACH_START_RST => MACH_START_RST,
+		MACH_RST_SW => sMACH_RST_SW,
+		USE_BASIC_CA_DECO => sUSE_BASIC_CA_DECODER,
+		S_REG_1_DLYD => S_REG_1_DLYD,
+		INTERRUPT => INTERRUPT,
+		END_OF_E_CY_LCH => END_OF_E_CY_LCH,
+		ANY_PRIORITY_PULSE => ANY_PRIORITY_PULSE,
+		FORCE_IJ_REQ_LCH => FORCE_IJ_REQ_LCH,
+		P_CONV_OSC => P_CONV_OSC,
+		MAN_OPERATION => MANUAL_OPERATION,
+		ALLOW_WRITE => sALLOW_WRITE_DLYD,
+		MACH_CHK_PULSE => sMACH_CHK_PULSE,
+		MACH_CHK_RST => sMACH_CHK_RST,
+		HZ_DEST_RST => HZ_DEST_RST,
+		FIRST_MACH_CHK => FIRST_MACH_CHK,
+		CHK_OR_DIAG_STOP_SW => CHK_OR_DIAG_STOP_SW,
+		ANY_MACH_CHK => ANY_MACH_CHK,
+		MATCH_LCH => MATCH_LCH,
+		EARLY_ROAR_STOP_SW => SW_EARLY_ROAR_STOP,
+		ALU_CHK => ALU_CHK,
+		DIAGNOSTIC_SW => sDIAGNOSTIC_SW,
+		CS_DECODE_X001 => CS_DECODE_X001,
+		BASIC_CS0 => BASIC_CS0,
+		SUPPR_MACH_CHK_TRAP => sSUPPR_MACH_CHK_TRAP,
+		Z_BUS_0 => Z_0, -- Not quite sure which signal this needs to be
+		SAR_STOP_SW => SW_SAR_STOP,
+		ROAR_STOP_SW => SW_ROAR_STOP,
+		ANY_PRIORITY_PULSE_PWR => ANY_PRIORITY_PULSE_PWR,
+		GT_CK_DECODE => GT_CK_DECO,
+		SX1_SHARE_CYCLE => SX1_SHARE_CYCLE,
+		SX2_SHARE_CYCLE => SX2_SHARE_CYCLE,
+		SEL_T4 => SEL_T4,
+		SEL_SHARE_HOLD => SEL_SHARE_HOLD,
+		SEL_CONV_OSC => SEL_CONV_OSC,
+		SEL_BASIC_CLOCK_OFF => SEL_BASIC_CLOCK_OFF,
+		GT_J_REG_TO_A_BUS => GT_J_REG_TO_A_BUS,
+		M_CONV_OSC_2 => M_CONV_OSC_2,
+		MPX_SHARE_REQ => MPX_SHARE_REQ,
+		SYSTEM_RESET_SW => SYSTEM_RESET_SW,
+
+		-- Outputs
+		START_SW_RST => START_SW_RST,
+		E_CY_STOP_SAMPLE => E_CY_STOP_SAMPLE,
+		LOAD_KEY_SW => LOAD_KEY_SW,
+		LOAD_KEY_INLK => LOAD_KEY_INLK,
+		SET_IC_ALLOWED => SET_IC_ALLOWED,
+		INH_ROSAR_SET => INH_ROSAR_SET,
+		STOP_REQ => STOP_REQ,
+		ROS_SCAN => ROS_SCAN,
+		ROS_CTRL_PROC_SW => ROS_CTRL_PROC_SW,
+		FT_4_LD_IND => FT_4_LD_IND,
+		LOAD_REQ_LCH => LOAD_REQ_LCH,
+		LOAD_IND => sLOAD_IND,
+		RST_SEL_CHNL_DIAG_LCHS => RST_SEL_CHNL_DIAG_LCHS,
+		RST_LOAD => RST_LOAD,
+		CLOCK_START_LCH => CLOCK_START_LCH,
+		PWR_OFF_SW => POWER_OFF_SW,
+		N2ND_ERROR_STOP => N2ND_ERROR_STOP,
+		SEL_CHNL_CPU_CLOCK_STOP => SEL_CHNL_CPU_CLOCK_STOP,
+		CLOCK_START => CLOCK_START,
+		EARLY_ROAR_STOP => EARLY_ROAR_STOP,
+		HARD_STOP_LCH => HARD_STOP_LCH,
+--		DEBUG => DEBUG,
+        
+		-- Clocks
+		T2 => T2,
+		T3 => T3,
+		T4 => T4,
+		P1 => P1,
+		clk => clk
+
+	);
+LOAD_IND <= sLOAD_IND;
+
+manctrl : entity ManualControls port map (
+		E_SW_SEL_MAIN_STG => E_SW.MS_SEL,
+		E_SW_SEL_AUX_STG => E_SW.LS_SEL,
+		E_CY_STOP_SMPL => E_CY_STOP_SAMPLE,
+		SEL_CHNL_DATA_XFER => SEL_CHNL_DATA_XFER,
+		POWER_ON_RESET => POWER_ON_RESET,
+		LOAD_KEY_SW => LOAD_KEY_SW,
+		CLOCK_OFF => CLOCK_OFF,
+		CLOCK_ON => CLOCK_ON,
+		WRITE_ECHO_1 => sWRITE_ECHO_1,
+		WRITE_ECHO_2 => sWRITE_ECHO_2,
+		READ_ECHO_1 => sREAD_ECHO_1,
+		READ_ECHO_2 => sREAD_ECHO_2,
+		CPU_READ_PWR => sCPU_READ_PWR,
+		SEL_AUX_RD_CALL => SEL_AUX_RD_CALL,
+		SEL_WR_CALL => SEL_WR_CALL,
+		ROAR_RESTT_STOR_BYPASS => SW_ROAR_RESTT_STOR_BYPASS,
+		RECYCLE_RST => sRECYCLE_RST,
+		MAN_DSPLY_GUV_HUV => MAN_DSPLY_GUV_HUV,
+		CPU_WR_PWR => CPU_WR_PWR,
+		LOAD_KEY_INLK => LOAD_KEY_INLK,
+		POWER_OFF_SW => POWER_OFF_SW,
+		IJ_SEL_SW => IJ_SEL,
+		UV_SEL_SW => UV_SEL,
+		SEL_AUX_WR_CALL => SEL_AUX_WR_CALL,
+		USE_R => sUSE_R,
+		SEL_T1 => SEL_T1,
+		CU_SALS => sSALS.SALS_CU,
+
+		-- Switches
+		SW_DSPLY => SW_DSPLY,
+		SW_STORE => SW_STORE,
+		SW_SYS_RST => SW_SYS_RST,
+
+		-- Outputs
+		MACH_RST_SW => sMACH_RST_SW,
+		MACH_RST_1 => MACH_RST_1,
+		MACH_RST_3 => sMACH_RST_3,
+		MACH_RST_4 => MACH_RST_4,
+		MACH_RST_5 => MACH_RST_5,
+		MACH_RST_6 => sMACH_RST_6,
+		SYSTEM_RST_SW => SYSTEM_RESET_SW,
+		STG_MEM_SEL => sSTG_MEM_SEL,
+		USE_MAN_DECODER_PWR => sUSE_MAN_DECODER_PWR,
+		USE_MANUAL_DECODER => sUSE_MANUAL_DECODER,
+		ALLOW_MAN_OPERATION => ALLOW_MAN_OPERATION,
+		MANUAL_DISPLAY => MANUAL_DISPLAY,
+		MAN_STOR_OR_DSPLY => sMAN_STOR_OR_DSPLY,
+		MAN_STORE => sMANUAL_STORE,
+		MAN_STORE_PWR => MANUAL_STORE_PWR,
+		STORE_S_REG_RST => STORE_S_REG_RST,
+		CPU_SET_ALLOW_WR_LCH => CPU_SET_ALLOW_WR_LCH,
+		MAN_RD_CALL => MANUAL_READ_CALL,
+		GT_MAN_SET_MN => GT_MAN_SET_MN,
+		AUX_WRITE_CALL => AUX_WRITE_CALL,
+		ALLOW_WRITE => sALLOW_WRITE,
+		ALLOW_WR_DLYD => sALLOW_WRITE_DLYD,
+		MANUAL_OPERATION => MANUAL_OPERATION,
+		MAN_WRITE_CALL => MANUAL_WRITE_CALL,
+		STORE_R => STORE_R,
+		        
+		-- Clocks
+		CONV_OSC => P_CONV_OSC,
+		T1 => T1,T2 => T2,
+		Clk => CLK
+);
+USE_MAN_DECODER_PWR <= sUSE_MAN_DECODER_PWR;
+USE_MANUAL_DECODER <= sUSE_MANUAL_DECODER;
+MANUAL_STORE <= sMANUAL_STORE;
+MACH_RST_SW <= sMACH_RST_SW;
+ALLOW_WRITE <= sALLOW_WRITE;
+ALLOW_WRITE_DLYD <= sALLOW_WRITE_DLYD;
+STG_MEM_SEL <= sSTG_MEM_SEL;
+MAN_STOR_OR_DSPLY <= sMAN_STOR_OR_DSPLY;
+MACH_RST_6 <= sMACH_RST_6;
+MACH_RST_3 <= sMACH_RST_3;
+
+recycsect: entity RecycleCtrlsMatch port map (
+		-- Inputs
+		N_CTRL_N => N_CTRL_N,
+		XOR_OR_OR => XOR_OR_OR,
+		S_REG_7_BIT => S(7),
+		CLOCK_ON => CLOCK_ON,
+		CLOCK_OFF => CLOCK_OFF,
+		MAN_STOR_OR_DSPLY => sMAN_STOR_OR_DSPLY,
+		HARD_STOP_LCH => HARD_STOP_LCH,
+		MPX_METERING_IN => MPX_METERING_IN,
+		METER_IN_SX1 => METER_IN_SX1,
+		METER_IN_SX2 => METER_IN_SX2,
+		SEL_SHARE_HOLD => SEL_SHARE_HOLD,
+		KEY_SW => KEY_SW,
+		MACH_RST_SW => sMACH_RST_SW,
+		LOAD_KEY_SW => LOAD_KEY_SW,
+		SYSTEM_RESET_SW => SYSTEM_RESET_SW,
+		CL_SALS => sSALS.SALS_CL,
+		INH_ROSAR_SET => INH_ROSAR_SET,
+		ALLOW_WRITE => sALLOW_WRITE,
+		ALLOW_WRITE_DLYD => sALLOW_WRITE_DLYD,
+		SET_IC_LCH => SET_IC_ALLOWED,
+		MACH_RST_3 => sMACH_RST_3,
+		FORCE_IJ_PULSE => FORCE_IJ_PULSE,
+		FORCE_IJ_REQ_LCH => FORCE_IJ_REQ_LCH,
+		START_SW_RST => START_SW_RST,
+		MACH_RST_6 => sMACH_RST_6,
+		ANY_MACH_CHK => ANY_MACH_CHK,
+		ANY_PRIORITY_LCH => sANY_PRIORITY_LCH,
+		SUPPR_MACH_CHK_TRAP => sSUPPR_MACH_CHK_TRAP,
+		ALLOW_MAN_OPERATION => ALLOW_MAN_OPERATION,
+		
+		N1050_INTRV_REQ => N1050_INTRV_REQ,
+		TT6_POS_ATTN => TT6_POS_ATTN,
+		FT2_MPX_OPNL => FT2_MPX_OPNL,
+		H_REG_5_PWR => sH_REG_5_PWR,
+		ROS_CTRL_PROC_SW => ROS_CTRL_PROC_SW,
+		RATE_SW_PROC_SW => SW_RATE_SW_PROCESS,
+		ODD => ODD,
+		INTRODUCE_ALU_CHK => INTRODUCE_ALU_CHK,
+		GT_SW_TO_WX_LCH => GT_SW_TO_WX_LCH,
+		HZ_DEST_RST => HZ_DEST_RST,
+		MAIN_STORAGE => sMAIN_STORAGE,
+		WX_REG_BUS => WX,
+		ABCD_SW_BUS => ABCD_SW_BUS,
+		MN_REGS_BUS => MN,
+		AUX_WRITE_CALL => AUX_WRITE_CALL,
+		LOAD_IND => sLOAD_IND,
+		DIAG_LATCH_RST => DIAG_LATCH_RST,
+
+		-- Switches
+		SW_LAMP_TEST => SW_LAMP_TEST,
+		SW_CHK_RST => SW_CHK_RST,
+		SW_ROAR_RST => SW_ROAR_RST,
+		SW_CHK_RESTART => SW_CHK_RESTART,
+		SW_DIAGNOSTIC => SW_DIAGNOSTIC,
+		SW_CHK_STOP => SW_CHK_STOP,
+		SW_CHK_SW_PROCESS => SW_CHK_SW_PROCESS,
+		SW_CHK_SW_DISABLE => SW_CHK_SW_DISABLE,
+		SW_ROAR_RESTT_STOR_BYPASS => SW_ROAR_RESTT_STOR_BYPASS,
+		SW_ROAR_RESTT => SW_ROAR_RESTT,
+		SW_ROAR_RESTT_WITHOUT_RST => SW_ROAR_RESTT_WITHOUT_RST,
+		SW_EARLY_ROAR_STOP => SW_EARLY_ROAR_STOP,
+		SW_ROAR_STOP => SW_ROAR_STOP,
+		SW_ROAR_SYNC => SW_ROAR_SYNC,
+		SW_ADDR_COMP_PROC => SW_ADDR_COMP_PROC,
+		SW_SAR_DLYD_STOP => SW_SAR_DLYD_STOP,
+		SW_SAR_STOP => SW_SAR_STOP,
+		SW_SAR_RESTART => SW_SAR_RESTART,
+
+		-- Outputs
+		LAMP_TEST => LAMP_TEST,
+		CLOCK_OUT => CLOCK_OUT,
+		TO_KEY_SW => TO_KEY_SW,
+		METERING_OUT => METERING_OUT,
+		MACH_RST_SET_LCH => sMACH_RST_SET_LCH,
+		MACH_RST_SET_LCH_DLYD => sMACH_RST_SET_LCH_DLY,
+		FORCE_DEAD_CY_LCH => FORCE_DEAD_CY_LCH,
+		END_OF_E_CY_LCH => END_OF_E_CY_LCH,
+		FORCE_IJ_REQ => FORCE_IJ_REQ,
+		MACH_START_RST => MACH_START_RST,
+		DIAGNOSTIC_SW => sDIAGNOSTIC_SW,
+		CHK_OR_DIAG_STOP_SW => CHK_OR_DIAG_STOP_SW,
+		RECYCLE_RST => sRECYCLE_RST,
+		MACH_CHK_RST => sMACH_CHK_RST,
+		CHK_RST_SW => CHK_RST_SW,
+		MACH_RST_LCH => MACH_RST_LCH,
+		GT_SWS_TO_WX_PWR => sGT_SWS_TO_WX_PWR,
+		MATCH_LCH => MATCH_LCH,
+		MATCH => MATCH,
+
+		-- Indicators
+		IND_SYST => IND_SYST,
+		IND_MAN => IND_MAN,
+		IND_WAIT => IND_WAIT,
+		IND_TEST => IND_TEST,
+		IND_LOAD => IND_LOAD,
+		IND_EX => IND_EX,
+		IND_CY_MATCH => IND_CY_MATCH,
+		IND_ALLOW_WR => IND_ALLOW_WR,
+		IND_1050_INTRV => IND_1050_INTRV,
+		IND_1050_REQ => IND_1050_REQ,
+		IND_MPX => IND_MPX,
+		IND_SEL_CHNL => IND_SEL_CHNL,
+		        
+		-- Clocks
+		T1 => T1,T2 => T2,T3 => T3,T4 => T4,
+		Clk => CLK
+);
+RECYCLE_RST <= sRECYCLE_RST;
+MACH_RST_SET_LCH <= sMACH_RST_SET_LCH;
+MACH_RST_SET_LCH_DLY <= sMACH_RST_SET_LCH_DLY;
+MACH_CHK_RST <= sMACH_CHK_RST;
+GT_SWS_TO_WX_PWR <= sGT_SWS_TO_WX_PWR;
+DIAGNOSTIC_SW <= sDIAGNOSTIC_SW;
+
+manual: entity ManualDataCFH port map
+	(
+		-- Inputs
+		MACH_RST_PROT => MACH_RST_PROT,
+		USE_MAN_DECO_PWR => sUSE_MAN_DECODER_PWR,
+		N60_CY_TIMER_PULSE => N60_CY_TIMER_PULSE,
+		L_REGISTER => L(0 to 7),
+		MACH_RST_SW => sMACH_RST_SW,
+		EXT_TRAP_MASK_ON => EXT_TRAP_MASK_ON,
+		USE_MAN_DECODER => sUSE_MANUAL_DECODER,
+		USE_MAN_DECODER_PWR => sUSE_MAN_DECODER_PWR,
+		USE_ALT_CA_DECODER => sUSE_ALT_CA_DECODER,
+		USE_BASIC_CA_DECODER => sUSE_BASIC_CA_DECODER,
+		GTD_CA_BITS => sGTD_CA_BITS,
+		CK_SALS => sSALS.SALS_CK,
+		GT_CK_DECO => GT_CK_DECO,
+		Z_BUS => Z_BUS(0 to 7),
+		Z_BUS_P => Z_BUS(8),
+		MAN_STOR_PWR => MANUAL_STORE_PWR,
+		CD_CTRL_REG => sCTRL.CTRL_CD,
+		RECYCLE_RST => sRECYCLE_RST,
+		MACH_RST_2B => MACH_RST_2B,
+
+		-- Switches
+		SW_INTRP_TIMER => SW_INTRP_TIMER,
+		SW_CONS_INTRP => SW_CONS_INTRP,
+		SW_A => SW_A,SW_B => SW_B,SW_C => SW_C,SW_D => SW_D,
+		SW_F => SW_F,SW_G => SW_G,SW_H => SW_H,SW_J => SW_J,
+		SW_AP => SW_AP,SW_BP => SW_BP,SW_CP => SW_CP,SW_DP => SW_DP,
+		SW_FP => SW_FP,SW_GP => SW_GP,SW_HP => SW_HP,SW_JP => SW_JP,
+		IJ_SEL => IJ_SEL, UV_SEL => UV_SEL,
+		
+		-- Outputs
+		ABCD_SW_BUS => ABCD_SW_BUS,
+		FGHJ_SW_BUS => FGHJ_SW_BUS,
+		AB_SW_P => SW_ABP,CD_SW_P => SW_CDP,
+		FG_SW_P => SW_FGP,HJ_SW_P => SW_HJP,
+		TIMER_UPDATE => TIMER_UPDATE,
+		TIMER_UPDATE_OR_EXT_INT => TIMER_UPDATE_OR_EXT_INT,
+		EXT_INTRP => EXTERNAL_INT,
+		A_BUS => A_BUS2,
+		H_REG_BITS => H(0 to 7),
+		H_REG_P => H(8),
+		H_REG_6 => H_REG_6,
+		H_REG_5_PWR => sH_REG_5_PWR,
+		GT_1050_TAGS => GT_1050_TAGS,
+		GT_1050_BUS => GT_1050_BUS,
+		CD_REG_2 => CD_REG_2,
+		-- E switch
+		E_SW => E_SW,
+		        
+		-- Clocks
+		T1 => T1,T2 => T2,T3 => T3,T4 => T4,
+		clk => clk
+		);
+H_REG_5_PWR <= sH_REG_5_PWR;
+A_BUS <= A_BUS1 and A_BUS2;
+
+rwstg: entity RWStgCntl port map(
+		-- Inputs        
+		SALS => sSALS,
+		ANY_PRIORITY_PULSE => ANY_PRIORITY_PULSE,
+		ANY_PRIORITY_PULSE_2 => ANY_PRIORITY_PULSE_2,
+		G_REG_0_BIT => G(0),
+		G_REG_1_BIT => G(1),
+		N1401_MODE => sN1401_MODE,
+		USE_CPU_DECODER => USE_CPU_DECODER,
+		USE_MAN_DECODER => sUSE_MANUAL_DECODER,
+		E_SW_SEL_AUX_STG => E_SW.LS_SEL,
+		MEM_SEL => sSTG_MEM_SEL,
+		ALLOW_WRITE => sALLOW_WRITE_DLYD,
+		ALLOW_WRITE_2 => sALLOW_WRITE,
+		SEL_RD_WR_CTRL => SEL_RD_WR_CTRL,
+		MAN_STOR_OR_DISPLAY => sMAN_STOR_OR_DSPLY,
+		MACH_RST_1 => MACH_RST_1,
+		MANUAL_RD_CALL => MANUAL_READ_CALL,
+		MANUAL_WR_CALL => MANUAL_WRITE_CALL,
+		HSMPX_READ_CALL => '0',
+		SEL_RD_CALL_TO_STP => SEL_RD_CALL_TO_STP,
+		SEL_SHARE_HOLD => SEL_SHARE_HOLD,
+		SELECT_CPU_BUMP => SELECT_CPU_BUMP,
+
+		-- Outputs
+		USE_ALT_CU_DECODE => USE_ALT_CU_DECODER,
+		USE_GR_OR_HR => USE_GR_OR_HR,
+		USE_R => sUSE_R,
+		CPU_WRITE_IN_R_REG => CPU_WRITE_IN_R_REG,
+		CPU_WRITE_PWR => CPU_WR_PWR,
+		COMPUTE => COMPUTE,
+		CPU_READ_PWR => sCPU_READ_PWR,
+		FORCE_M_REG_123 => sFORCE_M_REG_123,
+		CU_DECODE_UCW => CU_DECODE_UCW,
+		MAIN_STORAGE_CP => sMAIN_STORAGE_CP,
+		LOCAL_STORAGE_CP => LOCAL_STORAGE_CP,
+		MAIN_STORAGE => sMAIN_STORAGE,
+		EARLY_LOCAL_STG => EARLY_LOCAL_STG,
+		GT_LOCAL_STG => GT_LOCAL_STORAGE,
+		CHANNEL_RD_CALL => CHANNEL_RD_CALL,
+		N_MEM_SELECT => N_STACK_MEM_SELECT,
+		RW_CTRL_STACK => STACK_RD_WR_CONTROL,
+        
+		-- Clocks
+		T1 => T1,
+		SEL_T1 => SEL_T1,
+		clk => clk
+	);
+MAIN_STORAGE <= sMAIN_STORAGE;
+MAIN_STORAGE_CP <= sMAIN_STORAGE_CP;
+FORCE_M_REG_123 <= sFORCE_M_REG_123;
+USE_R <= sUSE_R;
+CPU_RD_PWR <= sCPU_READ_PWR;
+
+rind: entity RIndsChks port map(
+		-- Inputs        
+		TEST_LAMP => LAMP_TEST,
+		R_REG_BUS => R(0 to 7),
+		R_REG_BUS_P => R(8),
+		G_REG_1 => G(1),
+		V_REG_6 => V(6),
+		V_REG_7 => V(7),
+		GM_WM_DETECTED  => GM_WM_DETECTED,
+		CARRY_1_LCHD => CARRY_1_LCHD,
+		S_REG_1 => S(1),
+		W3_TO_MATCH => WX(0),
+		ROS_SCAN => ROS_SCAN,
+		GT_SW_MACH_RST => GT_SW_MACH_RST,
+
+		-- Outputs
+		IND_MSDR => IND_MSDR,
+		IND_MSDR_P => IND_MSDR_P,
+		R_REG_PC => R_REG_PC,
+		R_REG_VALID_DEC_DIGIT => R_REG_VAL_DEC_DIG,
+		N1BC_OR_R1 => N1BC_OR_R1,
+		S_REG_1_OR_R_REG_2 => S_REG_1_OR_R_REG_2,
+		G_REG_1_OR_R_REG_3 => G_REG_1_OR_R_REG_3,
+		V67_00_OR_GM_WM => V67_00_OR_GM_WM,
+		N1401_MODE => sN1401_MODE,
+        
+		-- Clocks
+		T2 => T2,
+		CLK => CLK
+	);
+N1401_MODE <= sN1401_MODE;
+
+mnassm: entity MNAssem port map(
+		-- Inputs
+		MAIN_STORAGE_CP => sMAIN_STORAGE_CP,
+		SX_2_BUMP_SW_GT => SX_2_BUMP_SW_GT,
+		USE_CPU_DECODER => USE_CPU_DECODER,
+		E_SEL_SW_BUS => E_SW,
+		SALS => sSALS,
+		MEM_SEL => sSTG_MEM_SEL,
+		USE_MAN_DECODER_PWR => sUSE_MAN_DECODER_PWR,
+		N1401_MODE => sN1401_MODE,
+		USE_MANUAL_DECODER => sUSE_MANUAL_DECODER,
+		SX_2_R_W_CTRL => SX_2_R_W_CTRL,
+		SX_2_SHARE_CYCLE => SX2_SHARE_CYCLE,
+		SX_2_GATE => SX_2_GATE,
+		SX_1_R_W_CTRL => SX_1_R_W_CTRL,
+		SX_1_SHARE_CYCLE => SX1_SHARE_CYCLE,
+		SX_1_GATE => SX_1_GATE,
+		XXH => XXH,
+		CU_DECODE_UCW => CU_DECODE_UCW,
+		FORCE_M_REG_123 => sFORCE_M_REG_123,
+		XH => XH, XL => XL,
+		CU_SAL_0_BIT => sSALS.SALS_CU(0),
+		MACH_RST_2A => MACH_RST_2A,
+		ABCD_SW_BUS => ABCD_SW_BUS,
+		AB_SW_P => SW_ABP,
+		CD_SW_P => SW_CDP,
+		IJ_SEL => IJ_SEL,
+		UV_SEL => UV_SEL,
+		I => I(0 to 7),
+		U => U(0 to 7),
+		T => T(0 to 7),
+		V => V(0 to 7),
+		J => J(0 to 7),
+		L => L(0 to 7),
+		GU => GU(0 to 7),
+		GV => GV(0 to 7),
+		HU => HU(0 to 7),
+		HV => HV(0 to 7),
+		I_P => I(8),
+		U_P => U(8),
+		T_P => T(8),
+		V_P => V(8),
+		J_P => J(8),
+		L_P => L(8),
+		GU_P => GU(8),
+		GV_P => GV(8),
+		HU_P => HU(8),
+		HV_P => HV(8),
+
+		-- Outputs
+     	GT_T_TO_MN_REG => GT_T_TO_MN_REG,
+		GT_CK_TO_MN_REG => GT_CK_TO_MN_REG,
+		GT_V_TO_N_REG => GT_V_TO_N_REG,
+		GT_J_TO_N_REG => GT_J_TO_N_REG,
+		M_BUS => M_ASSM_BUS(0 to 7),
+		N_BUS => N_ASSM_BUS(0 to 7),
+		M_BUS_P => M_ASSM_BUS(8),
+		N_BUS_P => N_ASSM_BUS(8)
+
+	);
+
+Regs: entity RegsABAssm port map(
+		-- Inputs        
+		SALS => sSALS,
+		MACH_RST_SET_LCH => sMACH_RST_SET_LCH,
+		SEL_SHARE_CYCLE => SEL_SHARE_CYCLE,
+		USE_MAN_DECODER => sUSE_MANUAL_DECODER,
+		MAN_STOR_PWR => MANUAL_STORE_PWR,
+		USE_MAN_DECODER_PWR => sUSE_MAN_DECODER_PWR,
+		FG_SWS => FGHJ_SW_BUS(0 to 7),
+		FG_SW_P => SW_FGP,
+		USE_BASIC_CA_DECODER => sUSE_BASIC_CA_DECODER,
+		USE_ALT_CA_DECODER => sUSE_ALT_CA_DECODER,
+		MPX_BUS => MPX_BUS,
+		FT0 => FT0,
+		FT3 => FT3,
+		FT5 => FT5,
+		FT6 => FT6,
+		FT1 => FT1,
+		FT2 => FT2,
+		FT7 => FT7,
+		FT4 => FT_4_LD_IND,
+		E_SW_SEL_BUS => E_SW,
+		CD_CTRL_REG => sCTRL.CTRL_CD,
+		CD_REG_2 => CD_REG_2,
+		MACH_RST_2A_B => MACH_RST_2A,
+		HJ_SWS => FGHJ_SW_BUS(8 to 15),
+		HJ_SW_P => SW_HJP,
+		Z_BUS => Z_BUS,
+		R_REG => R,
+												
+		-- Outputs
+		USE_CPU_DECODER => USE_CPU_DECODER,
+		GATED_CA_BITS => sGTD_CA_BITS,
+		GT_J_TO_A => GT_J_REG_TO_A_BUS,
+		GT_D_TO_A => GT_D_REG_TO_A_BUS,
+		I => I,
+		J => J,
+		U => U,
+		V => V,
+		T => T,
+		G => G,
+		L => L,
+		A_BUS => A_BUS1,
+		B_BUS_OUT => B_BUS,
+        
+		-- Clocks
+		T4 => T4
+	);
+GTD_CA_BITS <= sGTD_CA_BITS;
+
+RW1st32k: entity RWStgClk1st32k port map(
+		-- Inputs        
+		ALLOW_WRITE => sALLOW_WRITE_DLYD,
+		CPU_READ_PWR => sCPU_READ_PWR,
+		SEL_RD_CALL => SEL_READ_CALL,
+		MAN_RD_CALL => MANUAL_READ_CALL,
+		ROAR_RESTT_AND_STOR_BYPASS => SW_ROAR_RESTT_STOR_BYPASS,
+		SEL_WR_CALL => SEL_WR_CALL,
+		MAN_WR_CALL => MANUAL_WRITE_CALL,
+		CPU_WRITE_PWR => CPU_WR_PWR,
+		EARLY_LOCAL_STG => EARLY_LOCAL_STG,
+		EARLY_M_REG_0 => EARLY_M_REG_0,
+		M_REG_0 => M_REG_0,
+		MACH_RST_SW => sMACH_RST_SW,
+
+		-- Outputs
+		READ_CALL => READ_CALL,
+		USE_LOCAL_MAIN_MEM => USE_LOC_MAIN_MEM,
+		USE_MAIN_MEMORY => USE_MAIN_MEMORY,
+		READ_ECHO_1 => sREAD_ECHO_1,
+		READ_ECHO_2 => sREAD_ECHO_2,
+		WRITE_ECHO_1 => sWRITE_ECHO_1,
+		WRITE_ECHO_2 => sWRITE_ECHO_2,
+		DATA_READY_1 => DATA_READY_1,
+		DATA_READY_2 => DATA_READY_2,
+
+--		DEBUG => DEBUG,
+
+		-- Clocks
+		T1 => T1,T2 => T2,T3 => T3,T4 => T4,
+		CLK => CLK
+	);
+	
+READ_ECHO_1 <= sREAD_ECHO_1;
+READ_ECHO_2 <= sREAD_ECHO_2;
+WRITE_ECHO_1 <= sWRITE_ECHO_1;
+WRITE_ECHO_2 <= sWRITE_ECHO_2;
+
+end FMD;
