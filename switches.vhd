@@ -36,9 +36,65 @@
 --
 --    Revision History:
 --    Revision 1.0 2010-07-09
+--    Revision 1.01 2010-07-20  [LJW] Add Switch connection information
 --    Initial Release
 --    
 --
+-- Func            Port         Pin Conn A2      A       B       C       D       E       F       G       H       J       AC      E'      ROS     Rate    Check
+--                 Ground                1       -       -       -       -       -       -       -       -       -       -       -       -       -       -
+--                 +5V                   2       -       -       -       -       -       -       -       -       -       -       -       -       -       -
+--                 +3.3V        Vcco     3       -       -       -       -       -       -       -       -       -       -       C       C       C       C
+-- Hex0            pa_io1       E6       4       *       *       *       *       *       *       *       *       *       #       -       -       -       -
+-- Hex1            pa_io2       D5       5       *       *       *       *       *       *       *       *       *       #       -       -       -       -
+-- Hex2            pa_io3       C5       6       *       *       *       *       *       *       *       *       *       #       -       -       -       -
+-- Hex3            pa_io4       D6       7       *       *       *       *       *       *       *       *       *       #       -       -       -       -
+-- ScanA           pa_io5       C6       8       S       -       -       -       -       -       -       -       -       -       -       -       -       -
+-- ScanB           pa_io6       E7       9       -       S       -       -       -       -       -       -       -       -       -       -       -       -
+-- ScanC           pa_io7       C7       10      -       -       S       -       -       -       -       -       -       -       -       -       -       -
+-- ScanD           pa_io8       D7       11      -       -       -       S       -       -       -       -       -       -       -       -       -       -
+-- ScanE           pa_io9       C8       12      -       -       -       -       S       -       -       -       -       -       -       -       -       -
+-- ScanF           pa_io10      D8       13      -       -       -       -       -       S       -       -       -       -       -       -       -       -
+-- ScanG           pa_io11      C9       14      -       -       -       -       -       -       S       -       -       -       -       -       -       -
+-- ScanH           pa_io12      D10      15      -       -       -       -       -       -       -       S       -       -       -       -       -       -
+-- ScanJ           pa_io13      A3       16      -       -       -       -       -       -       -       -       S       -       -       -       -       -
+-- ScanAC          pa_io14      B4       17      -       -       -       -       -       -       -       -       -       S       -       -       -       -
+-- E_Inner         pa_io15      A4       18      -       -       -       -       -       -       -       -       -       -       *       -       -       -
+-- E_Outer         pa_io16      B5       19      -       -       -       -       -       -       -       -       -       -       *       -       -       -
+-- ROS InhCFStop   pa_io17      A5       20      -       -       -       -       -       -       -       -       -       -       -       *       -       -
+-- ROS Scan        pa_io18      B6       21      -       -       -       -       -       -       -       -       -       -       -       *       -       -
+-- Rate_InstrStep  ma2_db0      B7       22      -       -       -       -       -       -       -       -       -       -       -       -       *       -
+-- Rate_SingleCyc  ma2_db1      A7       23      -       -       -       -       -       -       -       -       -       -       -       -       *       -
+-- Check_Diag      ma2_db2      B8       24      -       -       -       -       -       -       -       -       -       -       -       -       -       *
+-- Check_Disable   ma2_db3      A8       25      -       -       -       -       -       -       -       -       -       -       -       -       -       *
+-- Check_Stop      ma2_db4      A9       26      -       -       -       -       -       -       -       -       -       -       -       -       -       *
+-- Check_Restart   ma2_db5      B10      27      -       -       -       -       -       -       -       -       -       -       -       -       -       *
+-- 
+-- * = Hex0,1,2,3 inputs have diodes from each of the 9 hex-encoded switches A-J (A to switch, K to FPGA, total 36 diodes)
+-- # = The Address Compare switch (AC) is 10-position, unencoded, with diodes to perform the 0-9 encoding (total 15 diodes)
+-- S = Scan output to switch common (one output at a time goes high to scan)
+-- C = Common connection for non-scanned switches
+-- Switch E' is the selector switch which is part of switch E and selects the inner, middle or outer rings
+-- The "Proc" positions of the ROS, Rate and Check switches are not connected - if no switches are present then these 3 and the AC switch default to "Proc"
+-- The "Middle" position of the E selector switch is not connected - the default is therefore the MS/LS ring
+-- Pulldowns are provided by the FPGA input
+-- 
+-- Most of the remaining switches are connected to the on-board pushbuttons and slide switches:
+--    Reset
+--    Start
+--    Stop
+--    Load
+--    Lamp Test
+--    ROAR Reset
+--    Display
+--    Store
+--    Check Reset
+--    Set IC
+--    Interrupt
+--    Fast/Slow clock control
+-- Two switches are not used:
+--    Power Off
+--    Timer Interrupt
+-- 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
@@ -64,30 +120,32 @@ entity switches is
            SwJ_scan : out  STD_LOGIC;
            SwAC_scan : out  STD_LOGIC; -- Address Compare
            Hex_in : in  STD_LOGIC_VECTOR(3 downto 0);
-			  SW_E_Inner, SW_E_Outer : in STD_LOGIC;
-			  RawSw_Proc_Inh_CF_Stop, RawSw_Proc_Scan : in STD_LOGIC; -- ROS Control
-			  RawSw_Rate_Single_Cycle, RawSw_Rate_Instruction_Step : in STD_LOGIC; -- Rate
-			  RawSw_Chk_Chk_Restart, RawSw_Chk_Diagnostic, RawSw_Chk_Stop, RawSw_Chk_Disable : in STD_LOGIC; -- Check Control
+           SW_E_Inner, SW_E_Outer : in STD_LOGIC;
+           RawSw_Proc_Inh_CF_Stop, RawSw_Proc_Scan : in STD_LOGIC; -- ROS Control
+           RawSw_Rate_Single_Cycle, RawSw_Rate_Instruction_Step : in STD_LOGIC; -- Rate
+           RawSw_Chk_Chk_Restart, RawSw_Chk_Diagnostic, RawSw_Chk_Stop, RawSw_Chk_Disable : in STD_LOGIC; -- Check Control
            pb : in std_logic_vector(3 downto 0); -- On-board pushbuttons
            sw : in std_logic_vector(7 downto 0); -- On-board slide switches
-			  -- Other inputs
-			  clk : in STD_LOGIC; -- 50MHz
---			  USE_MAN_DECODER_PWR : in STD_LOGIC;
-			  -- Conditioned switch outputs:
-			  SwA,SwB,SwC,SwD,SwF,SwG,SwH,SwJ : out STD_LOGIC_VECTOR(3 downto 0);
-			  SwAP,SwBP,SwCP,SwDP,SwFP,SwGP,SwHP,SwJP : out STD_LOGIC;
-			  SwE : out E_SW_BUS_Type;
-			  Sw_PowerOff, Sw_Interrupt, Sw_Load : out STD_LOGIC; -- Right-hand pushbuttons
-			  Sw_SystemReset, Sw_RoarReset, Sw_Start, Sw_SetIC, Sw_CheckReset,
-			  Sw_Stop, Sw_IntTmr, Sw_Store, Sw_LampTest, Sw_Display : out STD_LOGIC; -- Left-hand pushbuttons
-			  Sw_Proc_Inh_CF_Stop, Sw_Proc_Proc, Sw_Proc_Scan : out STD_LOGIC; -- ROS Control
-			  Sw_Rate_Single_Cycle, Sw_Rate_Instruction_Step, Sw_Rate_Process : out STD_LOGIC; -- Rate
-			  Sw_Chk_Chk_Restart, Sw_Chk_Diagnostic, Sw_Chk_Stop, Sw_Chk_Process, Sw_Chk_Disable : out STD_LOGIC; -- Check Control
-			  Sw_ROAR_RESTT,Sw_ROAR_RESTT_WITHOUT_RST,Sw_EARLY_ROAR_STOP,Sw_ROAR_STOP, Sw_ROAR_RESTT_STOR_BYPASS,
-			  Sw_ROAR_SYNC,Sw_ADDR_COMP_PROC,Sw_SAR_DLYD_STOP,Sw_SAR_STOP,Sw_SAR_RESTART : out STD_LOGIC; -- Address Compare
-			  -- 50Hz Timer signal
-			  Timer : out STD_LOGIC
-			  );
+
+           -- Other inputs
+           clk : in STD_LOGIC; -- 50MHz
+
+           -- Conditioned switch outputs:
+           SwA,SwB,SwC,SwD,SwF,SwG,SwH,SwJ : out STD_LOGIC_VECTOR(3 downto 0);
+           SwAP,SwBP,SwCP,SwDP,SwFP,SwGP,SwHP,SwJP : out STD_LOGIC;
+           SwE : out E_SW_BUS_Type;
+           Sw_PowerOff, Sw_Interrupt, Sw_Load : out STD_LOGIC; -- Right-hand pushbuttons
+           Sw_SystemReset, Sw_RoarReset, Sw_Start, Sw_SetIC, Sw_CheckReset,
+           Sw_Stop, Sw_IntTmr, Sw_Store, Sw_LampTest, Sw_Display : out STD_LOGIC; -- Left-hand pushbuttons
+           Sw_Proc_Inh_CF_Stop, Sw_Proc_Proc, Sw_Proc_Scan : out STD_LOGIC; -- ROS Control
+           Sw_Rate_Single_Cycle, Sw_Rate_Instruction_Step, Sw_Rate_Process : out STD_LOGIC; -- Rate
+           Sw_Chk_Chk_Restart, Sw_Chk_Diagnostic, Sw_Chk_Stop, Sw_Chk_Process, Sw_Chk_Disable : out STD_LOGIC; -- Check Control
+           Sw_ROAR_RESTT,Sw_ROAR_RESTT_WITHOUT_RST,Sw_EARLY_ROAR_STOP,Sw_ROAR_STOP, Sw_ROAR_RESTT_STOR_BYPASS,
+           Sw_ROAR_SYNC,Sw_ADDR_COMP_PROC,Sw_SAR_DLYD_STOP,Sw_SAR_STOP,Sw_SAR_RESTART : out STD_LOGIC; -- Address Compare
+
+           -- 50Hz Timer signal
+           Timer : out STD_LOGIC
+           );
 end switches;
 
 architecture Behavioral of switches is

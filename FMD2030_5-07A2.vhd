@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -119,7 +119,7 @@ BEGIN
 -- Fig 5-07A
 SUPR_A_REG_CHK_Set <= MACH_CHK_PULSE and T2;
 SUPR_A_REG_CHK_Reset <= (GT_D_REG_TO_A_BUS and T1) or MACH_RST_SW;
-SUPR_A_REG_CHK: FLE port map(SUPR_A_REG_CHK_Set,SUPR_A_REG_CHK_Reset,clk,sSUPPR_A_REG_CHK); -- AB3H3,AB3J4,AB3H4
+SUPR_A_REG_CHK: FLSRC port map(SUPR_A_REG_CHK_Set,SUPR_A_REG_CHK_Reset,clk,sSUPPR_A_REG_CHK); -- AB3H3,AB3J4,AB3H4
 SUPPR_A_REG_CHK <= sSUPPR_A_REG_CHK;
 
 CAX1X1 <= CA_SALS(1) and CA_SALS(3); -- AB3G3
@@ -133,10 +133,10 @@ ALLW_A_REG_CHK_Set <= (P1 and USE_BASIC_CA_DECO and not GT_CA_TO_W_REG and CAX1X
 	(CAX11X and not GT_CA_TO_W_REG and USE_BASIC_CA_DECO and P1) or -- AB3F3
 	(USE_BASIC_CA_DECO and CA1XXX and P1); -- AB3K5
 ALLW_A_REG_CHK_Reset <= T1 or ROS_SCAN or sSUPPR_A_REG_CHK or ANY_PRIORITY_LCH;
-ALLW_A_REG_CHK: FLL port map(ALLW_A_REG_CHK_Set,ALLW_A_REG_CHK_Reset,ALLOW_A_REG_CHK); -- AB3K5,AB3B6,AB3J4
+ALLW_A_REG_CHK: FLSRC port map(ALLW_A_REG_CHK_Set,ALLW_A_REG_CHK_Reset,clk,ALLOW_A_REG_CHK); -- AB3K5,AB3B6,AB3J4
 
 NOT_ALLOW_PC_SALS_Set <= (SET_IND_ROSAR and T4) or MACH_RST_6;
-NOT_ALLOW_PC_SALS: FLL port map(NOT_ALLOW_PC_SALS_Set,not T3,N_ALLOW_PC_SALS); -- AB3F6,AB3D7,AB3E5
+NOT_ALLOW_PC_SALS: FLSRC port map(NOT_ALLOW_PC_SALS_Set,clk,not T3,N_ALLOW_PC_SALS); -- AB3F6,AB3D7,AB3E5
 sALLOW_PC_SALS <= not N_ALLOW_PC_SALS;
 ALLOW_PC_SALS <= sALLOW_PC_SALS;
 
@@ -163,7 +163,7 @@ SET1ST <= CHK_SW_PROC_SW and not SUPPR_MACH_CHK_TRAP and sANY_MACH_CHK; -- AB3G6
 
 REG_MC_Set <= SETMC & SET1ST;
 REG_MC_Reset <= (0 to 7 => MACH_CHK_RST or RST_MACH_CHK,8 => (T1 and MACH_CHK_PULSE) or MACH_CHK_RST or RST_MACH_CHK); -- AB3G7,AB3H6-removed??
-REG_MC: FLVL port map(REG_MC_Set,REG_MC_Reset,MC_REG); -- AB3G4,AB3G5,AB3G6
+REG_MC: FLVLC port map(REG_MC_Set,REG_MC_Reset,clk,MC_REG); -- AB3G4,AB3G5,AB3G6
 sMC <= MC_REG(0 to 7);
 MC <= sMC;
 FIRST_MACH_CHK <= MC_REG(8);

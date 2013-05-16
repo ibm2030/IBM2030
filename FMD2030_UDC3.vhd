@@ -73,6 +73,7 @@ ENTITY udc3 IS
       n1050_REQ_IN : OUT STD_LOGIC;
       n1050_OP_IN : OUT STD_LOGIC;
       n1050_CE_MODE : OUT STD_LOGIC;
+		n1050_SEL_IN : OUT STD_LOGIC;
 		n1050_SEL_O : OUT STD_LOGIC;
 		DEBUG : INOUT DEBUG_BUS;
         
@@ -214,7 +215,8 @@ n1050_TRANSLATE : entity n1050_TRANSLATE port map(
 		WRITE_STROBE => WR_STROBE,
 		WRITE_LCH_RST => WRITE_LCH_RST,
 		
-		DEBUG => open
+		DEBUG => open,
+		CLK => clk
 		);
 		
 -- Fig 5-10A
@@ -258,7 +260,6 @@ n1050_TAGS : entity n1050_TAGS port map (
 		TT3_POS_1050_OPER => TT_BUS(3), -- 10DD4
 		TAGS_OUT_BUS => TAGS_OUT_BUS, -- 10CD1
 		n1050_CE_MODE => sn1050_CE_MODE, -- 10DB3
-		n1050_SEL_O => n1050_SEL_O, -- 08DD6
 		P_1050_SEL_IN => P_1050_SEL_IN, -- 08DC1
 		P_1050_SEL_OUT => P_1050_SEL_OUT, -- 08DD6
 		MPX_OPN_LCH_GT => MPX_OPN_LT_GATE, -- 08CE3
@@ -293,13 +294,15 @@ n1050_TAGS : entity n1050_TAGS port map (
 		n1050_OP_IN => sn1050_OP_IN, -- 08DD4 10CA4
 		n1050_REQ_IN => n1050_REQ_IN, -- 08DD2
 		TT6_POS_ATTN => sTT6_POS_ATTN, -- 10DC4 04AB6
+		n1050_SEL_IN => n1050_SEL_IN,
+		n1050_SEL_O => n1050_SEL_O, -- 08DD6
 		n1050_INSTALLED => n1050_INSTALLED, -- 08DC1
 		TA_REG_SET => TA_REG_SET,
 		RD_CLK_INLK_LCH => READ_CLK_INTLK_LCH,
 		RESTORE => RESTORE,
 		RST_ATTACH => RST_ATTACH,
 		
-		DEBUG => DEBUG,
+		DEBUG => open,
 		
 		-- Clocks
 		clk => clk,
@@ -401,7 +404,8 @@ n1050_DATA : entity n1050_DATA port map (
 		T1 => T1,
 		T2 => T2,
 		T3 => T3,
-		T4 => T4
+		T4 => T4,
+		CLK => clk
 );
 n1050_INTRV_REQ <= sn1050_INTRV_REQ;
 

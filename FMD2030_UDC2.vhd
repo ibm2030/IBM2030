@@ -237,14 +237,14 @@ port(
 		  MPX_OPN_LT_GATE : OUT STD_LOGIC;
 		  ADDR_OUT : OUT STD_LOGIC;
 		  MPX_BUS_IN_TO_CPU : OUT STD_LOGIC_VECTOR(0 to 8);
-		n1050_SEL_IN : OUT STD_LOGIC;
 		n1050_INSTALLED : IN STD_LOGIC;
       n1050_REQ_IN : IN STD_LOGIC;
       n1050_OP_IN : IN STD_LOGIC;
       n1050_CE_MODE : IN STD_LOGIC;
-		n1050_SEL_O : IN STD_LOGIC;
-		P_1050_SEL_OUT : OUT STD_LOGIC;
-		P_1050_SEL_IN : OUT STD_LOGIC;
+		n1050_SEL_O : IN STD_LOGIC; -- SEL OUT from 1050 (if hi priority) to external Tags connector
+		P_1050_SEL_OUT : OUT STD_LOGIC; -- SEL OUT from Channel to 1050 (if hi priority)
+		P_1050_SEL_IN : out STD_LOGIC; -- SEL IN from external Tags connector to 1050 = TAGS_IN.SEL_IN
+		n1050_SEL_IN : in STD_LOGIC;  -- SEL IN from 1050 (if lo priority) back into Channel
 
         -- Debug
 		  DEBUG : INOUT DEBUG_BUS;
@@ -317,11 +317,12 @@ signal  sXL,sXH,sXXH : STD_LOGIC;
 signal  SUPPR_CTRL_LCH,OP_OUT_SIG,SX1_MASK,SX2_MASK,FAK,SET_BUS_O_CTRL_LCH : STD_LOGIC;
 -- signal	sMPX_BUS_O_REG : STD_LOGIC_VECTOR(0 to 8);
 signal	sFT2, sFT7 : STD_LOGIC;
+signal	sSEL_OUT_PASSTHROUGH : STD_LOGIC;
 
 begin
     -- Clock
 clock_sect: entity Clock (FMD) port map (
-	CLOCK_IN => CLOCK_IN,
+	SysClk => CLOCK_IN,
    T1 => sT1,
    T2 => sT2,
    T3 => sT3,
@@ -569,7 +570,8 @@ SAR_SA : entity SARSA port map (
 		M_REG_0 => M_REG_0,
 		SA_REG => SA,
 		SEL_T1 => SEL_T1,
-		T1 => sT1
+		T1 => sT1,
+		clk => clk
 		);
 		
 S_Reg : entity SReg port map (
@@ -823,10 +825,10 @@ MpxChnlCtrls: entity MpxFA port map (	-- 5-08D
            N1050_REQ_IN => n1050_REQ_IN,
            N1050_OP_IN => n1050_OP_IN,
            N1050_CE_MODE => n1050_CE_MODE,
-			  N1050_SEL_IN => n1050_SEL_IN,
-			  N1050_SEL_O => n1050_SEL_O,
-			  P_1050_SEL_OUT => P_1050_SEL_OUT,
-			  P_1050_SEL_IN => P_1050_SEL_IN,
+			  n1050_SEL_IN => n1050_SEL_IN, -- SEL IN from 1050 (if lo priority) back into Channel
+			  n1050_SEL_O => n1050_SEL_O, -- SEL OUT from 1050 (if hi priority) to external Tags connector = TAGS_OUT.SEL_OUT
+			  P_1050_SEL_OUT => P_1050_SEL_OUT, -- SEL OUT from Channel to 1050 (if hi priority)
+			  P_1050_SEL_IN => P_1050_SEL_IN, -- SELECT IN fed to 1050 selection (if lo priority)
 			  
            MPX_METERING_IN => MPX_METERING_IN,
            FT7_MPX_CHNL_IN => sFT7,

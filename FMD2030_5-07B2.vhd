@@ -99,7 +99,7 @@ CS_1XXX <= '1' when CS(0)='1' else '0';
 GT_CS_OPT_Set <= SA and P1;
 GT_CS_OPT_Reset <= CTRL_REG_RST or T1;
 -- GT_CS_OPT: FLE port map(GT_CS_OPT_Set, GT_CS_OPT_Reset, clk, GT_CS_OPT_DECODER); -- AB3E5
-GT_CS_OPT: FLL port map(S=>GT_CS_OPT_Set, R=>GT_CS_OPT_Reset, Q=>GT_CS_OPT_DECODER); -- AB3E5
+GT_CS_OPT: FLSRC port map(S=>GT_CS_OPT_Set, R=>GT_CS_OPT_Reset, C=>clk, Q=>GT_CS_OPT_DECODER); -- AB3E5
 GT_CS_BASIC_DECODER <= not GT_CS_OPT_DECODER; -- AB3E5
 BASIC_NOT_CS_0 <= GT_CS_BASIC_DECODER and CS_0XXX; -- AA3L5  Could be" GT_CS_BASIC_DECODER and not CS(0)"
 sBASIC_CS_0 <= GT_CS_BASIC_DECODER and CS_1XXX; -- AA3L5  Could be "GT_CS_BASIC_DECODER and CS(0)"
@@ -134,5 +134,5 @@ RESETS(7) <= sBASIC_CS_0 and CS_X100; -- AA3K7
 
 S_REG_Set <= mux(sGT_Z_BUS_TO_S,not N_Z_BUS) or mux(T4,SETS); -- ?? "T4 and not T1" to prevent erroneous S4 value
 S_REG_Reset <= (S'range=>sS_REG_RST) or mux(T4,RESETS); -- ?? "T4 and not T1" to prevent erroneous S4 value
-S_REG: FLVL port map(S_REG_Set, S_REG_Reset, S); -- AA3G7, AA3H7, AA3J7, AA3K7
+S_REG: FLVLC port map(S_REG_Set, S_REG_Reset, clk, S); -- AA3G7, AA3H7, AA3J7, AA3K7
 END FMD;

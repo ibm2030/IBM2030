@@ -459,7 +459,7 @@ wx_sect: entity WX_Regs (FMD) port map (
 		  GT_BU_ROSAR_TO_WX_REG   =>  GT_BU_ROSAR_TO_WX_REG,
 		  SET_FW                  =>  SET_FW,
 		  
-		  DEBUG                   =>  DEBUG
+		  DEBUG                   =>  open
 		  );
 
     -- CCROS microcode storage
@@ -609,7 +609,9 @@ priority_sect: entity Priority (FMD) port map (
         T3 => T3,
         T4 => T4,
         P4 => P4,
-		  CLK => CLK
+		  CLK => CLK,
+		  
+		  DEBUG => DEBUG
 );
 ANY_PRIORITY_LCH <= sANY_PRIORITY_LCH;
 SUPPR_MACH_CHK_TRAP <= sSUPPR_MACH_CHK_TRAP;
@@ -1194,7 +1196,8 @@ Regs: entity RegsABAssm port map(
 		B_BUS_OUT => B_BUS,
         
 		-- Clocks
-		T4 => T4
+		T4 => T4,
+		clk => clk
 	);
 GTD_CA_BITS <= sGTD_CA_BITS;
 

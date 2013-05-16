@@ -114,7 +114,7 @@ type MPX_TAGS_OUT is record
 	ADR_OUT,
 	ADR_OUT2, -- What is this?
 	CMD_OUT,
-	STA_OUT,
+	XSTA_OUT,
 	SRV_OUT,
 	HLD_OUT,
 	SEL_OUT,
@@ -233,6 +233,7 @@ end record Serial_Input_Lines;
 type DEBUG_BUS is record
 	Selection : integer range 0 to 15;
 	Probe : STD_LOGIC;
+	SevenSegment : STD_LOGIC_VECTOR(15 downto 0);
 end record DEBUG_BUS;
 
 end package Buses_package;

@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -115,7 +115,7 @@ RD_SEL <= MANUAL_RD_CALL or (sCPU_READ_PWR and T1) or sCHANNEL_RD_CALL; -- BE3D3
 WR_SEL <= (T1 and sCPU_WRITE_PWR and ALLOW_WRITE_2) or MANUAL_WR_CALL or (SEL_RD_CALL_TO_STP or HSMPX_READ_CALL); -- BE3J5,BE3H5
 N_MEM_SELECT <= not (not SELECT_CPU_BUMP and (RD_SEL or WR_SEL)); -- BE3H6
 -- ?? Note TD not implemented (yet)
-RW_LCH: FLL port map(RD_SEL,WR_SEL,RW_CTRL_STACK); -- BE3J5
+RW_LCH: FLSRC port map(RD_SEL,WR_SEL,clk,RW_CTRL_STACK); -- BE3J5
 
 sUSE_ALT_CU_DECODE <= not ANY_PRIORITY_PULSE and not sCPU_READ_PWR; -- AB3D2
 USE_ALT_CU_DECODE <= sUSE_ALT_CU_DECODE;
@@ -152,8 +152,8 @@ sGT_LOCAL_STG <= ((MEM_SEL and not ALLOW_WRITE) and MAN_STOR_OR_DISPLAY) or (T1 
 GT_LOCAL_STG <= sGT_LOCAL_STG;
 
 
-LS_LCH: PH port map(not sMAIN_STORAGE_CP,sGT_LOCAL_STG,LOCAL_STORAGE_CP); -- AA1F4
-MS_LCH: PH port map(not sEARLY_LOCAL_STG,sGT_LOCAL_STG,MAIN_STORAGE); -- AA1F4
+LS_LCH: PH port map(not sMAIN_STORAGE_CP,sGT_LOCAL_STG,clk,LOCAL_STORAGE_CP); -- AA1F4
+MS_LCH: PH port map(not sEARLY_LOCAL_STG,sGT_LOCAL_STG,clk,MAIN_STORAGE); -- AA1F4
 
 END FMD; 
 

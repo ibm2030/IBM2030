@@ -162,7 +162,7 @@ signal Z_0 : std_logic;
 signal N_CTRL_N : std_logic;
 signal ALU_CHK_LCH : std_logic;
 signal	SELECT_CPU_BUMP : std_logic;
-signal	sMPX_BUS_O : std_logic_vector(0 to 8);
+--signal	sMPX_BUS_O : std_logic_vector(0 to 8);
 signal	P_1050_SEL_OUT : STD_LOGIC;
 signal	P_1050_SEL_IN : STD_LOGIC;
 signal	n1050_REQ_IN : STD_LOGIC;
@@ -190,6 +190,7 @@ signal	SEL_CC_ROS_REQ : STD_LOGIC := '0';
 signal	MAN_DSPLY_GUV_HUV : STD_LOGIC := '0';
 signal	HSMPX_TRAP : STD_LOGIC := '0';
 signal	n1050_SEL_O : STD_LOGIC;
+signal	n1050_SEL_IN : STD_LOGIC;
 signal	n1050_INSTALLED : STD_LOGIC;
 signal	n1050_OP_IN : STD_LOGIC;
 
@@ -568,7 +569,7 @@ begin
 		CLOCK_START_LCH => CLOCK_START_LCH,
 		
 		-- UDC1 Debug stuff
-		DEBUG => open,
+		DEBUG => Debug,
 		-- End of Debug stuff
 
 		T1 => T1,
@@ -791,13 +792,14 @@ begin
 		IND_CHK_ALU => IND_CHK_ALU,
 		
       -- Selector & Mpx channels
-      MPX_BUS_O => sMPX_BUS_O,
+      MPX_BUS_O => MPX_BUS_O,
 		MPX_BUS_I => MPX_BUS_I,
 		MPX_TAGS_O => MPX_TAGS_O,
 		MPX_TAGS_I => MPX_TAGS_I,
 		FI => sFI,
 		MPX_OPN_LT_GATE => MPX_OPN_LT_GATE,
 		n1050_SEL_O => n1050_SEL_O,
+		n1050_SEL_IN => n1050_SEL_IN,
 		P_1050_SEL_OUT => P_1050_SEL_OUT,
 		P_1050_SEL_IN => P_1050_SEL_IN,
 		n1050_INSTALLED => n1050_INSTALLED,
@@ -823,7 +825,7 @@ begin
 		SEL_T3 => SEL_T3,
 		Clk => Clk
 		);
-		
+			
 	thirdBit : entity udc3 (FMD) port map (
 		-- Inputs
 		E_SW_SEL_BUS => E_SW,
@@ -867,7 +869,7 @@ begin
 		Clock60Hz => N60_CY_TIMER_PULSE,
 		
 		-- UDC3 debug
-		DEBUG => DEBUG,
+		DEBUG => open,
 
 		T1 => T1,
 		T2 => T2,

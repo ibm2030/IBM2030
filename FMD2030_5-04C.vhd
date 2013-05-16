@@ -141,14 +141,14 @@ RST_COUNTER <= MACH_RST_PROT; -- BE3G5
 
 CTL_LCH_Set <= (GT_C_TO_A_BUS and T1) or (not sTIMER_UPDATE and SW_INTRP_TIMER);
 CTL_LCH_Reset <= CTRL_TRG and T3;
-CTL_LCH: FLL port map(CTL_LCH_Set,CTL_LCH_Reset,CTRL_LCH); -- BE3G6,BE3F5
+CTL_LCH: FLSRC port map(CTL_LCH_Set,CTL_LCH_Reset,clk,CTRL_LCH); -- BE3G6,BE3F5
 
 N10MSPULSE <= not(N60_CY_TIMER_PULSE and not T3); -- 10ms monostable here
 
 CT_FF_Set <= CTRL_LCH and T4;
-CT_FF: FLL port map(CT_FF_Set,not CTRL_LCH,CTRL_TRG); -- BE3F6
+CT_FF: FLSRC port map(CT_FF_Set,not CTRL_LCH,clk,CTRL_TRG); -- BE3F6
 BD_FF_Set <= not CTRL_LCH and T2 and N10MSPULSE and not CNTR_FULL;
-BD_FF: FLL port map(BD_FF_Set,not N10MSPULSE,BIN_DRIVE); -- BE3F6
+BD_FF: FLSRC port map(BD_FF_Set,not N10MSPULSE,clk,BIN_DRIVE); -- BE3F6
 
 process(BIN_DRIVE,RST_COUNTER,CTRL_TRG) -- BE3G7,BE3F7
 	begin
@@ -171,7 +171,7 @@ EXT_INT <= (F_REGISTER(0) or F_REGISTER(1) or F_REGISTER(2) or F_REGISTER(3) or
 	F_REGISTER(4) or F_REGISTER(5) or F_REGISTER(6) or F_REGISTER(7)) and EXT_TRAP_MASK_ON;  -- AC1G2 ?? Should this include EXT_TRAP_MASK_ON ?
 EI_LCH_Reset <= MACH_RST_SW or RESET_F_REG;
 EI_LCH_Set <= EXT_INT and T3; -- ?? Seems to be needed, not as per MDM
-EI_LCH: FLL port map(EI_LCH_Set,EI_LCH_Reset,EXT_INTRP); -- AC1K6,AC1C2
+EI_LCH: FLSRC port map(EI_LCH_Set,EI_LCH_Reset,clk,EXT_INTRP); -- AC1K6,AC1C2
 
 -- F register - here it is held in True polarity, in the 2030 it is inverted
 C_EXT_INT <= "000000";
@@ -180,11 +180,11 @@ RESET_F_REG <= CK_SALS(0) and CK_SALS(1) and CK_SALS(2) and not CK_SALS(3) and G
 
 F1A_LCH_Reset <= (L_REGISTER(1) and RESET_F_REG) or RECYCLE_RST;
 F1_LCH_Set <= F_REGISTER_1A and SW_CONS_INTRP;
-F1A_LCH: FLL port map(not SW_CONS_INTRP, F1A_LCH_Reset, F_REGISTER_1A); -- AC1L2
+F1A_LCH: FLSRC port map(not SW_CONS_INTRP, F1A_LCH_Reset, clk, F_REGISTER_1A); -- AC1L2
 
 F07_LCH_Set <= SET_F_REG_0 & F1_LCH_Set & C_EXT_INT(2 to 7);
 F07_LCH_Reset <= (0 to 7 => RECYCLE_RST) or ((0 to 7 => RESET_F_REG) and ('1' & L_REGISTER(1 to 7)));
-F07_LCH: FLVL port map(F07_LCH_Set, F07_LCH_Reset, F_REGISTER(0 to 7)); -- AC1L2
+F07_LCH: FLVLC port map(F07_LCH_Set, F07_LCH_Reset, clk, F_REGISTER(0 to 7)); -- AC1L2
 
 -- H register
 H_SET <= MACH_RST_2B or (E_SW.H_SEL and MAN_STOR_PWR) or
@@ -192,9 +192,9 @@ H_SET <= MACH_RST_2B or (E_SW.H_SEL and MAN_STOR_PWR) or
 GT_1050_TAGS <= not CD_CTRL_REG(0) and CD_CTRL_REG(1) and not CD_CTRL_REG(2) and not CD_CTRL_REG(3); -- AB1B3 CD=0100
 GT_1050_BUS <= not CD_CTRL_REG(0) and not CD_CTRL_REG(1) and not CD_CTRL_REG(2) and CD_CTRL_REG(3); -- AB1B3 CD=0001
 CD_REG_2 <= CD_CTRL_REG(2); -- AB1B3
-H_LCH: PHV8 port map(Z_BUS,H_SET,sH_REG_BITS); -- AB1L3
+H_LCH: PHV8 port map(Z_BUS,H_SET,clk,sH_REG_BITS); -- AB1L3
 H_REG_BITS <= sH_REG_BITS;
-HP_LCH: PH port map(Z_BUS_P,H_SET,sH_REG_P); -- AB1L3
+HP_LCH: PH port map(Z_BUS_P,H_SET,clk,sH_REG_P); -- AB1L3
 H_REG_P <= sH_REG_P;
 H_REG_6 <= sH_REG_BITS(6); -- AB1C6,AB1G2
 H_REG_5_PWR <= sH_REG_BITS(5); -- AB1L2

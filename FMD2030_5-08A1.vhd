@@ -35,6 +35,8 @@
 --    Initial Release
 --    Revision 1.1 2012-04-07
 --		Add registers to all clock outputs and delay rising edge of Px and Tx clocks
+--		Revision 1.2 2013-05-09
+--		Make clock generator sychronous
 ---------------------------------------------------------------------------
 library IEEE;
 Library UNISIM;
@@ -46,7 +48,7 @@ use work.Gates_package.all;
 
 entity Clock is Port (
 				-- Clock stuff
-				CLOCK_IN : in std_logic;
+				SysClk : in std_logic;
          	T1,T2,T3,T4 : out std_logic;
          	P1,P2,P3,P4 : out std_logic;
          	OSC_T_LINE : out std_logic; -- 12A
@@ -65,15 +67,15 @@ architecture FMD of Clock is
 -- Following 2 lines to run clock at 5.33MHz (standard)
 -- subtype DividerSize is STD_LOGIC_VECTOR(5 downto 0);
 subtype DividerSize is STD_LOGIC_VECTOR(25 downto 0);
-constant RATIOFast : DividerSize := "00000000000000000000001000"; -- 5 gives 10MHz => 720ns cycle
+constant RATIOFast : DividerSize := "00000000000000000000001010"; -- 10 gives 5MHz => 800ns cycle
 -- Following 2 lines to run clock at 5Hz
-constant RATIOSlow : DividerSize := "00100010010101010001000000"; -- 5M gives 10Hz => 720ms cycle
+constant RATIOSlow : DividerSize := "00101000000000000000000000"; -- 10M gives 5Hz => 720ms cycle
 constant ZERO : DividerSize := (others=>'0');
 constant ONE : DividerSize := (0=>'1',others=>'0');
 
 signal DIVIDER : DividerSize := (others=>'0');
 signal DIVIDER_MAX : DividerSize;
-signal OSC2,OSC,M_DLYD_OSC,DLYN_OSC,T1A,T2A,T3A,T4A,OSC2_DLYD : STD_LOGIC := '0';
+signal OSC,M_DLYD_OSC,DLYN_OSC,T1A,T2A,T3A,T4A,OSC2_DLYD : STD_LOGIC := '0';
 -- signal SETS,RSTS : STD_LOGIC_VECTOR(1 to 4);
 signal CLK : STD_LOGIC_VECTOR(1 to 4) := "0001";
 signal P1D,P2D,P3D,P4D : STD_LOGIC;
@@ -83,20 +85,7 @@ begin
 -- Divide the 50MHz FPGA clock down
 -- 1.5us storage cycle means T1-4 takes 750ns, or 1.33MHz
 -- The clock to generate the four phases is therefore 2.66MHz
--- OSC2 is actually double the original oscillator (5.33MHz) as only one edge is used
 DIVIDER_MAX <= RatioSlow when Sw_Slow='1' else RATIOFast;
-OSC2 <= '1' when DIVIDER > '0' & DIVIDER_MAX(DIVIDER_MAX'left downto 1) else '0';
-
-process (CLOCK_IN)
-	begin
-	if CLOCK_IN'event and CLOCK_IN='1' then
-		if DIVIDER>=DIVIDER_MAX then
-			DIVIDER <= ZERO;
-		else
-			DIVIDER <= DIVIDER + ONE;
-		end if;
-	end if;
-end process;
 
 -- AC1K6,AC1C6 Probably have to re-do this lot to get it work
 --SETS(1) <= not DLYD_OSC and CLOCK_START and not CLK(3) and CLK(4);
@@ -121,40 +110,44 @@ end process;
 -- The original counter used a level-triggered implementation, driven by
 -- both levels of the OSC signal.  Here it is easier to make it edge triggered
 -- which requires a clock of twice the frequency, hence OSC2
-process (OSC2, MACH_RST_3, CLOCK_START)
+process (OSC, MACH_RST_3, CLOCK_START, SysClk)
 	begin
-	if OSC2'event and OSC2='1' then
-	   if OSC='0' then	-- OSC Rising edge: +P1 (P4=1 & START) -P3 (P4=1) or -P1 +P3 (P2=1)
-			OSC <= '1';
-		  	if CLK(2)='1' or MACH_RST_3='1' then
-				CLK(1) <= '0';
-			elsif CLOCK_START='1' and CLK(4)='1' then
-				CLK(1) <= '1';
+	if rising_edge(SysClk) then
+		if DIVIDER>=DIVIDER_MAX then
+			DIVIDER <= ZERO;
+			OSC <= not OSC;
+			if OSC='1' then	-- OSC Rising edge: +P1 (P4=1 & START) -P3 (P4=1) or -P1 +P3 (P2=1)
+				if CLK(2)='1' or MACH_RST_3='1' then
+					CLK(1) <= '0';
+				elsif CLOCK_START='1' and CLK(4)='1' then
+					CLK(1) <= '1';
+				end if;
+				if CLK(4)='1' or MACH_RST_3='1' then
+					CLK(3) <= '0';
+				elsif CLK(2)='1' then
+					CLK(3) <= '1';
+				end if;
+			else			  		-- OSC Falling edge: +P2 -P4 (P1=1) or -P2 +P4 (P3=1)
+				if CLK(3)='1' or MACH_RST_3='1' then
+					CLK(2) <= '0';
+				elsif CLK(1)='1' then
+					CLK(2) <= '1';
+				end if;
+				if CLK(3)='1' or MACH_RST_3='1' then
+					CLK(4) <= '1';
+				elsif CLK(1)='1' then
+					CLK(4) <= '0';
+				end if;
 			end if;
-			if CLK(4)='1' or MACH_RST_3='1' then
-				CLK(3) <= '0';
-			elsif CLK(2)='1' then
-				CLK(3) <= '1';
-			end if;
-		else			  		-- OSC Falling edge: +P2 -P4 (P1=1) or -P2 +P4 (P3=1)
-			OSC <= '0';
-			if CLK(3)='1' or MACH_RST_3='1' then
-				CLK(2) <= '0';
-			elsif CLK(1)='1' then
-				CLK(2) <= '1';
-			end if;
-			if CLK(3)='1' or MACH_RST_3='1' then
-				CLK(4) <= '1';
-			elsif CLK(1)='1' then
-				CLK(4) <= '0';
-			end if;
+		else
+			DIVIDER <= DIVIDER + ONE;
 		end if;
 	end if;
 end process;
 
 OSC_T_LINEA <= OSC; -- AC1B6
-OSC_T_LINED : FDCE port map(D=>OSC_T_LINEA,Q=>OSC_T_LINE,CE=>'1',C=>CLOCK_IN);
-M_CONV_OSCD : FDCE port map(D=>not OSC,Q=>M_CONV_OSC,CE=>'1',C=>CLOCK_IN); -- AC1C6
+OSC_T_LINED : FDCE port map(D=>OSC_T_LINEA,Q=>OSC_T_LINE,CE=>'1',C=>SysClk);
+M_CONV_OSCD : FDCE port map(D=>not OSC,Q=>M_CONV_OSC,CE=>'1',C=>SysClk); -- AC1C6
 M_DLYD_OSC <= not OSC; -- AC1C6
 DLYN_OSC <= OSC; -- AC1C6
 
@@ -163,32 +156,32 @@ DLYN_OSC <= OSC; -- AC1C6
 -- P3 <= CLK(3);
 -- P4 <= CLK(4);
 -- Delay the rising edge of each P pulse to ensure that the T pulses never overlap
-P1DLY: entity DelayRisingEdgeX port map (D=>CLK(1),CLK=>CLOCK_IN,Q=>P1D);
-P2DLY: entity DelayRisingEdgeX port map (D=>CLK(2),CLK=>CLOCK_IN,Q=>P2D);
-P3DLY: entity DelayRisingEdgeX port map (D=>CLK(3),CLK=>CLOCK_IN,Q=>P3D);
-P4DLY: entity DelayRisingEdgeX port map (D=>CLK(4),CLK=>CLOCK_IN,Q=>P4D);
+P1DLY: entity DelayRisingEdgeX port map (D=>CLK(1),CLK=>SysClk,Q=>P1D);
+P2DLY: entity DelayRisingEdgeX port map (D=>CLK(2),CLK=>SysClk,Q=>P2D);
+P3DLY: entity DelayRisingEdgeX port map (D=>CLK(3),CLK=>SysClk,Q=>P3D);
+P4DLY: entity DelayRisingEdgeX port map (D=>CLK(4),CLK=>SysClk,Q=>P4D);
 
 T1A <= P4D and P1D;
 T2A <= P1D and P2D;
 T3A <= P2D and P3D;
 T4A <= P3D and P4D;
 
-T1D : FDCE port map(D=>T1A,Q=>T1,CE=>'1',C=>CLOCK_IN);
-T2D : FDCE port map(D=>T2A,Q=>T2,CE=>'1',C=>CLOCK_IN);
-T3D : FDCE port map(D=>T3A,Q=>T3,CE=>'1',C=>CLOCK_IN);
-T4D : FDCE port map(D=>T4A,Q=>T4,CE=>'1',C=>CLOCK_IN);
-P1C : FDCE port map(D=>P1D,Q=>P1,CE=>'1',C=>CLOCK_IN);
-P2C : FDCE port map(D=>P2D,Q=>P2,CE=>'1',C=>CLOCK_IN);
-P3C : FDCE port map(D=>P3D,Q=>P3,CE=>'1',C=>CLOCK_IN);
-P4C : FDCE port map(D=>P4D,Q=>P4,CE=>'1',C=>CLOCK_IN);
+T1D : FDCE port map(D=>T1A,Q=>T1,CE=>'1',C=>SysClk);
+T2D : FDCE port map(D=>T2A,Q=>T2,CE=>'1',C=>SysClk);
+T3D : FDCE port map(D=>T3A,Q=>T3,CE=>'1',C=>SysClk);
+T4D : FDCE port map(D=>T4A,Q=>T4,CE=>'1',C=>SysClk);
+P1C : FDCE port map(D=>P1D,Q=>P1,CE=>'1',C=>SysClk);
+P2C : FDCE port map(D=>P2D,Q=>P2,CE=>'1',C=>SysClk);
+P3C : FDCE port map(D=>P3D,Q=>P3,CE=>'1',C=>SysClk);
+P4C : FDCE port map(D=>P4D,Q=>P4,CE=>'1',C=>SysClk);
 
 CLOCK_ONA <= CLK(1) or CLK(2) or CLK(3);
-CLOCK_OND : FDCE port map(D=>CLOCK_ONA,Q=>CLOCK_ON,CE=>'1',C=>CLOCK_IN);
+CLOCK_OND : FDCE port map(D=>CLOCK_ONA,Q=>CLOCK_ON,CE=>'1',C=>SysClk);
 CLOCK_OFFA <= not CLOCK_ONA;
-CLOCK_OFFD : FDCE port map(D=>CLOCK_OFFA,Q=>CLOCK_OFF,CE=>'1',C=>CLOCK_IN);
+CLOCK_OFFD : FDCE port map(D=>CLOCK_OFFA,Q=>CLOCK_OFF,CE=>'1',C=>SysClk);
 P_CONV_OSCA <= OSC and CLOCK_OFFA;
-P_CONV_OSCD : FDCE port map(D=>P_CONV_OSCA,Q=>P_CONV_OSC,CE=>'1',C=>CLOCK_IN);
+P_CONV_OSCD : FDCE port map(D=>P_CONV_OSCA,Q=>P_CONV_OSC,CE=>'1',C=>SysClk);
 M_CONV_OSC_2A <= not(P_CONV_OSCA);
-M_CONV_OSC_2D : FDCE port map(D=>M_CONV_OSC_2A,Q=>M_CONV_OSC_2,CE=>'1',C=>CLOCK_IN);
+M_CONV_OSC_2D : FDCE port map(D=>M_CONV_OSC_2A,Q=>M_CONV_OSC_2,CE=>'1',C=>SysClk);
 
 end FMD;

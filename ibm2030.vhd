@@ -57,6 +57,10 @@ entity ibm2030 is
 				-- Discrete LEDs
            led : out std_logic_vector(7 downto 0); -- 8 LEDs
 			  
+			  -- 7-segment LEDS
+			  ssdan : out std_logic_vector(3 downto 0); -- 3 is LHS, 4 is RHS
+			  ssd : out std_logic_vector(7 downto 0); -- 7 is dp, 6 is g ... 0 is a
+			  
 			  -- Pushbuttons and switches
            pb : in std_logic_vector(3 downto 0); -- 4 pushbuttons
            sw : in std_logic_vector(7 downto 0); -- 8 slide switches
@@ -88,6 +92,17 @@ entity ibm2030 is
 			  -- Serial I/O
 			  serialRx : in std_logic;
 			  serialTx : out std_logic := '1';
+			  
+			  -- SPI for LEDs
+			  led_cs : out std_logic := '0';
+			  led_clk : out std_logic := '0';
+			  led_data : out std_logic;
+			  
+			  -- SPI for Channel
+			  ch_cs : out std_logic := '0';
+			  ch_clk : out std_logic := '0';
+			  ch_do : out std_logic;
+			  ch_di : in std_logic;
 			  
 			  -- 50Mhz clock
 			  clk : in std_logic;
@@ -166,6 +181,12 @@ signal	SerialBusUngated : STD_LOGIC_VECTOR(7 downto 0);
 signal	RxDataAvailable : STD_LOGIC;
 signal	RxAck, PunchGate : STD_LOGIC;
 
+-- Channel interface
+signal	ch_BUSO : STD_LOGIC_VECTOR(0 to 8);
+signal	ch_BUSI : STD_LOGIC_VECTOR(0 to 8);
+signal	ch_TAGSO : MPX_TAGS_OUT;
+signal	ch_TAGSI : MPX_TAGS_IN;
+
 signal	SO : Serial_Output_Lines;
 
 signal	SwSlow : STD_LOGIC := '0'; -- Set to '1' to slow clock down to 1Hz, not used
@@ -174,6 +195,9 @@ signal	N60_CY_TIMER_PULSE : STD_LOGIC; -- Used for the Interval Timer
 signal	Clock1ms : STD_LOGIC; -- 1kHz clock for single-shots etc.
 
 signal	DEBUG : DEBUG_BUS; -- Passed to all modeles to probe signals
+signal digit : std_logic_vector(3 downto 0) := "1110";
+signal nybble : std_logic_vector(3 downto 0);
+
 begin
 
 	cpu : entity cpu port map (
@@ -287,13 +311,13 @@ begin
 			serialInput.CTS => '1',
 			serialOutput => SO,
 			
-			-- Multiplexor interface not connected to anything yet
-			MPX_BUS_O => open,
-			MPX_BUS_I => (others=>'0'),
-			MPX_TAGS_O => open,
-			MPX_TAGS_I => (others=>'0'),
+			-- Multiplexor interface
+			MPX_BUS_O => ch_BUSO,
+			MPX_BUS_I => ch_BUSI,
+			MPX_TAGS_O => ch_TAGSO,
+			MPX_TAGS_I => ch_TAGSI,
 			
-			DEBUG => DEBUG, -- Used to pass debug signals up to the top level for output
+			DEBUG => open, -- Used to pass debug signals up to the top level for output
 			N60_CY_TIMER_PULSE => N60_CY_TIMER_PULSE, -- Actually 50Hz
 			Clock1ms => Clock1ms,
 			SwSlow => SwSlow,
@@ -393,6 +417,104 @@ begin
 		Indicators(242 to 245) => SW_H(0 to 3),
 		Indicators(246 to 249) => SW_J(0 to 3)
 	);
+
+	frontPanel_led : entity led_panel port map (
+		clk => clk,
+		SPI_CLK => led_clk,
+		SPI_CS => led_cs,
+		SPI_MOSI => led_data,
+--		SPI_CLK => open,
+--		SPI_CS => open,
+--		SPI_MOSI => open,
+
+		Indicators(			  0) => '0', -- Constant
+		Indicators(  		  1) => IND_SALS.SALS_PN,
+		Indicators(  2 to	  7) => IND_SALS.SALS_CN,
+		Indicators(  		  8) => IND_SALS.SALS_PA,
+		Indicators(			  9) => '0', -- LP
+		Indicators(			 10) => W_IND_P,
+		Indicators( 11 to	 15) => WX_IND(0 to 4),
+		Indicators(			 16) => X_IND_P,
+		Indicators( 17 to	 24) => WX_IND(5 to 12),
+		Indicators(			 25) => IND_SALS.SALS_PS,
+		Indicators( 26 to	 29) => IND_SALS.SALS_CH,
+		Indicators( 30 to	 33) => IND_SALS.SALS_CL,
+		Indicators(			 34) => IND_SALS.SALS_AA,
+		Indicators( 35 to	 38) => IND_SALS.SALS_CA,
+		Indicators( 39 to	 40) => IND_SALS.SALS_CB,
+		Indicators( 41 to	 43) => IND_SALS.SALS_CM,
+		Indicators( 44 to	 45) => IND_SALS.SALS_CU,
+		Indicators(			 46) => IND_SALS.SALS_AK,
+		Indicators(			 47) => IND_SALS.SALS_PK,
+		Indicators( 48 to	 51) => IND_SALS.SALS_CK,
+		Indicators(			 52) => IND_SALS.SALS_PC,
+		Indicators( 53 to	 56) => IND_SALS.SALS_CD,
+		Indicators( 57 to	 59) => IND_SALS.SALS_CF,
+		Indicators( 60 to	 61) => IND_SALS.SALS_CG,
+		Indicators( 62 to	 63) => IND_SALS.SALS_CV,
+		Indicators( 64 to	 66) => IND_SALS.SALS_CC,
+		Indicators(			 67) => IND_SALS.SALS_SA,
+		Indicators( 68 to	 71) => IND_SALS.SALS_CS,
+		-- Skip 18 + 9 + 9 + 5 + 9 + 6 = 56 for SX1 (72 to 127)
+		Indicators( 72	to	127) => "00000000000000000000000000000000000000000000000000000000",
+		-- If we had SX2 there would be another 56 here
+		-- MPX
+		Indicators(			128) => IND_OPNL_IN,
+		Indicators(			129) => IND_ADDR_IN,
+		Indicators(			130) => IND_STATUS_IN,
+		Indicators(			131) => IND_SERV_IN,
+		Indicators(			132) => IND_SEL_OUT,
+		Indicators(			133) => IND_ADDR_OUT,
+		Indicators(			134) => IND_CMMD_OUT,
+		Indicators(			135) => IND_SERV_OUT,
+		Indicators(			136) => IND_SUPPR_OUT,
+		Indicators(			137) => IND_FO_P,
+		Indicators(138	to	145) => IND_FO,
+		-- MSAR
+		Indicators(			146) => IND_MAIN_STG,
+		Indicators(       147) => IND_M(8),
+		Indicators(148 to 155) => IND_M(0 to 7),
+		Indicators(       156) => IND_N(8),
+		Indicators(157 to 164) => IND_N(0 to 7),
+		Indicators(			165) => IND_LOC_STG,
+		-- MSDR
+		Indicators(			166) => IND_MSDR_P,
+		Indicators(167 to 174) => IND_MSDR,
+		-- ALU
+		Indicators(			175) => IND_ALU(8),
+		Indicators(176	to	183) => IND_ALU(0 to 7),
+		Indicators(			184) => IND_EX,
+		Indicators(			185) => IND_CY_MATCH,
+		Indicators(			186) => IND_ALLOW_WR,
+		Indicators(			187) => IND_CHK_STOR_ADDR,
+		Indicators(			188) => IND_CHK_STOR_DATA,
+		Indicators(			189) => IND_1050_INTRV,
+		Indicators(			190) => IND_1050_REQ,
+		Indicators(			191) => IND_CHK_B_REG,
+		Indicators(			192) => IND_CHK_A_REG,
+		Indicators(			193) => IND_CHK_ALU,
+		-- A,B
+		Indicators(			194) => IND_A(8),
+		Indicators(195	to	202) => IND_A(0 to 7),
+		Indicators(			203) => IND_B(8),
+		Indicators(204 to 211) => IND_B(0 to 7),
+		Indicators(			212) => IND_MPX,
+		Indicators(			213) => IND_SEL_CHNL,
+		Indicators(			214) => IND_COMP_MODE,
+		Indicators(			215) => IND_CHK_ROS_ADDR,
+		Indicators(			216) => IND_CHK_ROS_SALS,
+		Indicators(			217) => IND_CHK_CTRL_REG,
+		-- The following indicators mimic the 8 Hex rotary switches to make it easier to set them
+		Indicators(218 to 221) => SW_A(0 to 3),
+		Indicators(222 to 225) => SW_B(0 to 3),
+		Indicators(226 to 229) => SW_C(0 to 3),
+		Indicators(230 to 233) => SW_D(0 to 3),
+		Indicators(234 to 237) => SW_F(0 to 3),
+		Indicators(238 to 241) => SW_G(0 to 3),
+		Indicators(242 to 245) => SW_H(0 to 3),
+		Indicators(246 to 249) => SW_J(0 to 3)
+	);
+
    -- LEDs are set here		
 	led(0) <= IND_LOAD;
 	led(1) <= IND_TEST;
@@ -402,6 +524,38 @@ begin
 	led(5) <= '0';
  	led(6) <= '0';
 	led(7) <= DEBUG.Probe;
+	
+	-- 7-segment display here
+	sevenSeg : process(Clock1ms)
+	begin
+	if (rising_edge(Clock1ms)) then
+		digit <= digit(2) & digit(1) & digit(0) & digit(3);
+		end if;
+	end process;
+
+	ssdan <= digit;
+	nybble <= (DEBUG.SevenSegment(15 downto 12) and (3 downto 0=>not digit(3)))
+		or (DEBUG.SevenSegment(11 downto 8) and (3 downto 0=>not digit(2)))
+		or (DEBUG.SevenSegment(7 downto 4) and (3 downto 0=>not digit(1)))
+		or (DEBUG.SevenSegment(3 downto 0) and (3 downto 0=>not digit(0)));
+		
+	ssd(6 downto 0) <= "1000000" when nybble = "0000" else
+			"1111001" when nybble = "0001" else
+			"0100100" when nybble = "0010" else
+			"0110000" when nybble = "0011" else
+			"0011001" when nybble = "0100" else
+			"0010010" when nybble = "0101" else
+			"0000010" when nybble = "0110" else
+			"1111000" when nybble = "0111" else
+			"0000000" when nybble = "1000" else
+			"0010000" when nybble = "1001" else
+			"0001000" when nybble = "1010" else
+			"0000011" when nybble = "1011" else
+			"1000110" when nybble = "1100" else
+			"0100001" when nybble = "1101" else
+			"0000110" when nybble = "1110" else
+			"0001110";
+	ssd(7) <= '1';
 	
 	frontPanel_switches: entity switches port map (
 	   -- Hardware switch inputs and scan outputs
@@ -504,6 +658,18 @@ begin
 				);
 		sramaddr(17) <= '0';
 		
+		spi_ch : entity channel_interface port map(
+			SPI_CS => ch_cs,
+			SPI_CLK => ch_clk,
+			SPI_MOSI => ch_do,
+			SPI_MISO => ch_di,
+			MPX_BUS_O => ch_BUSO,
+			MPX_BUS_I => ch_BUSI,
+			MPX_TAGS_O => ch_TAGSO,
+			MPX_TAGS_I => ch_TAGSI,
+			Debug => Debug,
+			clk => clk
+		);
 		
 		DEBUG.Selection <= CONV_INTEGER(unsigned(SW_J));
 		

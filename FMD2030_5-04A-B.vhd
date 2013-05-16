@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright  2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -176,7 +176,7 @@ BEGIN
 -- Fig 5-04A
 NW_LCH_Set <= N_CTRL_N and XOR_OR_OR and T2;
 NW_LCH_Reset <= not S_REG_7_BIT or sRECYCLE_RST;
-NW_LCH: FLL port map(NW_LCH_Set,NW_LCH_Reset,NWAIT); --AC1E6,AC1F6
+NW_LCH: FLSRC port map(NW_LCH_Set,NW_LCH_Reset,clk,NWAIT); --AC1E6,AC1F6
 sCLOCK_OUT <= (not NWAIT and CLOCK_ON) or MAN_STOR_OR_DSPLY; -- AC1G6
 CLOCK_OUT <= sCLOCK_OUT;
 CHNL_TO_METER <= not HARD_STOP_LCH and (MPX_METERING_IN or METER_IN_SX1 or METER_IN_SX2); -- AC1K4,AC1F2 ??
@@ -203,16 +203,16 @@ IND_SEL_CHNL <= H_REG_5_PWR or sLAMP_TEST;
 TEST <= (not ROS_CTRL_PROC_SW) or (not RATE_SW_PROC_SW) or (not SW_ADDR_COMP_PROC) or (not ODD) or (not sCHK_SW_PROCESS_SW) or INTRODUCE_ALU_CHK; -- AC1C4,AC1K5,AC1D4,AC1K5 ??
 
 MRS_LCH_Reset <= not LOAD_KEY_SW and not SYSTEM_RESET_SW;
-MRS_LCH: FLL port map(MACH_RST_SW,MRS_LCH_Reset,sMACH_RST_SET_LCH); -- AA2H5,AA2F5
+MRS_LCH: FLSRC port map(MACH_RST_SW,MRS_LCH_Reset,clk,sMACH_RST_SET_LCH); -- AA2H5,AA2F5
 MACH_RST_SET_LCH <= sMACH_RST_SET_LCH;
 MACH_RST_SET_LCH_DLYD <= sMACH_RST_SET_LCH; -- ?? Should be delayed by 1 gate
 -- MACH_RST_DELAY: AR port map(D=>sMACH_RST_SET_LCH,CLK=>Clk,Q=>MACH_RST_SET_LCH_DLYD); -- Delay
 FORCE_DEAD_CY <= SW_SAR_RESTART and T4 and MATCH_SET_MACH_RST_LCH; -- AB3B6
-FDC_LCH: FLL port map(FORCE_DEAD_CY,T3,sFORCE_DEAD_CY_LCH); -- AB3L3
+FDC_LCH: FLSRC port map(FORCE_DEAD_CY,T3,clk,sFORCE_DEAD_CY_LCH); -- AB3L3
 FORCE_DEAD_CY_LCH <= sFORCE_DEAD_CY_LCH;
 
 EEC_LCH_Set <= T2 and (CL_SALS(0) and CL_SALS(1) and CL_SALS(2) and CL_SALS(3)); -- ?? additional NOT
-EEC_LCH: FLL port map(EEC_LCH_Set,T1,sEND_OF_E_CY_LCH); -- AC1G4 ?? Reset input is unlabeled
+EEC_LCH: FLSRC port map(EEC_LCH_Set,T1,clk,sEND_OF_E_CY_LCH); -- AC1G4 ?? Reset input is unlabeled
 END_OF_E_CY_LCH <= sEND_OF_E_CY_LCH;
 END_OF_E_CYCLE <= sEND_OF_E_CY_LCH or INH_ROSAR_SET; -- AC1J7
 
@@ -221,18 +221,18 @@ MATCH_SET_MACH_RST_LCH <= ((SW_SAR_RESTART and sMATCH_LCH and not ALLOW_WRITE_DL
 
 FIJ_LCH_Set <= (MATCH_SET_MACH_RST_LCH and CLOCK_ON) or SET_IC_LCH; -- ?? *not* MATCH_SET_MACH_RST_LCH & *not* CLOCK_ON ??
 FIJ_LCH_Reset <= MACH_RST_3 or (T1 and FORCE_IJ_PULSE);
-FIJ_LCH: FLL port map(FIJ_LCH_Set,FIJ_LCH_Reset,sFORCE_IJ_REQ); -- AC1E6,AC1H6
+FIJ_LCH: FLSRC port map(FIJ_LCH_Set,FIJ_LCH_Reset,clk,sFORCE_IJ_REQ); -- AC1E6,AC1H6
 FORCE_IJ_REQ <= sFORCE_IJ_REQ;
 MACH_START_RST <= (sFORCE_IJ_REQ and not FORCE_IJ_REQ_LCH) or START_SW_RST or MACH_RST_6; -- AB3J5,AB3H3
 
 CR_LCH_Set <= ANY_MACH_CHK and CHK_RESTART_SW;
 CR_LCH_Reset <= ANY_PRIORITY_LCH or sMACH_CHK_RST;
-CR_LCH: FLL port map(CR_LCH_Set,CR_LCH_Reset,CHK_RESTT_LCH); -- AB3H4,AC1H6
+CR_LCH: FLSRC port map(CR_LCH_Set,CR_LCH_Reset,clk,CHK_RESTT_LCH); -- AB3H4,AC1H6
 
 CHK_RESTART_SW <= SW_CHK_RESTART;
 -- Diagnostic latch is not in the FMD but must have appeared later
 -- It is set on Sys Reset and reset by the YL / 0->DIAG function (Alt-CK=0000)
-DIAG_FL: FLL port map(S=>MACH_RST_6,R=>DIAG_LATCH_RST,Q=>DIAG_LATCH);
+DIAG_FL: FLSRC port map(S=>MACH_RST_6,R=>DIAG_LATCH_RST,C=>clk,Q=>DIAG_LATCH);
 
 sDIAGNOSTIC_SW <= SW_DIAGNOSTIC or DIAG_LATCH;
 DIAGNOSTIC_SW <= sDIAGNOSTIC_SW;
@@ -258,7 +258,7 @@ CHK_RST_SW <= SW_CHK_RST; -- AB3F5
 
 MR_LCH_Set <= FORCE_DEAD_CY or MACH_RST_6;
 MR_LCH_Reset <= HZ_DEST_RST or SW_ROAR_RST; -- ?? *not* SW_ROAR_RST
-MR_LCH: FLL port map(MR_LCH_Set,MR_LCH_Reset,sMACH_RST_LCH); -- AB3F2,AB3J4
+MR_LCH: FLSRC port map(MR_LCH_Set,MR_LCH_Reset,clk,sMACH_RST_LCH); -- AB3F2,AB3J4
 MACH_RST_LCH <= sMACH_RST_LCH;
 
 GSWX_LCH_Set <= (SW_ROAR_RST and ALLOW_MAN_OPERATION) or
@@ -267,7 +267,7 @@ GSWX_LCH_Set <= (SW_ROAR_RST and ALLOW_MAN_OPERATION) or
 	(not ALLOW_WRITE_DLYD and ROAR_RESTT_SW_ORED and sMATCH) or
 	(SW_ROAR_RESTT_STOR_BYPASS and CHK_RESTT_LCH);
 GSWX_LCH_Reset <= MACH_RST_SW or (T3 and GT_SW_TO_WX_LCH);
-GSWX_LCH: FLL port map(GSWX_LCH_Set,GSWX_LCH_Reset,sGT_SWS_TO_WX_REG); -- AC1H5,AC1H7,AC1H4,AC1K5,AC1J7
+GSWX_LCH: FLSRC port map(GSWX_LCH_Set,GSWX_LCH_Reset,clk,sGT_SWS_TO_WX_REG); -- AC1H5,AC1H7,AC1H4,AC1K5,AC1J7
 
 GT_SWS_TO_WX_PWR <= not sMACH_RST_LCH and sGT_SWS_TO_WX_REG; -- AC1E7
 
@@ -301,7 +301,7 @@ ANDWX <= (WX_REG_BUS(0) xor not ABCD_SW_BUS(3)) and OEA1 and OEA2 and OEA3 and G
 
 M_LCH_Set <= ANDMN or ANDWX;
 M_LCH_Reset <= RST_MATCH or MACH_RST_SW;
-M_LCH: FLL port map(M_LCH_Set,M_LCH_Reset,sMATCH_LCH); -- AC1L7,AC1L4
+M_LCH: FLSRC port map(M_LCH_Set,M_LCH_Reset,clk,sMATCH_LCH); -- AC1L7,AC1L4
 MATCH_LCH <= sMATCH_LCH;
 sMATCH <= sMATCH_LCH and not CLOCK_OFF; -- AC1H5
 MATCH <= sMATCH;

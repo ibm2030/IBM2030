@@ -43,19 +43,19 @@ USE ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 package Gates_package is
-component PH is port(D,L: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
-component PHV4 is port(D : in STD_LOGIC_VECTOR(0 to 3); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 3)); end component;
-component PHV5 is port(D : in STD_LOGIC_VECTOR(0 to 4); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 4)); end component;
-component PHV8 is port(D : in STD_LOGIC_VECTOR(0 to 7); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 7)); end component;
-component PHV9 is port(D : in STD_LOGIC_VECTOR(0 to 8); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 8)); end component;
-component PHV13 is port(D : in STD_LOGIC_VECTOR(0 to 12); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 12)); end component;
-component PHR is port(D,L,R: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
-component PHRV is port(D : in STD_LOGIC_VECTOR; L,R: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end component;
-component PHSR is port(D,L,S,R: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
-component FLE is port(S,R,clock: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
-component FLL is port(S,R: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
-component FLV is port(S,R: in STD_LOGIC_VECTOR; clock: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end component;
-component FLVL is port(S,R: in STD_LOGIC_VECTOR; signal Q:out STD_LOGIC_VECTOR); end component;
+component PH is port(D,L,C: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
+component PHV4 is port(D : in STD_LOGIC_VECTOR(0 to 3); L,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 3)); end component;
+component PHV5 is port(D : in STD_LOGIC_VECTOR(0 to 4); L,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 4)); end component;
+component PHV8 is port(D : in STD_LOGIC_VECTOR(0 to 7); L,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 7)); end component;
+component PHV9 is port(D : in STD_LOGIC_VECTOR(0 to 8); L,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 8)); end component;
+component PHV13 is port(D : in STD_LOGIC_VECTOR(0 to 12); L,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 12)); end component;
+component PHR is port(D,L,R,C: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
+component PHRV is port(D : in STD_LOGIC_VECTOR; L,R,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end component;
+component PHSR is port(D,L,S,R,C: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
+component FLSRC is port(S,R,C: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
+component FLRSC is port(S,R,C: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
+component FLVC is port(S,R: in STD_LOGIC_VECTOR; C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end component;
+component FLVLC is port(S,R: in STD_LOGIC_VECTOR; C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end component;
 --component FLAO is port( S1,S2,S3,R1,R2: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
 function mux(sel : in STD_LOGIC; D : in STD_LOGIC_VECTOR) return STD_LOGIC_VECTOR;
 function EvenParity(v : in STD_LOGIC_VECTOR) return STD_LOGIC;
@@ -69,33 +69,38 @@ end Gates_package;
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity FLE is port(S,R,clock: in STD_LOGIC; signal Q:out STD_LOGIC); end;
+USE work.Gates_package.all;
+entity FLRSC is port(S,R,C: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 
--- FL is no longer an edge-triggered SR flip-flop
-architecture slt of FLE is
+-- FLRSC (fka FL) is no longer an edge-triggered SR flip-flop
+architecture slt of FLRSC is
 begin
-process (S,R)
+process (S,R,C)
 begin
-if (R='1') then -- Reset takes priority
-	Q<='0' after 1ns;
-elsif (S='1') then
-	Q<='1' after 1ns;
+if rising_edge(C) then
+	if (R='1') then -- Reset takes priority
+		Q<='0';
+	elsif (S='1') then
+		Q<='1';
+	end if;
 end if;
 end process;
 end slt;
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity FLL is port(S,R: in STD_LOGIC; signal Q:out STD_LOGIC); end;
--- FLL is a level-triggered SR flip-flop
-architecture slt of FLL is
+entity FLSRC is port(S,R,C: in STD_LOGIC; signal Q:out STD_LOGIC); end;
+-- FLSRC (fka FLL) is a level-triggered SR flip-flop
+architecture slt of FLSRC is
 begin
-process(S,R)
+process(S,R,C)
 begin
-if (S='1') then -- Set takes priority
-	Q<='1' after 1ns;
-elsif (R='1') then
-	Q<='0' after 1ns;
+if rising_edge(C) then
+	if (S='1') then -- Set takes priority
+		Q<='1' after 1ns;
+	elsif (R='1') then
+		Q<='0' after 1ns;
+	end if;
 end if;
 end process;
 end slt;
@@ -125,163 +130,130 @@ begin
 end;
 
 end Gates_package;
+
 -- Simple PH (polarity hold) latch
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PH is port( D,L: in STD_LOGIC; signal Q:out STD_LOGIC); end;
+USE work.Gates_package.all;
+entity PH is port( D,L,C: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 
 architecture slt of PH is
 begin
-process(L,D)
-begin
-if (L='1') then
-	Q <= D;
-end if;
-end process;
+	PH1: PHSR port map(D=>D,S=>'0',R=>'0',L=>L,C=>C,Q=>Q);
 end slt;
 
 -- Simple PH (polarity hold) latch, 4 bit STD_LOGIC_VECTOR version
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHV4 is port(D: in STD_LOGIC_VECTOR(0 to 3); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 3)); end;
+USE work.Gates_package.all;
+entity PHV4 is port(D: in STD_LOGIC_VECTOR(0 to 3); L,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 3)); end;
 
 architecture slt of PHV4 is
 alias D1 : STD_LOGIC_VECTOR(Q'range) is D;
 begin
-process (L,D)
-begin
-for i in Q'range loop
-if (L='1') then
-	Q(i) <= D1(i);
-end if;
-end loop;
-end process;
+GENPH: for i in Q'range generate
+	PH1: PH port map(D1(i),L,C,Q(i));
+end generate;
 end slt;
 
 -- Simple PH (polarity hold) latch, 5 bit STD_LOGIC_VECTOR version
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHV5 is port(D: in STD_LOGIC_VECTOR(0 to 4); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 4)); end;
+USE work.Gates_package.all;
+entity PHV5 is port(D: in STD_LOGIC_VECTOR(0 to 4); L,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 4)); end;
 
 architecture slt of PHV5 is
 alias D1 : STD_LOGIC_VECTOR(Q'range) is D;
 begin
-process (L,D)
-begin
-for i in Q'range loop
-if (L='1') then
-	Q(i) <= D1(i);
-end if;
-end loop;
-end process;
+GENPHV5: for i in Q'range generate
+	PH1: PH port map(D1(i),L,C,Q(i));
+end generate;
 end slt;
 
 -- Simple PH (polarity hold) latch, 8 bit STD_LOGIC_VECTOR version
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHV8 is port(D: in STD_LOGIC_VECTOR(0 to 7); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 7)); end;
+USE work.Gates_package.all;
+entity PHV8 is port(D: in STD_LOGIC_VECTOR(0 to 7); L,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 7)); end;
 
 architecture slt of PHV8 is
 alias D1 : STD_LOGIC_VECTOR(Q'range) is D;
 begin
-process (L,D)
-begin
-for i in Q'range loop
-if (L='1') then
-	Q(i) <= D1(i);
-end if;
-end loop;
-end process;
+GENPHV8: for i in Q'range generate
+	PH1: PH port map(D1(i),L,C,Q(i));
+end generate;
 end slt;
 
 -- Simple PH (polarity hold) latch, 9 bit STD_LOGIC_VECTOR version
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHV9 is port(D: in STD_LOGIC_VECTOR(0 to 8); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 8)); end;
+USE work.Gates_package.all;
+entity PHV9 is port(D: in STD_LOGIC_VECTOR(0 to 8); L,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 8)); end;
 
 architecture slt of PHV9 is
 alias D1 : STD_LOGIC_VECTOR(Q'range) is D;
 begin
-process (L,D)
-begin
-for i in Q'range loop
-if (L='1') then
-	Q(i) <= D1(i);
-end if;
-end loop;
-end process;
+GENPHV9: for i in Q'range generate
+	PH1: PH port map(D1(i),L,C,Q(i));
+end generate;
 end slt;
 
 -- Simple PH (polarity hold) latch, 13 bit STD_LOGIC_VECTOR version
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHV13 is port(D: in STD_LOGIC_VECTOR(0 to 12); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 12)); end;
+USE work.Gates_package.all;
+entity PHV13 is port(D: in STD_LOGIC_VECTOR(0 to 12); L,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 12)); end;
 
 architecture slt of PHV13 is
 alias D1 : STD_LOGIC_VECTOR(Q'range) is D;
 begin
-process (L,D)
-begin
-for i in Q'range loop
-if (L='1') then
-	Q(i) <= D1(i);
-end if;
-end loop;
-end process;
+GENPHV13: for i in Q'range generate
+	PH1: PH port map(D1(i),L,C,Q(i));
+end generate;
 end slt;
 
 -- PH Latch with reset
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHR is port( D: in STD_LOGIC; L,R: in STD_LOGIC; signal Q:out STD_LOGIC); end;
+USE work.Gates_package.all;
+entity PHR is port( D: in STD_LOGIC; L,R,C: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 
 architecture slt of PHR is
 begin
-process (L,D,R)
-begin
-if (R='1') then
-	Q <= '0';
-elsif (L='1') then
-	Q <= D;
-end if;
-end process;
+	PH1: PHSR port map(D=>D,S=>'0',R=>R,L=>L,C=>C,Q=>Q);
 end slt;
 
 -- PH Latch with reset, STD_LOGIC_VECTOR version
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHRV is port(D: in STD_LOGIC_VECTOR; L,R: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end;
+USE work.Gates_package.all;
+entity PHRV is port(D: in STD_LOGIC_VECTOR; L,R,C: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end;
 
 architecture slt of PHRV is
 alias D1 : STD_LOGIC_VECTOR(Q'range) is D;
 begin
-process (L,R,D1)
-begin
-for i in Q'range loop
-if (R='1') then
-   Q(i) <= '0';
-elsif (L='1') then
-	Q(i)<=D1(i);
-end if;
-end loop;
-end process;
+GENPHR: for i in Q'range generate
+	PH1: PHR port map(D1(i),L,R,C,Q(i));
+end generate;
 end slt;
 
 --- PH Latch with set & reset
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHSR is port(D,L,S,R: in STD_LOGIC; signal Q:out STD_LOGIC); end;
+entity PHSR is port(D,L,S,R,C: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 
 architecture slt of PHSR is
 begin
-process (L,D,S,R)
+process (L,D,S,R,C)
 begin
-if (R='1') then
-	Q <= '0';
-elsif (S='1') then
-	Q <= '1';
-elsif (L='1') then
-	Q <= D;
+if rising_edge(C) then
+	if (R='1') then
+		Q <= '0';
+	elsif (S='1') then
+		Q <= '1';
+	elsif (L='1') then
+		Q <= D;
+	end if;
 end if;
 end process;
 end slt;
@@ -289,16 +261,16 @@ end slt;
 -- Simple FL (SR) flipflops
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity FLV is port( S,R: in STD_LOGIC_VECTOR; signal clock: STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end;
+entity FLVC is port( S,R: in STD_LOGIC_VECTOR; C: STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end;
 
-architecture slt of FLV is
+architecture slt of FLVC is
 alias S1 : STD_LOGIC_VECTOR(Q'range) is S;
 alias R1 : STD_LOGIC_VECTOR(Q'range) is R;
 signal S2,R2 : STD_LOGIC_VECTOR(Q'range) := (others=>'0');
 begin
-process (S1,R1,clock)
+process (S1,R1,C)
 begin
-if (rising_edge(clock)) then
+if rising_edge(C) then
 	for i in Q'range loop
 		if (R(i)/=R2(i) and R(i)='1') then
 			Q(i) <= '0';
@@ -314,21 +286,23 @@ end slt;
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity FLVL is port( S,R: in STD_LOGIC_VECTOR; signal Q:out STD_LOGIC_VECTOR); end;
+entity FLVLC is port( S,R: in STD_LOGIC_VECTOR; C : in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end;
 
-architecture slt of FLVL is
+architecture slt of FLVLC is
 alias S1 : STD_LOGIC_VECTOR(Q'range) is S;
 alias R1 : STD_LOGIC_VECTOR(Q'range) is R;
 begin
-process (S1,R1)
+process (S1,R1,C)
 begin
-for i in Q'range loop
-if (S1(i)='1') then -- Set takes priority
-	Q(i)<='1';
-elsif (R1(i)='1') then
-	Q(i)<='0';
+if rising_edge(C) then
+	for i in Q'range loop
+	if (S1(i)='1') then -- Set takes priority
+		Q(i)<='1';
+	elsif (R1(i)='1') then
+		Q(i)<='0';
+	end if;
+	end loop;
 end if;
-end loop;
 end process;
 end slt;
 
