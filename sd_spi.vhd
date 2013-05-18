@@ -333,7 +333,7 @@ begin
 		error_code,crc7,in_crc16,out_crc16,slow_clock,card_present,
 		card_write_prot,SDin_Taken,sCS,transfer_data_out,din_valid,din,
 		crcLow,sDavail,sr_return_state )
-	constant WriteTimeoutCount : integer := clockRate/1000 * WRITE_TIMEOUT;
+	constant WriteTimeoutCount : integer := clockRate/18000 * WRITE_TIMEOUT;
 	begin
 		assert(WriteTimeoutCount > 0) report "WriteTimeoutCount is 0" severity failure ;
 		new_state <= state;
