@@ -37,32 +37,6 @@ use work.Buses_package.all;
 Library UNISIM;
 use UNISIM.vcomponents.all;
 
--- The channel data is transferred via an SPI link
--- The CPU end (this end) is the master and repeatedly polls the slave (device) end
--- At a 8.3MHz clock rate, this updates about every 2us
--- Each transfer is 16 bits as follows (MSB to LSB)
--- CPU to Device
--- 15		Operational Out
--- 14		Suppress Out
--- 13		Clock Out
--- 12		Select Out
--- 11		Hold Out
--- 10		Address Out \
---  9		Command Out  \
---  8		Service Out   \ At most one of these 3 can be active
---  7 - 0 Data Out
---
--- Device to CPU
--- 15		Operational In
--- 14		Request In
--- 13		
--- 12		Select In
--- 11		
--- 10		Address In \
---  9		Status In   \
---  8		Service In   \ At most one of these 3 can be active
---  7 - 0 Data In
-
 -- CCW opcodes:
 -- 	DASD
 --    02 = Read IPL (CC=00,Hh=00, Read R1 Data)
@@ -80,10 +54,6 @@ use UNISIM.vcomponents.all;
 --    1E = Read Count, Key & Data (*)
 -- (*) = Can add x'80' for multi-track
 --
--- Initially all Seeks are ignored, and all Reads read the SD card from the start (Adr=0)
--- Initially all Reads return incrementing values starting with 00
---
-
 -- Fig numbers like 2-34a refer to the 2841 FETO manual
 
 entity channel_interface IS
