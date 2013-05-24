@@ -103,11 +103,13 @@ port (
 	card_write_prot : in std_logic;	-- Can be fixed to '0' if no switch is present, or '1' to make a Read-Only interface
 
 	rd : in std_logic;
+	rd_multiple : in std_logic;
 	dout : out std_logic_vector(7 downto 0);
 	dout_avail : out std_logic;
 	dout_taken : in std_logic;
 	
 	wr : in std_logic;
+	wr_multiple : in std_logic;
 	din : in std_logic_vector(7 downto 0);
 	din_valid : in std_logic;
 	din_taken : out std_logic;
@@ -143,12 +145,16 @@ type states is (
   
 	IDLE, IDLE2,					-- wait for read or write pulse
 	READ_BLOCK,						-- Initiate Read command
+	READ_MULTIPLE_BLOCK,			-- Initiate Read Multiple command
 	READ_BLOCK_R1, READ_BLOCK_WAIT_CHECK,	-- Wait for data to appear
 	READ_BLOCK_DATA,				-- Receive bytes and output
 	READ_BLOCK_SKIP,				-- Skip remaining data if read is aborted
 	READ_BLOCK_CRC,				-- Receive CRC bytes
 	READ_BLOCK_CHECK_CRC,		-- Check final CRC=0
 	READ_BLOCK_FINISH,			-- Wait until RD drops
+	READ_MULTIPLE_BLOCK_STOP,
+	READ_MULTIPLE_BLOCK_STOP_2,
+	READ_MULTIPLE_BLOCK_STOP_WAIT,
 	
 	SEND_RCV,
 	SEND_RCV_CLK1,
@@ -159,8 +165,9 @@ type states is (
 	SEND_CMD_4,
 	SEND_CMD_5,
 	
-	WRITE_BLOCK_CMD,
-	WRITE_BLOCK_INIT,				-- Initiate write command
+	WRITE_BLOCK_CMD,				-- Initiate Write command
+	WRITE_MULTIPLE_BLOCK_CMD,	-- Initiate Write Multiple command
+	WRITE_BLOCK_INIT,
 	WRITE_BLOCK_DATA_TOKEN,		-- Send data token
 	START_WRITE_BLOCK_DATA,		-- Set up for data loop
 	WRITE_BLOCK_DATA,				-- Start sending write data
@@ -232,6 +239,8 @@ signal set_byte_counter : boolean := false;
 signal bit_counter, new_bit_counter : integer range 0 to 160 := 0;
 signal slow_clock, new_slow_clock : boolean := true;
 signal clock_divider, new_clock_divider : integer range 0 to slowClockDivider := 0;
+signal multiple, new_multiple : boolean := false;
+signal skipFirstR1Byte, new_skipFirstR1Byte : boolean := false;
 
 begin
 	-- This process updates all the state variables from the values calculated
@@ -276,6 +285,8 @@ begin
 				dout <= "00000000";
 				dout_avail <= '0';
 				din_taken <= '0';
+				multiple <= false;
+				skipFirstR1Byte <= false;
 			else
 				-- State variables
 				state <= new_state;
@@ -317,6 +328,8 @@ begin
 					dout_avail <= '0';
 				end if;
 				din_taken <= new_din_taken;
+				multiple <= new_multiple;
+				skipFirstR1Byte <= new_skipFirstR1Byte;
 			end if;
 		end if;
   end process;
@@ -327,7 +340,7 @@ begin
 	-- Some values are initialised to their current values (new_X <= X)
 	-- Some values are initialised to Don't Care (new_X <= '-')
 	-- Updating of the latter values is under control of the set_X signal
-	calcStateVariables: process(miso,rd,wr,
+	calcStateVariables: process(miso,rd,rd_multiple,wr_multiple,
 		state,bit_counter,card_type,byte_counter,data_in,data_out,
 		address,addr,dout_taken,error,cmd_out,return_state,clock_divider,
 		error_code,crc7,in_crc16,out_crc16,slow_clock,card_present,
@@ -365,6 +378,8 @@ begin
 		new_slow_clock <= slow_clock;
 		new_clock_divider <= clock_divider;
 		new_transfer_data_out <= transfer_data_out;
+		new_multiple <= multiple;
+		
 		case state is
 		
 		when RST =>
@@ -550,14 +565,28 @@ begin
 				new_error <= '0';
 				new_error_code <= ec_NoError;
 				new_address <= addr; set_address <= true;
+				new_multiple <= false;
 				new_state <= READ_BLOCK;
-			elsif wr='1' then
+			elsif rd_multiple='1' then
+				new_cs <= '0';
+				new_error <= '0';
+				new_error_code <= ec_NoError;
+				new_address <= addr; set_address <= true;
+				new_multiple <= true;
+				new_state <= READ_MULTIPLE_BLOCK;
+			elsif wr='1' or wr_multiple='1' then
 				if card_write_prot='0' then
 					new_cs <= '0';
 					new_error <= '0';
 					new_error_code <= ec_NoError;
 					new_address <= addr; set_address <= true;
-					new_state <= WRITE_BLOCK_CMD;
+					if wr='1' then
+						new_multiple <= false;
+						new_state <= WRITE_BLOCK_CMD;
+					else
+						new_multiple <= true;
+						new_state <= WRITE_MULTIPLE_BLOCK_CMD;
+					end if;
 				else
 					new_error <= '1';
 					new_error_code <= ec_WPError;
@@ -578,6 +607,18 @@ begin
 			new_return_state <= READ_BLOCK_R1; set_return_state <= true;
 			new_state <= SEND_CMD;
 			
+		when READ_MULTIPLE_BLOCK =>
+			if card_type=ct_SDHC then
+				-- SDHC: Use block address
+				new_cmd_out <= x"52" & address(31 downto 0);
+			else
+				-- SDV1,2: Use byte address
+				new_cmd_out <= x"52" & address(22 downto 0) & "000000000";
+			end if;
+			set_cmd_out <= true;
+			new_return_state <= READ_BLOCK_R1; set_return_state <= true;
+			new_state <= SEND_CMD;
+			
 		when READ_BLOCK_R1 => -- Get R1 response
 			if data_in/="00000000" then -- Some error
 				new_error <= '1';
@@ -590,7 +631,7 @@ begin
 			
 		when READ_BLOCK_WAIT_CHECK => -- Wait for Read token, or Error token
 			new_in_crc16 <= (others=>'0');
-			if rd='0' then
+			if rd='0' and rd_multiple='0' then
 				-- Abort transfer
 				new_state <= READ_BLOCK_FINISH; -- And then to IDLE
 			elsif (data_in="11111110") then
@@ -609,7 +650,7 @@ begin
 			end if;
 			
 		when READ_BLOCK_DATA =>
-			if (rd='0') then
+			if rd='0' and rd_multiple='0' then
 				-- Abort transfer
 				new_state <= READ_BLOCK_SKIP; -- And then to IDLE
 			else
@@ -625,12 +666,15 @@ begin
 			
 		when READ_BLOCK_SKIP => -- Skip all remaining bytes without transferring them
 			new_transfer_data_out <= false;
-			if (byte_counter=0) then
+			if multiple then
+				new_state <= READ_MULTIPLE_BLOCK_STOP;
+			elsif (byte_counter=0) then
 				new_sr_return_state <= READ_BLOCK_CRC; set_sr_return_state <= true;
+				new_state <= SEND_RCV;
 			else
 				new_sr_return_state <= READ_BLOCK_SKIP; set_sr_return_state <= true;
+				new_state <= SEND_RCV;
 			end if;
-			new_state <= SEND_RCV;
 			
 		when READ_BLOCK_CRC =>
 			new_sr_return_state <= READ_BLOCK_CHECK_CRC; set_sr_return_state <= true;
@@ -641,17 +685,46 @@ begin
 			if in_crc16/="0000000000000000" then
 				new_error <= '1';
 				new_error_code <= ec_CRCError;
+				new_state <= READ_BLOCK_FINISH;
+			elsif multiple then
+				-- Start looking for a further data block
+				new_sr_return_state <= READ_BLOCK_WAIT_CHECK; set_sr_return_state <= true;
+				new_state <= SEND_RCV;
+			else
+				new_state <= READ_BLOCK_FINISH;
 			end if;
-			new_state <= READ_BLOCK_FINISH;
 			
 		when READ_BLOCK_FINISH =>
 			new_busy <= '0';
 			new_transfer_data_out <= false;
 			-- Wait for RD to fall after last byte has been transferred
-			if (RD='0') then
+			if (rd='0') and (rd_multiple='0') then
 				new_state <= IDLE;
 			end if;
 			
+		when READ_MULTIPLE_BLOCK_STOP =>
+			-- Send CMD12
+			new_skipFirstR1Byte <= true;
+			new_return_state <= READ_MULTIPLE_BLOCK_STOP_2; set_return_state <= true;
+			new_cmd_out <= x"4C00000000"; set_cmd_out <= true;
+			new_state <= SEND_CMD;
+			
+		when READ_MULTIPLE_BLOCK_STOP_2 =>
+			-- Check R1 and wait for not-busy
+			if data_in/="00000000" then
+				new_state <= RST;
+			end if;
+			new_sr_return_state <= READ_MULTIPLE_BLOCK_STOP_WAIT; set_sr_return_state <= true;
+			new_state <= SEND_RCV;
+			
+		when READ_MULTIPLE_BLOCK_STOP_WAIT =>
+			if data_in/="00000000" then
+				-- No longer busy
+				new_state <= READ_BLOCK_FINISH;
+			else
+				new_state <= SEND_RCV;
+			end if;
+				
 		when WRITE_BLOCK_CMD =>
 			if (card_type=ct_SDHC) then
 				new_cmd_out <= x"58" & address(31 downto 0);
@@ -662,6 +735,8 @@ begin
 			new_return_state <= WRITE_BLOCK_INIT; set_return_state <= true;
 			new_state <= SEND_CMD;
 			
+		when WRITE_MULTIPLE_BLOCK_CMD =>
+		
 		when WRITE_BLOCK_INIT =>
 			if data_in/="00000000" then
 				new_error <= '1';
@@ -800,7 +875,7 @@ begin
 					-- Return
 					new_bit_counter <= 7;
 					-- Reception handling - if DAvail and DTaken are down, transfer new byte into output register and raise DAvail
-					if transfer_data_out then
+					if transfer_data_out and (rd='1' or rd_multiple='1') then
 						if sDavail='0' and dout_taken='0' then
 							-- If we're ok to transfer data, then do it
 							-- otherwise wait here until dout_taken rises
@@ -860,7 +935,11 @@ begin
 			
 		when SEND_CMD_5 =>
 			-- Check for R1 response, receive another byte if not
-			if data_in(R1_ZERO)='0' then
+			if skipFirstR1Byte then
+				-- If doing a CMD12 then skip a byte before looking for R1
+				new_skipFirstR1Byte <= false;
+				new_state <= SEND_RCV;
+			elsif data_in(R1_ZERO)='0' then
 				new_state <= return_state;
 			else
 				if byte_counter=0 then
@@ -903,6 +982,7 @@ begin
 			x"10" when IDLE,
 			x"11" when IDLE2,
 			x"20" when READ_BLOCK,
+			x"20" when READ_MULTIPLE_BLOCK,
 			x"21" when READ_BLOCK_R1,
 			x"22" when READ_BLOCK_WAIT_CHECK,
 			x"23" when READ_BLOCK_DATA,
@@ -910,6 +990,9 @@ begin
 			x"25" when READ_BLOCK_CRC,
 			x"26" when READ_BLOCK_CHECK_CRC,
 			x"27" when READ_BLOCK_FINISH,
+			x"28" when READ_MULTIPLE_BLOCK_STOP,
+			x"29" when READ_MULTIPLE_BLOCK_STOP_2,
+			x"2A" when READ_MULTIPLE_BLOCK_STOP_WAIT,
 			x"30" when SEND_RCV,
 			x"31" when SEND_RCV_CLK1,
 			x"32" when SEND_CMD,
@@ -919,6 +1002,7 @@ begin
 			x"36" when SEND_CMD_4,
 			x"37" when SEND_CMD_5,
 			x"40" when WRITE_BLOCK_CMD,
+			x"40" when WRITE_MULTIPLE_BLOCK_CMD,
 			x"41" when WRITE_BLOCK_INIT,
 			x"42" when WRITE_BLOCK_DATA,
 			x"43" when WRITE_BLOCK_DATA_TOKEN,

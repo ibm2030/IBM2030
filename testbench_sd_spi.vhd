@@ -54,7 +54,9 @@ ARCHITECTURE behavior OF testbench_sd_spi IS
 			card_write_prot : in std_logic;
 
 			rd : in std_logic; -- Should latch addr on rising edge
+			rd_multiple : in std_logic; -- Should latch addr on rising edge
 			wr : in std_logic; -- Should latch addr on rising edge
+			wr_multiple : in std_logic; -- Should latch addr on rising edge
 			addr : in std_logic_vector(31 downto 0);
 			reset : in std_logic;
 			sd_error : out std_logic; -- '1' if an error occurs, reset on next RD or WR
@@ -81,7 +83,9 @@ ARCHITECTURE behavior OF testbench_sd_spi IS
    --Inputs
    signal miso : std_logic := '0';
    signal rd : std_logic := '0';
+   signal rd_multiple : std_logic := '0';
    signal wr : std_logic := '0';
+   signal wr_multiple : std_logic := '0';
    signal addr : std_logic_vector(31 downto 0) := (others => '0');
    signal reset : std_logic := '1';
    signal din : std_logic_vector(7 downto 0) := (others => '0');
@@ -111,7 +115,7 @@ ARCHITECTURE behavior OF testbench_sd_spi IS
 constant CPOL : std_logic := '0';
 signal clk_pol : std_logic;
 
-constant byteArraySize : integer := 2000;
+constant byteArraySize : integer := 3000;
 
 signal rx_byte : std_logic_vector(7 downto 0);
 signal rx_bit_counter : integer := 0;
@@ -226,7 +230,7 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FFFF", -- Wait
 	x"FF00", -- R1 IDLE=0
 	
-	-- CMD17 FF500000000000
+	-- CMD17 FF510000000055
 	x"FFFF", -- 80
 	x"51FF",
 	x"00FF",
@@ -273,7 +277,7 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
 	x"FF09",x"FF39",
 	
-	-- CMD17 FF500000000000
+	-- CMD17 FF510000000055
 	x"FFFF",
 	x"51FF",
 	x"00FF",
@@ -317,6 +321,58 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
 	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
 	x"FF09",x"FF39",
+
+	-- CMD18 FF5200000000E1
+	x"FFFF",
+	x"52FF",
+	x"00FF",
+	x"00FF",
+	x"00FF",
+	x"00FF",
+	x"E1FF",
+	x"FFFF", -- Wait
+	x"FF00", -- R1 IDLE=0
+	x"FFFE", -- Token
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF09",x"FF39",
+	x"FFFF",x"FFFF",x"FFFF",x"FFFF",x"FFFF",
+	x"FFFE", -- Token
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",
+	x"4C0C",x"000D",x"000E",x"000F",x"0010",x"6111", -- CMD12 to stop 4C0000000061
+	x"FF12", -- Last reception byte - NOT R1
+	x"FFFF",x"FF00", -- Delay then R1b
+	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF07", -- Busy signal
 
 	-- CMD24 FF5800000000000
 	x"FFFF", -- 1130
@@ -393,7 +449,9 @@ BEGIN
 			 sd_error_code => sd_error_code,
 			 sd_busy => sd_busy,
           rd => rd,
+          rd_multiple => rd_multiple,
           wr => wr,
+          wr_multiple => wr_multiple,
           addr => addr,
           reset => reset,
           din => din,
@@ -455,7 +513,7 @@ BEGIN
 		assert sd_error='0' report "Error in Read 1";
 		wait for 20ns;
 
-		-- Read from address 0, but stop after receiving 10 bytes
+		-- Read from address 0, but stop after receiving 11 bytes
 		rd <= '1';
 		for b in 0 to 10 loop
 			wait until dout_avail='1';
@@ -470,6 +528,23 @@ BEGIN
 		rd <= '0';
 		wait until sd_busy='0';
 		assert sd_error='0' report "Error in Read 2";
+		wait for 20ns;
+		
+		-- Read Multiple from address 0, but stop after receiving 522 bytes
+		rd_multiple <= '1';
+		for b in 0 to 521 loop
+			wait until dout_avail='1';
+			-- report slv_to_string(dout);
+			wait for 21ns;
+			assert conv_integer(dout)=(b mod 64) report "Read mismatch " & slv_to_string(dout);
+			dout_taken <= '1';
+			wait until dout_avail='0';
+			wait for 21ns;
+			dout_taken <= '0';
+		end loop;
+		rd_multiple <= '0';
+		wait until sd_busy='0';
+		assert sd_error='0' report "Error in Read 3";
 		wait for 20ns;
 		
 		-- Write to address 0
