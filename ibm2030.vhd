@@ -197,6 +197,7 @@ signal	Clock1ms : STD_LOGIC; -- 1kHz clock for single-shots etc.
 signal	DEBUG : DEBUG_BUS; -- Passed to all modeles to probe signals
 signal digit : std_logic_vector(3 downto 0) := "1110";
 signal nybble : std_logic_vector(3 downto 0);
+signal dss : std_logic_vector(15 downto 0);
 
 begin
 
@@ -530,15 +531,15 @@ begin
 	begin
 	if (rising_edge(Clock1ms)) then
 		digit <= digit(2) & digit(1) & digit(0) & digit(3);
+		dss <= DEBUG.SevenSegment;
 		end if;
 	end process;
 
 	ssdan <= digit;
-	nybble <= (DEBUG.SevenSegment(15 downto 12) and (3 downto 0=>not digit(3)))
-		or (DEBUG.SevenSegment(11 downto 8) and (3 downto 0=>not digit(2)))
-		or (DEBUG.SevenSegment(7 downto 4) and (3 downto 0=>not digit(1)))
-		or (DEBUG.SevenSegment(3 downto 0) and (3 downto 0=>not digit(0)));
-		
+	nybble <= (dss(15 downto 12) and (3 downto 0=>not digit(3)))
+		or (dss(11 downto 8) and (3 downto 0=>not digit(2)))
+		or (dss(7 downto 4) and (3 downto 0=>not digit(1)))
+		or (dss(3 downto 0) and (3 downto 0=>not digit(0)));
 	ssd(6 downto 0) <= "1000000" when nybble = "0000" else
 			"1111001" when nybble = "0001" else
 			"0100100" when nybble = "0010" else
