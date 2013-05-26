@@ -374,6 +374,54 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FFFF",x"FF00", -- Delay then R1b
 	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF07", -- Busy signal
 
+	-- CMD18 FF5200000000E1
+	x"FFFF",
+	x"52FF",
+	x"00FF",
+	x"00FF",
+	x"00FF",
+	x"00FF",
+	x"E1FF",
+	x"FFFF", -- Wait
+	x"FF00", -- R1 IDLE=0
+	x"FFFE", -- Token
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF00",x"FF01",x"FF02",x"FF03",x"FF04",x"FF05",x"FF06",x"FF07",x"FF08",x"FF09",x"FF0A",x"FF0B",x"FF0C",x"FF0D",x"FF0E",x"FF0F",
+	x"FF10",x"FF11",x"FF12",x"FF13",x"FF14",x"FF15",x"FF16",x"FF17",x"FF18",x"FF19",x"FF1A",x"FF1B",x"FF1C",x"FF1D",x"FF1E",x"FF1F",
+	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
+	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
+	x"FF09",x"FF39",
+	x"FFFF",x"FFFF",x"4CFE",x"0000",x"0001",x"0002",x"0003",x"6104",
+	x"FF05",x"FF00", -- Delay then R1b
+	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF7F", -- Busy signal
+
 	-- CMD24 FF5800000000000
 	x"FFFF", -- 1130
 	x"58FF",
@@ -502,7 +550,7 @@ BEGIN
 			wait until dout_avail='1';
 			-- report slv_to_string(dout);
 			wait for 101ns;
-			assert conv_integer(dout)=(b mod 64) report "Read mismatch " & slv_to_string(dout);
+			assert conv_integer(dout)=(b mod 64) report "Read 1 mismatch " & slv_to_string(dout);
 			dout_taken <= '1';
 			wait until dout_avail='0';
 			wait for 21ns;
@@ -519,7 +567,7 @@ BEGIN
 			wait until dout_avail='1';
 			-- report slv_to_string(dout);
 			wait for 21ns;
-			assert conv_integer(dout)=(b mod 64) report "Read mismatch " & slv_to_string(dout);
+			assert conv_integer(dout)=(b mod 64) report "Read 2 mismatch " & slv_to_string(dout);
 			dout_taken <= '1';
 			wait until dout_avail='0';
 			wait for 21ns;
@@ -536,7 +584,7 @@ BEGIN
 			wait until dout_avail='1';
 			-- report slv_to_string(dout);
 			wait for 21ns;
-			assert conv_integer(dout)=(b mod 64) report "Read mismatch " & slv_to_string(dout);
+			assert conv_integer(dout)=(b mod 64) report "Read 3 mismatch " & slv_to_string(dout);
 			dout_taken <= '1';
 			wait until dout_avail='0';
 			wait for 21ns;
@@ -545,6 +593,23 @@ BEGIN
 		rd_multiple <= '0';
 		wait until sd_busy='0';
 		assert sd_error='0' report "Error in Read 3";
+		wait for 20ns;
+		
+		-- Read Multiple from address 0, but stop after receiving 512 bytes
+		rd_multiple <= '1';
+		for b in 0 to 511 loop
+			wait until dout_avail='1';
+			-- report slv_to_string(dout);
+			wait for 21ns;
+			assert conv_integer(dout)=(b mod 64) report "Read 4 mismatch " & slv_to_string(dout);
+			dout_taken <= '1';
+			wait until dout_avail='0';
+			wait for 21ns;
+			dout_taken <= '0';
+		end loop;
+		rd_multiple <= '0';
+		wait until sd_busy='0';
+		assert sd_error='0' report "Error in Read 4";
 		wait for 20ns;
 		
 		-- Write to address 0

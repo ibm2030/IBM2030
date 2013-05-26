@@ -699,7 +699,11 @@ begin
 			new_transfer_data_out <= false;
 			-- Wait for RD to fall after last byte has been transferred
 			if (rd='0') and (rd_multiple='0') then
-				new_state <= IDLE;
+				if multiple then
+					new_state <= READ_MULTIPLE_BLOCK_STOP;
+				else
+					new_state <= IDLE;
+				end if;
 			end if;
 			
 		when READ_MULTIPLE_BLOCK_STOP =>
@@ -720,7 +724,11 @@ begin
 		when READ_MULTIPLE_BLOCK_STOP_WAIT =>
 			if data_in/="00000000" then
 				-- No longer busy
-				new_state <= READ_BLOCK_FINISH;
+				new_busy <= '0';
+				new_transfer_data_out <= false;
+				if (rd_multiple='0') then
+					new_state <= IDLE;
+				end if;
 			else
 				new_state <= SEND_RCV;
 			end if;
