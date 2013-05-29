@@ -189,7 +189,9 @@ architecture behavioural of CU is
 	card_write_prot : in std_logic;
 
 	rd : in std_logic; -- Should latch addr on rising edge
+	rd_multiple : in std_logic; -- Should latch addr on rising edge
 	wr : in std_logic; -- Should latch addr on rising edge
+	wr_multiple : in std_logic; -- Should latch addr on rising edge
 	addr : in std_logic_vector(31 downto 0);
 	reset : in std_logic;
 	sd_error : out std_logic; -- '1' if an error occurs, reset on next RD or WR
@@ -313,6 +315,7 @@ architecture behavioural of CU is
 									fat_fileOffsetToClusterSectorOffset_7,
 									
 									-- SD I/O Subroutines
+									sd_ReadTrack,
 									sd_ReadSector,
 									sd_ReadFatSector,
 									sd_ReadSectorGetByte,
@@ -361,10 +364,12 @@ architecture behavioural of CU is
 	signal divider : std_logic_vector(23 downto 0) := (others=>'0');
 	signal sd_reset : STD_LOGIC := '0';
 	signal sd_rd : STD_LOGIC := '0';
+	signal sd_rd_multiple : STD_LOGIC := '0';
 	signal sd_data_in : STD_LOGIC_VECTOR(7 downto 0);
 	signal sd_data_avail : STD_LOGIC;
 	signal sd_data_taken : STD_LOGIC := '0';
 	signal sd_wr : STD_LOGIC := '0';
+	signal sd_wr_multiple : STD_LOGIC := '0';
 	signal sd_data_out : STD_LOGIC_VECTOR(7 downto 0);
 	signal sd_dout_avail : STD_LOGIC;
 	signal sd_dout_taken : STD_LOGIC;
@@ -376,14 +381,14 @@ architecture behavioural of CU is
 	signal sd_fsm_state : STD_LOGIC_VECTOR(7 downto 0);
 
 	-- FAT-to-SD I/O
---	constant trackBufferSize : integer := 511; -- Length-1
-	type t_TrackBuffer is array (0 to 511) of STD_LOGIC_VECTOR(7 downto 0);
+	constant trackBufferSize : integer := 4095; -- Length-1
+	type t_TrackBuffer is array (0 to trackBufferSize) of STD_LOGIC_VECTOR(7 downto 0);
 	type t_FATBuffer is array (0 to 511) of STD_LOGIC_VECTOR(7 downto 0);
 	signal sectorBuffer : t_TrackBuffer;
 	signal fatBuffer : t_FATBuffer;
-	signal skipOffset : integer range 0 to 511;
-	signal byte_counter : integer range 0 to 511;
-	signal byte_index : integer range 0 to 511;
+	signal skipOffset : integer range 0 to trackBufferSize;
+	signal byte_counter : integer range 0 to trackBufferSize;
+	signal byte_index : integer range 0 to trackBufferSize;
 	signal readFat : boolean := false;
 
 	-- Filesystem type definitions
@@ -494,13 +499,34 @@ begin
 end ShiftBVLeft;
 
 signal DriveNumber : deviceNumber;
-	
+-- The following 2 declarations are a bug-fix (I think)
+signal writeSectorBuffer, writeABUStoSectorBuffer, writeSDtoSectorBuffer : boolean;
+signal sectorBufferInput : std_logic_vector(7 downto 0);
+-- End bug-fix
+
 begin
 
-dasd : process (clk, dasd_state) is
+dasd : process (clk, dasd_state, BUS_OUT_PARITY_ERROR, sd_error, sd_data_avail, skipOffset, readFat, A_BUS, sd_data_in) is
 variable newSector : t_sectorNumber;
 begin
+-- The following 10 lines are a bug-fix
+	writeABUStoSectorBuffer <= dasd_state=dev_write_data_command_3 and BUS_OUT_PARITY_ERROR='0';
+	writeSDtoSectorBuffer <= dasd_state=sd_ReadSectorGetByte and sd_error='0' and sd_data_avail='1' and skipOffset=0 and not readFat;
+	writeSectorBuffer <= writeABUStoSectorBuffer or writeSDtoSectorBuffer;
+	if writeABUStoSectorBuffer then
+		sectorBufferInput <= A_BUS;
+	elsif writeSDtoSectorBuffer then
+		sectorBufferInput <= sd_data_in;
+	else
+		sectorBufferInput <= (others=>'0');
+	end if;
+-- End bug-fix	
 	if rising_edge(clk) then
+-- The following 3 lines are a bug-fix
+		if writeSectorBuffer then
+			SectorBuffer(byte_index) <= sectorBufferInput;
+		end if;
+-- End bug-fix
 		case dasd_state is
 			when dev_reset =>
 				IG_Reg <= "00000000";
@@ -552,9 +578,7 @@ begin
 				-- Raise Operational In by setting IG7
 				-- This will also raise Address In when Address Out drops
 				IG_Reg <= "00000001";
--- TEMP
 				if sd_card_type="00" then
---				if false then
 					dasd_state <= dev_wait_for_command_file_bad;
 				else
 					DriveNumber <= conv_integer(selected_addr(4 to 7));
@@ -810,7 +834,7 @@ begin
 					dasd_state <= dev_reset;
 				elsif bc_SERVO='0' then
 					sd_return_state <= dev_ipl_command_3;
-					dasd_state <= sd_ReadSector;
+--					dasd_state <= sd_ReadSector;
 				end if;
 			when dev_ipl_command_3 =>
 				IG_Reg <= "00000000"; -- Drop Status In
@@ -898,7 +922,7 @@ begin
 				elsif bc_SERVO='0' then
 					fat_Error <= fatE_None;
 					sd_return_state <= dev_read_data_command_3;
-					dasd_state <= sd_ReadSector;
+					dasd_state <= sd_ReadTrack;
 --					dasd_state <= dev_read_data_command_3; -- TEMP
 --					byte_index <= 0; -- TEMP
 				end if;
@@ -1015,13 +1039,14 @@ begin
 				end if;
 			when dev_write_data_command_3 =>
 				-- Get data
--- TEMP - CHECK THE FOLLOWING LINE
---				sectorBuffer(byte_index) <= A_BUS;
 				Transfer_Control_1 <= '1'; -- Reset Service In
 				if (BUS_OUT_PARITY_ERROR='1') then
 					IG_Reg <= "00000000"; -- Reset Write Latch (prevents Service In rising again)
 					dasd_state <= dev_bus_out_parity;
 				else
+-- The following line is replaced by bug-fix lines at the top of this process
+--					sectorBuffer(byte_index) <= A_BUS;
+-- End bug-fix					
 					if byte_counter=0 then
 						IG_Reg <= "00000000"; -- Reset Write Latch (prevents Service In rising again)
 						dasd_state <= dev_write_data_command_5;
@@ -1058,11 +1083,26 @@ begin
 			
 
 			-- State subroutines
+			-- Read track into buffer
+			when sd_ReadTrack =>
+			-- Read Sectors to fill track buffer: given fat_currentSector
+			-- Returns sd_error, byte_index=0, byte_counter=readLength
+			-- NOTE: Needs modifying to cope with reaching end of cluster
+			skipOffset <= 0;
+			byte_counter <= trackBufferSize;
+			sd_block_address <= fat_currentSector;
+			readFat <= false;
+			if sd_busy='0' then
+				DASD_state <= sd_FillSector_2;
+				sd_rd_multiple <= '1';
+			end if;
+			
 			-- Read sector into buffer
 			when sd_ReadSector =>
 			-- Read Sector: given fat_currentSector
 			-- Returns sd_error, byte_index=0, byte_counter=511
 			skipOffset <= 0;
+			byte_counter <= 511;
 			sd_block_address <= fat_currentSector;
 			readFat <= false;
 			if sd_busy='0' then
@@ -1073,6 +1113,7 @@ begin
 			when sd_ReadFATSector =>
 			-- Read Sector into FATbuffer: given fat_currentFATSector
 			-- Returns sd_error, byte_index=0, byte_counter=511
+			byte_counter <= 511;
 			skipOffset <= 0;
 			sd_block_address <= fat_currentFATSector;
 			readFat <= true;
@@ -1082,8 +1123,9 @@ begin
 			end if;
 
 			when sd_FillSector =>
-			-- Read Partial Sector: given fat_currentSector, skip_offset
+			-- Read Partial Sectors into trackBuffer: given fat_currentSector, skip_offset
 			-- Returns sd_error, byte_index=0, byte_counter=511
+			byte_counter <= trackBufferSize;
 			sd_block_address <= fat_currentSector;
 			readFat <= false;
 			if sd_busy='0' then
@@ -1092,7 +1134,6 @@ begin
 			end if;
 
 			when sd_FillSector_2 =>
-			byte_counter <= 511;
 			byte_index <= 0;
 			if sd_busy='1' then
 				-- Wait for Rd to take effect and reset Error
@@ -1102,13 +1143,19 @@ begin
 			when sd_ReadSectorGetByte =>
 			if sd_error='1' then
 				 sd_rd <= '0';
+				 sd_rd_multiple <= '0';
 				 DASD_state <= sd_ReadSectorComplete;
+			elsif sd_busy='0' then
+				-- SD finished
+				DASD_state <= sd_ReadSectorGotLastByte;
 			elsif sd_data_avail='1' then
 				if skipOffset=0 then
 					if readFat then
 						FATbuffer(byte_index) <= sd_data_in;
 					else
-						sectorBuffer(byte_index) <= sd_data_in;
+-- The following line is replaced by bug-fix lines at the top of this process
+--						sectorBuffer(byte_index) <= sd_data_in;
+-- End bug-fix
 					end if;
 				else
 					skipOffset <= skipOffset - 1;
@@ -1125,12 +1172,16 @@ begin
 			if sd_error='1' then
 				sd_data_taken <= '0';
 				sd_rd <= '0';
+				sd_rd_multiple <= '0';
 				if readFat then
 					fat_currentFATSector <= (others => '1');
 				else
 					fat_currentSector <= (others => '1');
 				end if;
 				DASD_state <= sd_ReadSectorComplete;
+			elsif sd_busy='0' then
+				-- SD finished
+				DASD_state <= sd_ReadSectorGotLastByte;
 			elsif sd_data_avail='0' then
 				byte_index <= byte_index + 1;
 				byte_counter <= byte_counter - 1;
@@ -1145,6 +1196,7 @@ begin
 				byte_counter <= 511;
 				sd_data_taken <= '0';
 				sd_rd <= '0';
+				sd_rd_multiple <= '0';
 				DASD_state <= sd_ReadSectorComplete;
 			end if;
 
@@ -1624,11 +1676,11 @@ begin
 				-- Now read the sector
 				if fat_currentSector = newSector then
 					-- Already have it
-					DASD_state <= fat_return_state;
+					DASD_state <= fat_fileOffsetToClusterSectorOffset_6;
 				else
 					fat_currentSector <= newSector;
 					sd_return_state <= fat_fileOffsetToClusterSectorOffset_6;
-					DASD_state <= sd_ReadSector;
+					DASD_state <= sd_ReadTrack;
 				end if;
 				
 			when fat_fileOffsetToClusterSectorOffset_5 =>
@@ -1638,7 +1690,7 @@ begin
 			
 			when fat_fileOffsetToClusterSectorOffset_6 =>
 				byte_index <= conv_integer(fat_currentSectorByte);
-				byte_counter <= 511 - conv_integer(fat_currentSectorByte);
+				byte_counter <= trackBufferSize - conv_integer(fat_currentSectorByte);
 				if fat_currentSector = x"FFFFFFFF" then
 					fat_Error <= fatE_ReadError;
 				else
@@ -1669,7 +1721,9 @@ sd_access : sd_controller port map(
 	card_write_prot => '0',
 	
 	rd => sd_rd,
+	rd_multiple => sd_rd_multiple,
 	wr => sd_wr,
+	wr_multiple => '0',
 	addr => sd_block_address,
 	reset => sd_reset,
 	sd_busy => sd_busy,
@@ -1693,22 +1747,22 @@ with DEBUG.Selection select
 		
 with DASD_state select DASD_state_vector <= 
 	 x"00" when dev_reset,
-	 X"01" when dev_reset2,
-	 "00000010" when dev_deselected,
-	 "00000011" when dev_check_device,
-	 "00000011" when dev_wait_for_command_file_ok,
-	 "00000011" when dev_wait_for_command_file_bad,
-	 "00000100" when dev_got_command,
-	 "00000101" when dev_tio_command,
-	 "00000110" when dev_initial_device_end,
-	 "00000111" when dev_present_status,
-	 "00001000" when dev_present_status_2,
-	 "00001001" when dev_present_status_3,
---	 "00001010" when dev_present_status_4,
-	 "00001011" when dev_stack_status,
-	 "00001100" when dev_stack_status_2,
-	 "00001101" when dev_disconnect,
-	 "00001111" when dev_present_CE_DE,
+	 x"01" when dev_reset2,
+	 x"02" when dev_deselected,
+	 x"03" when dev_check_device,
+	 x"03" when dev_wait_for_command_file_ok,
+	 x"03" when dev_wait_for_command_file_bad,
+	 x"04" when dev_got_command,
+	 x"05" when dev_tio_command,
+	 x"06" when dev_initial_device_end,
+	 x"07" when dev_present_status,
+	 x"08" when dev_present_status_2,
+	 x"09" when dev_present_status_3,
+--	 x"0a" when dev_present_status_4,
+	 x"0b" when dev_stack_status,
+	 x"0c" when dev_stack_status_2,
+	 x"0d" when dev_disconnect,
+	 x"0f" when dev_present_CE_DE,
 	 x"11" when dev_read_data_command,
 	 x"12" when dev_read_data_command_2,
 	 x"13" when dev_read_data_command_3,
@@ -1717,20 +1771,20 @@ with DASD_state select DASD_state_vector <=
 	 x"16" when dev_read_data_command_6,
 	 x"17" when dev_read_raw_command,
 	 x"18" when dev_read_raw_command_2,
-	 "00100001" when dev_seek_command,
-	 "00100010" when dev_seek_command_2,
-	 "00100011" when dev_seek_command_3,
-	 "00100100" when dev_seek_command_4,
-	 "00110001" when dev_ipl_command,
-	 "00110010" when dev_ipl_command_2,
-	 "00110011" when dev_ipl_command_3,
-	 "01000001" when dev_sense_command,
-	 "01000010" when dev_sense_command_2,
-	 "01000011" when dev_sense_command_3,
-	 "01000100" when dev_sense_command_4,
-	 "01000101" when dev_sense_command_5,
-	 "01000110" when dev_sense_command_6,
-	 "01000111" when dev_sense_command_7,
+	 x"21" when dev_seek_command,
+	 x"22" when dev_seek_command_2,
+	 x"23" when dev_seek_command_3,
+	 x"24" when dev_seek_command_4,
+	 x"31" when dev_ipl_command,
+	 x"32" when dev_ipl_command_2,
+	 x"33" when dev_ipl_command_3,
+	 x"41" when dev_sense_command,
+	 x"42" when dev_sense_command_2,
+	 x"43" when dev_sense_command_3,
+	 x"44" when dev_sense_command_4,
+	 x"45" when dev_sense_command_5,
+	 x"46" when dev_sense_command_6,
+	 x"47" when dev_sense_command_7,
 	 x"51" when dev_write_data_command,
 	 x"52" when dev_write_data_command_2,
 	 x"53" when dev_write_data_command_3,
@@ -1739,6 +1793,7 @@ with DASD_state select DASD_state_vector <=
 	 x"56" when dev_write_data_command_6,
 	 x"80" when sd_ReadSector,
 	 x"80" when sd_ReadFatSector,
+	 x"80" when sd_ReadTrack,
 	 x"81" when sd_ReadSectorGetByte,
 	 x"82" when sd_FillSector,
 	 x"82" when sd_FillSector_2,
@@ -1805,7 +1860,7 @@ with DASD_state select DASD_state_vector <=
 
 with DEBUG.Selection select
 DEBUG.SevenSegment <=
-	"00000" & SD_Error_Code & DASD_State_vector when 2,
+	sd_rd & sd_rd_multiple & sd_wr & sd_wr_multiple & "0" & SD_Error_Code & DASD_State_vector when 2,
   	sd_data_in & sd_fsm_state when 3,
 	fat_PartitionStartSector(15 downto 0) when 6,
 	fat_PartitionLength(15 downto 0) when 7,
