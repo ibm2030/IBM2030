@@ -229,6 +229,7 @@ shared variable input_output_bytes  : byte2_array := (
 	x"83FF",
 	x"FFFF", -- Wait
 	x"FF00", -- R1 IDLE=0
+	x"FFFF", -- IDLE
 	
 	-- CMD17 FF510000000055
 	x"FFFF", -- 80
@@ -276,6 +277,7 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
 	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
 	x"FF09",x"FF39",
+	x"FFFF",
 	
 	-- CMD17 FF510000000055
 	x"FFFF",
@@ -321,6 +323,7 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
 	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
 	x"FF09",x"FF39",
+	x"FFFF",
 
 	-- CMD18 FF5200000000E1
 	x"FFFF",
@@ -373,6 +376,7 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FF12", -- Last reception byte - NOT R1
 	x"FFFF",x"FF00", -- Delay then R1b
 	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF07", -- Busy signal
+	x"FFFF",
 
 	-- CMD18 FF5200000000E1
 	x"FFFF",
@@ -418,22 +422,23 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FF20",x"FF21",x"FF22",x"FF23",x"FF24",x"FF25",x"FF26",x"FF27",x"FF28",x"FF29",x"FF2A",x"FF2B",x"FF2C",x"FF2D",x"FF2E",x"FF2F",
 	x"FF30",x"FF31",x"FF32",x"FF33",x"FF34",x"FF35",x"FF36",x"FF37",x"FF38",x"FF39",x"FF3A",x"FF3B",x"FF3C",x"FF3D",x"FF3E",x"FF3F",
 	x"FF09",x"FF39",
-	x"FFFF",x"FFFF",x"4CFE",x"0000",x"0001",x"0002",x"0003",x"6104",
+	x"FFFF",x"4CFE",x"0000",x"0001",x"0002",x"0003",x"6104",
 	x"FF05",x"FF00", -- Delay then R1b
 	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF7F", -- Busy signal
+	x"FFFF",
 
 	-- CMD24 FF5800000000000
-	x"FFFF", -- 1130
+	x"FFFF", --
 	x"58FF",
 	x"00FF",
 	x"00FF",
 	x"00FF",
 	x"00FF",
-	x"6FFF", -- 1136
+	x"6FFF", --
 	x"FFFF", -- Wait
 	x"FFFF", -- Wait
 	x"FF00", -- R1 IDLE=0
-	x"FEFF", -- 1141 Token
+	x"FEFF", -- Token
 	x"00FF",x"01FF",x"02FF",x"03FF",x"04FF",x"05FF",x"06FF",x"07FF",x"08FF",x"09FF",x"0AFF",x"0BFF",x"0CFF",x"0DFF",x"0EFF",x"0FFF",
 	x"10FF",x"11FF",x"12FF",x"13FF",x"14FF",x"15FF",x"16FF",x"17FF",x"18FF",x"19FF",x"1AFF",x"1BFF",x"1CFF",x"1DFF",x"1EFF",x"1FFF",
 	x"20FF",x"21FF",x"22FF",x"23FF",x"24FF",x"25FF",x"26FF",x"27FF",x"28FF",x"29FF",x"2AFF",x"2BFF",x"2CFF",x"2DFF",x"2EFF",x"2FFF",
@@ -559,7 +564,7 @@ BEGIN
 		rd <= '0';
 		wait until sd_busy='0';
 		assert sd_error='0' report "Error in Read 1";
-		wait for 20ns;
+		wait for 500ns;
 
 		-- Read from address 0, but stop after receiving 11 bytes
 		rd <= '1';
@@ -576,7 +581,7 @@ BEGIN
 		rd <= '0';
 		wait until sd_busy='0';
 		assert sd_error='0' report "Error in Read 2";
-		wait for 20ns;
+		wait for 500ns;
 		
 		-- Read Multiple from address 0, but stop after receiving 522 bytes
 		rd_multiple <= '1';
@@ -593,7 +598,7 @@ BEGIN
 		rd_multiple <= '0';
 		wait until sd_busy='0';
 		assert sd_error='0' report "Error in Read 3";
-		wait for 20ns;
+		wait for 500ns;
 		
 		-- Read Multiple from address 0, but stop after receiving 512 bytes
 		rd_multiple <= '1';
@@ -610,7 +615,7 @@ BEGIN
 		rd_multiple <= '0';
 		wait until sd_busy='0';
 		assert sd_error='0' report "Error in Read 4";
-		wait for 20ns;
+		wait for 500ns;
 		
 		-- Write to address 0
 		-- Contents are 00-FF twice
@@ -629,7 +634,7 @@ BEGIN
 		wr <= '0';
 		wait until sd_busy='0';
 		assert sd_error='0' report "Error in Write";
-		wait for 20ns;
+		wait for 500ns;
 		
       wait;
    end process;
