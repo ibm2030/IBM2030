@@ -339,7 +339,7 @@ begin
 	-- Some values are initialised to their current values (new_X <= X)
 	-- Some values are initialised to Don't Care (new_X <= '-')
 	-- Updating of the latter values is under control of the set_X signal
-	calcStateVariables: process(miso,rd,rd_multiple,wr_multiple,
+	calcStateVariables: process(miso,rd,rd_multiple,wr,wr_multiple,
 		state,bit_counter,card_type,byte_counter,data_in,data_out,
 		address,addr,dout_taken,error,cmd_out,return_state,clock_divider,
 		error_code,crc7,in_crc16,out_crc16,slow_clock,card_present,
@@ -391,7 +391,6 @@ begin
 		when RST2 =>
 			-- Reset, retaining error codes
 			new_card_type <= ct_None;
---			new_cmd_out <= (others=>'1'); set_cmd_out <= true;
 			new_cs <= '1';
 			new_slow_clock <= true;
 			new_clock_divider <= slowClockDivider;
@@ -648,7 +647,7 @@ begin
 				-- Flag error and wait for RD to drop
 				new_error <= '1';
 				new_error_code <= ec_DataError;
---				new_state <= READ_BLOCK_FINISH;
+				new_state <= READ_BLOCK_FINISH;
 			else
 				new_state <= SEND_RCV;
 			end if;
@@ -689,7 +688,7 @@ begin
 			if in_crc16/="0000000000000000" then
 				new_error <= '1';
 				new_error_code <= ec_CRCError;
---				new_state <= READ_BLOCK_FINISH;
+				new_state <= READ_BLOCK_FINISH;
 			elsif multiple and rd_multiple='1' then
 				-- Start looking for a further data block
 				new_sr_return_state <= READ_BLOCK_WAIT_CHECK; set_sr_return_state <= true;
@@ -719,8 +718,7 @@ begin
 		when READ_MULTIPLE_BLOCK_STOP_2 =>
 			-- Check R1 and wait for not-busy when we get to IDLE
 			if data_in/="00000000" then
---				new_state <= RST;
-				set_davail <= true; -- Temp debug: move data_in to dout
+				new_state <= RST;
 			else
 				if rd_multiple='0' then
 					new_state <= IDLE;
@@ -743,7 +741,7 @@ begin
 			if data_in/="00000000" then
 				new_error <= '1';
 				new_error_code <= ec_R1Error;
---				new_state <= WRITE_BLOCK_FINISH;
+				new_state <= WRITE_BLOCK_FINISH;
 			else
 				new_state <= WRITE_BLOCK_DATA_TOKEN;
 			end if;
@@ -803,7 +801,7 @@ begin
 				-- Data not accepted
 				new_error <= '1';
 				new_error_code <= ec_DataRespError;
---				new_state <= WRITE_BLOCK_FINISH;
+				new_state <= WRITE_BLOCK_FINISH;
 			else
 				-- Receive a byte and poll for write complete
 				-- Use cmd_out to time 2ms (50000 clocks @ 25MHz)
@@ -817,7 +815,7 @@ begin
 				if cmd_out=x"0000000000" then
 					new_error <= '1';
 					new_error_code <= ec_WriteTimeout;
---					new_state <= WRITE_BLOCK_FINISH;
+					new_state <= WRITE_BLOCK_FINISH;
 				else
 					new_cmd_out <= STD_LOGIC_VECTOR(unsigned(cmd_out) - 1); set_cmd_out <= true;
 					new_state <= SEND_RCV; -- Will come back here, loop until write complete
