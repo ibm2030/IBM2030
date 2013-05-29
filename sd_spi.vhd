@@ -91,7 +91,7 @@ entity sd_controller is
 generic (
 	clockRate : integer := 50000000;		-- Incoming clock is 50MHz (can change this to 2000 to test Write Timeout)
 	slowClockDivider : integer := 64;	-- Basic clock is 25MHz, slow clock for startup is 25/64 = 390kHz
-	R1_TIMEOUT : integer := 100;			-- Number of bytes to wait before giving up on receiving R1 response
+	R1_TIMEOUT : integer := 10;			-- Number of bytes to wait before giving up on receiving R1 response
 	WRITE_TIMEOUT : integer range 0 to 999 := 500		-- Number of ms to wait before giving up on write completing
 	);
 port (
@@ -154,7 +154,6 @@ type states is (
 	READ_BLOCK_FINISH,			-- Wait until RD drops
 	READ_MULTIPLE_BLOCK_STOP,
 	READ_MULTIPLE_BLOCK_STOP_2,
-	READ_MULTIPLE_BLOCK_STOP_WAIT,
 	
 	SEND_RCV,
 	SEND_RCV_CLK1,
@@ -345,7 +344,7 @@ begin
 		address,addr,dout_taken,error,cmd_out,return_state,clock_divider,
 		error_code,crc7,in_crc16,out_crc16,slow_clock,card_present,
 		card_write_prot,SDin_Taken,sCS,transfer_data_out,din_valid,din,
-		crcLow,sDavail,sr_return_state )
+		crcLow,sDavail,sr_return_state,multiple,skipFirstR1Byte)
 	constant WriteTimeoutCount : integer := clockRate/18000 * WRITE_TIMEOUT;
 	begin
 		assert(WriteTimeoutCount > 0) report "WriteTimeoutCount is 0" severity failure ;
@@ -379,6 +378,7 @@ begin
 		new_clock_divider <= clock_divider;
 		new_transfer_data_out <= transfer_data_out;
 		new_multiple <= multiple;
+		new_skipFirstR1Byte <= skipFirstR1Byte;
 		
 		case state is
 		
@@ -541,7 +541,7 @@ begin
 				new_state <= RST;
 			end if;
 			-- Don't enter IDLE until Rd and Wr are down
-			if (rd='0') and (wr='0') then
+			if (rd='0') and (wr='0') and (rd_multiple='0') and (wr_multiple='0') then
 				new_error_code <= ec_NoError;
 				new_error <= '0';
 				new_state <= IDLE;
@@ -549,10 +549,10 @@ begin
 			
 		when IDLE =>
 			-- Generate 8 clocks when entering idle
-			new_cs <= '1';					-- Raise cs*
 			new_slow_clock <= false;	-- Can run at full speed now
 			new_data_out <= "11111111";
 			new_bit_counter <= 7;
+			new_transfer_data_out <= false;
 			new_sr_return_state <= IDLE2; set_sr_return_state <= true;
 			new_state <= SEND_RCV;
 			
@@ -560,6 +560,9 @@ begin
 			-- Sits in this state when idle
 			if card_present='0' then
 				new_state <= RST;
+			elsif data_in=x"00" then
+				-- Card still busy
+				new_state <= IDLE;
 			elsif rd='1' then
 				new_cs <= '0';
 				new_error <= '0';
@@ -592,6 +595,7 @@ begin
 					new_error_code <= ec_WPError;
 				end if;
 			else
+				new_cs <= '1';
 				new_busy <= '0';
 			end if;
 			
@@ -644,7 +648,7 @@ begin
 				-- Flag error and wait for RD to drop
 				new_error <= '1';
 				new_error_code <= ec_DataError;
-				new_state <= READ_BLOCK_FINISH;
+--				new_state <= READ_BLOCK_FINISH;
 			else
 				new_state <= SEND_RCV;
 			end if;
@@ -685,8 +689,8 @@ begin
 			if in_crc16/="0000000000000000" then
 				new_error <= '1';
 				new_error_code <= ec_CRCError;
-				new_state <= READ_BLOCK_FINISH;
-			elsif multiple then
+--				new_state <= READ_BLOCK_FINISH;
+			elsif multiple and rd_multiple='1' then
 				-- Start looking for a further data block
 				new_sr_return_state <= READ_BLOCK_WAIT_CHECK; set_sr_return_state <= true;
 				new_state <= SEND_RCV;
@@ -695,7 +699,6 @@ begin
 			end if;
 			
 		when READ_BLOCK_FINISH =>
-			new_busy <= '0';
 			new_transfer_data_out <= false;
 			-- Wait for RD to fall after last byte has been transferred
 			if (rd='0') and (rd_multiple='0') then
@@ -714,25 +717,16 @@ begin
 			new_state <= SEND_CMD;
 			
 		when READ_MULTIPLE_BLOCK_STOP_2 =>
-			-- Check R1 and wait for not-busy
+			-- Check R1 and wait for not-busy when we get to IDLE
 			if data_in/="00000000" then
-				new_state <= RST;
-			end if;
-			new_sr_return_state <= READ_MULTIPLE_BLOCK_STOP_WAIT; set_sr_return_state <= true;
-			new_state <= SEND_RCV;
-			
-		when READ_MULTIPLE_BLOCK_STOP_WAIT =>
-			if data_in/="00000000" then
-				-- No longer busy
-				new_busy <= '0';
-				new_transfer_data_out <= false;
-				if (rd_multiple='0') then
+--				new_state <= RST;
+				set_davail <= true; -- Temp debug: move data_in to dout
+			else
+				if rd_multiple='0' then
 					new_state <= IDLE;
 				end if;
-			else
-				new_state <= SEND_RCV;
 			end if;
-				
+			
 		when WRITE_BLOCK_CMD =>
 			if (card_type=ct_SDHC) then
 				new_cmd_out <= x"58" & address(31 downto 0);
@@ -749,7 +743,7 @@ begin
 			if data_in/="00000000" then
 				new_error <= '1';
 				new_error_code <= ec_R1Error;
-				new_state <= WRITE_BLOCK_FINISH;
+--				new_state <= WRITE_BLOCK_FINISH;
 			else
 				new_state <= WRITE_BLOCK_DATA_TOKEN;
 			end if;
@@ -809,7 +803,7 @@ begin
 				-- Data not accepted
 				new_error <= '1';
 				new_error_code <= ec_DataRespError;
-				new_state <= WRITE_BLOCK_FINISH;
+--				new_state <= WRITE_BLOCK_FINISH;
 			else
 				-- Receive a byte and poll for write complete
 				-- Use cmd_out to time 2ms (50000 clocks @ 25MHz)
@@ -823,7 +817,7 @@ begin
 				if cmd_out=x"0000000000" then
 					new_error <= '1';
 					new_error_code <= ec_WriteTimeout;
-					new_state <= WRITE_BLOCK_FINISH;
+--					new_state <= WRITE_BLOCK_FINISH;
 				else
 					new_cmd_out <= STD_LOGIC_VECTOR(unsigned(cmd_out) - 1); set_cmd_out <= true;
 					new_state <= SEND_RCV; -- Will come back here, loop until write complete
@@ -920,12 +914,12 @@ begin
 			
 		when SEND_CMD_2 =>
 			-- Send one byte of the command and parameter
-			new_data_out <= cmd_out(39 downto 32);
-			new_cmd_out <= cmd_out(31 downto 0) & x"FF"; set_cmd_out <= true;
-			new_sr_return_state <= SEND_CMD_2; set_sr_return_state <= true;
 			if byte_counter=0 then
 				new_state <= SEND_CMD_3;
 			else
+				new_data_out <= cmd_out(39 downto 32);
+				new_cmd_out <= cmd_out(31 downto 0) & x"FF"; set_cmd_out <= true;
+				new_sr_return_state <= SEND_CMD_2; set_sr_return_state <= true;
 				new_state <= SEND_RCV;
 			end if;
 	
@@ -951,7 +945,7 @@ begin
 				new_state <= return_state;
 			else
 				if byte_counter=0 then
-					new_state <= RST2;
+--					new_state <= RST2;
 					new_card_type <= ct_None;
 					new_error <= '1';
 					new_error_code <= ec_NoSDError;
@@ -1000,7 +994,6 @@ begin
 			x"27" when READ_BLOCK_FINISH,
 			x"28" when READ_MULTIPLE_BLOCK_STOP,
 			x"29" when READ_MULTIPLE_BLOCK_STOP_2,
-			x"2A" when READ_MULTIPLE_BLOCK_STOP_WAIT,
 			x"30" when SEND_RCV,
 			x"31" when SEND_RCV_CLK1,
 			x"32" when SEND_CMD,
