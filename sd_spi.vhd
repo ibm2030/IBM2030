@@ -174,6 +174,8 @@ type states is (
 	WRITE_BLOCK_GET_RESPONSE,	-- Get R1 following data
 	WRITE_BLOCK_CHECK_RESPONSE,-- Check response after data sent
 	WRITE_BLOCK_WAIT,				-- Wait for write to complete
+	WRITE_BLOCK_ABORT,			-- Send dummy data to fill block
+	WRITE_BLOCK_TERMINATE,		-- Send Stop for Write Multiple
 	WRITE_BLOCK_FINISH			-- Wait until WR drops
 );
 
@@ -736,6 +738,14 @@ begin
 			new_state <= SEND_CMD;
 			
 		when WRITE_MULTIPLE_BLOCK_CMD =>
+			if (card_type=ct_SDHC) then
+				new_cmd_out <= x"59" & address(31 downto 0);
+			else
+				new_cmd_out <= x"59" & address(22 downto 0) & "000000000";
+			end if;
+			set_cmd_out <= true;
+			new_return_state <= WRITE_BLOCK_INIT; set_return_state <= true;
+			new_state <= SEND_CMD;
 		
 		when WRITE_BLOCK_INIT =>
 			if data_in/="00000000" then
@@ -747,19 +757,18 @@ begin
 			end if;
 			
 		when WRITE_BLOCK_DATA_TOKEN =>
-			if wr='0' then
-				-- Abort writing - raise CS*
-				new_state <= WRITE_BLOCK_FINISH;
+			if multiple then
+				new_data_out <= x"FC"; -- start token, multiple block
 			else
-				new_data_out <= x"FE"; -- start byte, single block
-				new_sr_return_state <= START_WRITE_BLOCK_DATA; set_sr_return_state <= true;
-				new_state <= SEND_RCV;
+				new_data_out <= x"FE"; -- start token, single block
 			end if;
+			new_sr_return_state <= START_WRITE_BLOCK_DATA; set_sr_return_state <= true;
+			new_state <= SEND_RCV;
 
 		when START_WRITE_BLOCK_DATA =>
-				new_byte_counter <= 512; set_byte_counter <= true;
-				new_out_crc16 <= (others=>'0');
-				new_state <= WRITE_BLOCK_DATA;
+			new_byte_counter <= 512; set_byte_counter <= true;
+			new_out_crc16 <= (others=>'0');
+			new_state <= WRITE_BLOCK_DATA;
 
 		when WRITE_BLOCK_DATA =>
 			if byte_counter = 0 then
@@ -767,9 +776,9 @@ begin
 				new_crcLow <= out_crc16(7 downto 0);
 				new_sr_return_state <= WRITE_BLOCK_SEND_CRC2; set_sr_return_state <= true;
 				new_state <= SEND_RCV;
-			elsif wr='0' then
-				-- Abort writing - raise CS*
-				new_state <= WRITE_BLOCK_FINISH;
+			elsif wr='0' and wr_multiple='0' then
+				-- Abort writing - send dummy data and bad CRC
+				new_state <= WRITE_BLOCK_ABORT;
 			elsif din_valid='1' then
 				new_data_out <= din;
 				new_din_taken <= '1';
@@ -792,7 +801,7 @@ begin
 				if byte_counter=0 then
 					new_error <= '1';
 					new_error_code <= ec_R1Error;
-					new_state <= WRITE_BLOCK_FINISH;
+					new_state <= WRITE_BLOCK_TERMINATE;
 				else
 					new_byte_counter <= byte_counter - 1; set_byte_counter <= true;
 					new_state <= SEND_RCV; -- Wait for Data Response token
@@ -801,7 +810,7 @@ begin
 				-- Data not accepted
 				new_error <= '1';
 				new_error_code <= ec_DataRespError;
-				new_state <= WRITE_BLOCK_FINISH;
+				new_state <= WRITE_BLOCK_TERMINATE;
 			else
 				-- Receive a byte and poll for write complete
 				-- Use cmd_out to time 2ms (50000 clocks @ 25MHz)
@@ -815,19 +824,48 @@ begin
 				if cmd_out=x"0000000000" then
 					new_error <= '1';
 					new_error_code <= ec_WriteTimeout;
-					new_state <= WRITE_BLOCK_FINISH;
+					new_state <= WRITE_BLOCK_TERMINATE;
 				else
 					new_cmd_out <= STD_LOGIC_VECTOR(unsigned(cmd_out) - 1); set_cmd_out <= true;
 					new_state <= SEND_RCV; -- Will come back here, loop until write complete
 				end if;
 			else
-				new_busy <= '0';
+				if multiple then
+					if wr_multiple='1' then
+						new_state <= WRITE_BLOCK_DATA_TOKEN;
+					else
+						new_state <= WRITE_BLOCK_TERMINATE;
+					end if;
+				else
+					new_state <= WRITE_BLOCK_FINISH;
+				end if;
+			end if;
+			
+		when WRITE_BLOCK_ABORT =>
+		if byte_counter=0 then
+			new_data_out <= out_crc16(15 downto 8);
+			new_crcLow <= out_crc16(7 downto 0) xor x"01"; -- Force bad CRC
+			new_sr_return_state <= WRITE_BLOCK_SEND_CRC2; set_sr_return_state <= true;
+			new_state <= SEND_RCV;
+		else
+			new_data_out <= x"00";
+			new_sr_return_state <= WRITE_BLOCK_ABORT; set_sr_return_state <= true;
+			new_state <= SEND_RCV;
+		end if;
+
+		when WRITE_BLOCK_TERMINATE =>
+			if multiple then
+				new_data_out <= x"FD"; -- stop token, multiple block
+				new_multiple <= false; -- So that WRITE_BLOCK_WAIT will exit to WRITE_BLOCK_FINISH
+				new_sr_return_state <= WRITE_BLOCK_WAIT; set_sr_return_state <= true;
+				new_state <= SEND_RCV;
+			else
 				new_state <= WRITE_BLOCK_FINISH;
 			end if;
-
+		
 		when WRITE_BLOCK_FINISH =>
 			-- Wait for WR to fall after last byte has been transferred
-			if (WR='0') then
+			if (wr='0' and wr_multiple='0') then
 				new_state <= IDLE;
 			end if;
 		
@@ -1010,7 +1048,9 @@ begin
 			x"46" when WRITE_BLOCK_GET_RESPONSE,
 			x"47" when WRITE_BLOCK_CHECK_RESPONSE,
 			x"48" when WRITE_BLOCK_WAIT,
-			x"49" when WRITE_BLOCK_FINISH
+			x"49" when WRITE_BLOCK_ABORT,
+			x"4a" when WRITE_BLOCK_TERMINATE,
+			x"4b" when WRITE_BLOCK_FINISH
 			;
 	end block calcDebugOutputs;
 end rtl;

@@ -115,7 +115,7 @@ ARCHITECTURE behavior OF testbench_sd_spi IS
 constant CPOL : std_logic := '0';
 signal clk_pol : std_logic;
 
-constant byteArraySize : integer := 3000;
+constant byteArraySize : integer := 4000;
 
 signal rx_byte : std_logic_vector(7 downto 0);
 signal rx_bit_counter : integer := 0;
@@ -376,7 +376,6 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FF12", -- Last reception byte - NOT R1
 	x"FFFF",x"FF00", -- Delay then R1b
 	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF07", -- Busy signal
-	x"FFFF",
 
 	-- CMD18 FF5200000000E1
 	x"FFFF",
@@ -425,7 +424,6 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FFFF",x"4CFE",x"0000",x"0001",x"0002",x"0003",x"6104",
 	x"FF05",x"FF00", -- Delay then R1b
 	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF7F", -- Busy signal
-	x"FFFF",
 
 	-- CMD24 FF5800000000000
 	x"FFFF", --
@@ -473,8 +471,110 @@ shared variable input_output_bytes  : byte2_array := (
 	x"F0FF",x"F1FF",x"F2FF",x"F3FF",x"F4FF",x"F5FF",x"F6FF",x"F7FF",x"F8FF",x"F9FF",x"FAFF",x"FBFF",x"FCFF",x"FDFF",x"FEFF",x"FFFF",
 	x"40FF",x"DAFF", -- CRC
 	x"FF05", -- Accepted
+	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF0F", -- Working
+	
+	-- CMD25 FF5900000000000
+	x"FFFF",x"FFFF",
+	x"59FF",
+	x"00FF",
+	x"00FF",
+	x"00FF",
+	x"00FF",
+	x"03FF", --
+	x"FFFF", -- Wait
+	x"FFFF", -- Wait
+	x"FF00", -- R1 IDLE=0
+	x"FCFF", -- Token
+	x"00FF",x"01FF",x"02FF",x"03FF",x"04FF",x"05FF",x"06FF",x"07FF",x"08FF",x"09FF",x"0AFF",x"0BFF",x"0CFF",x"0DFF",x"0EFF",x"0FFF",
+	x"10FF",x"11FF",x"12FF",x"13FF",x"14FF",x"15FF",x"16FF",x"17FF",x"18FF",x"19FF",x"1AFF",x"1BFF",x"1CFF",x"1DFF",x"1EFF",x"1FFF",
+	x"20FF",x"21FF",x"22FF",x"23FF",x"24FF",x"25FF",x"26FF",x"27FF",x"28FF",x"29FF",x"2AFF",x"2BFF",x"2CFF",x"2DFF",x"2EFF",x"2FFF",
+	x"30FF",x"31FF",x"32FF",x"33FF",x"34FF",x"35FF",x"36FF",x"37FF",x"38FF",x"39FF",x"3AFF",x"3BFF",x"3CFF",x"3DFF",x"3EFF",x"3FFF",
+	x"40FF",x"41FF",x"42FF",x"43FF",x"44FF",x"45FF",x"46FF",x"47FF",x"48FF",x"49FF",x"4AFF",x"4BFF",x"4CFF",x"4DFF",x"4EFF",x"4FFF",
+	x"50FF",x"51FF",x"52FF",x"53FF",x"54FF",x"55FF",x"56FF",x"57FF",x"58FF",x"59FF",x"5AFF",x"5BFF",x"5CFF",x"5DFF",x"5EFF",x"5FFF",
+	x"60FF",x"61FF",x"62FF",x"63FF",x"64FF",x"65FF",x"66FF",x"67FF",x"68FF",x"69FF",x"6AFF",x"6BFF",x"6CFF",x"6DFF",x"6EFF",x"6FFF",
+	x"70FF",x"71FF",x"72FF",x"73FF",x"74FF",x"75FF",x"76FF",x"77FF",x"78FF",x"79FF",x"7AFF",x"7BFF",x"7CFF",x"7DFF",x"7EFF",x"7FFF",
+	x"80FF",x"81FF",x"82FF",x"83FF",x"84FF",x"85FF",x"86FF",x"87FF",x"88FF",x"89FF",x"8AFF",x"8BFF",x"8CFF",x"8DFF",x"8EFF",x"8FFF",
+	x"90FF",x"91FF",x"92FF",x"93FF",x"94FF",x"95FF",x"96FF",x"97FF",x"98FF",x"99FF",x"9AFF",x"9BFF",x"9CFF",x"9DFF",x"9EFF",x"9FFF",
+	x"A0FF",x"A1FF",x"A2FF",x"A3FF",x"A4FF",x"A5FF",x"A6FF",x"A7FF",x"A8FF",x"A9FF",x"AAFF",x"ABFF",x"ACFF",x"ADFF",x"AEFF",x"AFFF",
+	x"B0FF",x"B1FF",x"B2FF",x"B3FF",x"B4FF",x"B5FF",x"B6FF",x"B7FF",x"B8FF",x"B9FF",x"BAFF",x"BBFF",x"BCFF",x"BDFF",x"BEFF",x"BFFF",
+	x"C0FF",x"C1FF",x"C2FF",x"C3FF",x"C4FF",x"C5FF",x"C6FF",x"C7FF",x"C8FF",x"C9FF",x"CAFF",x"CBFF",x"CCFF",x"CDFF",x"CEFF",x"CFFF",
+	x"D0FF",x"D1FF",x"D2FF",x"D3FF",x"D4FF",x"D5FF",x"D6FF",x"D7FF",x"D8FF",x"D9FF",x"DAFF",x"DBFF",x"DCFF",x"DDFF",x"DEFF",x"DFFF",
+	x"E0FF",x"E1FF",x"E2FF",x"E3FF",x"E4FF",x"E5FF",x"E6FF",x"E7FF",x"E8FF",x"E9FF",x"EAFF",x"EBFF",x"ECFF",x"EDFF",x"EEFF",x"EFFF",
+	x"F0FF",x"F1FF",x"F2FF",x"F3FF",x"F4FF",x"F5FF",x"F6FF",x"F7FF",x"F8FF",x"F9FF",x"FAFF",x"FBFF",x"FCFF",x"FDFF",x"FEFF",x"FFFF",
+	x"00FF",x"01FF",x"02FF",x"03FF",x"04FF",x"05FF",x"06FF",x"07FF",x"08FF",x"09FF",x"0AFF",x"0BFF",x"0CFF",x"0DFF",x"0EFF",x"0FFF",
+	x"10FF",x"11FF",x"12FF",x"13FF",x"14FF",x"15FF",x"16FF",x"17FF",x"18FF",x"19FF",x"1AFF",x"1BFF",x"1CFF",x"1DFF",x"1EFF",x"1FFF",
+	x"20FF",x"21FF",x"22FF",x"23FF",x"24FF",x"25FF",x"26FF",x"27FF",x"28FF",x"29FF",x"2AFF",x"2BFF",x"2CFF",x"2DFF",x"2EFF",x"2FFF",
+	x"30FF",x"31FF",x"32FF",x"33FF",x"34FF",x"35FF",x"36FF",x"37FF",x"38FF",x"39FF",x"3AFF",x"3BFF",x"3CFF",x"3DFF",x"3EFF",x"3FFF",
+	x"40FF",x"41FF",x"42FF",x"43FF",x"44FF",x"45FF",x"46FF",x"47FF",x"48FF",x"49FF",x"4AFF",x"4BFF",x"4CFF",x"4DFF",x"4EFF",x"4FFF",
+	x"50FF",x"51FF",x"52FF",x"53FF",x"54FF",x"55FF",x"56FF",x"57FF",x"58FF",x"59FF",x"5AFF",x"5BFF",x"5CFF",x"5DFF",x"5EFF",x"5FFF",
+	x"60FF",x"61FF",x"62FF",x"63FF",x"64FF",x"65FF",x"66FF",x"67FF",x"68FF",x"69FF",x"6AFF",x"6BFF",x"6CFF",x"6DFF",x"6EFF",x"6FFF",
+	x"70FF",x"71FF",x"72FF",x"73FF",x"74FF",x"75FF",x"76FF",x"77FF",x"78FF",x"79FF",x"7AFF",x"7BFF",x"7CFF",x"7DFF",x"7EFF",x"7FFF",
+	x"80FF",x"81FF",x"82FF",x"83FF",x"84FF",x"85FF",x"86FF",x"87FF",x"88FF",x"89FF",x"8AFF",x"8BFF",x"8CFF",x"8DFF",x"8EFF",x"8FFF",
+	x"90FF",x"91FF",x"92FF",x"93FF",x"94FF",x"95FF",x"96FF",x"97FF",x"98FF",x"99FF",x"9AFF",x"9BFF",x"9CFF",x"9DFF",x"9EFF",x"9FFF",
+	x"A0FF",x"A1FF",x"A2FF",x"A3FF",x"A4FF",x"A5FF",x"A6FF",x"A7FF",x"A8FF",x"A9FF",x"AAFF",x"ABFF",x"ACFF",x"ADFF",x"AEFF",x"AFFF",
+	x"B0FF",x"B1FF",x"B2FF",x"B3FF",x"B4FF",x"B5FF",x"B6FF",x"B7FF",x"B8FF",x"B9FF",x"BAFF",x"BBFF",x"BCFF",x"BDFF",x"BEFF",x"BFFF",
+	x"C0FF",x"C1FF",x"C2FF",x"C3FF",x"C4FF",x"C5FF",x"C6FF",x"C7FF",x"C8FF",x"C9FF",x"CAFF",x"CBFF",x"CCFF",x"CDFF",x"CEFF",x"CFFF",
+	x"D0FF",x"D1FF",x"D2FF",x"D3FF",x"D4FF",x"D5FF",x"D6FF",x"D7FF",x"D8FF",x"D9FF",x"DAFF",x"DBFF",x"DCFF",x"DDFF",x"DEFF",x"DFFF",
+	x"E0FF",x"E1FF",x"E2FF",x"E3FF",x"E4FF",x"E5FF",x"E6FF",x"E7FF",x"E8FF",x"E9FF",x"EAFF",x"EBFF",x"ECFF",x"EDFF",x"EEFF",x"EFFF",
+	x"F0FF",x"F1FF",x"F2FF",x"F3FF",x"F4FF",x"F5FF",x"F6FF",x"F7FF",x"F8FF",x"F9FF",x"FAFF",x"FBFF",x"FCFF",x"FDFF",x"FEFF",x"FFFF",
+	x"40FF",x"DAFF", -- CRC
+	x"FF05", -- Accepted
 	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00", -- Working
 	x"FFFF", -- Finished
+	x"FDFF", -- End Token
+	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00", -- Working
+	x"FFFF", -- Finished
+
+	-- CMD25 FF5900000000000
+	x"FFFF",
+	x"59FF",
+	x"00FF",
+	x"00FF",
+	x"00FF",
+	x"00FF",
+	x"03FF", --
+	x"FFFF", -- Wait
+	x"FFFF", -- Wait
+	x"FF00", -- R1 IDLE=0
+	x"FCFF", -- Token
+	x"00FF",x"01FF",x"02FF",x"03FF",x"04FF",x"05FF",x"06FF",x"07FF",x"08FF",x"09FF",x"0AFF",x"0BFF",x"0CFF",x"0DFF",x"0EFF",x"0FFF",
+	x"10FF",x"11FF",x"12FF",x"13FF",x"14FF",x"15FF",x"16FF",x"17FF",x"18FF",x"19FF",x"1AFF",x"1BFF",x"1CFF",x"1DFF",x"1EFF",x"1FFF",
+	x"20FF",x"21FF",x"22FF",x"23FF",x"24FF",x"25FF",x"26FF",x"27FF",x"28FF",x"29FF",x"2AFF",x"2BFF",x"2CFF",x"2DFF",x"2EFF",x"2FFF",
+	x"30FF",x"31FF",x"32FF",x"33FF",x"34FF",x"35FF",x"36FF",x"37FF",x"38FF",x"39FF",x"3AFF",x"3BFF",x"3CFF",x"3DFF",x"3EFF",x"3FFF",
+	x"40FF",x"41FF",x"42FF",x"43FF",x"44FF",x"45FF",x"46FF",x"47FF",x"48FF",x"49FF",x"4AFF",x"4BFF",x"4CFF",x"4DFF",x"4EFF",x"4FFF",
+	x"50FF",x"51FF",x"52FF",x"53FF",x"54FF",x"55FF",x"56FF",x"57FF",x"58FF",x"59FF",x"5AFF",x"5BFF",x"5CFF",x"5DFF",x"5EFF",x"5FFF",
+	x"60FF",x"61FF",x"62FF",x"63FF",x"64FF",x"65FF",x"66FF",x"67FF",x"68FF",x"69FF",x"6AFF",x"6BFF",x"6CFF",x"6DFF",x"6EFF",x"6FFF",
+	x"70FF",x"71FF",x"72FF",x"73FF",x"74FF",x"75FF",x"76FF",x"77FF",x"78FF",x"79FF",x"7AFF",x"7BFF",x"7CFF",x"7DFF",x"7EFF",x"7FFF",
+	x"80FF",x"81FF",x"82FF",x"83FF",x"84FF",x"85FF",x"86FF",x"87FF",x"88FF",x"89FF",x"8AFF",x"8BFF",x"8CFF",x"8DFF",x"8EFF",x"8FFF",
+	x"90FF",x"91FF",x"92FF",x"93FF",x"94FF",x"95FF",x"96FF",x"97FF",x"98FF",x"99FF",x"9AFF",x"9BFF",x"9CFF",x"9DFF",x"9EFF",x"9FFF",
+	x"A0FF",x"A1FF",x"A2FF",x"A3FF",x"A4FF",x"A5FF",x"A6FF",x"A7FF",x"A8FF",x"A9FF",x"AAFF",x"ABFF",x"ACFF",x"ADFF",x"AEFF",x"AFFF",
+	x"B0FF",x"B1FF",x"B2FF",x"B3FF",x"B4FF",x"B5FF",x"B6FF",x"B7FF",x"B8FF",x"B9FF",x"BAFF",x"BBFF",x"BCFF",x"BDFF",x"BEFF",x"BFFF",
+	x"C0FF",x"C1FF",x"C2FF",x"C3FF",x"C4FF",x"C5FF",x"C6FF",x"C7FF",x"C8FF",x"C9FF",x"CAFF",x"CBFF",x"CCFF",x"CDFF",x"CEFF",x"CFFF",
+	x"D0FF",x"D1FF",x"D2FF",x"D3FF",x"D4FF",x"D5FF",x"D6FF",x"D7FF",x"D8FF",x"D9FF",x"DAFF",x"DBFF",x"DCFF",x"DDFF",x"DEFF",x"DFFF",
+	x"E0FF",x"E1FF",x"E2FF",x"E3FF",x"E4FF",x"E5FF",x"E6FF",x"E7FF",x"E8FF",x"E9FF",x"EAFF",x"EBFF",x"ECFF",x"EDFF",x"EEFF",x"EFFF",
+	x"F0FF",x"F1FF",x"F2FF",x"F3FF",x"F4FF",x"F5FF",x"F6FF",x"F7FF",x"F8FF",x"F9FF",x"FAFF",x"FBFF",x"FCFF",x"FDFF",x"FEFF",x"FFFF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",x"00FF",
+	x"3EFF",x"8EFF", -- CRC
+	x"FF0b", -- Rejected
+	x"FDFF", -- End Token
+	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00", -- Working
+	x"FFFF", -- Finished
+
 	others=>x"FFFF");
 
 function slv_to_string(slv: std_logic_vector) return string is
@@ -548,6 +648,7 @@ BEGIN
 		
 		wait for 30 us;
 
+		report "Starting Read 1 at byte_counter=" & integer'image(rx_byte_counter);
 		-- Read from address 0
 		addr <= (others=>'0');
 		rd <= '1';
@@ -566,6 +667,7 @@ BEGIN
 		assert sd_error='0' report "Error in Read 1";
 		wait for 500ns;
 
+		report "Starting Read 2 at byte_counter=" & integer'image(rx_byte_counter);
 		-- Read from address 0, but stop after receiving 11 bytes
 		rd <= '1';
 		for b in 0 to 10 loop
@@ -583,6 +685,7 @@ BEGIN
 		assert sd_error='0' report "Error in Read 2";
 		wait for 500ns;
 		
+		report "Starting Read 3 at byte_counter=" & integer'image(rx_byte_counter);
 		-- Read Multiple from address 0, but stop after receiving 522 bytes
 		rd_multiple <= '1';
 		for b in 0 to 521 loop
@@ -600,6 +703,7 @@ BEGIN
 		assert sd_error='0' report "Error in Read 3";
 		wait for 500ns;
 		
+		report "Starting Read 4 at byte_counter=" & integer'image(rx_byte_counter);
 		-- Read Multiple from address 0, but stop after receiving 512 bytes
 		rd_multiple <= '1';
 		for b in 0 to 511 loop
@@ -619,6 +723,7 @@ BEGIN
 		
 		-- Write to address 0
 		-- Contents are 00-FF twice
+		report "Starting Write 1 at byte_counter=" & integer'image(rx_byte_counter);
 		wr <= '1';
 		for b in 0 to 511 loop
 			vec9 := STD_LOGIC_VECTOR(to_unsigned(b,9));
@@ -633,10 +738,55 @@ BEGIN
 		end loop;
 		wr <= '0';
 		wait until sd_busy='0';
-		assert sd_error='0' report "Error in Write";
+		assert sd_error='0' report "Error in Write 1";
 		wait for 500ns;
 		
+		-- Write Multiple to address 0
+		-- Contents are 00-FF twice
+		report "Starting Write 2 at byte_counter=" & integer'image(rx_byte_counter);
+		wr_multiple <= '1';
+		for b in 0 to 511 loop
+			vec9 := STD_LOGIC_VECTOR(to_unsigned(b,9));
+			din <= vec9(7 downto 0);
+			din_valid <= '1';
+			wait until din_taken='1';
+			wait for 20ns;
+			din_valid <= '0';
+			wait until din_taken='0';
+			wait for 20ns;
+			-- report slv_to_string(din);
+		end loop;
+		wr_multiple <= '0';
+		wait until sd_busy='0';
+		assert sd_error='0' report "Error in Write 2";
+		wait for 500ns;
+		
+		-- Write Multiple to address 0, stop after 256 bytes
+		-- Contents are 00-FF twice
+		report "Starting Write 3 at byte_counter=" & integer'image(rx_byte_counter);
+		wr_multiple <= '1';
+		for b in 0 to 255 loop
+			vec9 := STD_LOGIC_VECTOR(to_unsigned(b,9));
+			din <= vec9(7 downto 0);
+			din_valid <= '1';
+			wait until din_taken='1';
+			wait for 20ns;
+			din_valid <= '0';
+			wait until din_taken='0';
+			wait for 20ns;
+			-- report slv_to_string(din);
+		end loop;
+		wr_multiple <= '0';
+		wait until sd_busy='0';
+		assert sd_error='1' and sd_error_code="011" report "Missing Error in Write 3";
+		wait for 500ns;
+		
+		assert sd_fsm=x"11" report "Not in Idle2 state at end";
+		
+		wait for 100us;
+		report "Simulation finished";
       wait;
+
    end process;
 
 clk_pol <= sclk xor CPOL;
