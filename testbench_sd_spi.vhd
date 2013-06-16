@@ -10,7 +10,7 @@
 -- Tool versions:  
 -- Description:   
 -- 
--- VHDL Test Bench Created by ISE for module: sd_controller
+-- VHDL Test Bench Created by ISE for module: sd_spi
 -- 
 -- Dependencies:
 -- 
@@ -19,11 +19,11 @@
 -- Additional Comments:
 --
 -- Notes: 
--- This testbench has been automatically generated using types std_logic and
--- std_logic_vector for the ports of the unit under test.  Xilinx recommends
--- that these types always be used for the top-level I/O of a design in order
--- to guarantee that the testbench will bind correctly to the post-implementation 
--- simulation model.
+-- 
+-- 
+-- 
+-- 
+-- 
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
@@ -58,6 +58,7 @@ ARCHITECTURE behavior OF testbench_sd_spi IS
 			wr : in std_logic; -- Should latch addr on rising edge
 			wr_multiple : in std_logic; -- Should latch addr on rising edge
 			addr : in std_logic_vector(31 downto 0);
+			erase_count : in std_logic_vector(7 downto 0);
 			reset : in std_logic;
 			sd_error : out std_logic; -- '1' if an error occurs, reset on next RD or WR
 			sd_busy : out std_logic; -- '0' if a RD or WR can be accepted
@@ -425,8 +426,14 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FF05",x"FF00", -- Delay then R1b
 	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF7F", -- Busy signal
 
+	-- Write
+	
+	-- CMD55 FF770000000001
+	x"FFFF",x"77FF",x"00FF",x"00FF",x"00FF",x"00FF",x"65FF",x"FFFF",x"FF00", -- R1
+	-- ACMD23
+	x"FFFF",x"57FF",x"00FF",x"00FF",x"00FF",x"01FF",x"3DFF",x"FFFF",x"FF00", -- R1
 	-- CMD24 FF5800000000000
-	x"FFFF", --
+	x"FFFF",
 	x"58FF",
 	x"00FF",
 	x"00FF",
@@ -472,9 +479,15 @@ shared variable input_output_bytes  : byte2_array := (
 	x"40FF",x"DAFF", -- CRC
 	x"FF05", -- Accepted
 	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF0F", -- Working
+	x"FFFF",
 	
+	-- Write Multiple
+	-- CMD55 FF770000000001
+	x"FFFF",x"77FF",x"00FF",x"00FF",x"00FF",x"00FF",x"65FF",x"FFFF",x"FF00", -- R1
+	-- ACMD23
+	x"FFFF",x"57FF",x"00FF",x"00FF",x"00FF",x"02FF",x"0BFF",x"FFFF",x"FF00", -- R1
 	-- CMD25 FF5900000000000
-	x"FFFF",x"FFFF",
+	x"FFFF",
 	x"59FF",
 	x"00FF",
 	x"00FF",
@@ -525,6 +538,11 @@ shared variable input_output_bytes  : byte2_array := (
 	x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00",x"FF00", -- Working
 	x"FFFF", -- Finished
 
+	-- Write Multiple, error
+	-- CMD55 FF770000000001
+	x"FFFF",x"77FF",x"00FF",x"00FF",x"00FF",x"00FF",x"65FF",x"FFFF",x"FF00", -- R1
+	-- ACMD23
+	x"FFFF",x"57FF",x"00FF",x"00FF",x"00FF",x"02FF",x"0BFF",x"FFFF",x"FF00", -- R1
 	-- CMD25 FF5900000000000
 	x"FFFF",
 	x"59FF",
@@ -606,6 +624,7 @@ BEGIN
           wr => wr,
           wr_multiple => wr_multiple,
           addr => addr,
+			 erase_count => "00000010",
           reset => reset,
           din => din,
           din_valid => din_valid,
