@@ -115,6 +115,7 @@ port (
 	din_taken : out std_logic;
 	
 	addr : in std_logic_vector(31 downto 0);
+	erase_count : in std_logic_vector(7 downto 0); -- For wr_multiple only
 
 	sd_error : out std_logic;	-- '1' if an error occurs, reset on next RD or WR
 	sd_busy : out std_logic;	-- '0' if a RD or WR can be accepted
@@ -164,6 +165,8 @@ type states is (
 	SEND_CMD_4,
 	SEND_CMD_5,
 	
+	SET_ERASE_COUNT_CMD,			-- Send Set Erase Count
+	SET_ERASE_COUNT_CMD_2,		-- Send ACMD23
 	WRITE_BLOCK_CMD,				-- Initiate Write command
 	WRITE_MULTIPLE_BLOCK_CMD,	-- Initiate Write Multiple command
 	WRITE_BLOCK_INIT,
@@ -234,6 +237,7 @@ signal new_crcLow, crcLow : std_logic_vector(7 downto 0);
 signal data_out, new_data_out : std_logic_vector(7 downto 0) := x"00";
 
 signal address, new_address : std_logic_vector(31 downto 0);
+signal wr_erase_count, new_wr_erase_count : std_logic_vector(7 downto 0);
 signal set_address : boolean := false;
 signal byte_counter, new_byte_counter : integer range 0 to 512 := 0;
 signal set_byte_counter : boolean := false;
@@ -381,6 +385,7 @@ begin
 		new_transfer_data_out <= transfer_data_out;
 		new_multiple <= multiple;
 		new_skipFirstR1Byte <= skipFirstR1Byte;
+		new_wr_erase_count <= wr_erase_count;
 		
 		case state is
 		
@@ -586,11 +591,12 @@ begin
 					new_address <= addr; set_address <= true;
 					if wr='1' then
 						new_multiple <= false;
-						new_state <= WRITE_BLOCK_CMD;
+						wr_erase_count <= "00000001";
 					else
 						new_multiple <= true;
-						new_state <= WRITE_MULTIPLE_BLOCK_CMD;
+						wr_erase_count <= erase_count;
 					end if;
+					new_state <= SET_ERASE_COUNT_CMD;
 				else
 					new_error <= '1';
 					new_error_code <= ec_WPError;
@@ -662,10 +668,8 @@ begin
 				if byte_counter=0 then
 					new_transfer_data_out <= false;
 					new_sr_return_state <= READ_BLOCK_CRC;
-				else
-					new_sr_return_state <= READ_BLOCK_DATA;
+					set_sr_return_state <= true;
 				end if;
-				set_sr_return_state <= true;
 				new_state <= SEND_RCV;
 			end if;
 			
@@ -727,6 +731,24 @@ begin
 				end if;
 			end if;
 			
+		when SET_ERASE_COUNT_CMD =>
+			-- Send CMD55
+			new_return_state <= SET_ERASE_COUNT_CMD_2; set_return_state <= true;
+			new_cmd_out <= x"7700000000"; set_cmd_out <= true;
+			new_state <= SEND_CMD;
+			
+		when SET_ERASE_COUNT_CMD_2 =>
+			-- Send ACMD23
+			new_cmd_out <= x"57000000" & wr_erase_count;
+			if wr='1' then
+				new_return_state <= WRITE_BLOCK_CMD;
+			else
+				new_return_state <= WRITE_MULTIPLE_BLOCK_CMD;
+			end if;
+			set_cmd_out <= true;
+			set_return_state <= true;
+			new_state <= SEND_CMD;
+		
 		when WRITE_BLOCK_CMD =>
 			if (card_type=ct_SDHC) then
 				new_cmd_out <= x"58" & address(31 downto 0);
@@ -1038,19 +1060,21 @@ begin
 			x"35" when SEND_CMD_3,
 			x"36" when SEND_CMD_4,
 			x"37" when SEND_CMD_5,
-			x"40" when WRITE_BLOCK_CMD,
-			x"40" when WRITE_MULTIPLE_BLOCK_CMD,
-			x"41" when WRITE_BLOCK_INIT,
-			x"42" when WRITE_BLOCK_DATA,
-			x"43" when WRITE_BLOCK_DATA_TOKEN,
-			x"44" when START_WRITE_BLOCK_DATA,
-			x"45" when WRITE_BLOCK_SEND_CRC2,
-			x"46" when WRITE_BLOCK_GET_RESPONSE,
-			x"47" when WRITE_BLOCK_CHECK_RESPONSE,
-			x"48" when WRITE_BLOCK_WAIT,
-			x"49" when WRITE_BLOCK_ABORT,
-			x"4a" when WRITE_BLOCK_TERMINATE,
-			x"4b" when WRITE_BLOCK_FINISH
+			x"40" when SET_ERASE_COUNT_CMD,
+			x"41" when SET_ERASE_COUNT_CMD_2,
+			x"42" when WRITE_BLOCK_CMD,
+			x"43" when WRITE_MULTIPLE_BLOCK_CMD,
+			x"44" when WRITE_BLOCK_INIT,
+			x"45" when WRITE_BLOCK_DATA,
+			x"46" when WRITE_BLOCK_DATA_TOKEN,
+			x"47" when START_WRITE_BLOCK_DATA,
+			x"48" when WRITE_BLOCK_SEND_CRC2,
+			x"49" when WRITE_BLOCK_GET_RESPONSE,
+			x"4A" when WRITE_BLOCK_CHECK_RESPONSE,
+			x"4B" when WRITE_BLOCK_WAIT,
+			x"4C" when WRITE_BLOCK_ABORT,
+			x"4D" when WRITE_BLOCK_TERMINATE,
+			x"4E" when WRITE_BLOCK_FINISH
 			;
 	end block calcDebugOutputs;
 end rtl;
