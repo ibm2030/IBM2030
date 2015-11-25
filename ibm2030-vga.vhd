@@ -155,7 +155,7 @@ constant indLayout : screenIndicators :=
 -- To convert ASCII to the internal 6-bit representation...
 -- Not all characters are needed, so some special ones are added
 subtype characterCode is std_logic_vector(6 downto 0);
-type charArray is array(character'(' ') to character'('{')) of characterCode;
+type charArray is array(32 to 123) of characterCode;
 constant charTranslate : charArray := (
 -- 20->62, 21 ! ->61, 22-23->127, 24->59, 25-29->127, 2A->60, 2B-2F->127
 "0111110","0111101","1111111","1111111","0111011","1111111","1111111","1111111",
@@ -1527,7 +1527,7 @@ function initScreen (constant screen : screenType) return screenCharacters is
 	begin
 		for r in lines loop
 			for c in columns loop
-				sc(r,c) := charTranslate(screen(r,c));
+				sc(r,c) := charTranslate(character'pos(screen(r,c)));
 			end loop;
 		end loop;
 		return sc;
