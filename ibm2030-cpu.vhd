@@ -111,8 +111,8 @@ entity cpu is
 			StorageOut : OUT STORAGE_OUT_INTERFACE;
 			
 --			PCH_CONN_ENTRY : IN PCH_CONN;
---			RDR_1_CONN_EXIT : OUT RDR_CONN;
---			n1050_CONTROL : OUT CONN_1050;
+			RDR_1_CONN_EXIT : OUT RDR_CONN;
+			n1050_CONTROL : OUT CONN_1050;
 			
 			-- Hardware Serial Port
 			serialInput : in Serial_Input_Lines;
@@ -568,7 +568,7 @@ begin
 		CLOCK_START_LCH => CLOCK_START_LCH,
 		
 		-- UDC1 Debug stuff
-		DEBUG => open,
+		DEBUG => DEBUG,
 		-- End of Debug stuff
 
 		T1 => T1,
@@ -580,7 +580,29 @@ begin
 		CLK => CLK
 		);		
 
-	IND_SALS <= sSALS;
+	IND_SALS <= sSALS when SW_LAMP_TEST='0' else
+		( SALS_PN => '1',
+        SALS_CN => "111111",
+        SALS_PS => '1',
+        SALS_PA => '1',
+        SALS_CH => "1111",
+        SALS_CL => "1111",
+        SALS_CM => "111",
+        SALS_CU => "11",
+        SALS_CA => "1111",
+        SALS_CB => "11",
+        SALS_CK => "1111",
+        SALS_PK => '1',
+        SALS_PC => '1',
+        SALS_CD => "1111",
+        SALS_CF => "111",
+        SALS_CG => "11",
+        SALS_CV => "11",
+        SALS_CC => "111",
+        SALS_CS => "1111",
+        SALS_AA => '1',
+        SALS_SA => '1',
+        SALS_AK => '1');
 	USE_MAN_DECODER_PWR <= sUSE_MAN_DECODER_PWR;
 	
 	secondBit: entity udc2 (FMD) port map (
@@ -867,7 +889,7 @@ begin
 		Clock60Hz => N60_CY_TIMER_PULSE,
 		
 		-- UDC3 debug
-		DEBUG => DEBUG,
+		DEBUG => open,
 
 		T1 => T1,
 		T2 => T2,
