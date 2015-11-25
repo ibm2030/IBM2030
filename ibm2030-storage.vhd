@@ -31,9 +31,9 @@
 --    C is the core storage and X is the CCROS unit
 --
 --    Revision History:
---    Revision 1.0 2010-07-20
---		Revision 1.1 2012-03-06 Modified to parse PCH files from Hercules (ESD/TXT/TXT/TXT/RLD/RLD/END)
---    Initial Release
+--    Revision 1.0 2010-07-20 Initial Release
+--    Revision 1.1 2012-03-06 Modified to parse PCH files from Hercules (ESD/TXT/TXT/TXT/RLD/RLD/END)
+--    
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
@@ -206,7 +206,7 @@ begin
 						state <= wait_for_high_address_byte;
 					end if;
 				when got_high_address_byte =>
-					prom_read_pulse <= '0';
+--					prom_read_pulse <= '0';
 					state <= wait_for_low_address_byte;
 				when wait_for_low_address_byte =>
 				-- Wait until we get the low address byte
