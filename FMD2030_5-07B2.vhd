@@ -43,6 +43,7 @@ USE ieee.std_logic_unsigned.all;
 library work;
 use work.Gates_package.all;
 use work.Buses_package.all;
+-- use work.all;
 
 ENTITY SReg IS
 port
@@ -99,7 +100,7 @@ CS_1XXX <= '1' when CS(0)='1' else '0';
 GT_CS_OPT_Set <= SA and P1;
 GT_CS_OPT_Reset <= CTRL_REG_RST or T1;
 -- GT_CS_OPT: FLE port map(GT_CS_OPT_Set, GT_CS_OPT_Reset, clk, GT_CS_OPT_DECODER); -- AB3E5
-GT_CS_OPT: entity FLL port map(S=>GT_CS_OPT_Set, R=>GT_CS_OPT_Reset, Q=>GT_CS_OPT_DECODER); -- AB3E5
+GT_CS_OPT: entity work.FLL port map(S=>GT_CS_OPT_Set, R=>GT_CS_OPT_Reset, Q=>GT_CS_OPT_DECODER); -- AB3E5
 GT_CS_BASIC_DECODER <= not GT_CS_OPT_DECODER; -- AB3E5
 BASIC_NOT_CS_0 <= GT_CS_BASIC_DECODER and CS_0XXX; -- AA3L5  Could be" GT_CS_BASIC_DECODER and not CS(0)"
 sBASIC_CS_0 <= GT_CS_BASIC_DECODER and CS_1XXX; -- AA3L5  Could be "GT_CS_BASIC_DECODER and CS(0)"

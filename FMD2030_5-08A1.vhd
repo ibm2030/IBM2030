@@ -43,6 +43,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 -- use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use work.Gates_package.all;
+use work.all;
 
 entity Clock is Port (
 				-- Clock stuff
@@ -77,7 +78,7 @@ signal OSC2,OSC,M_DLYD_OSC,DLYN_OSC,T1A,T2A,T3A,T4A,OSC2_DLYD : STD_LOGIC := '0'
 -- signal SETS,RSTS : STD_LOGIC_VECTOR(1 to 4);
 signal CLK : STD_LOGIC_VECTOR(1 to 4) := "0001";
 signal P1D,P2D,P3D,P4D : STD_LOGIC;
-signal OSC_T_LINEA, CLOCK_ONA, CLOCK_OFFA, P_CONV_OSCA,M_CONV_OSC_2A : STD_LOGIC;
+signal OSC_T_LINEA, CLOCK_ONA, CLOCK_OFFA, P_CONV_OSCA,M_CONV_OSC_2A, N_OSC : STD_LOGIC;
 
 begin
 -- Divide the 50MHz FPGA clock down
@@ -86,6 +87,7 @@ begin
 -- OSC2 is actually double the original oscillator (5.33MHz) as only one edge is used
 DIVIDER_MAX <= RatioSlow when Sw_Slow='1' else RATIOFast;
 OSC2 <= '1' when DIVIDER > '0' & DIVIDER_MAX(DIVIDER_MAX'left downto 1) else '0';
+N_OSC <= not OSC;
 
 process (CLOCK_IN)
 	begin
@@ -153,8 +155,8 @@ process (OSC2, MACH_RST_3, CLOCK_START)
 end process;
 
 OSC_T_LINEA <= OSC; -- AC1B6
-OSC_T_LINED : FDCE port map(D=>OSC_T_LINEA,Q=>OSC_T_LINE,CE=>'1',C=>CLOCK_IN);
-M_CONV_OSCD : FDCE port map(D=>not OSC,Q=>M_CONV_OSC,CE=>'1',C=>CLOCK_IN); -- AC1C6
+OSC_T_LINED : FDCE port map(D=>OSC_T_LINEA,Q=>OSC_T_LINE,CE=>'1',C=>CLOCK_IN,CLR=>'0');
+M_CONV_OSCD : FDCE port map(D=>N_OSC,Q=>M_CONV_OSC,CE=>'1',C=>CLOCK_IN,CLR=>'0'); -- AC1C6
 M_DLYD_OSC <= not OSC; -- AC1C6
 DLYN_OSC <= OSC; -- AC1C6
 
@@ -173,22 +175,22 @@ T2A <= P1D and P2D;
 T3A <= P2D and P3D;
 T4A <= P3D and P4D;
 
-T1D : FDCE port map(D=>T1A,Q=>T1,CE=>'1',C=>CLOCK_IN);
-T2D : FDCE port map(D=>T2A,Q=>T2,CE=>'1',C=>CLOCK_IN);
-T3D : FDCE port map(D=>T3A,Q=>T3,CE=>'1',C=>CLOCK_IN);
-T4D : FDCE port map(D=>T4A,Q=>T4,CE=>'1',C=>CLOCK_IN);
-P1C : FDCE port map(D=>P1D,Q=>P1,CE=>'1',C=>CLOCK_IN);
-P2C : FDCE port map(D=>P2D,Q=>P2,CE=>'1',C=>CLOCK_IN);
-P3C : FDCE port map(D=>P3D,Q=>P3,CE=>'1',C=>CLOCK_IN);
-P4C : FDCE port map(D=>P4D,Q=>P4,CE=>'1',C=>CLOCK_IN);
+T1D : FDCE port map(D=>T1A,Q=>T1,CE=>'1',C=>CLOCK_IN,CLR=>'0');
+T2D : FDCE port map(D=>T2A,Q=>T2,CE=>'1',C=>CLOCK_IN,CLR=>'0');
+T3D : FDCE port map(D=>T3A,Q=>T3,CE=>'1',C=>CLOCK_IN,CLR=>'0');
+T4D : FDCE port map(D=>T4A,Q=>T4,CE=>'1',C=>CLOCK_IN,CLR=>'0');
+P1C : FDCE port map(D=>P1D,Q=>P1,CE=>'1',C=>CLOCK_IN,CLR=>'0');
+P2C : FDCE port map(D=>P2D,Q=>P2,CE=>'1',C=>CLOCK_IN,CLR=>'0');
+P3C : FDCE port map(D=>P3D,Q=>P3,CE=>'1',C=>CLOCK_IN,CLR=>'0');
+P4C : FDCE port map(D=>P4D,Q=>P4,CE=>'1',C=>CLOCK_IN,CLR=>'0');
 
 CLOCK_ONA <= CLK(1) or CLK(2) or CLK(3);
-CLOCK_OND : FDCE port map(D=>CLOCK_ONA,Q=>CLOCK_ON,CE=>'1',C=>CLOCK_IN);
+CLOCK_OND : FDCE port map(D=>CLOCK_ONA,Q=>CLOCK_ON,CE=>'1',C=>CLOCK_IN,CLR=>'0');
 CLOCK_OFFA <= not CLOCK_ONA;
-CLOCK_OFFD : FDCE port map(D=>CLOCK_OFFA,Q=>CLOCK_OFF,CE=>'1',C=>CLOCK_IN);
+CLOCK_OFFD : FDCE port map(D=>CLOCK_OFFA,Q=>CLOCK_OFF,CE=>'1',C=>CLOCK_IN,CLR=>'0');
 P_CONV_OSCA <= OSC and CLOCK_OFFA;
-P_CONV_OSCD : FDCE port map(D=>P_CONV_OSCA,Q=>P_CONV_OSC,CE=>'1',C=>CLOCK_IN);
+P_CONV_OSCD : FDCE port map(D=>P_CONV_OSCA,Q=>P_CONV_OSC,CE=>'1',C=>CLOCK_IN,CLR=>'0');
 M_CONV_OSC_2A <= not(P_CONV_OSCA);
-M_CONV_OSC_2D : FDCE port map(D=>M_CONV_OSC_2A,Q=>M_CONV_OSC_2,CE=>'1',C=>CLOCK_IN);
+M_CONV_OSC_2D : FDCE port map(D=>M_CONV_OSC_2A,Q=>M_CONV_OSC_2,CE=>'1',C=>CLOCK_IN,CLR=>'0');
 
 end FMD;

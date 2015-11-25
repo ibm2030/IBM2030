@@ -117,12 +117,12 @@ CHECK_MPX_WRAP <= H_REG_6 and not H_REG_5_PWR; -- AB2L4
 CARRY_OUT <= CARRY_OUT_TRUE or CARRY_OUT_COMP; -- AB2L3
 
 UWRAP_LCH_Reset <= RECYCLE_RST or RESET_WRAP;
-UWRAP_LCH: entity PHR port map(D=>WRAP_TRUE,L=>CHECK_U_WRAP,R=>UWRAP_LCH_Reset,Q=>U_WRAP_CPU); -- AB2M4
-IWRAP_LCH: entity PHR port map(D=>WRAP_TRUE,L=>CHECK_I_WRAP,R=>RECYCLE_RST,Q=>sI_WRAPPED_CPU); -- AB2M4
+UWRAP_LCH: entity work.PHR port map(D=>WRAP_TRUE,L=>CHECK_U_WRAP,R=>UWRAP_LCH_Reset,Q=>U_WRAP_CPU); -- AB2M4
+IWRAP_LCH: entity work.PHR port map(D=>WRAP_TRUE,L=>CHECK_I_WRAP,R=>RECYCLE_RST,Q=>sI_WRAPPED_CPU); -- AB2M4
 I_WRAPPED_CPU <= sI_WRAPPED_CPU;
-UMPX_LCH: entity PHR port map(D=>CARRY_OUT,L=>CHECK_MPX_WRAP,R=>RECYCLE_RST,Q=>sU_WRAPPED_MPX); -- AB2M4 ?? Doesn't have reset in FMD - causes Diag failure
+UMPX_LCH: entity work.PHR port map(D=>CARRY_OUT,L=>CHECK_MPX_WRAP,R=>RECYCLE_RST,Q=>sU_WRAPPED_MPX); -- AB2M4 ?? Doesn't have reset in FMD - causes Diag failure
 U_WRAPPED_MPX <= sU_WRAPPED_MPX;
-WBUFF_LCH: entity PH port map(D=>sI_WRAPPED_CPU,L=>STORE_WRAP,Q=>WRAP_BUFF); -- AB2M4 ?? *not* sI_WRAPPED_CPU ??
+WBUFF_LCH: entity work.PH port map(D=>sI_WRAPPED_CPU,L=>STORE_WRAP,Q=>WRAP_BUFF); -- AB2M4 ?? *not* sI_WRAPPED_CPU ??
 
 WRAP64 <= (not H_REG_6 and GT_V_TO_N_REG and U_WRAP_CPU) or
 	(GT_J_TO_N_REG and not H_REG_6 and sI_WRAPPED_CPU) or
@@ -137,7 +137,7 @@ MEM_WRAP <= sMEM_WRAP;
 
 MWR_LCH_Set <= MAIN_STORAGE and T2 and (sMEM_WRAP and not ALLOW_WRITE);	-- ?? ALLOW_WRITE use unclear - dot logic
 MWR_LCH_Reset <= READ_CALL or RECYCLE_RST;
-MWR_LCH: entity FLL port map(MWR_LCH_Set,MWR_LCH_Reset,sMEM_WRAP_REQ);
+MWR_LCH: entity work.FLL port map(MWR_LCH_Set,MWR_LCH_Reset,sMEM_WRAP_REQ);
 MEM_WRAP_REQ <= sMEM_WRAP_REQ;
 SEL_DATA_READY <= (DATA_READY_1 or DATA_READY_2) and not sMEM_WRAP_REQ;
 

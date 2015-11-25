@@ -41,6 +41,7 @@ USE ieee.std_logic_unsigned.all;
 library work;
 use work.Gates_package.all;
 use work.Buses_package.all;
+use work.all;
 
 ENTITY n1050_ATTACH IS
 

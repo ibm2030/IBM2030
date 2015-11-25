@@ -172,7 +172,7 @@ M_ASSM_BUS <= (others=>'0');
 N_ASSM_BUS <= (others=>'0');
 
 -- Fig 5-09C
-n1050_TRANSLATE : entity n1050_TRANSLATE port map(
+n1050_TRANSLATE : entity work.n1050_TRANSLATE port map(
 		-- Inputs        
 		DATA_REG_BUS => DATA_REG_BUS,
 		RDR_ON_LCH => RDR_ON_LCH,
@@ -218,7 +218,7 @@ n1050_TRANSLATE : entity n1050_TRANSLATE port map(
 		);
 		
 -- Fig 5-10A
-n1050_CLOCK : entity n1050_CLOCK port map (
+n1050_CLOCK : entity work.n1050_CLOCK port map (
 		-- Inputs        
 		WRITE_LCH => WRITE_LCH, -- 09CD2
 		READ_OR_READ_INQ => RD_OR_RD_INQ, -- 09CC5
@@ -239,7 +239,7 @@ n1050_CLOCK : entity n1050_CLOCK port map (
 		);
 		
 -- Fig 5-10B
-n1050_TAGS : entity n1050_TAGS port map (
+n1050_TAGS : entity work.n1050_TAGS port map (
 		-- Inputs
 		RD_OR_RD_INQ => RD_OR_RD_INQ, -- 09CC5
 		Y_TIME => Y_TIME, -- 10AXX
@@ -319,7 +319,7 @@ TT6_POS_ATTN <= sTT6_POS_ATTN;
 n1050_OP_IN <= sn1050_OP_IN;
 
 -- Fig 5-10C
-n1050_DATA : entity n1050_DATA port map (
+n1050_DATA : entity work.n1050_DATA port map (
 		-- Inputs        
 		E_SW_SEL_BUS => E_SW_SEL_BUS,
 		USE_MANUAL_DECODER => USE_MANUAL_DECODER,
@@ -406,7 +406,7 @@ n1050_DATA : entity n1050_DATA port map (
 n1050_INTRV_REQ <= sn1050_INTRV_REQ;
 
 -- Fig 5-10D
-n1050_ATTACH : entity n1050_ATTACH port map (
+n1050_ATTACH : entity work.n1050_ATTACH port map (
 		-- Inputs        
 		-- CE Cable
 		CE_CABLE_IN => open,

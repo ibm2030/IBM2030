@@ -90,6 +90,8 @@ ENTITY ManualDataCFH IS
 		CD_REG_2 : OUT STD_LOGIC; -- 05C
 		-- E switch
 		E_SW : IN E_SW_BUS_Type;
+		
+		DEBUG : INOUT DEBUG_BUS;
 		        
 		-- Clocks
 		T1,T2,T3,T4 : IN STD_LOGIC;
@@ -140,15 +142,16 @@ UV_SEL <= '1' when (E_SW.U_SEL='1' or E_SW.V_SEL='1') and USE_MAN_DECODER_PWR='1
 RST_COUNTER <= MACH_RST_PROT; -- BE3G5
 
 CTL_LCH_Set <= (GT_C_TO_A_BUS and T1) or (not sTIMER_UPDATE and SW_INTRP_TIMER);
+-- CTL_LCH_Set <= (GT_C_TO_A_BUS and T1) or (sTIMER_UPDATE and SW_INTRP_TIMER);
 CTL_LCH_Reset <= CTRL_TRG and T3;
-CTL_LCH: entity FLL port map(CTL_LCH_Set,CTL_LCH_Reset,CTRL_LCH); -- BE3G6,BE3F5
+CTL_LCH: entity work.FLL port map(CTL_LCH_Set,CTL_LCH_Reset,CTRL_LCH); -- BE3G6,BE3F5
 
 N10MSPULSE <= not(N60_CY_TIMER_PULSE and not T3); -- 10ms monostable here
 
 CT_FF_Set <= CTRL_LCH and T4;
-CT_FF: entity FLL port map(CT_FF_Set,not CTRL_LCH,CTRL_TRG); -- BE3F6
-BD_FF_Set <= not CTRL_LCH and T2 and N10MSPULSE and not CNTR_FULL;
-BD_FF: entity FLL port map(BD_FF_Set,not N10MSPULSE,BIN_DRIVE); -- BE3F6
+CT_FF: entity work.FLL port map(CT_FF_Set,not CTRL_LCH,CTRL_TRG); -- BE3F6
+BD_FF_Set <= not CTRL_LCH and T3 and N10MSPULSE and not CNTR_FULL; -- Not T2 as per MDM (refer FETOM)
+BD_FF: entity work.FLL port map(BD_FF_Set,not N10MSPULSE,BIN_DRIVE); -- BE3F6
 
 process(BIN_DRIVE,RST_COUNTER,CTRL_TRG) -- BE3G7,BE3F7
 	begin
@@ -163,15 +166,16 @@ process(BIN_DRIVE,RST_COUNTER,CTRL_TRG) -- BE3G7,BE3F7
 CNTR_FULL <= C_BINARY_CNTR(4) and C_BINARY_CNTR(5) and C_BINARY_CNTR(6) and C_BINARY_CNTR(7); -- BE3G6
 
 -- Interrupt generation
-sTIMER_UPDATE <= C_BINARY_CNTR(4) and C_BINARY_CNTR(5) and C_BINARY_CNTR(6) and C_BINARY_CNTR(7); -- BE3G6,BE3G5
-TIMER_UPDATE <= sTIMER_UPDATE;
--- TIMER_UPDATE_OR_EXT_INT <= sTIMER_UPDATE or EXT_INT; -- AC1D5
-TIMER_UPDATE_OR_EXT_INT <= EXT_INT; -- AC1D5 ?? Temporarily prevent Timer
+sTIMER_UPDATE <= C_BINARY_CNTR(4) or C_BINARY_CNTR(5) or C_BINARY_CNTR(6) or C_BINARY_CNTR(7); -- BE3G6,BE3G5
+TIMER_UPDATE <= sTIMER_UPDATE and EXT_TRAP_MASK_ON; -- Modified to include EXT_TRAP_MASK_ON for timer as well
+-- TIMER_UPDATE <= sTIMER_UPDATE;
+TIMER_UPDATE_OR_EXT_INT <= (sTIMER_UPDATE and EXT_TRAP_MASK_ON) or EXT_INT; -- AC1D5 Modified to include EXT_TRAP_MASK_ON for timer as well
+-- TIMER_UPDATE_OR_EXT_INT <= EXT_INT; -- AC1D5 ?? Temporarily prevent Timer
 EXT_INT <= (F_REGISTER(0) or F_REGISTER(1) or F_REGISTER(2) or F_REGISTER(3) or
 	F_REGISTER(4) or F_REGISTER(5) or F_REGISTER(6) or F_REGISTER(7)) and EXT_TRAP_MASK_ON;  -- AC1G2 ?? Should this include EXT_TRAP_MASK_ON ?
 EI_LCH_Reset <= MACH_RST_SW or RESET_F_REG;
 EI_LCH_Set <= EXT_INT and T3; -- ?? Seems to be needed, not as per MDM
-EI_LCH: entity FLL port map(EI_LCH_Set,EI_LCH_Reset,EXT_INTRP); -- AC1K6,AC1C2
+EI_LCH: entity work.FLL port map(EI_LCH_Set,EI_LCH_Reset,EXT_INTRP); -- AC1K6,AC1C2
 
 -- F register - here it is held in True polarity, in the 2030 it is inverted
 C_EXT_INT <= "000000";
@@ -180,11 +184,11 @@ RESET_F_REG <= CK_SALS(0) and CK_SALS(1) and CK_SALS(2) and not CK_SALS(3) and G
 
 F1A_LCH_Reset <= (L_REGISTER(1) and RESET_F_REG) or RECYCLE_RST;
 F1_LCH_Set <= F_REGISTER_1A and SW_CONS_INTRP;
-F1A_LCH: entity FLL port map(not SW_CONS_INTRP, F1A_LCH_Reset, F_REGISTER_1A); -- AC1L2
+F1A_LCH: entity work.FLL port map(not SW_CONS_INTRP, F1A_LCH_Reset, F_REGISTER_1A); -- AC1L2
 
 F07_LCH_Set <= SET_F_REG_0 & F1_LCH_Set & C_EXT_INT(2 to 7);
 F07_LCH_Reset <= (0 to 7 => RECYCLE_RST) or ((0 to 7 => RESET_F_REG) and ('1' & L_REGISTER(1 to 7)));
-F07_LCH: entity FLVL port map(F07_LCH_Set, F07_LCH_Reset, F_REGISTER(0 to 7)); -- AC1L2
+F07_LCH: entity work.FLVL port map(F07_LCH_Set, F07_LCH_Reset, F_REGISTER(0 to 7)); -- AC1L2
 
 -- H register
 H_SET <= MACH_RST_2B or (E_SW.H_SEL and MAN_STOR_PWR) or
@@ -192,9 +196,9 @@ H_SET <= MACH_RST_2B or (E_SW.H_SEL and MAN_STOR_PWR) or
 GT_1050_TAGS <= not CD_CTRL_REG(0) and CD_CTRL_REG(1) and not CD_CTRL_REG(2) and not CD_CTRL_REG(3); -- AB1B3 CD=0100
 GT_1050_BUS <= not CD_CTRL_REG(0) and not CD_CTRL_REG(1) and not CD_CTRL_REG(2) and CD_CTRL_REG(3); -- AB1B3 CD=0001
 CD_REG_2 <= CD_CTRL_REG(2); -- AB1B3
-H_LCH: entity PHV8 port map(Z_BUS,H_SET,sH_REG_BITS); -- AB1L3
+H_LCH: entity work.PHV8 port map(Z_BUS,H_SET,sH_REG_BITS); -- AB1L3
 H_REG_BITS <= sH_REG_BITS;
-HP_LCH: entity PH port map(Z_BUS_P,H_SET,sH_REG_P); -- AB1L3
+HP_LCH: entity work.PH port map(Z_BUS_P,H_SET,sH_REG_P); -- AB1L3
 H_REG_P <= sH_REG_P;
 H_REG_6 <= sH_REG_BITS(6); -- AB1C6,AB1G2
 H_REG_5_PWR <= sH_REG_BITS(5); -- AB1L2
@@ -211,5 +215,24 @@ A_BUS <= not ("0000" & C_BINARY_CNTR & '0') when GT_C_TO_A_BUS='1'
 	else (F_REGISTER & '0') when GT_F_TO_A='1' -- ?? F_REGISTER should be inverted?
 	else not (sH_REG_BITS & sH_REG_P) when GT_H_TO_A='1'
 	else "111111111"; -- AB1F6
+
+with DEBUG.Selection select
+	DEBUG.Probe <=
+		C_BINARY_CNTR(7) when 0,
+		C_BINARY_CNTR(6) when 1,
+		C_BINARY_CNTR(5) when 2,
+		C_BINARY_CNTR(4) when 3,
+		N10MSPULSE when 4,
+		CNTR_FULL when 5,
+		CTRL_LCH when 6,
+		CTRL_TRG when 7,
+		BIN_DRIVE when 8,
+		RST_COUNTER when 9,
+		N60_CY_TIMER_PULSE when 10,
+		CTL_LCH_Set when 11,
+		CTL_LCH_Reset when 12,
+		BD_FF_Set when 13,
+		EXT_INT when 14,
+		sTIMER_UPDATE when 15;
 
 END FMD;

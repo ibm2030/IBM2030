@@ -76,6 +76,11 @@ entity ibm2030 is
 				-- Video output
 				vga_r,vga_g,vga_b,vga_hs,vga_vs : out std_logic; -- VGA output RGB+Sync
 				
+				-- Panel lights output
+				MAX7219_CLK,MAX7219_LOAD,MAX7219_DIN : out std_logic;
+				-- MAX6951 is charlieplexed LED mux (miniature panel)
+				MAX6951_CLK,MAX6951_CS0,MAX6951_CS1,MAX6951_CS2,MAX6951_CS3,MAX6951_DIN : out std_logic;
+				
 			  -- Static RAM interface
 			  sramaddr : out std_logic_vector(17 downto 0);
 			  srama : inout std_logic_vector(8 downto 0);
@@ -141,6 +146,18 @@ signal	IND_MAN : STD_LOGIC;
 signal	IND_WAIT : STD_LOGIC;
 signal	IND_TEST : STD_LOGIC;
 signal	IND_LOAD : STD_LOGIC;
+signal	IND_LP : STD_LOGIC;
+-- SX
+signal   IND_COUNT : STD_LOGIC_VECTOR(0 to 15) := "0000000000000000";
+signal	IND_COUNT_LP, IND_COUNT_HP : STD_LOGIC := '1';
+signal	IND_SX1_DATA : STD_LOGIC_VECTOR(0 to 7) := "00000000";
+signal	IND_SX1_DATAP : STD_LOGIC := '1';
+signal	IND_SX1_COMMAND: STD_LOGIC_VECTOR(0 to 7) := "00000000";
+signal	IND_SX1_KEY: STD_LOGIC_VECTOR(0 to 3) := "0000";
+signal	IND_SX1_KEYP : STD_LOGIC := '1';
+signal	IND_SX1_PCI, IND_SX1_SKIP, IND_SX1_SLI, IND_SX1_CD, IND_SX1_CC : STD_LOGIC;
+signal	IND_SX1_DA_CHK, IND_SX1_PROT_CHK, IND_SX1_PROG_CHK, IND_SX1_IL_CHK, IND_SX1_CHNLDATA_CHK, IND_SX1_IF_CHK, IND_SX1_CHNLCTRL_CHK : STD_LOGIC;
+signal	IND_SX1_STATIN_TAG, IND_SX1_ADRIN_TAG, IND_SX1_OPIN_TAG, IND_SX1_SUPOUT_TAG, IND_SX1_SERVOUT_TAG, IND_SX1_CMMDOUT_TAG, IND_SX1_ADROUT_TAG, IND_SX1_SELOUT_TAG : STD_LOGIC;
 
 -- Switch inputs to CPU
 signal	SW_START,SW_LOAD,SW_SET_IC,SW_STOP,SW_POWER_OFF : STD_LOGIC;
@@ -179,7 +196,7 @@ signal LED_vector : std_logic_vector(0 to 255);
 
 begin
 
-	cpu : entity cpu port map (
+	cpu : entity work.cpu port map (
 			WX_IND => WX_IND,
 			W_IND_P => W_IND_P,
 			X_IND_P => X_IND_P,
@@ -313,7 +330,7 @@ begin
 		Indicators(  		  1) => IND_SALS.SALS_PN,
 		Indicators(  2 to	  7) => IND_SALS.SALS_CN,
 		Indicators(  		  8) => IND_SALS.SALS_PA,
-		Indicators(			  9) => '0', -- LP
+		Indicators(			  9) => IND_LP,
 		Indicators(			 10) => W_IND_P,
 		Indicators( 11 to	 15) => WX_IND(0 to 4),
 		Indicators(			 16) => X_IND_P,
@@ -406,6 +423,38 @@ begin
  	led(6) <= '0';
 	led(7) <= DEBUG.Probe;
 	
+	IND_LP <= SW_LAMP_TEST;
+	
+	-- Temporary Selector Channel indicators
+	IND_COUNT_LP <= '1';
+	IND_COUNT_HP <= '1';
+	IND_COUNT <= (others => SW_LAMP_TEST);
+	IND_SX1_DATA <= (others => SW_LAMP_TEST);
+	IND_SX1_DATAP <= SW_LAMP_TEST;
+	IND_SX1_COMMAND <= (others => SW_LAMP_TEST);
+	IND_SX1_KEY <= (others => SW_LAMP_TEST);
+	IND_SX1_KEYP <= SW_LAMP_TEST;
+	IND_SX1_PCI <= SW_LAMP_TEST;
+	IND_SX1_SKIP <= SW_LAMP_TEST;
+	IND_SX1_SLI <= SW_LAMP_TEST;
+	IND_SX1_CD <= SW_LAMP_TEST;
+	IND_SX1_CC <= SW_LAMP_TEST;
+	IND_SX1_DA_CHK <= SW_LAMP_TEST;
+	IND_SX1_PROT_CHK <= SW_LAMP_TEST;
+	IND_SX1_PROG_CHK <= SW_LAMP_TEST;
+	IND_SX1_IL_CHK <= SW_LAMP_TEST;
+	IND_SX1_CHNLDATA_CHK <= SW_LAMP_TEST;
+	IND_SX1_STATIN_TAG <= SW_LAMP_TEST;
+	IND_SX1_ADRIN_TAG <= SW_LAMP_TEST;
+	IND_SX1_OPIN_TAG <= SW_LAMP_TEST;
+	IND_SX1_SUPOUT_TAG <= SW_LAMP_TEST;
+	IND_SX1_SERVOUT_TAG <= SW_LAMP_TEST;
+	IND_SX1_CMMDOUT_TAG <= SW_LAMP_TEST;
+	IND_SX1_ADROUT_TAG <= SW_LAMP_TEST;
+	IND_SX1_SELOUT_TAG <= SW_LAMP_TEST;
+	IND_SX1_IF_CHK <= SW_LAMP_TEST;
+	IND_SX1_CHNLCTRL_CHK <= SW_LAMP_TEST;
+				
 	frontPanel_switches: entity switches port map (
 	   -- Hardware switch inputs and scan outputs
 		SwA_scan => pa_io5,
@@ -523,7 +572,7 @@ begin
 				12 => WX_IND(1),
 				13 => WX_IND(0),
 				14 => W_IND_P,
-				15 => '0', -- LP
+				15 => IND_LP,
 				16 => WX_IND(12),
 				17 => WX_IND(11),
 				18 => WX_IND(10),
@@ -539,7 +588,7 @@ begin
 				28 => IND_SALS.SALS_CH(2),
 				29 => IND_SALS.SALS_CH(1),
 				30 => IND_SALS.SALS_CH(0),
-				31 => IND_SALS.SALS_PA,
+				31 => IND_SALS.SALS_PS,
 				32 => IND_SALS.SALS_CB(1),
 				33 => IND_SALS.SALS_CB(0),
 				34 => IND_SALS.SALS_CA(3),
@@ -572,11 +621,87 @@ begin
 				61 => IND_SALS.SALS_CF(2),
 				62 => IND_SALS.SALS_CF(1),
 				63 => IND_SALS.SALS_CF(0),
-				-- Count
+				64 => IND_COUNT_HP, -- Count-P
+				65 => IND_SALS.SALS_CS(3),
+				66 => IND_SALS.SALS_CS(2),
+				67 => IND_SALS.SALS_CS(1),
+				68 => IND_SALS.SALS_CS(0),
+				69 => IND_SALS.SALS_SA,
+				70 => IND_SALS.SALS_CC(2),
+				71 => IND_SALS.SALS_CC(1),
+				-- Count 72-87,95
+				72 => IND_COUNT(8),
+				73 => IND_COUNT(6),
+				74 => IND_COUNT(5),
+				75 => IND_COUNT(4),
+				76 => IND_COUNT(3),
+				77 => IND_COUNT(2),
+				78 => IND_COUNT(1),
+				79 => IND_COUNT(0),
+				80 => IND_COUNT(15),
+				81 => IND_COUNT(14),
+				82 => IND_COUNT(13),
+				83 => IND_COUNT(12),
+				84 => IND_COUNT(11),
+				85 => IND_COUNT(10),
+				86 => IND_COUNT(9),
+				87 => IND_COUNT_LP,
+				95 => IND_COUNT(0),
 				-- SX1
-				-- SX2
+				88 => IND_SX1_DATA(5),
+				89 => IND_SX1_DATA(4),
+				90 => IND_SX1_DATA(3),
+				91 => IND_SX1_DATA(2),
+			   92 => IND_SX1_DATA(1),
+				93 => IND_SX1_DATA(0),
+				94 => IND_SX1_DATAP,
+				96 => IND_SX1_COMMAND(4),
+				97 => IND_SX1_KEY(3),
+				98 => IND_SX1_KEY(2),
+				99 => IND_SX1_KEY(1),
+				100 => IND_SX1_KEY(0),
+				101 => IND_SX1_KEYP,
+				102 => IND_SX1_DATA(7),
+				103 => IND_SX1_DATA(6),
+				104 => IND_SX1_PCI,
+				105 => IND_SX1_SKIP,
+				106 => IND_SX1_SLI,
+				107 => IND_SX1_CD,
+				108 => IND_SX1_CC,
+				109 => IND_SX1_COMMAND(7),
+				110 => IND_SX1_COMMAND(6),
+				111 => IND_SX1_COMMAND(5),
+				112 => IND_SX1_DA_CHK,
+				113 => IND_SX1_PROT_CHK,
+				114 => IND_SX1_PROG_CHK,
+				115 => IND_SX1_IL_CHK,
+				116 => IND_SX1_CHNLDATA_CHK,
+				117 => IND_SX1_STATIN_TAG,
+				118 => IND_SX1_ADRIN_TAG,
+				119 => IND_SX1_OPIN_TAG,
+				120 => '0', -- LED5
+				121 => IND_SX1_SUPOUT_TAG,
+				122 => IND_SX1_SERVOUT_TAG,
+				123 => IND_SX1_CMMDOUT_TAG,
+				124 => IND_SX1_ADROUT_TAG,
+				125 => IND_SX1_SELOUT_TAG,
+				126 => IND_SX1_IF_CHK,
+				127 => IND_SX1_CHNLCTRL_CHK,
+				-- SX2 128-150. 162-167
+				
+				-- Temporary indicators 152-159
+				152 => IND_LOAD,
+				153 => IND_TEST,
+				154 => IND_WAIT,
+				155 => IND_MAN,
+				156 => IND_SYST,
+				157 => '1', -- Power
+				158 => '1',
+				159 => '1',
+
 				160 => IND_ADDR_IN,
 				161 => IND_OPNL_IN,
+				-- 162-167 in SX2
 				168 => IND_FO_P,
 				169 => IND_SUPPR_OUT,
 				170 => IND_SERV_OUT,
@@ -675,47 +800,18 @@ begin
 		port map(
 			clk => clk,
 			LEDs => LED_vector,
---			(
---				0 => W_IND_P,
---				0 => IND_SALS.SALS_PA,
---				1 => IND_SALS.SALS_CN(5),
---				2 => IND_SALS.SALS_CN(4),
---				3 => IND_SALS.SALS_CN(3),
---				4 => IND_SALS.SALS_CN(2),
---				5 => IND_SALS.SALS_CN(1),
---				6 => IND_SALS.SALS_CN(0),
---				7 => IND_SALS.SALS_PN,
---				16#01# to 16#0F# => '0',
---				16#10# to 16#1F# => '0',
---				16#20# to 16#2F# => '0',
---				16#30# to 16#3F# => '0',
---				16#40# to 16#4F# => '0',
---				16#50# to 16#5F# => '0',
---				16#60# to 16#6F# => '0',
---				16#70# to 16#7F# => '0',
---				16#80# to 16#8F# => '0',
---				16#90# to 16#9F# => '0',
---				16#A0# to 16#AF# => '0',
---				16#B0# to 16#BF# => '0',
---				16#C0# to 16#CF# => '0',
---				16#D0# to 16#DF# => '0',
---				16#E0# to 16#EF# => '0',
---				16#F0# to 16#FF# => '0'
---				),
+
 			-- MAX7219 is standard LED mux (full-size panel)
-			MAX7219_CLK => open,
-			MAX7219_LOAD => open,
-			MAX7219_DIN0 => open,
-			MAX7219_DIN1 => open,
-			MAX7219_DIN2 => open,
-			MAX7219_DIN3 => open,
+			MAX7219_CLK => MAX7219_CLK,
+			MAX7219_LOAD => MAX7219_LOAD,
+			MAX7219_DIN => MAX7219_DIN,
 			-- MAX6951 is charlieplexed LED mux (miniature panel)
-			MAX6951_CLK => open,
-			MAX6951_CS0 => open,
-			MAX6951_CS1 => open,
-			MAX6951_CS2 => open,
-			MAX6951_CS3 => open,
-			MAX6951_DIN => open
+			MAX6951_CLK => MAX6951_CLK,
+			MAX6951_CS0 => MAX6951_CS0,
+			MAX6951_CS1 => MAX6951_CS1,
+			MAX6951_CS2 => MAX6951_CS2,
+			MAX6951_CS3 => MAX6951_CS3,
+			MAX6951_DIN => MAX6951_DIN
 			);
 		
 		DEBUG.Selection <= CONV_INTEGER(unsigned(SW_J));
