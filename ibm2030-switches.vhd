@@ -330,7 +330,6 @@ Sw_Chk_Disable <= '1' when RawSw_Chk_Disable='1' else '0';
 
 -- Unimplemented switches
 RawSw_PowerOff <= '0';
-RawSw_IntTmr <= '0';
 
 -- Pushbuttons
 RawSw_SystemReset <= pb(0);
@@ -339,6 +338,7 @@ RawSw_Load <= pb(2);
 RawSw_Stop <= pb(3);
 
 -- Slide switches
+RawSw_IntTmr <= sw(0);
 RawSw_Display <= sw(1);
 RawSw_Store <= sw(2);
 RawSw_Interrupt <= sw(3);
