@@ -53,7 +53,7 @@ use work.Gates_package.EvenParity;
 
 entity panel_LEDs is
 	 Generic (
-				Clock_divider : integer := 2; -- Default for 50MHz clock is 25MHz = 40ns = 20ns + 20ns
+				Clock_divider : integer := 25; -- Default for 50MHz clock is 2, for 25MHz = 40ns = 20ns + 20ns. 25 gives 2MHz.
 				Number_LEDs : integer := 256
 				);
     Port ( -- Lamp input vector
@@ -63,10 +63,7 @@ entity panel_LEDs is
 			  
            -- Driver outputs
            MAX7219_CLK : out std_logic;
-			  MAX7219_DIN0 : out std_logic;	-- LEDs 00-3F
-			  MAX7219_DIN1 : out std_logic;	-- LEDs 40-7F
-			  MAX7219_DIN2 : out std_logic;	-- LEDs 80-BF
-			  MAX7219_DIN3 : out std_logic;	-- LEDs C0-FF
+			  MAX7219_DIN : out std_logic;	-- LEDs 00-3F
 			  MAX7219_LOAD : out std_logic;	-- Data latched on rising edge
 			  
 			  MAX6951_CLK : out std_logic;
@@ -80,78 +77,86 @@ end panel_LEDs;
 
 architecture Behavioral of panel_LEDs is
 signal clk_out : std_logic := '0';
+signal shift_reg64 : std_logic_vector(63 downto 0);
+signal reg_counter : integer range 0 to 11 := 0;
+signal bit_counter16 : integer range 0 to 16 := 0;
+signal bit_counter64 : integer range 0 to 64 := 0;
 
 -- MAX7219 data is 8b address and 8b data
 -- Address is:
 -- 00 No-op (unused)
 -- 01 Digit 0 (in position 0)
 -- ...
--- 08 Digit 7 (in position 0)
--- 09 Decode mode (fixed at default)
--- 0A Intensity (fixed at 0F in position 8)
--- 0B Scan limit (fixed at 07 in position 9)
--- 0C Shutdown (fixed at 01 in position 10)
--- 0F Display test (fixed at 00 in position 11)
+-- 08 Digit 7 (in position 7)
+-- 09 Decode mode (fixed 00 in position 8)
+-- 0A Intensity (fixed at 0F in position 9)
+-- 0B Scan limit (fixed at 07 in position 10)
+-- 0C Shutdown (fixed at 01 in position 11)
+-- 0F Display test (fixed at 00 in position 12)
 
-type registers7219 is array(0 to 3,0 to 11) of std_logic_vector(15 downto 0);
+type registers7219 is array(0 to 3,0 to 12) of std_logic_vector(15 downto 0);
 signal max7219_vector : registers7219 :=
 (
 0 => ( 
-0 => "0000000000000000",
-1 => "0000000100000000",
-2 => "0000001000000000",
-3 => "0000001100000000",
-4 => "0000010000000000",
-5 => "0000010100000000",
-6 => "0000011000000000",
-7 => "0000011100000000",
-8 => "0000101000000000",
-9 => "0000101100000111",
-10 => "0000110000000001",
-11 => "0000111100000000"
+0 =>  "0000000100000000",
+1 =>  "0000001000000000",
+2 =>  "0000001100000000",
+3 =>  "0000010000000000",
+4 =>  "0000010100000000",
+5 =>  "0000011000000000",
+6 =>  "0000011100000000",
+7 =>  "0000100000000000",
+8 =>  "0000100100000000",
+9 =>  "0000101000001111",
+10 => "0000101100000111",
+11 => "0000110000000001",
+12 => "0000111100000000"
 
 ),
 1 => ( 
-0 => "0000000000000000",
-1 => "0000000100000000",
-2 => "0000001000000000",
-3 => "0000001100000000",
-4 => "0000010000000000",
-5 => "0000010100000000",
-6 => "0000011000000000",
-7 => "0000011100000000",
-8 => "0000101000000000",
-9 => "0000101100000111",
-10 => "0000110000000001",
-11 => "0000111100000000"
+0 =>  "0000000100000000",
+1 =>  "0000001000000000",
+2 =>  "0000001100000000",
+3 =>  "0000010000000000",
+4 =>  "0000010100000000",
+5 =>  "0000011000000000",
+6 =>  "0000011100000000",
+7 =>  "0000100000000000",
+8 =>  "0000100100000000",
+9 =>  "0000101000001111",
+10 => "0000101100000111",
+11 => "0000110000000001",
+12 => "0000111100000000"
 ),
 2 => ( 
-0 => "0000000000000000",
-1 => "0000000100000000",
-2 => "0000001000000000",
-3 => "0000001100000000",
-4 => "0000010000000000",
-5 => "0000010100000000",
-6 => "0000011000000000",
-7 => "0000011100000000",
-8 => "0000101000000000",
-9 => "0000101100000111",
-10 => "0000110000000001",
-11 => "0000111100000000"
+0 =>  "0000000100000000",
+1 =>  "0000001000000000",
+2 =>  "0000001100000000",
+3 =>  "0000010000000000",
+4 =>  "0000010100000000",
+5 =>  "0000011000000000",
+6 =>  "0000011100000000",
+7 =>  "0000100000000000",
+8 =>  "0000100100000000",
+9 =>  "0000101000001111",
+10 => "0000101100000111",
+11 => "0000110000000001",
+12 => "0000111100000000"
 ),
 3 => ( 
-0 => "0000000000000000",
-1 => "0000000100000000",
-2 => "0000001000000000",
-3 => "0000001100000000",
-4 => "0000010000000000",
-5 => "0000010100000000",
-6 => "0000011000000000",
-7 => "0000011100000000",
-8 => "0000101000000000",
-9 => "0000101100000111",
-10 => "0000110000000001",
-11 => "0000111100000000"
+0 =>  "0000000100000000",
+1 =>  "0000001000000000",
+2 =>  "0000001100000000",
+3 =>  "0000010000000000",
+4 =>  "0000010100000000",
+5 =>  "0000011000000000",
+6 =>  "0000011100000000",
+7 =>  "0000100000000000",
+8 =>  "0000100100000000",
+9 =>  "0000101000001111",
+10 => "0000101100000111",
+11 => "0000110000000001",
+12 => "0000111100000000"
 )
 );
 
@@ -179,7 +184,7 @@ signal max6951_vector : registers6951 :=
 5 => "0110010100000000",
 6 => "0110011000000000",
 7 => "0110011100000000",
-8 => "0000001000000000",
+8 => "0000001000001111",
 9 => "0000001100000111",
 10 => "0000010000000001",
 11 => "0000011100000000"
@@ -194,7 +199,7 @@ signal max6951_vector : registers6951 :=
 5 => "0110010100000000",
 6 => "0110011000000000",
 7 => "0110011100000000",
-8 => "0000001000000000",
+8 => "0000001000001111",
 9 => "0000001100000111",
 10 => "0000010000000001",
 11 => "0000011100000000"
@@ -208,7 +213,7 @@ signal max6951_vector : registers6951 :=
 5 => "0110010100000000",
 6 => "0110011000000000",
 7 => "0110011100000000",
-8 => "0000001000000000",
+8 => "0000001000001111",
 9 => "0000001100000111",
 10 => "0000010000000001",
 11 => "0000011100000000"
@@ -222,7 +227,7 @@ signal max6951_vector : registers6951 :=
 5 => "0110010100000000",
 6 => "0110011000000000",
 7 => "0110011100000000",
-8 => "0000001000000000",
+8 => "0000001000001111",
 9 => "0000001100000111",
 10 => "0000010000000001",
 11 => "0000011100000000"
@@ -244,64 +249,67 @@ gen_clk : process (clk) is
 		end if;
 	end process;
 
+
 max7219 : process (clk_out) is
-	variable reg_counter : integer := 0;
-	variable bit_counter : integer := 16;
-	variable shift_reg0,shift_reg1,shift_reg2,shift_reg3 : std_logic_vector(16 downto 0);
 	begin
 	if falling_edge(clk_out) then
-		if bit_counter=0 then
-			bit_counter := 16;
-			if reg_counter=9 then
-				reg_counter := 0;
+		if bit_counter64=0 then
+			bit_counter64 <= 64;
+			case reg_counter is
+				when 0 to 7 =>
+					-- Mapping is:
+					-- b7 = DP = XX7
+					-- b6 =  A = XX0
+					-- b5 =  B = XX1
+					-- b4 =  C = XX2
+					-- b3 =  D = XX3
+					-- b2 =  E = XX4
+					-- b1 =  F = XX5
+					-- b0 =  G = XX6
+					shift_reg64 <= 
+						max7219_vector(3,reg_counter)(15 downto 8) & LEDs(reg_counter*8+192+7) & LEDs(reg_counter*8+192 to reg_counter*8+192+6) &
+						max7219_vector(2,reg_counter)(15 downto 8) & LEDs(reg_counter*8+128+7) & LEDs(reg_counter*8+128 to reg_counter*8+128+6) &
+						max7219_vector(1,reg_counter)(15 downto 8) & LEDs(reg_counter*8+ 64+7) & LEDs(reg_counter*8+ 64 to reg_counter*8+ 64+6) &
+						max7219_vector(0,reg_counter)(15 downto 8) & LEDs(reg_counter*8+  0+7) & LEDs(reg_counter*8+  0 to reg_counter*8+  0+6);
+				when others =>
+					shift_reg64 <= 
+						max7219_vector(3,reg_counter) &
+						max7219_vector(2,reg_counter) &
+						max7219_vector(1,reg_counter) &
+						max7219_vector(0,reg_counter);	
+			end case;
+			if reg_counter=12 then
+				reg_counter <= 0;
 			else
-				if reg_counter=9 then
-					reg_counter := 0;
-				else
-					reg_counter := reg_counter + 1;
-				end if;
-				case reg_counter is
-					when 0 to 7 =>
-						shift_reg0 := '0' & max7219_vector(0,reg_counter)(15 downto 8) & LEDs(reg_counter*8+0 to reg_counter*8+7);
-						shift_reg1 := '0' & max7219_vector(1,reg_counter)(15 downto 8) & LEDs(reg_counter*8+64 to reg_counter*8+71);
-						shift_reg2 := '0' & max7219_vector(2,reg_counter)(15 downto 8) & LEDs(reg_counter*8+128 to reg_counter*8+135);
-						shift_reg3 := '0' & max7219_vector(3,reg_counter)(15 downto 8) & LEDs(reg_counter*8+192 to reg_counter*8+199);
-					when others =>
-						shift_reg0 := '0' & max7219_vector(0,reg_counter);
-						shift_reg1 := '0' & max7219_vector(1,reg_counter);
-						shift_reg2 := '0' & max7219_vector(2,reg_counter);
-						shift_reg3 := '0' & max7219_vector(3,reg_counter);	
-					end case;
+				reg_counter <= reg_counter + 1;
 			end if;
+			MAX7219_DIN <= '0';
+			MAX7219_Load <= '1';
 		else
-			bit_counter := bit_counter - 1;
-			shift_reg0 := shift_reg0(15 downto 0) & '0';
-			shift_reg1 := shift_reg1(15 downto 0) & '0';
-			shift_reg2 := shift_reg2(15 downto 0) & '0';
-			shift_reg3 := shift_reg3(15 downto 0) & '0';
+			bit_counter64 <= bit_counter64 - 1;
+			shift_reg64 <= shift_reg64(62 downto 0) & '0';
+			MAX7219_DIN <= shift_reg64(63);
+			MAX7219_Load <= '0';
 		end if;
-		if bit_counter=16 then
-			MAX7219_LOAD <= '1';
-		else 
-			MAX7219_LOAD <= '0';
-		end if;
-		MAX7219_DIN0 <= shift_reg0(16);
-		MAX7219_DIN1 <= shift_reg1(16);
-		MAX7219_DIN2 <= shift_reg2(16);
-		MAX7219_DIN3 <= shift_reg3(16);
 	end if;
 	end process;
 	
 max6951 : process (clk_out) is
-	variable dev_counter : integer := 3;
-	variable reg_counter : integer := 0;
-	variable bit_counter : integer := 16;
+	variable dev_counter : integer range 0 to 3 := 3;
+	variable reg_counter : integer range 0 to 11 := 0;
+	variable bit_counter : integer range 0 to 16 := 16;
 	variable shift_reg : std_logic_vector(16 downto 0);
 	begin
 	if falling_edge(clk_out) then
 		if bit_counter=0 then
 			bit_counter := 16;
-			if reg_counter=9 then
+			case reg_counter is
+				when 0 to 7 =>
+					shift_reg := '0' & max6951_vector(dev_counter,reg_counter)(15 downto 8) & LEDs(dev_counter*64+reg_counter*8 to dev_counter*64+reg_counter*8+7);
+				when others =>
+					shift_reg := '0' & max6951_vector(dev_counter,reg_counter);
+			end case;
+			if reg_counter=11 then
 				if dev_counter=0 then
 					dev_counter := 3;
 				else
@@ -309,17 +317,7 @@ max6951 : process (clk_out) is
 				end if;
 				reg_counter := 0;
 			else
-				if reg_counter=9 then
-					reg_counter := 0;
-				else
-					reg_counter := reg_counter + 1;
-				end if;
-				case reg_counter is
-					when 0 to 7 =>
-						shift_reg := '0' & max6951_vector(dev_counter,reg_counter)(15 downto 8) & LEDs(dev_counter*64+reg_counter*8 to dev_counter*64+reg_counter*8+7);
-					when others =>
-						shift_reg := '0' & max6951_vector(dev_counter,reg_counter);
-					end case;
+				reg_counter := reg_counter + 1;
 			end if;
 		else
 			bit_counter := bit_counter - 1;
