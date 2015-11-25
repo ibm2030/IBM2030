@@ -43,6 +43,7 @@ USE ieee.numeric_std.all;
 library work;
 use work.Gates_package.all;
 use work.Buses_package.all;
+use work.FLL;
 
 ENTITY RREG_STG IS
 	port
@@ -255,10 +256,10 @@ BEGIN
 -- Fig 5-06C
 SX2_STOR_INPUT_DATA_Set <= SX2_RD_CYCLE and SEL_T3;
 SX2_STOR_INPUT_DATA_Reset <= (GT_DETECTORS_TO_HR and SEL_DATA_READY) or (not SEL_R_W_CTRL and not SX2_WR_CYCLE);
-SX2_STOR_INPUT_DATA: FLL port map(SX2_STOR_INPUT_DATA_Set,SX2_STOR_INPUT_DATA_Reset,SX2_STOR); -- AE1G3,AE1L3
+SX2_STOR_INPUT_DATA: entity FLL port map(SX2_STOR_INPUT_DATA_Set,SX2_STOR_INPUT_DATA_Reset,SX2_STOR); -- AE1G3,AE1L3
 SX1_STOR_INPUT_DATA_Set <= SX1_RD_CYCLE and SEL_T3;
 SX1_STOR_INPUT_DATA_Reset <= (GT_DETECTORS_TO_GR and SEL_DATA_READY) or (not SEL_R_W_CTRL and not SX1_WR_CYCLE);
-SX1_STOR_INPUT_DATA: FLL port map(SX1_STOR_INPUT_DATA_Set,SX1_STOR_INPUT_DATA_Reset,SX1_STOR); -- AD2E4,AD2G4
+SX1_STOR_INPUT_DATA: entity FLL port map(SX1_STOR_INPUT_DATA_Set,SX1_STOR_INPUT_DATA_Reset,SX1_STOR); -- AD2E4,AD2G4
 INPUT_CORRECTED_P_BIT <= (SX2_STOR and EVEN_HR_0_7_BITS) or (SX1_STOR and EVEN_GR_0_7_BITS) or DR_CORR_P_BIT; -- AD2G4,AA1E7
 
 HRP <= not SX2_STOR and HR_REG_P_BIT and STORE_HR; -- AA1F7
@@ -290,7 +291,7 @@ ALLOW_PROTECT <= sALLOW_PROTECT;
 
 PROT_MEM_Set <= MN_REG_CHK_SMPLD or (T2 and MEM_WRAP and MAIN_STG);
 PROT_MEM_Reset <= MACH_RST_6 or (not ALLOW_WRITE and T4);
-PROT_MEM: FLL port map(PROT_MEM_Set,PROT_MEM_Reset,PROTECT_MEMORY); -- AB3F5,AB3H6
+PROT_MEM: entity FLL port map(PROT_MEM_Set,PROT_MEM_Reset,PROTECT_MEMORY); -- AB3F5,AB3H6
 
 -- If we have a protection violation, we must retain the location's value in R so that it can be written back, even if
 -- R contained a new value destined for that location
@@ -315,10 +316,10 @@ R_MUX(8) <= (FORCE_Z_SET_R2 and N_Z_BUS(8)) or (GT_HSMPX_INTO_R_REG and HSMPX_BU
 
 -- Word Mark detection for 1401 usage
 DET0F <= '1' when (STORAGE_BUS(1 to 7) = "0001111") and (DATA_READY='1') else '0'; -- AA1B7
-GMWM: FLL port map(DET0F,CPU_SET_ALLOW_WR_LCH,GMWM_DETECTED); -- AA1F5
+GMWM: entity FLL port map(DET0F,CPU_SET_ALLOW_WR_LCH,GMWM_DETECTED); -- AA1F5
 P_8F_DETECT_Set <= STORAGE_BUS(0) and MAIN_STG and N1401_MODE and DET0F;
 P_8F_DETECT_Reset <= MACH_RST_SW or GMWM_DETECTED;
-P_8F_DETECT: FLL port map(P_8F_DETECT_Set,P_8F_DETECT_Reset,P_8F_DETECTED); -- AA1F5
+P_8F_DETECT: entity FLL port map(P_8F_DETECT_Set,P_8F_DETECT_Reset,P_8F_DETECTED); -- AA1F5
 
 StorageOut.WriteData <= sSTORE_BITS;
 StorageOut.MainStorage <= USE_MAIN_MEM;

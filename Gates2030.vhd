@@ -43,7 +43,7 @@ USE ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 package Gates_package is
-component PH is port(D,L: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
+-- component PH is port(D,L: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
 component PHV4 is port(D : in STD_LOGIC_VECTOR(0 to 3); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 3)); end component;
 component PHV5 is port(D : in STD_LOGIC_VECTOR(0 to 4); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 4)); end component;
 component PHV8 is port(D : in STD_LOGIC_VECTOR(0 to 7); L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR(0 to 7)); end component;
@@ -53,7 +53,7 @@ component PHR is port(D,L,R: in STD_LOGIC; signal Q:out STD_LOGIC); end componen
 component PHRV is port(D : in STD_LOGIC_VECTOR; L,R: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end component;
 component PHSR is port(D,L,S,R: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
 component FLE is port(S,R,clock: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
-component FLL is port(S,R: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
+-- component FLL is port(S,R: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
 component FLV is port(S,R: in STD_LOGIC_VECTOR; clock: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end component;
 component FLVL is port(S,R: in STD_LOGIC_VECTOR; signal Q:out STD_LOGIC_VECTOR); end component;
 --component FLAO is port( S1,S2,S3,R1,R2: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
@@ -67,11 +67,12 @@ component DelayRisingEdge is port( D,Clk: in STD_LOGIC; signal Q:out STD_LOGIC);
 component XilinxIOVector is port( I : in STD_LOGIC_VECTOR; T : in STD_LOGIC; O : out STD_LOGIC_VECTOR; IO : inout STD_LOGIC_VECTOR); end component;
 end Gates_package;
 
+
+-- FL is no longer an edge-triggered SR flip-flop
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 entity FLE is port(S,R,clock: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 
--- FL is no longer an edge-triggered SR flip-flop
 architecture slt of FLE is
 begin
 process (S,R)
@@ -84,61 +85,38 @@ end if;
 end process;
 end slt;
 
-LIBRARY ieee;
-USE ieee.std_logic_1164.all;
-entity FLL is port(S,R: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 -- FLL is a level-triggered SR flip-flop
-architecture slt of FLL is
-begin
-process(S,R)
-begin
-if (S='1') then -- Set takes priority
-	Q<='1' after 1ns;
-elsif (R='1') then
-	Q<='0' after 1ns;
-end if;
-end process;
-end slt;
+--LIBRARY ieee;
+--USE ieee.std_logic_1164.all;
+--entity FLL is port(S,R: in STD_LOGIC; signal Q:out STD_LOGIC); end;
+--
+--architecture slt of FLL is
+--begin
+--process(S,R)
+--begin
+--if (S='1') then -- Set takes priority
+--	Q<='1' after 1ns;
+--elsif (R='1') then
+--	Q<='0' after 1ns;
+--end if;
+--end process;
+--end slt;
 
-package body Gates_package is
--- Variable width AND-OR multiplexor component
-function mux(sel : in STD_LOGIC; D : in STD_LOGIC_VECTOR) return STD_LOGIC_VECTOR is
-alias D2:STD_LOGIC_VECTOR(1 to D'LENGTH) is D;
-variable Q : STD_LOGIC_VECTOR(1 to D'LENGTH);
-begin
-	if (sel = '1') then
-		Q := D;
-	else
-		Q := (others=>'0');
-	end if;
-return Q;
-end function mux;
 
-function EvenParity(v : in STD_LOGIC_VECTOR) return STD_LOGIC is
-variable p : STD_LOGIC;
-begin
-	p := '1';
-	for m in v'range loop
-		p := p xor v(m);
-	end loop;
-	return p;
-end;
-
-end Gates_package;
 -- Simple PH (polarity hold) latch
-LIBRARY ieee;
-USE ieee.std_logic_1164.all;
-entity PH is port( D,L: in STD_LOGIC; signal Q:out STD_LOGIC); end;
-
-architecture slt of PH is
-begin
-process(L,D)
-begin
-if (L='1') then
-	Q <= D;
-end if;
-end process;
-end slt;
+--LIBRARY ieee;
+--USE ieee.std_logic_1164.all;
+--entity PH is port( D,L: in STD_LOGIC; signal Q:out STD_LOGIC); end;
+--
+--architecture slt of PH is
+--begin
+--process(L,D)
+--begin
+--if (L='1') then
+--	Q <= D;
+--end if;
+--end process;
+--end slt;
 
 -- Simple PH (polarity hold) latch, 4 bit STD_LOGIC_VECTOR version
 LIBRARY ieee;
@@ -312,25 +290,25 @@ end if;
 end process;
 end slt;
 
-LIBRARY ieee;
-USE ieee.std_logic_1164.all;
-entity FLVL is port( S,R: in STD_LOGIC_VECTOR; signal Q:out STD_LOGIC_VECTOR); end;
-
-architecture slt of FLVL is
-alias S1 : STD_LOGIC_VECTOR(Q'range) is S;
-alias R1 : STD_LOGIC_VECTOR(Q'range) is R;
-begin
-process (S1,R1)
-begin
-for i in Q'range loop
-if (S1(i)='1') then -- Set takes priority
-	Q(i)<='1';
-elsif (R1(i)='1') then
-	Q(i)<='0';
-end if;
-end loop;
-end process;
-end slt;
+--LIBRARY ieee;
+--USE ieee.std_logic_1164.all;
+--entity FLVL is port( S,R: in STD_LOGIC_VECTOR; signal Q:out STD_LOGIC_VECTOR); end;
+--
+--architecture slt of FLVL is
+--alias S1 : STD_LOGIC_VECTOR(Q'range) is S;
+--alias R1 : STD_LOGIC_VECTOR(Q'range) is R;
+--begin
+--process (S1,R1)
+--begin
+--for i in Q'range loop
+--if (S1(i)='1') then -- Set takes priority
+--	Q(i)<='1';
+--elsif (R1(i)='1') then
+--	Q(i)<='0';
+--end if;
+--end loop;
+--end process;
+--end slt;
 
 -- Simple 1 cycle delay from line driver (AR)
 LIBRARY ieee;
@@ -455,3 +433,30 @@ word_generator: for b in 0 to 8 generate
 		U1: IOBUF port map (I => I(b), T => T, O => O(b), IO => IO(b));
 	end generate;
 end slt;
+
+package body Gates_package is
+
+-- Variable width AND-OR multiplexor component
+function mux(sel : in STD_LOGIC; D : in STD_LOGIC_VECTOR) return STD_LOGIC_VECTOR is
+alias D2:STD_LOGIC_VECTOR(1 to D'LENGTH) is D;
+variable Q : STD_LOGIC_VECTOR(1 to D'LENGTH);
+begin
+	if (sel = '1') then
+		Q := D;
+	else
+		Q := (others=>'0');
+	end if;
+return Q;
+end function mux;
+
+function EvenParity(v : in STD_LOGIC_VECTOR) return STD_LOGIC is
+variable p : STD_LOGIC;
+begin
+	p := '1';
+	for m in v'range loop
+		p := p xor v(m);
+	end loop;
+	return p;
+end;
+
+end Gates_package;

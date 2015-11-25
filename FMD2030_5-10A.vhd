@@ -43,6 +43,7 @@ USE ieee.std_logic_unsigned.all;
 library work;
 use work.Gates_package.all;
 use work.Buses_package.all;
+use work.FLL;
 
 ENTITY n1050_CLOCK IS
 	port
@@ -95,7 +96,7 @@ BEGIN
 	CLK_START_SET <= (PUNCH_1_CLUTCH and not READ_CLK_INTLK_LCH and READ_OR_READ_INQ)
 		or (RDR_1_CLUTCH and WRITE_LCH and not CRLF);
 	CLK_START_RESET <= RST_ATTACH or sCLK_STT_RST;
-	CLK_START_FL : FLL port map(CLK_START_SET,CLK_START_RESET,CLK_START); -- AC2G6 AC2F6
+	CLK_START_FL : entity FLL port map(CLK_START_SET,CLK_START_RESET,CLK_START); -- AC2G6 AC2F6
 	
 	BIN_CNTR_P: process(OSC,RST_ATTACH) is
 	begin
@@ -157,7 +158,7 @@ BEGIN
 --	Z_FL : FLL port map(Z_SET,Z_RESET,sZ_TIME); -- AC2F5
 	Z_TIME <= sZ_TIME;
 
-	CLOCK1_FL : FLL port map(W_SET,X_RESET,CLOCK_1); -- ?? CLOCK_1 isn't defined in the diagrams
+	CLOCK1_FL : entity FLL port map(W_SET,X_RESET,CLOCK_1); -- ?? CLOCK_1 isn't defined in the diagrams
 																	 -- This is a guess at CLOCK_1 being W_TIME OR X_TIME, but can't do that directly without possible glitches
 	
 END FMD; 

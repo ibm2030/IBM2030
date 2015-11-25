@@ -42,6 +42,7 @@ use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 USE work.Gates_package.all;
 USE work.Buses_package.all;
+USE work.FLL;
 
 entity MpxFA is
     Port ( BUS_O_REG : in  STD_LOGIC_VECTOR (0 to 8);
@@ -117,6 +118,7 @@ signal	SetStartSelO, ResetStartSelO, StartSelO : STD_LOGIC;
 signal	NO_1050_SEL_O : STD_LOGIC;
 signal	SetSelReq, ResetSelReq, SetSelOInlk, SelOInlk : STD_LOGIC;
 signal	SS_RECYCLE_RST : STD_LOGIC;
+signal	NOT_OPL_IN : STD_LOGIC;
 begin
 
 STATUS_IN <= sTAGS_IN.STA_IN;
@@ -200,7 +202,8 @@ SEL_REQ: entity FLL port map (S=>SetSelReq, R=>ResetSelReq, Q=>sN1050_SEL_OUT); 
 P_1050_SEL_OUT <= sN1050_SEL_OUT;
 
 SetSelOInlk <= (sTAGS_IN.ADR_IN and sTAGS_IN.OPL_IN) or (N1050_OP_IN and not N1050_CE_MODE); -- AA3B7
-SEL_O_INLK: entity FLL port map (S=>SetSelOInlk, R=>not sTAGS_IN.OPL_IN, Q=>SelOInlk); -- AA3C7
+NOT_OPL_IN <= not sTAGS_IN.OPL_IN;
+SEL_O_INLK: entity FLL port map (S=>SetSelOInlk, R=>NOT_OPL_IN, Q=>SelOInlk); -- AA3C7
 -- sSUPPR_O <= (FT7_MPX_CHNL_IN and not sTAGS_IN.OPL_IN) or not LOAD_IND or SUPPR_CTRL_LCH; -- AA3C7 AA3E5
 sSUPPR_O <= (FT7_MPX_CHNL_IN and not sTAGS_IN.OPL_IN) and not LOAD_IND and SUPPR_CTRL_LCH; -- AA3C7 AA3E5 ?? AA3C7 shown as 'OR'
 SUPPR_O <= sSUPPR_O;

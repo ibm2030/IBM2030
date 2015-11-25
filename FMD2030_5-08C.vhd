@@ -40,6 +40,8 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use work.PH;
+use work.FLVL;
 
 entity MpxFOFB is
     Port ( MPX_ROS_LCH : in  STD_LOGIC;

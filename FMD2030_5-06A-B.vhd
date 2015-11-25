@@ -43,6 +43,8 @@ USE ieee.std_logic_unsigned.all;
 library work;
 use work.Gates_package.all;
 use work.Buses_package.all;
+use work.PH;
+use work.FLL;
 
 ENTITY ABALU IS
 	port
@@ -149,16 +151,16 @@ B_REG_PC <= EvenParity(B_REG); -- AB2J2
 
 -- IMMED STAT REG
 SI_LCH_Set <= SERV_IN_SIG and not T_REQUEST;
-SI_LCH: PH port map(SI_LCH_Set,T3,SERV_IN_LCHD); -- AB2D6
+SI_LCH: entity PH port map(SI_LCH_Set,T3,SERV_IN_LCHD); -- AB2D6
 STI_LCH_Set <= STAT_IN_SIG and not T_REQUEST;
-STI_LCH: PH port map(STI_LCH_Set,T3,STATUS_IN_LCHD); -- AB2D6
-OI_LCH: PH port map(OPNL_IN,T3,OPNL_IN_LCHD); -- AB2D6
-AI_LCH: PH port map(ADDR_IN,T3,ADDR_IN_LCHD); -- AB2D6
+STI_LCH: entity PH port map(STI_LCH_Set,T3,STATUS_IN_LCHD); -- AB2D6
+OI_LCH: entity PH port map(OPNL_IN,T3,OPNL_IN_LCHD); -- AB2D6
+AI_LCH: entity PH port map(ADDR_IN,T3,ADDR_IN_LCHD); -- AB2D6
 
 Z0C1C0_LCH <= T4 or RECYCLE_RST;
-Z0_LCH: PH port map(sZ_0,Z0C1C0_LCH,Z0_BUS_0); -- AB2D6
-C1_LCH: PH port map(P_CARRY(1),Z0C1C0_LCH,CARRY_1_LCHD); -- AB2D6
-C0_LCH: PH port map(P_CARRY(0),Z0C1C0_LCH,sCARRY_0_LATCHED); -- AB2D6
+Z0_LCH: entity PH port map(sZ_0,Z0C1C0_LCH,Z0_BUS_0); -- AB2D6
+C1_LCH: entity PH port map(P_CARRY(1),Z0C1C0_LCH,CARRY_1_LCHD); -- AB2D6
+C0_LCH: entity PH port map(P_CARRY(0),Z0C1C0_LCH,sCARRY_0_LATCHED); -- AB2D6
 CARRY_0_LATCHED <= sCARRY_0_LATCHED;
 
 -- ALU INDICATORS
@@ -171,9 +173,9 @@ INSERT_0_CARRY <= '1' when (CC="000") or (CC="010") or (CC="011") or (CC="100") 
 
 PC7_LCH_Set <= (S_REG_3 and CARRY_S3 and P1) or (P1 and INSERT_CARRY);
 PC7_LCH_Reset <= MANUAL_STORE or T1 or RECYCLE_RST;
-PC7_LCH: FLL port map(PC7_LCH_Set,PC7_LCH_Reset,P_CARRY_IN_7); -- AB2F3,AB2E4
+PC7_LCH: entity FLL port map(PC7_LCH_Set,PC7_LCH_Reset,P_CARRY_IN_7); -- AB2F3,AB2E4
 NC7_LCH_Set <= (NOT_S3 and CARRY_S3 and P1) or (P1 and INSERT_0_CARRY) or RECYCLE_RST or MANUAL_STORE;
-NC7_LCH: FLL port map(NC7_LCH_Set,T1,N_CARRY_IN_7); -- AB2F3,AB2E4
+NC7_LCH: entity FLL port map(NC7_LCH_Set,T1,N_CARRY_IN_7); -- AB2F3,AB2E4
 
 -- ALU CHECK
 sALU_CHK <= '1' when (P_Z_ALU_BUS xor N_Z_ALU_BUS)/="11111111" or (P_SUMS(0) = N_SUMS(0)) or (P_SUMS(4) = N_SUMS(4)) or (P_CARRY(0) = N_CARRY(0)) else '0'; -- AB2D3,AB2D4,AB2E4
@@ -334,13 +336,13 @@ MACH_RST_2C <= sMACH_RST_2A;
 DIAG_TEST_BIT <= '1' when SALS.SALS_CK="1000" and SALS.SALS_AK='1' else '0'; -- AB3E7
 EVEN_LCH_Set <= T2 and DIAG_TEST_BIT and not sALU_CHK_LCH;
 EVEN_LCH_Reset <= (T2 and sALU_CHK_LCH) or RST_LOAD or SYSTEM_RST_PRIORITY_LCH or RECYCLE_RST; -- ?? *not* SYSTEM_RST_PRIORITY_LCH ??
-EVEN_LCH: FLL port map(EVEN_LCH_Set,EVEN_LCH_Reset,EVEN); -- AB3E5,AB3G2
+EVEN_LCH: entity FLL port map(EVEN_LCH_Set,EVEN_LCH_Reset,EVEN); -- AB3E5,AB3G2
 sODD <= not EVEN;
 ODD <= sODD;
 
 AC_LCH_Set <= EVEN and DIAG_TEST_BIT and T1;
 AC_LCH_Reset <= RECYCLE_RST or RST_LOAD or (ROS_SCAN and GT_SWS_TO_WX_PWR);
-AC_LCH: FLL port map(AC_LCH_Set,AC_LCH_Reset,sALU_CHK_LCH); -- AG3G7,AB3G2
+AC_LCH: entity FLL port map(AC_LCH_Set,AC_LCH_Reset,sALU_CHK_LCH); -- AG3G7,AB3G2
 ALU_CHK_LCH <= sALU_CHK_LCH;
 
 -- Debug
