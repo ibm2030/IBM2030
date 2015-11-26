@@ -1,6 +1,7 @@
 xst/
 _xmsgs/
 iseconfig/
+isim/
 *.gise
 *.xise
 *.cmd_log
@@ -35,5 +36,9 @@ iseconfig/
 *_pad.*
 *._par.
 *.xrpt
+*_beh.*
+fuse*
+*.cmd
+xilinxsim.*
 _ngo/
 xlnx_auto*
