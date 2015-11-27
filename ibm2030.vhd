@@ -76,6 +76,9 @@ entity ibm2030 is
 				-- Video output
 				vga_r,vga_g,vga_b,vga_hs,vga_vs : out std_logic; -- VGA output RGB+Sync
 				
+				-- Panel switches input
+				MAX7318_SCL : out std_logic;
+				MAX7318_SDA : inout std_logic;
 				-- Panel lights output
 				MAX7219_CLK,MAX7219_LOAD,MAX7219_DIN : out std_logic;
 				-- MAX6951 is charlieplexed LED mux (miniature panel)
@@ -193,6 +196,8 @@ signal	Clock1ms : STD_LOGIC; -- 1kHz clock for single-shots etc.
 signal	DEBUG : DEBUG_BUS; -- Passed to all modeles to probe signals
 
 signal LED_vector : std_logic_vector(0 to 255);
+signal LED2_vector : std_logic_vector(0 to 4);
+signal Switch_vector : std_logic_vector(0 to 63);
 
 begin
 
@@ -529,8 +534,17 @@ begin
 		Sw_SAR_STOP => SW_SAR_STOP,
 		Sw_SAR_RESTART => SW_SAR_RESTART,
 		
+		-- MAX7318
+		SCL => MAX7318_SCL,
+		SDA => MAX7318_SDA,
+		
 		-- Clocks etc.
 		clk => clk, -- 50MHz clock
+		status_lamps(4) => IND_LOAD,
+		status_lamps(3) => IND_TEST,
+		status_lamps(2) => IND_WAIT,
+		status_lamps(1) => IND_MAN,
+		status_lamps(0) => IND_SYST,
 --		Clock1ms => Clock1ms,
 		Timer => N60_CY_TIMER_PULSE -- Output from Switches is actually 50Hz
 		);
@@ -791,8 +805,15 @@ begin
 				254 => IND_CHK_ALU,
 				255 => IND_CHK_A_REG,
 				others => '0');
+				
+		LED2_vector <= (
+				0=>IND_LOAD,
+				1=>IND_TEST,
+				2=>IND_WAIT,
+				3=>IND_MAN,
+				4=>IND_SYST);
 		
-		front_panel : entity panel_LEDs 
+		front_panel_LEDs : entity panel_LEDs 
 		generic map(
 			clock_divider => 2,
 			number_LEDs => 256
@@ -813,7 +834,7 @@ begin
 			MAX6951_CS3 => MAX6951_CS3,
 			MAX6951_DIN => MAX6951_DIN
 			);
-		
+			
 		DEBUG.Selection <= CONV_INTEGER(unsigned(SW_J));
 		
 		SerialTx <= SO.SerialTx;

@@ -127,9 +127,14 @@ entity switches is
            RawSw_Chk_Chk_Restart, RawSw_Chk_Diagnostic, RawSw_Chk_Stop, RawSw_Chk_Disable : in STD_LOGIC; -- Check Control
            pb : in std_logic_vector(3 downto 0); -- On-board pushbuttons
            sw : in std_logic_vector(7 downto 0); -- On-board slide switches
+			  
+			  -- Scanned switch inputs - MAX7318 connections
+			  SCL : out STD_LOGIC;
+			  SDA : inout STD_LOGIC;
 
            -- Other inputs
            clk : in STD_LOGIC; -- 50MHz
+			  status_lamps : in STD_LOGIC_VECTOR(4 downto 0);
 
            -- Conditioned switch outputs:
            SwA,SwB,SwC,SwD,SwF,SwG,SwH,SwJ : out STD_LOGIC_VECTOR(3 downto 0);
@@ -158,8 +163,9 @@ signal scan : std_logic_vector(3 downto 0) := "0000";
 signal counter : std_logic_vector(14 downto 0) := (others=>'0');
 signal counter1k : std_logic_vector(15 downto 0) := (others=>'0');
 signal timerCounter : std_logic_vector(5 downto 0) := (others=>'0');
-signal SwE_raw : std_logic_vector(3 downto 0) := "0000";
-signal SwAC : std_logic_vector(3 downto 0) := "0000"; -- Address Compare switch
+signal SwE_raw,SwE_combined : std_logic_vector(3 downto 0) := "0000";
+signal UseInner,UseMid,UseOuter : Boolean;
+signal SwAC,SwAC_combined : std_logic_vector(3 downto 0) := "0000"; -- Address Compare switch
 signal Parity_in : std_logic;
 signal RawSw_PowerOff, RawSw_Interrupt, RawSw_Load, RawSw_SystemReset, RawSw_RoarReset, RawSw_Start,
 		RawSw_SetIC, RawSw_CheckReset, RawSw_Stop, RawSw_IntTmr, RawSw_Store, RawSw_LampTest,
@@ -170,11 +176,22 @@ signal debouncePowerOff, debounceInterrupt, debounceLoad,
 		debounceStop, debounceIntTmr, debounceStore, debounceLampTest, debounceDisplay : debounce;
 signal timerOut : std_logic := '0';
 signal sClock1ms : std_logic := '0';
+
+signal max7318_switches : std_logic_vector(0 to 63);
+
 constant divider : std_logic_vector(14 downto 0) := "100111000100000"; -- 20,000 gives 2.5kHz
 constant divider2000 : std_logic_vector(14 downto 0) := "110000110101000"; -- 25,000 gives 2kHz
 constant sample  : std_logic_vector(14 downto 0) := "100111000011110"; -- 19,999
 constant divider100 : std_logic_vector(4 downto 0) := "11001"; --- 25 converts 2.5kHz to 100Hz for timer
 begin
+
+max7318 : entity panel_Switches port map (
+	clk => clk,
+	SCL => SCL,
+	SDA => SDA,
+	LEDs => status_lamps,
+	Switches => max7318_switches	-- If the MAX7318 is not present, this vector should be all zero
+	);
 
 Parity_in <= EvenParity(Hex_in);
 
@@ -182,16 +199,16 @@ scan_counter: process(clk)
 	begin
 	if (rising_edge(clk)) then
 		if counter=sample then
-			if scan="0000" then SwA <= Hex_in; SwAP <= Parity_in; end if;
-			if scan="0001" then SwB <= Hex_in; SwBP <= Parity_in; end if;
-			if scan="0010" then SwC <= Hex_in; SwCP <= Parity_in; end if;
-			if scan="0011" then SwD <= Hex_in; SwDP <= Parity_in; end if;
-			if scan="0100" then SwE_raw <= Hex_in; end if;
-			if scan="0101" then SwF <= Hex_in; SwFP <= Parity_in; end if;
-			if scan="0110" then SwG <= Hex_in; SwGP <= Parity_in; end if;
-			if scan="0111" then SwH <= Hex_in; SwHP <= Parity_in; end if;
-			if scan="1000" then SwJ <= Hex_in; SwJP <= Parity_in; end if;
-			if scan="1001" then SwAC <= Hex_in; end if;
+			if scan="0000" then SwA <= Hex_in or max7318_switches(12 to 15); SwAP <= Parity_in; end if;
+			if scan="0001" then SwB <= Hex_in or max7318_switches(16 to 19); SwBP <= Parity_in; end if;
+			if scan="0010" then SwC <= Hex_in or max7318_switches(20 to 23); SwCP <= Parity_in; end if;
+			if scan="0011" then SwD <= Hex_in or max7318_switches(24 to 27); SwDP <= Parity_in; end if;
+			if scan="0100" then SwE_raw <= Hex_in or max7318_switches(36 to 39); end if;
+			if scan="0101" then SwF <= Hex_in or max7318_switches(28 to 31); SwFP <= Parity_in; end if;
+			if scan="0110" then SwG <= Hex_in or max7318_switches(40 to 43); SwGP <= Parity_in; end if;
+			if scan="0111" then SwH <= Hex_in or max7318_switches(44 to 47); SwHP <= Parity_in; end if;
+			if scan="1000" then SwJ <= Hex_in or max7318_switches(48 to 51); SwJP <= Parity_in; end if;
+			if scan="1001" then SwAC <= Hex_in or max7318_switches(4 to 7); end if;
 		end if;
 		if counter=divider then
 			counter<=(others=>'0');
@@ -201,18 +218,18 @@ scan_counter: process(clk)
 				scan <= scan + 1;
 			end if;
 			debouncePowerOff <= debouncePowerOff(1 to 3) & rawSw_PowerOff;
-			debounceInterrupt <= debounceInterrupt(1 to 3) & rawSw_Interrupt;
-			debounceLoad <= debounceLoad(1 to 3) & rawSw_Load;
-			debounceSystemReset <= debounceSystemReset(1 to 3) & rawSw_SystemReset;
-			debounceRoarReset <= debounceRoarReset(1 to 3) & rawSw_RoarReset;
-			debounceStart <= debounceStart(1 to 3) & rawSw_Start;
-			debounceSetIC <= debounceSetIC(1 to 3) & rawSw_SetIC;
-			debounceCheckReset <= debounceCheckReset(1 to 3) & rawSw_CheckReset;
-			debounceStop <= debounceStop(1 to 3) & rawSw_Stop;
-			debounceIntTmr <= debounceIntTmr(1 to 3) & rawSw_IntTmr;
-			debounceStore <= debounceStore(1 to 3) & rawSw_Store;
-			debounceLampTest <= debounceLampTest(1 to 3) & rawSw_LampTest;
-			debounceDisplay <= debounceDisplay(1 to 3) & rawSw_Display;
+			debounceInterrupt <= debounceInterrupt(1 to 3) & (rawSw_Interrupt or max7318_switches(53));
+			debounceLoad <= debounceLoad(1 to 3) & (rawSw_Load or max7318_switches(52));
+			debounceSystemReset <= debounceSystemReset(1 to 3) & (rawSw_SystemReset or max7318_switches(63));
+			debounceRoarReset <= debounceRoarReset(1 to 3) & (rawSw_RoarReset or max7318_switches(61));
+			debounceStart <= debounceStart(1 to 3) & (rawSw_Start or max7318_switches(56));
+			debounceSetIC <= debounceSetIC(1 to 3) & (rawSw_SetIC or max7318_switches(60));
+			debounceCheckReset <= debounceCheckReset(1 to 3) & (rawSw_CheckReset or max7318_switches(58));
+			debounceStop <= debounceStop(1 to 3) & (rawSw_Stop or max7318_switches(55));
+			debounceIntTmr <= debounceIntTmr(1 to 3) & (rawSw_IntTmr or max7318_switches(62));
+			debounceStore <= debounceStore(1 to 3) & (rawSw_Store or max7318_switches(59));
+			debounceLampTest <= debounceLampTest(1 to 3) & (rawSw_LampTest or max7318_switches(57));
+			debounceDisplay <= debounceDisplay(1 to 3) & (rawSw_Display or max7318_switches(54));
 			if (debouncePowerOff = "0000") then Sw_PowerOff <= '0'; else if (debouncePowerOff = "1111") then Sw_PowerOff <= '1';	end if;	end if;
 			if (debounceInterrupt = "0000") then Sw_Interrupt <= '0'; else if (debounceInterrupt = "1111") then Sw_Interrupt <= '1';	end if;	end if;
 			if (debounceLoad = "0000") then Sw_Load  <= '0'; else if (debounceLoad = "1111") then Sw_Load  <= '1';	end if;	end if;
@@ -266,67 +283,72 @@ SwAC_scan <= '1' when scan="1001" else '0';
 
 
 	-- Inner ring
-SwE.I_SEL <= '1' when SwE_raw="0000" and SW_E_INNER='1' else '0';
-SwE.J_SEL <= '1' when SwE_raw="0001" and SW_E_INNER='1' else '0';
-SwE.U_SEL <= '1' when SwE_raw="0010" and SW_E_INNER='1' else '0';
-SwE.V_SEL <= '1' when SwE_raw="0011" and SW_E_INNER='1' else '0';
-SwE.L_SEL <= '1' when SwE_raw="0100" and SW_E_INNER='1' else '0';
-SwE.T_SEL <= '1' when SwE_raw="0101" and SW_E_INNER='1' else '0';
-SwE.D_SEL <= '1' when SwE_raw="0110" and SW_E_INNER='1' else '0';
-SwE.R_SEL <= '1' when SwE_raw="0111" and SW_E_INNER='1' else '0';
-SwE.S_SEL <= '1' when SwE_raw="1000" and SW_E_INNER='1' else '0';
-SwE.G_SEL <= '1' when SwE_raw="1001" and SW_E_INNER='1' else '0';
-SwE.H_SEL <= '1' when SwE_raw="1010" and SW_E_INNER='1' else '0';
-SwE.FI_SEL <= '1' when SwE_raw="1011" and SW_E_INNER='1' else '0';
-SwE.FT_SEL <= '1' when SwE_raw="1100" and SW_E_INNER='1' else '0';
+UseInner <= (SW_E_INNER='1' or max7318_switches(34)='1');
+UseMid <= SW_E_INNER='0' and max7318_switches(34)='0' and SW_E_OUTER='0' and max7318_switches(35)='0';
+UseOuter <= (SW_E_OUTER='1' or max7318_switches(35)='1');
+SwE_combined <= SwE_raw or max7318_switches(36 to 39);
+SwE.I_SEL <= '1' when SwE_combined="0000" and UseInner else '0';
+SwE.J_SEL <= '1' when SwE_combined="0001" and UseInner else '0';
+SwE.U_SEL <= '1' when SwE_combined="0010" and UseInner else '0';
+SwE.V_SEL <= '1' when SwE_combined="0011" and UseInner else '0';
+SwE.L_SEL <= '1' when SwE_combined="0100" and UseInner else '0';
+SwE.T_SEL <= '1' when SwE_combined="0101" and UseInner else '0';
+SwE.D_SEL <= '1' when SwE_combined="0110" and UseInner else '0';
+SwE.R_SEL <= '1' when SwE_combined="0111" and UseInner else '0';
+SwE.S_SEL <= '1' when SwE_combined="1000" and UseInner else '0';
+SwE.G_SEL <= '1' when SwE_combined="1001" and UseInner else '0';
+SwE.H_SEL <= '1' when SwE_combined="1010" and UseInner else '0';
+SwE.FI_SEL <= '1' when SwE_combined="1011" and UseInner else '0';
+SwE.FT_SEL <= '1' when SwE_combined="1100" and UseInner else '0';
 	-- Mid ring
-SwE.MS_SEL <= '1' when SwE_raw="0000" and SW_E_INNER='0' and SW_E_OUTER='0' else '0';
-SwE.LS_SEL <= '1' when SwE_raw="0001" and SW_E_INNER='0' and SW_E_OUTER='0' else '0';
+SwE.MS_SEL <= '1' when SwE_combined="0000" and UseMid else '0';
+SwE.LS_SEL <= '1' when SwE_combined="0001" and UseMid else '0';
 	-- Outer ring
-SwE.E_SEL_SW_GS <= '1' when SwE_raw="0000" and SW_E_OUTER='1' else '0';
-SwE.E_SEL_SW_GT <= '1' when SwE_raw="0001" and SW_E_OUTER='1' else '0';
-SwE.E_SEL_SW_GUV_GCD <= '1' when SwE_raw="0010" and SW_E_OUTER='1' else '0';
-SwE.E_SEL_SW_HS <= '1' when SwE_raw="0011" and SW_E_OUTER='1' else '0';
-SwE.E_SEL_SW_HT <= '1' when SwE_raw="0100" and SW_E_OUTER='1' else '0';
-SwE.E_SEL_SW_HUV_HCD <= '1' when SwE_raw="0101" and SW_E_OUTER='1' else '0';
-SwE.Q_SEL <= '1' when SwE_raw="0110" and SW_E_OUTER='1' else '0';
-SwE.C_SEL <= '1' when SwE_raw="0111" and SW_E_OUTER='1' else '0';
-SwE.F_SEL <= '1' when SwE_raw="1000" and SW_E_OUTER='1' else '0';
-SwE.TT_SEL <= '1' when SwE_raw="1001" and SW_E_OUTER='1' else '0';
-SwE.TI_SEL <= '1' when SwE_raw="1010" and SW_E_OUTER='1' else '0';
-SwE.JI_SEL <= '1' when SwE_raw="1011" and SW_E_OUTER='1' else '0';
+SwE.E_SEL_SW_GS <= '1' when SwE_combined="0000" and UseOuter else '0';
+SwE.E_SEL_SW_GT <= '1' when SwE_combined="0001" and UseOuter else '0';
+SwE.E_SEL_SW_GUV_GCD <= '1' when SwE_combined="0010" and UseOuter else '0';
+SwE.E_SEL_SW_HS <= '1' when SwE_combined="0011" and UseOuter else '0';
+SwE.E_SEL_SW_HT <= '1' when SwE_combined="0100" and UseOuter else '0';
+SwE.E_SEL_SW_HUV_HCD <= '1' when SwE_combined="0101" and UseOuter else '0';
+SwE.Q_SEL <= '1' when SwE_combined="0110" and UseOuter else '0';
+SwE.C_SEL <= '1' when SwE_combined="0111" and UseOuter else '0';
+SwE.F_SEL <= '1' when SwE_combined="1000" and UseOuter else '0';
+SwE.TT_SEL <= '1' when SwE_combined="1001" and UseOuter else '0';
+SwE.TI_SEL <= '1' when SwE_combined="1010" and UseOuter else '0';
+SwE.JI_SEL <= '1' when SwE_combined="1011" and UseOuter else '0';
 
 -- SwE.IJ_SEL <= '1' when (SwE_raw="0000" or SwE_raw="0001") and SW_E_INNER='1' and USE_MAN_DECODER_PWR='1' else '0'; -- AC1G6,AC1D2
 -- SwE.UV_SEL <= '1' when (SwE_raw="0010" or SwE_raw="0011") and SW_E_INNER='1' and USE_MAN_DECODER_PWR='1' else '0'; -- AC1G6,AC1D2
 
 -- Address Compare
-Sw_ADDR_COMP_PROC <= '1' when SwAC="0000" else '0';
-Sw_SAR_DLYD_STOP <= '1' when SwAC="0001" else '0';
-Sw_SAR_STOP <= '1' when SwAC="0010" else '0';
-Sw_SAR_RESTART <= '1' when SwAC="0011" else '0';
-Sw_ROAR_RESTT_STOR_BYPASS <= '1' when SwAC="0100" else '0';
-Sw_ROAR_RESTT <= '1' when SwAC="0101" else '0';
-Sw_ROAR_RESTT_WITHOUT_RST <= '1' when SwAC="0110" else '0';
-Sw_EARLY_ROAR_STOP <= '1' when SwAC="0111" else '0';
-Sw_ROAR_STOP <= '1' when SwAC="1000" else '0';
-Sw_ROAR_SYNC <= '1' when SwAC="1001" else '0';
+SwAC_combined <= SwAC or max7318_switches(4 to 7);
+Sw_ADDR_COMP_PROC <= '1' when SwAC_combined="0000" else '0';
+Sw_SAR_DLYD_STOP <= '1' when SwAC_combined="0001" else '0';
+Sw_SAR_STOP <= '1' when SwAC_combined="0010" else '0';
+Sw_SAR_RESTART <= '1' when SwAC_combined="0011" else '0';
+Sw_ROAR_RESTT_STOR_BYPASS <= '1' when SwAC_combined="0100" else '0';
+Sw_ROAR_RESTT <= '1' when SwAC_combined="0101" else '0';
+Sw_ROAR_RESTT_WITHOUT_RST <= '1' when SwAC_combined="0110" else '0';
+Sw_EARLY_ROAR_STOP <= '1' when SwAC_combined="0111" else '0';
+Sw_ROAR_STOP <= '1' when SwAC_combined="1000" else '0';
+Sw_ROAR_SYNC <= '1' when SwAC_combined="1001" else '0';
 
 -- ROS Control
-Sw_Proc_Inh_CF_Stop <= '1' when RawSw_Proc_Inh_CF_Stop='1' else '0';
-Sw_Proc_Proc <= '1' when RawSw_Proc_Inh_CF_Stop='0' and RawSw_Proc_Scan='0' else '0';
-Sw_Proc_Scan <= '1' when RawSw_Proc_Scan='1' else '0';
+Sw_Proc_Inh_CF_Stop <= '1' when RawSw_Proc_Inh_CF_Stop='1' or max7318_switches(0)='1' else '0';
+Sw_Proc_Proc <= '1' when RawSw_Proc_Inh_CF_Stop='0' and RawSw_Proc_Scan='0' and max7318_switches(0 to 1)="00" else '0';
+Sw_Proc_Scan <= '1' when RawSw_Proc_Scan='1' or max7318_switches(1)='1' else '0';
 
 -- Rate
-Sw_Rate_Single_Cycle <= '1' when RawSw_Rate_Single_Cycle='1' else '0';
-Sw_Rate_Process <= '1' when RawSw_Rate_Single_Cycle='0' and RawSw_Rate_Instruction_Step='0' else '0';
-Sw_Rate_Instruction_Step <= '1' when RawSw_Rate_Instruction_Step='1' else '0';
+Sw_Rate_Single_Cycle <= '1' when RawSw_Rate_Single_Cycle='1' or max7318_switches(3)='1' else '0';
+Sw_Rate_Process <= '1' when RawSw_Rate_Single_Cycle='0' and RawSw_Rate_Instruction_Step='0' and max7318_switches(2 to 3)="00" else '0';
+Sw_Rate_Instruction_Step <= '1' when RawSw_Rate_Instruction_Step='1' or max7318_switches(2)='1' else '0';
 
 -- Check Control
-Sw_Chk_Chk_Restart <= '1' when RawSw_Chk_Chk_Restart='1' else '0';
-Sw_Chk_Diagnostic <= '1' when RawSw_Chk_Diagnostic='1' else '0';
-Sw_Chk_Stop <= '1' when RawSw_Chk_Stop='1' else '0';
-Sw_Chk_Process <= '1' when RawSw_Chk_Chk_Restart='0' and RawSw_Chk_Diagnostic='0' and RawSw_Chk_Stop='0' and RawSw_Chk_Disable='0' else '0';
-Sw_Chk_Disable <= '1' when RawSw_Chk_Disable='1' else '0';
+Sw_Chk_Chk_Restart <= '1' when RawSw_Chk_Chk_Restart='1' or max7318_switches(11)='1' else '0';
+Sw_Chk_Diagnostic <= '1' when RawSw_Chk_Diagnostic='1' or max7318_switches(8)='1' else '0';
+Sw_Chk_Stop <= '1' when RawSw_Chk_Stop='1' or max7318_switches(10)='1' else '0';
+Sw_Chk_Process <= '1' when RawSw_Chk_Chk_Restart='0' and RawSw_Chk_Diagnostic='0' and RawSw_Chk_Stop='0' and RawSw_Chk_Disable='0'  and max7318_switches(8 to 11)="0000"else '0';
+Sw_Chk_Disable <= '1' when RawSw_Chk_Disable='1' or max7318_switches(9)='1' else '0';
 
 -- Unimplemented switches
 RawSw_PowerOff <= '0';
