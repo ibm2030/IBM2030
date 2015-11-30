@@ -51,8 +51,8 @@ use work.all;
 entity ibm2030 is
     Port ( -- Physical I/O on Digilent S3 Board
 				-- Seven-segment displays
---	        ssd : out std_logic_vector(7 downto 0); -- 7-segment segment cathodes (not used)
---         ssdan : out std_logic_vector(3 downto 0); -- 7-segment digit anodes (not used)
+	        ssd : out std_logic_vector(7 downto 0); -- 7-segment segment cathodes - active=0, a=bit0, g=bit6, dp=bit7
+           ssdan : out std_logic_vector(3 downto 0); -- 7-segment digit anodes - active=0, RHS=bit0
 
 				-- Discrete LEDs
            led : out std_logic_vector(7 downto 0); -- 8 LEDs
@@ -833,6 +833,15 @@ begin
 			MAX6951_CS2 => MAX6951_CS2,
 			MAX6951_CS3 => MAX6951_CS3,
 			MAX6951_DIN => MAX6951_DIN
+			);
+			
+		number_LEDs : entity segment_LEDs
+		port map(
+			clk => clk,
+			number(15 downto 13) => "000",
+			number(12 downto 0) => WX_IND(0 to 12),
+			anodes => ssdan,
+			cathodes => ssd
 			);
 			
 		DEBUG.Selection <= CONV_INTEGER(unsigned(SW_J));

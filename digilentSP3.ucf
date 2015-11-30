@@ -38,20 +38,20 @@ NET "pb<1>" LOC = "M14";
 NET "pb<0>" LOC = "M13";
 
 # seven segment display - shared segments
-#NET "ssd<7>" LOC = "P16"; 
-#NET "ssd<6>" LOC = "N16";
-#NET "ssd<5>" LOC = "F13";
-#NET "ssd<4>" LOC = "R16";
-#NET "ssd<3>" LOC = "P15";
-#NET "ssd<2>" LOC = "N15";
-#NET "ssd<1>" LOC = "G13";
-#NET "ssd<0>" LOC = "E14";
+NET "ssd<7>" LOC = "P16"; 
+NET "ssd<6>" LOC = "N16";
+NET "ssd<5>" LOC = "F13";
+NET "ssd<4>" LOC = "R16";
+NET "ssd<3>" LOC = "P15";
+NET "ssd<2>" LOC = "N15";
+NET "ssd<1>" LOC = "G13";
+NET "ssd<0>" LOC = "E14";
 
 # seven segment display - anodes
-#NET "ssdan<3>" LOC = "E13";
-#NET "ssdan<2>" LOC = "F14";
-#NET "ssdan<1>" LOC = "G14";
-#NET "ssdan<0>" LOC = "D14";
+NET "ssdan<3>" LOC = "E13";
+NET "ssdan<2>" LOC = "F14";
+NET "ssdan<1>" LOC = "G14";
+NET "ssdan<0>" LOC = "D14";
 
 # VGA port
 NET "vga_r" LOC = "R12";
