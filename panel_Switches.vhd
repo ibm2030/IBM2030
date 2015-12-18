@@ -46,7 +46,7 @@ entity panel_Switches is
 				Read_delay : integer := 700;	-- Number of divided clocks to wait between scan drive and switch read
 				Number_Switches : integer := 64;
 				Number_LEDs : integer := 5;
-				MAX7318_address : std_logic_vector(6 downto 0) := "1000000"
+				MAX7318_address : std_logic_vector(6 downto 0) := "0100000"
 				);
     Port ( -- Lamp input vector
            LEDs : in std_logic_vector(0 to Number_LEDs-1);

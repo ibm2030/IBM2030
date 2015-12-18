@@ -196,7 +196,6 @@ signal	Clock1ms : STD_LOGIC; -- 1kHz clock for single-shots etc.
 signal	DEBUG : DEBUG_BUS; -- Passed to all modeles to probe signals
 
 signal LED_vector : std_logic_vector(0 to 255);
-signal LED2_vector : std_logic_vector(0 to 4);
 signal Switch_vector : std_logic_vector(0 to 63);
 
 begin
@@ -805,13 +804,6 @@ begin
 				254 => IND_CHK_ALU,
 				255 => IND_CHK_A_REG,
 				others => '0');
-				
-		LED2_vector <= (
-				0=>IND_LOAD,
-				1=>IND_TEST,
-				2=>IND_WAIT,
-				3=>IND_MAN,
-				4=>IND_SYST);
 		
 		front_panel_LEDs : entity panel_LEDs 
 		generic map(
