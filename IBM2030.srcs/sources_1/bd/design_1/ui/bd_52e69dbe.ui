@@ -1,0 +1,41 @@
+{
+   ExpandedHierarchyInLayout: "",
+   guistr: "# # String gsaved with Nlview 6.8.5  2018-01-30 bk=1.4354 VDI=40 GEI=35 GUI=JA:1.6 TLS
+#  -string -flagsOSRD
+preplace port enb -pg 1 -y 360 -defaultsOSRD
+preplace port BRAM_PORTA -pg 1 -y -30 -defaultsOSRD
+preplace port clkb -pg 1 -y 300 -defaultsOSRD
+preplace portBus web -pg 1 -y 390 -defaultsOSRD
+preplace portBus doutb_cpu -pg 1 -y 290 -defaultsOSRD
+preplace portBus addrb -pg 1 -y 270 -defaultsOSRD
+preplace portBus douta_axi -pg 1 -y 470 -defaultsOSRD
+preplace portBus dinb_cpu -pg 1 -y 330 -defaultsOSRD
+preplace portBus Dina_axi -pg 1 -y 110 -defaultsOSRD
+preplace inst blk_mem_ls -pg 1 -lvl 4 -y 190 -defaultsOSRD
+preplace inst parity_ls -pg 1 -lvl 2 -y -180 -defaultsOSRD
+preplace inst xlconcat_wr_ls -pg 1 -lvl 3 -y 120 -defaultsOSRD
+preplace inst slicer_ls -pg 1 -lvl 1 -y 110 -defaultsOSRD
+preplace inst combiner_ls -pg 1 -lvl 4 -y 390 -defaultsOSRD
+preplace netloc parity_ls_Res2 1 2 1 190
+preplace netloc slicer_ls_Dout2 1 1 2 -190 130 N
+preplace netloc xlconcat_wr_ls_dout 1 3 1 N
+preplace netloc parity_ls_Res3 1 2 1 180
+preplace netloc parity_ls_Res 1 2 1 210
+preplace netloc slicer_ls_Dout3 1 1 2 -180 170 N
+preplace netloc wrapped_cpu_0_BRAM_LS_ADDR 1 0 4 -500J -20 NJ -20 NJ -20 570J
+preplace netloc wrapped_cpu_0_BRAM_LS_EN 1 0 4 -480J 260 NJ 260 NJ 260 NJ
+preplace netloc Dina_axi_1 1 0 1 N
+preplace netloc wrapped_cpu_0_BRAM_MS_CLK 1 0 4 NJ 330 NJ 330 NJ 330 560J
+preplace netloc wrapped_cpu_0_BRAM_LS_CLK 1 0 4 -490J -10 NJ -10 NJ -10 560J
+preplace netloc axi_bram_ctrl_ls_BRAM_PORTA 1 0 4 NJ -30 NJ -30 NJ -30 580J
+preplace netloc blk_mem_ls_douta 1 3 1 580J
+preplace netloc wrapped_cpu_0_BRAM_LS_WE 1 0 4 NJ 390 NJ 390 NJ 390 570J
+preplace netloc blk_mem_ls_doutb 1 3 2 590 440 890J
+preplace netloc combiner_ls_douta_axi 1 4 1 880
+preplace netloc parity_ls_Res1 1 2 1 200
+preplace netloc slicer_ls_Dout1 1 1 2 -200 90 N
+preplace netloc slicer_ls_Dout 1 1 2 -210 50 N
+levelinfo -pg 1 -520 -340 70 450 750 910 -top -290 -bot 720
+",
+}
+0

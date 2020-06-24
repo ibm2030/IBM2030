@@ -403,6 +403,7 @@ end behavioral;
 
 
 package body Gates_package is
+--type LED_DEVICE_TYPE is (MAX6951, MAX7219);
 
 -- Variable width AND-OR multiplexor component
 function mux(sel : in STD_LOGIC; D : in STD_LOGIC_VECTOR) return STD_LOGIC_VECTOR is

@@ -1,0 +1,31 @@
+{
+   ExpandedHierarchyInLayout: "",
+   guistr: "# # String gsaved with Nlview 6.8.5  2018-01-30 bk=1.4354 VDI=40 GEI=35 GUI=JA:1.6 TLS
+#  -string -flagsOSRD
+preplace port enb -pg 1 -y 320 -defaultsOSRD
+preplace port BRAM_PORTA -pg 1 -y 160 -defaultsOSRD
+preplace port clkb -pg 1 -y 280 -defaultsOSRD
+preplace portBus web -pg 1 -y 340 -defaultsOSRD
+preplace portBus doutb_cpu -pg 1 -y 400 -defaultsOSRD
+preplace portBus addrb -pg 1 -y 260 -defaultsOSRD
+preplace portBus douta_axi -pg 1 -y 60 -defaultsOSRD
+preplace portBus dinb_cpu -pg 1 -y 300 -defaultsOSRD
+preplace portBus Dina_axi -pg 1 -y 220 -defaultsOSRD
+preplace inst RemoveParity_0 -pg 1 -lvl 2 -y 60 -defaultsOSRD
+preplace inst AddParity_0 -pg 1 -lvl 1 -y 220 -defaultsOSRD
+preplace inst blk_mem_ms -pg 1 -lvl 2 -y 250 -defaultsOSRD
+preplace netloc RemoveParity_0_O 1 2 1 NJ
+preplace netloc wrapped_cpu_0_BRAM_MS_WRDATA 1 0 2 NJ 300 230J
+preplace netloc axi_bram_ctrl_ms_BRAM_PORTA 1 0 2 NJ 160 NJ
+preplace netloc wrapped_cpu_0_BRAM_MS_WE 1 0 2 NJ 340 NJ
+preplace netloc wrapped_cpu_0_BRAM_MS_EN 1 0 2 NJ 320 NJ
+preplace netloc blk_mem_ms_douta 1 1 1 220
+preplace netloc Dina_axi_1 1 0 1 NJ
+preplace netloc wrapped_cpu_0_BRAM_MS_CLK 1 0 2 20J 290 220J
+preplace netloc wrapped_cpu_0_BRAM_MS_ADDR 1 0 2 30J 280 210J
+preplace netloc blk_mem_gen_0_doutb 1 1 2 240 400 NJ
+preplace netloc AddParity_0_O 1 1 1 210J
+levelinfo -pg 1 0 120 350 480 -top 0 -bot 420
+",
+}
+0
