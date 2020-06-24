@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2015 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright ï¿½ 2015 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -43,8 +43,9 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-use work.Buses_package.all;
-use work.Gates_package.EvenParity;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 
 ---- Uncomment the following library declaration if instantiating
 ---- any Xilinx primitives in this code.

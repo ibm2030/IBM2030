@@ -41,13 +41,12 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-LIBRARY work;
-USE work.Gates_package.all;
-USE work.Buses_package.all;
+LIBRARY logic,buses;
+USE logic.Gates_package.all;
+USE buses.Buses_package.all;
 
 -- This package implements the WX register and associated logic
 -- Fig 5-01A, 5-01B
-
 entity WX_Regs is
 port (
 		-- Indicators
@@ -173,24 +172,24 @@ BEGIN
 -- Fig 5-01A
 -- ROS Indicator register
 ROSAR_IND_LATCH_Set <= (ANY_MACH_CHK and CHK_OR_DIAG_STOP_SW) or EARLY_ROAR_STOP;
-ROSAR_IND_LATCH: entity work.FLL port map(ROSAR_IND_LATCH_Set,MACH_START_RST,FL_ROSAR_IND); -- AA3G4,AA3H4
+ROSAR_IND_LATCH: FLL port map(S=>ROSAR_IND_LATCH_Set,R=>MACH_START_RST,Q=>FL_ROSAR_IND); -- AA3G4,AA3H4
 sSET_IND_ROSAR <= (not ALU_CHK or not CHK_OR_DIAG_STOP_SW) and not FL_ROSAR_IND; -- AA3H4
 -- sSET_IND_ROSAR <= '1'; -- Debug
 SET_IND_ROSAR <= sSET_IND_ROSAR;
 SET_IND <= (T4 and sSET_IND_ROSAR) or MACH_RST_SET_LCH; -- AA3J4
 
-WINDP: entity work.PH port map(W_P,SET_IND,W_IND_P_X); -- AA3J2
+WINDP: PH port map(W_P,SET_IND,W_IND_P_X); -- AA3J2
 W_IND_P <= W_IND_P_X or TEST_LAMP;
-XINDP: entity work.PH port map(X_P,SET_IND,X_IND_P_X); -- AA3J3
+XINDP: PH port map(X_P,SET_IND,X_IND_P_X); -- AA3J3
 X_IND_P <= X_IND_P_X or TEST_LAMP;
-WXIND: entity work.PHV13 port map(sWX,SET_IND,WX_IND_X); -- AA3J2,AA3J3
+WXIND: PHV port map(sWX,SET_IND,WX_IND_X); -- AA3J2,AA3J3
 WX_IND <= WX_IND_X or (WX_IND'range=>TEST_LAMP);
 
 -- SALS parity checking
 -- ?? I have added a latch (FL) on PA to hold it at T4, as are W_IND_P and X_IND_P
 -- This keeps WX_CHK valid during T1, T2 and T3 - it is checked during T2 of the following cycle
 -- Without this, spurious ROS_ADDR checks are generated  because PA is not always valid at the next T2
-PA_PH: entity work.PH port map(SALS.SALS_PA,T4,PA_LCH);
+PA_PH: PH port map(SALS.SALS_PA,T4,PA_LCH);
 WX_CHK <= not(PA_LCH xor W_IND_P_X xor X_IND_P_X); -- AA2J4 ?? Inverted ??
 sSAL_PC <= not EvenParity(USE_BASIC_CA_DECODER & SALS.SALS_AK & SALS.SALS_PK & SALS.SALS_CH & SALS.SALS_CL & 
 		SALS.SALS_CM & SALS.SALS_CU & SALS.SALS_CA & SALS.SALS_CB & SALS.SALS_CK & SALS.SALS_PA & SALS.SALS_PS)
@@ -242,26 +241,26 @@ SET_W2A <= not ANY_PRIORITY_PULSE_PWR or not ALU_CHK_LCH or not CHK_SW_PROC_SW; 
 SET_W2B <= sGT_BU_ROSAR_TO_WX_REG or not NORMAL_ENTRY; -- AA2F2
 SET_W2 <= SET_W2A and SET_W2B; -- AA2H5,AA2F2 Wired-AND
 SET_W_REG <= ((GT_CA_TO_W_REG or GT_CK_TO_W_REG or SET_W2) and T1) or MACH_RST_SET_LCH_DLY; -- AA2D2 ?? P1 or T1 ??
-REG_W: entity work.PHV5 port map(W_ASSM(3 to 7),SET_W_REG,sWX(0 to 4)); -- AA2D2
-REG_WP: entity work.PH port map(W_ASSM(8),SET_W_REG,W_P); -- AA2D2
+REG_W: PHV port map(W_ASSM(3 to 7),SET_W_REG,sWX(0 to 4)); -- AA2D2
+REG_WP: PH port map(W_ASSM(8),SET_W_REG,W_P); -- AA2D2
 
 -- X_LATCH: 
 SET_X_REG <= (not INH_ROSAR_SET and T1) or MACH_RST_SET_LCH_DLY; -- AA2D2 ?? P1 or T1 ??
-REG_X: entity work.PHV8 port map(X_ASSM(0 to 7),SET_X_REG,sWX(5 to 12)); -- AA2D3
-REG_XP: entity work.PH port map(X_ASSM(8),SET_X_REG,X_P); -- AA2D3
+REG_X: PHV port map(X_ASSM(0 to 7),SET_X_REG,sWX(5 to 12)); -- AA2D3
+REG_XP: PH port map(X_ASSM(8),SET_X_REG,X_P); -- AA2D3
 
 WX <= sWX;
 
 -- Backup ROSAR regs
 SET_F <= (MPX_SHARE_PULSE and T4) or MACH_RST_4; -- AA3G3
 SET_FW <= SET_F;
-FWX_LCH: entity work.PHV13 port map(sWX,SET_F,FWX); -- AA3H2,AA3H3
-FWP_LCH: entity work.PH port map(W_P,SET_F,FW_P); -- AA3H2
-FXP_LCH: entity work.PH port map(X_P,SET_F,FX_P); -- AA3H3
+FWX_LCH: PHV port map(sWX,SET_F,FWX); -- AA3H2,AA3H3
+FWP_LCH: PH port map(W_P,SET_F,FW_P); -- AA3H2
+FXP_LCH: PH port map(X_P,SET_F,FX_P); -- AA3H3
 SET_G <= (SX_CHAIN_PULSE and T4) or MACH_RST_5; -- AA3K2
-GWX_LCH: entity work.PHV13 port map(sWX,SET_G,GWX); -- AA2K5,AA2L2
-GWP_LCH: entity work.PH port map(W_P,SET_G,GW_P); -- AA2K5
-GXP_LCH: entity work.PH port map(X_P,SET_G,GX_P); -- AA2L2
+GWX_LCH: PHV port map(sWX,SET_G,GWX); -- AA2K5,AA2L2
+GWP_LCH: PH port map(W_P,SET_G,GW_P); -- AA2K5
+GXP_LCH: PH port map(X_P,SET_G,GX_P); -- AA2L2
 
 -- CROS triggering
 

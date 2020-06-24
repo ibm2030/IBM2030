@@ -39,15 +39,16 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_arith.all;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 USE std.textio.all;
 
-library work;
-use work.Gates_package.all;
-use work.Buses_package.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 library CCROS;
 use CCROS.CCROS.all;
 
-ENTITY CCROS IS 
+ENTITY CCROS_STORE IS 
 	port
 	(
 		-- Inputs
@@ -72,10 +73,13 @@ ENTITY CCROS IS
 		P1 : IN STD_LOGIC;
 		Clk : IN STD_LOGIC		-- 50MHz
 	);
-END CCROS;
+END CCROS_STORE;
 
-ARCHITECTURE FMD OF CCROS IS 
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+USE ieee.std_logic_arith.all;
 
+ARCHITECTURE FMD OF CCROS_STORE IS 
 signal SALS_Word : STD_LOGIC_VECTOR(0 to 54) := (others=>'1');
 
 alias  SALS_PN : STD_LOGIC is SALS_Word(0);
@@ -124,42 +128,42 @@ SET_CTRL_REG <= not ANY_PRIORITY_LCH and P1;
 
 CD_LCH_Set <= SALS_CD and (0 to 3 => SET_CTRL_REG);
 CD_LCH_Reset <= (0 to 3 => T1 or sCTRL_REG_RST);
-CD_LCH: FLVL port map(CD_LCH_Set,CD_LCH_Reset,sCTRL.CTRL_CD); -- AA2C6
+CD_LCH: FLVL port map(S=>CD_LCH_Set,R=>CD_LCH_Reset,Q=>sCTRL.CTRL_CD); -- AA2C6
 
 STRAIGHT_LCH_Set <= sCTRL_REG_RST or (SET_CTRL_REG and not SALS_CF(0));
-STRAIGHT_LCH: entity work.FLL port map(STRAIGHT_LCH_Set, T1, sCTRL.STRAIGHT);
+STRAIGHT_LCH: FLL port map(S=>STRAIGHT_LCH_Set, R=>T1, Q=>sCTRL.STRAIGHT);
 CROSSED_LCH_Set <= SET_CTRL_REG and SALS_CF(0);
-CROSSED_LCH: entity work.FLL port map(CROSSED_LCH_Set, AUX_CTRL_REG_RST, sCTRL.CROSSED);
+CROSSED_LCH: FLL port map(S=>CROSSED_LCH_Set, R=>AUX_CTRL_REG_RST, Q=>sCTRL.CROSSED);
 
 CC2_LCH_Set <= SET_CTRL_REG and SALS_CC(2);
 CC2_LCH_Reset <= T1 or sCTRL_REG_RST;
-CC2_LCH: entity work.FLL port map(CC2_LCH_Set, CC2_LCH_Reset, sCTRL.CTRL_CC(2));
+CC2_LCH: FLL port map(CC2_LCH_Set, CC2_LCH_Reset, sCTRL.CTRL_CC(2));
 GTAHI_LCH_Set <= SET_CTRL_REG and SALS_CF(1);
 GTAHI_LCH_Reset <= T1 or sCTRL_REG_RST;
-GTAHI_LCH: entity work.FLL port map(GTAHI_LCH_Set, GTAHI_LCH_Reset, sCTRL.GT_A_REG_HI);
+GTAHI_LCH: FLL port map(GTAHI_LCH_Set, GTAHI_LCH_Reset, sCTRL.GT_A_REG_HI);
 GTALO_LCH_Set <= SET_CTRL_REG and SALS_CF(2);
 GTALO_LCH_Reset <= T1 or sCTRL_REG_RST;
-GTALO_LCH: entity work.FLL port map(GTALO_LCH_Set, GTALO_LCH_Reset, sCTRL.GT_A_REG_LO);
+GTALO_LCH: FLL port map(GTALO_LCH_Set, GTALO_LCH_Reset, sCTRL.GT_A_REG_LO);
 COMPCY_LCH_Set <= SET_CTRL_REG and COMPUTE;
 COMPCY_LCH_Reset <= T1 or sCTRL_REG_RST;
-COMPCY_LCH: entity work.FLL port map(COMPCY_LCH_Set, COMPCY_LCH_Reset, sCTRL.COMPUTE_CY_LCH);
+COMPCY_LCH: FLL port map(COMPCY_LCH_Set, COMPCY_LCH_Reset, sCTRL.COMPUTE_CY_LCH);
 
 CG0_Set <= MANUAL_STORE or (SET_CTRL_REG and SALS_CG(0));
 CG_Reset <= T1 or (MACH_RST_SW or ANY_PRIORITY_LCH); -- ?? Required to prevent simultaneous Set & Reset of CG by MANUAL_STORE
-CG0: entity work.FLL port map(CG0_Set, CG_Reset, sCTRL.CTRL_CG(0)); sCTRL.GT_B_REG_HI <= sCTRL.CTRL_CG(0);
+CG0: FLL port map(CG0_Set, CG_Reset, sCTRL.CTRL_CG(0)); sCTRL.GT_B_REG_HI <= sCTRL.CTRL_CG(0);
 CG1_Set <= MANUAL_STORE or (SET_CTRL_REG and SALS_CG(1));
-CG1: entity work.FLL port map(CG1_Set, CG_Reset, sCTRL.CTRL_CG(1)); sCTRL.GT_B_REG_LO <= sCTRL.CTRL_CG(1);
+CG1: FLL port map(CG1_Set, CG_Reset, sCTRL.CTRL_CG(1)); sCTRL.GT_B_REG_LO <= sCTRL.CTRL_CG(1);
 
 CV_LCH_Set <= SALS_CV and (0 to 1 => SET_CTRL_REG);
 CV_LCH_Reset <= (0 to 1 => T1 or sCTRL_REG_RST);
-CV_LCH: entity work.FLVL port map(CV_LCH_Set,CV_LCH_Reset,sCTRL.CTRL_CV); -- AA2D6
+CV_LCH: FLVL port map(CV_LCH_Set,CV_LCH_Reset,sCTRL.CTRL_CV); -- AA2D6
 CC01_LCH_Set <= SALS_CC(0 to 1) and (0 to 1 => SET_CTRL_REG);
 CC01_LCH_Reset <= (0 to 1 => T1 or sCTRL_REG_RST);
-CC01_LCH: entity work.FLVL port map(CC01_LCH_Set,CC01_LCH_Reset,sCTRL.CTRL_CC(0 to 1)); -- AA2D6
+CC01_LCH: FLVL port map(CC01_LCH_Set,CC01_LCH_Reset,sCTRL.CTRL_CC(0 to 1)); -- AA2D6
 
 CS_LCH_Set <= SALS_CS and (0 to 3 => SET_CTRL_REG);
 CS_LCH_Reset <= (0 to 3 => T1 or sCTRL_REG_RST);
-CS_LCH: entity work.FLVL port map(CS_LCH_Set,CS_LCH_Reset,sCTRL.CTRL_CS); -- AA2D7
+CS_LCH: FLVL port map(CS_LCH_Set,CS_LCH_Reset,sCTRL.CTRL_CS); -- AA2D7
 CTRL <= sCTRL;
 
 CK_SAL_P_BIT_TO_MPX <= SALS_PK and not MACH_RST_MPX;

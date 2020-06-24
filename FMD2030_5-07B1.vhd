@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright ï¿½ 2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -40,10 +40,9 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_unsigned.all;
 
-library work;
-use work.Gates_package.all;
-use work.Buses_package.all;
-use work.PH;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 
 ENTITY SARSA IS
 	port
@@ -70,7 +69,8 @@ ENTITY SARSA IS
 		
 		-- Clocks
 		T1 : IN STD_LOGIC;
-		SEL_T1 : IN STD_LOGIC
+		SEL_T1 : IN STD_LOGIC;
+		CLK : IN STD_LOGIC
 		
 	);
 END SARSA;
@@ -89,20 +89,20 @@ sMACH_RST_PROTECT <= MACH_RST_SW; -- AA3H3
 MACH_RST_PROTECT <= sMACH_RST_PROTECT;
 LATCH_MN <= MACH_RESET_SET_LCH_DLY or (CPU_RD_PWR and T1) or (GT_MAN_SET_MN and MAN_STOR_OR_DSPLY) or (SEL_T1 and not SEL_RDWR_CTRL); -- AA1D4
 LATCH_MN_ST3 <= sMACH_RST_PROTECT or (CPU_RD_PWR and T1) or (GT_MAN_SET_MN and MAN_STOR_OR_DSPLY) or (SEL_T1 and not SEL_RDWR_CTRL); -- AA1E4
-REG_M: entity work.PHV8 port map(M_ASSM_BUS(0 to 7),LATCH_MN,sMN(0 to 7)); -- AA1D2
-REG_MP: entity PH port map(M_ASSM_BUS(8),LATCH_MN,M_P); -- AA1D2
-REG_N: entity work.PHV8 port map(N_ASSM_BUS(0 to 7),LATCH_MN,sMN(8 to 15) ); -- AA1D3
-REG_NP: entity PH port map(N_ASSM_BUS(8),LATCH_MN,N_P); -- AA1D3
-REG_MST3: entity work.PHV8 port map(M_ASSM_BUS(0 to 7),LATCH_MN_ST3,MN_ST3(0 to 7)); -- AA1D5
-REG_MST3P: entity PH port map(M_ASSM_BUS(8),LATCH_MN_ST3,M_ST3_P); -- AA1D5
-REG_NST3: entity work.PHV8 port map(N_ASSM_BUS(0 TO 7),LATCH_MN_ST3,MN_ST3(8 to 15)); -- AA1D6
-REG_NST3P: entity PH port map(N_ASSM_BUS(8),LATCH_MN_ST3,N_ST3_P); -- AA1D6
+REG_M: PHV port map(M_ASSM_BUS(0 to 7),LATCH_MN,sMN(0 to 7)); -- AA1D2
+REG_MP: PH port map(M_ASSM_BUS(8),LATCH_MN,M_P); -- AA1D2
+REG_N: PHV port map(N_ASSM_BUS(0 to 7),LATCH_MN,sMN(8 to 15) ); -- AA1D3
+REG_NP: PH port map(N_ASSM_BUS(8),LATCH_MN,N_P); -- AA1D3
+REG_MST3: PHV port map(M_ASSM_BUS(0 to 7),LATCH_MN_ST3,MN_ST3(0 to 7)); -- AA1D5
+REG_MST3P: PH port map(M_ASSM_BUS(8),LATCH_MN_ST3,M_ST3_P); -- AA1D5
+REG_NST3: PHV port map(N_ASSM_BUS(0 TO 7),LATCH_MN_ST3,MN_ST3(8 to 15)); -- AA1D6
+REG_NST3P: PH port map(N_ASSM_BUS(8),LATCH_MN_ST3,N_ST3_P); -- AA1D6
 
 STACK_ADDR_REG_SET <= CHNL_RD_CALL or (CPU_RD_PWR and T1) or GT_MAN_SET_MN or sMACH_RST_PROTECT; -- BE3H7
 SA_REG_IN1 <= "111" & M_ASSM_BUS(0 to 4) when MAIN_STORAGE_CP='1' else "00000000"; -- PE3J6
 SA_REG_IN2 <= XXH & XL & XH & N_ASSM_BUS(0 to 4) when MPX_CP='1' else "00000000"; -- PE3J6
 SA_REG_IN <= SA_REG_IN1 or SA_REG_IN2; -- PE3J6
-REG_SA: entity work.PHV8 port map(SA_REG_IN,STACK_ADDR_REG_SET,SA_REG); -- PE3J6
+REG_SA: PHV port map(SA_REG_IN,STACK_ADDR_REG_SET,SA_REG); -- PE3J6
 
 MN <= sMN;
 EARLY_M0 <= M_ASSM_BUS(0);

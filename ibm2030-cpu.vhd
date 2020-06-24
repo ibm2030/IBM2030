@@ -42,7 +42,8 @@ library UNISIM;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-USE work.Buses_package.all;
+library buses;
+use buses.Buses_package.all;
 use UNISIM.vcomponents.all;
 use work.all;
 
@@ -775,8 +776,8 @@ begin
 		GR_REG_0_7 => GR_REG_0_7,
 		HR_REG_P_BIT => HR_REG_P_BIT,
 		GR_REG_P_BIT => GR_REG_P_BIT,
-		GT_HSMPX_INTO_R_REG => '0',
-		DR_CORR_P_BIT => '0',
+		GT_HSMPX_INTO_R_REG => STD_LOGIC'('0'),
+		DR_CORR_P_BIT => STD_LOGIC'('0'),
 		GT_DETECTORS_TO_HR => GT_DETECTORS_TO_HR,
 		GT_DETECTORS_TO_GR => GT_DETECTORS_TO_GR,
 		EVEN_HR_0_7_BITS => EVEN_HR_0_7_BITS,

@@ -42,3 +42,7 @@ fuse*
 xilinxsim.*
 _ngo/
 xlnx_auto*
+import_ise_summary.txt
+IBM2030.cache/
+IBM2030.hw/
+IBM2030.runs/

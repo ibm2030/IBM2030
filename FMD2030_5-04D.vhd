@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright ï¿½ 2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -40,9 +40,9 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_unsigned.all;
 
-library work;
-use work.Gates_package.all;
-use work.Buses_package.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 
 ENTITY RWStgCntl IS
 	port
@@ -98,7 +98,8 @@ signal RD_SEL,WR_SEL : STD_LOGIC;
 signal CU01,CM0X0 : STD_LOGIC;
 signal CU_DECODE_CPU_LOCAL,MAN_SEL_LOCAL : STD_LOGIC;
 signal sCU_DECODE_UCW : STD_LOGIC;
-signal sMAIN_STORAGE_CP : STD_LOGIC;
+signal sMAIN_STORAGE_CP, MAIN_STORAGE_CP_N : STD_LOGIC;
+signal EARLY_LOCAL_STG_N : STD_LOGIC;
 signal sGT_LOCAL_STG : STD_LOGIC;
 signal sCHANNEL_RD_CALL : STD_LOGIC;
 signal sCPU_READ_PWR : STD_LOGIC;
@@ -115,7 +116,7 @@ RD_SEL <= MANUAL_RD_CALL or (sCPU_READ_PWR and T1) or sCHANNEL_RD_CALL; -- BE3D3
 WR_SEL <= (T1 and sCPU_WRITE_PWR and ALLOW_WRITE_2) or MANUAL_WR_CALL or (SEL_RD_CALL_TO_STP or HSMPX_READ_CALL); -- BE3J5,BE3H5
 N_MEM_SELECT <= not (not SELECT_CPU_BUMP and (RD_SEL or WR_SEL)); -- BE3H6
 -- ?? Note TD not implemented (yet)
-RW_LCH: entity work.FLL port map(RD_SEL,WR_SEL,RW_CTRL_STACK); -- BE3J5
+RW_LCH: FLL port map(S=>RD_SEL,R=>WR_SEL,Q=>RW_CTRL_STACK); -- BE3J5
 
 sUSE_ALT_CU_DECODE <= not ANY_PRIORITY_PULSE and not sCPU_READ_PWR; -- AB3D2
 USE_ALT_CU_DECODE <= sUSE_ALT_CU_DECODE;
@@ -142,18 +143,20 @@ CU_DECODE_UCW <= sCU_DECODE_UCW;
 MAN_SEL_LOCAL <= USE_MAN_DECODER and E_SW_SEL_AUX_STG; -- AA1C2
 sEARLY_LOCAL_STG <= CU_DECODE_CPU_LOCAL or sCU_DECODE_UCW or MAN_SEL_LOCAL; -- AA1C3
 EARLY_LOCAL_STG <= sEARLY_LOCAL_STG;
+EARLY_LOCAL_STG_N <= not sEARLY_LOCAL_STG;
 
 
 sMAIN_STORAGE_CP <= not sEARLY_LOCAL_STG; -- AA1J2
 MAIN_STORAGE_CP <= sMAIN_STORAGE_CP;
+MAIN_STORAGE_CP_N <= not sMAIN_STORAGE_CP;
 -- SELECT_CPU_BUMP <= sEARLY_LOCAL_STG; -- ? Not sure!
 
 sGT_LOCAL_STG <= ((MEM_SEL and not ALLOW_WRITE) and MAN_STOR_OR_DISPLAY) or (T1 and sCPU_READ_PWR) or (SEL_T1 and not SEL_RD_WR_CTRL) or MACH_RST_1; -- AA1C2,AA1J2-removed??,AA1G4 
 GT_LOCAL_STG <= sGT_LOCAL_STG;
 
 
-LS_LCH: entity work.PH port map(not sMAIN_STORAGE_CP,sGT_LOCAL_STG,LOCAL_STORAGE_CP); -- AA1F4
-MS_LCH: entity work.PH port map(not sEARLY_LOCAL_STG,sGT_LOCAL_STG,MAIN_STORAGE); -- AA1F4
+LS_LCH: PH port map(D=>MAIN_STORAGE_CP_N,L=>sGT_LOCAL_STG,Q=>LOCAL_STORAGE_CP); -- AA1F4
+MS_LCH: PH port map(D=>EARLY_LOCAL_STG_N,L=>sGT_LOCAL_STG,Q=>MAIN_STORAGE); -- AA1F4
 
 END FMD; 
 

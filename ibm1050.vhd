@@ -42,7 +42,9 @@ library UNISIM;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-USE work.Buses_package.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 use UNISIM.vcomponents.all;
 use work.all;
 
@@ -168,9 +170,9 @@ end process Printer;
 				);
 		-- Make incoming data 0 when nothing is available
 		SerialIn.PCH_BITS <= SerialBusUngated(6 downto 0) when PunchGate='1' else "0000000";
-		PunchStrobeSS : entity SS port map (clk=>clk, count=>2500, D=>RxDataAvailable, Q=>RxAck); -- 50us or so
+		PunchStrobeSS : logic.Gates_package.SS port map (clk=>clk, count=>2500, D=>RxDataAvailable, Q=>RxAck); -- 50us or so
 		SerialIn.PCH_1_CLUTCH_1050 <= RxAck;
-		PunchGateSS : entity SS port map (clk=>clk, count=>3000, D=>RxDataAvailable, Q=>PunchGate); -- A bit more than 50us so Read Interlock is reset after PCH_1_CLUTCH drops
+		PunchGateSS : logic.Gates_package.SS port map (clk=>clk, count=>3000, D=>RxDataAvailable, Q=>PunchGate); -- A bit more than 50us so Read Interlock is reset after PCH_1_CLUTCH drops
 
 		SerialIn.CPU_CONNECTED <= '1'; -- 1050 always on-line
 		SerialIn.HOME_OUTPUT_DEV_RDY <= '1'; -- Printer always ready

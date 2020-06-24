@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright ï¿½ 2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -40,9 +40,9 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_unsigned.all;
 
-library work;
-use work.Gates_package.all;
-use work.Buses_package.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 
 ENTITY ManualControls IS
 	port
@@ -126,6 +126,7 @@ signal sALLOW_WR : STD_LOGIC;
 signal sSTORE_R : STD_LOGIC;
 signal UMD_LCH_Set,UMD_LCH_Reset,MD_LCH_Set,MS_LCH_Set,AW_LCH_Set,AW_LCH_Reset,
 		MW_LCH_Set,MW_LCH_Reset,MRC_LCH_Set,MRC_LCH_Reset,SR_LCH_Set,SR_LCH_Reset : STD_LOGIC;
+signal SW_DSPLY_N, SW_STORE_N, sMAN_STOR_OR_DSPLY_N : STD_LOGIC;
 
 BEGIN
 -- Fig 5-03D
@@ -136,25 +137,27 @@ sALLOW_MAN_OPERATION <= (not E_CY_STOP_SMPL and not SEL_CHNL_DATA_XFER and CLOCK
 ALLOW_MAN_OPERATION <= sALLOW_MAN_OPERATION;
 UMD_LCH_Set <= (sALLOW_MAN_OPERATION and SW_DSPLY) or (sALLOW_MAN_OPERATION and SW_STORE);
 UMD_LCH_Reset <= E_CY_STOP_SMPL or sMACH_RST_3;
-UMD_LCH: entity work.FLL port map(UMD_LCH_Set,UMD_LCH_Reset, sUSE_MANUAL_DECODER); -- AC1G4
+UMD_LCH: FLL port map(UMD_LCH_Set,UMD_LCH_Reset, sUSE_MANUAL_DECODER); -- AC1G4
 USE_MANUAL_DECODER <= sUSE_MANUAL_DECODER;		
 USE_MAN_DECODER_PWR <= not E_CY_STOP_SMPL and sUSE_MANUAL_DECODER; -- AC1J4
 
 -- MAN DSPLY
 AC1D4 <= (not E_CY_STOP_SMPL and not SEL_CHNL_DATA_XFER and CONV_OSC); -- AC1G2,AC1D4 -- Inverter removed ??
 MD_LCH_Set <= CLOCK_OFF and SW_DSPLY and AC1D4;
-MD_LCH: entity work.FLL port map(MD_LCH_Set,not SW_DSPLY,sMANUAL_DISPLAY); -- AC1G4 - FMD missing invert on Reset input ??
+SW_DSPLY_N <= not SW_DSPLY;
+MD_LCH: FLL port map(MD_LCH_Set,SW_DSPLY_N,sMANUAL_DISPLAY); -- AC1G4 - FMD missing invert on Reset input ??
 MANUAL_DISPLAY <= sMANUAL_DISPLAY;
 
 -- MAN STORE R
 sSTORE_S_REG_RST <= not CLOCK_ON and SW_STORE; -- AC1J6
 STORE_S_REG_RST <= sSTORE_S_REG_RST;
 MS_LCH_Set <= AC1D4 and sSTORE_S_REG_RST;
-MS_LCH: entity work.FLL port map(MS_LCH_Set,not SW_STORE,sMAN_STORE); -- AC1E5
+SW_STORE_N <= not SW_STORE;
+MS_LCH: FLL port map(MS_LCH_Set,SW_STORE_N,sMAN_STORE); -- AC1E5
 MAN_STORE <= sMAN_STORE;
 -- MAN_STORE_PWR <= sMAN_STORE; -- AC1F3 -- Need to delay this a bit
-MAN_STORE_DELAY: entity work.AR port map(sMAN_STORE,Clk,sMAN_STORE2); -- AC1F3
-MAN_STORE2_DELAY: entity work.AR port map(sMAN_STORE2,Clk,MAN_STORE_PWR); -- AC1F3
+MAN_STORE_DELAY: AR port map(sMAN_STORE,Clk,sMAN_STORE2); -- AC1F3
+MAN_STORE2_DELAY: AR port map(sMAN_STORE2,Clk,MAN_STORE_PWR); -- AC1F3
 sMAN_STOR_OR_DSPLY <= sMANUAL_DISPLAY or sMAN_STORE; -- AC1J2,AC1F3
 MAN_STOR_OR_DSPLY <= sMAN_STOR_OR_DSPLY;
 
@@ -181,22 +184,23 @@ CPU_SET_ALLOW_WR_LCH <= sCPU_SET_ALLOW_WR_LCH;
 -- ALLOW WR
 AW_LCH_Set <= sCPU_SET_ALLOW_WR_LCH or SEL_AUX_RD_CALL;
 AW_LCH_Reset <= sMACH_RST_3 or SEL_WR_CALL or MAN_WR_CALL or (ROAR_RESTT_STOR_BYPASS and RECYCLE_RST) or (CPU_WR_PWR and T2);
-ALLOW_WRITE_LCH: entity work.FLL port map(AW_LCH_Set,AW_LCH_Reset,sALLOW_WRITE); -- AA1J2,AA1F6,AA1H3
+ALLOW_WRITE_LCH: FLL port map(AW_LCH_Set,AW_LCH_Reset,sALLOW_WRITE); -- AA1J2,AA1F6,AA1H3
 ALLOW_WRITE <= sALLOW_WRITE;	
-DELAY_ALLOW_WR : entity work.AR port map (D=>sALLOW_WRITE,clk=>Clk,Q=>sALLOW_WR); -- AA1H2,AA1J7
+DELAY_ALLOW_WR : AR port map (D=>sALLOW_WRITE,clk=>Clk,Q=>sALLOW_WR); -- AA1H2,AA1J7
 ALLOW_WR_DLYD <= sALLOW_WR;
 
 -- MAN WR CALL
 MW_LCH_Set <= (sALLOW_WR and LOAD_KEY_INLK) or (sALLOW_WR and sSYSTEM_RST_SW) or (sALLOW_WR and POWER_OFF_SW) or (sMAN_STOR_OR_DSPLY and READ_ECHO);
 MW_LCH_Reset <= CLOCK_ON or MAN_WR_CALL_RST;
-MW_LCH: entity work.FLL port map(MW_LCH_Set,MW_LCH_Reset,MAN_WR_CALL); -- AC1J2,AC1F4,AC1H5
+MW_LCH: FLL port map(MW_LCH_Set,MW_LCH_Reset,MAN_WR_CALL); -- AC1J2,AC1F4,AC1H5
 
 -- MAN RD INLK
-MAN_RD_INLK_FL: entity work.FLL port map(MAN_RD_CALL_LCH,not sMAN_STOR_OR_DSPLY,MAN_RD_INLK); -- AC1F4
+sMAN_STOR_OR_DSPLY_N <= not sMAN_STOR_OR_DSPLY;
+MAN_RD_INLK_FL: FLL port map(MAN_RD_CALL_LCH,sMAN_STOR_OR_DSPLY_N,MAN_RD_INLK); -- AC1F4
 -- MAN RD CALL
 MRC_LCH_Set <= sSTG_MEM_SEL and not MAN_RD_INLK and sMAN_STOR_OR_DSPLY;
 MRC_LCH_Reset <= not sMAN_STOR_OR_DSPLY or READ_ECHO;
-MAN_RD_CALL_FL: entity work.FLL port map(MRC_LCH_Set,MRC_LCH_Reset,MAN_RD_CALL_LCH); -- AC1J2,AC1E2
+MAN_RD_CALL_FL: FLL port map(MRC_LCH_Set,MRC_LCH_Reset,MAN_RD_CALL_LCH); -- AC1J2,AC1E2
 sMAN_RD_CALL <= MAN_RD_CALL_LCH and not sALLOW_WR; -- AC1J2
 MAN_RD_CALL <= sMAN_RD_CALL;
 
@@ -212,7 +216,7 @@ MANUAL_OPERATION <= sMAN_RD_CALL or MAN_WR_CALL or MAN_WR_CALL_RST or READ_ECHO;
 -- STORE R
 SR_LCH_Set <= MAN_WR_CALL or (T1 and USE_R);
 SR_LCH_Reset <= SEL_T1 or (T1 and not CU_SALS(0) and CU_SALS(1));
-SR_LCH: entity work.FLL port map(SR_LCH_Set,SR_LCH_Reset,sSTORE_R); -- 06C
+SR_LCH: FLL port map(SR_LCH_Set,SR_LCH_Reset,sSTORE_R); -- 06C
 STORE_R <= sSTORE_R;
 MAN_WRITE_CALL <= not READ_ECHO and MAN_WR_CALL and sSTORE_R; -- AC1G3
 

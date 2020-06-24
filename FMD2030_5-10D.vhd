@@ -38,9 +38,9 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_unsigned.all;
 
-library work;
-use work.Gates_package.all;
-use work.Buses_package.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 use work.all;
 
 ENTITY n1050_ATTACH IS

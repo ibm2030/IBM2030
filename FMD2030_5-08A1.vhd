@@ -42,10 +42,10 @@ use UNISIM.vcomponents.all;
 use IEEE.STD_LOGIC_1164.ALL;
 -- use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-use work.Gates_package.all;
-use work.all;
+library logic;
+use logic.Gates_package.all;
 
-entity Clock is Port (
+entity Clock_Sect is Port (
 				-- Clock stuff
 				CLOCK_IN : in std_logic;
          	T1,T2,T3,T4 : out std_logic;
@@ -60,9 +60,9 @@ entity Clock is Port (
 				MACH_RST_3 : in std_logic; -- 03D
 				Sw_Slow : in std_logic -- '1' to run slow
 			  );
-end Clock;
+end Clock_Sect;
 
-architecture FMD of Clock is
+architecture FMD of Clock_Sect is
 -- Following 2 lines to run clock at 5.33MHz (standard)
 -- subtype DividerSize is STD_LOGIC_VECTOR(5 downto 0);
 subtype DividerSize is STD_LOGIC_VECTOR(25 downto 0);
@@ -165,10 +165,15 @@ DLYN_OSC <= OSC; -- AC1C6
 -- P3 <= CLK(3);
 -- P4 <= CLK(4);
 -- Delay the rising edge of each P pulse to ensure that the T pulses never overlap
-P1DLY: entity DelayRisingEdgeX port map (D=>CLK(1),CLK=>CLOCK_IN,Q=>P1D);
-P2DLY: entity DelayRisingEdgeX port map (D=>CLK(2),CLK=>CLOCK_IN,Q=>P2D);
-P3DLY: entity DelayRisingEdgeX port map (D=>CLK(3),CLK=>CLOCK_IN,Q=>P3D);
-P4DLY: entity DelayRisingEdgeX port map (D=>CLK(4),CLK=>CLOCK_IN,Q=>P4D);
+-- TODO Reinstate the DelayEdge components
+--P1DLY: DelayEdge(slt) port map (D=>CLK(1),CLK=>CLOCK_IN,Q=>P1D);
+--P2DLY: DelayEdge(slt) port map (D=>CLK(2),CLK=>CLOCK_IN,Q=>P2D);
+--P3DLY: DelayEdge(slt) port map (D=>CLK(3),CLK=>CLOCK_IN,Q=>P3D);
+--P4DLY: DelayEdge(slt) port map (D=>CLK(4),CLK=>CLOCK_IN,Q=>P4D);
+P1D <= CLK(1);
+P2D <= CLK(2);
+P3D <= CLK(3);
+P4D <= CLK(4);
 
 T1A <= P4D and P1D;
 T2A <= P1D and P2D;

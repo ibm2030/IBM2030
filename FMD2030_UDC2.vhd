@@ -41,10 +41,10 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-LIBRARY work;
-USE work.Gates_package.all;
-USE work.Buses_package.all;
-USE work.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
+use work.all;
 
 entity UDC2 is
 port(
@@ -320,7 +320,7 @@ signal	sFT2, sFT7 : STD_LOGIC;
 
 begin
     -- Clock
-clock_sect: entity Clock (FMD) port map (
+clock_section: entity Clock_Sect port map (
 	CLOCK_IN => CLOCK_IN,
    T1 => sT1,
    T2 => sT2,
@@ -472,7 +472,7 @@ MACH_RST_2B <= sMACH_RST_2B;
 CARRY_0 <= sCARRY_0;
 Z_0 <= sZ_0;
 
-r_reg: entity RREG_STG port map (
+r_reg: entity work.RREG_STG port map (
 		-- Inputs
 		SALS => SALS,
 		CTRL => CTRL,
@@ -546,7 +546,7 @@ r_reg: entity RREG_STG port map (
 		);
 		R <= sR;
 		
-SAR_SA : entity SARSA port map (
+SAR_SA : entity work.SARSA port map (
 		M_ASSM_BUS => M_ASSM_BUS,
 		N_ASSM_BUS => N_ASSM_BUS,
 		MACH_RST_SW => MACH_RST_SW,
@@ -569,7 +569,8 @@ SAR_SA : entity SARSA port map (
 		M_REG_0 => M_REG_0,
 		SA_REG => SA,
 		SEL_T1 => SEL_T1,
-		T1 => sT1
+		T1 => sT1,
+		CLK => clk
 		);
 		
 S_Reg : entity SReg port map (
@@ -856,4 +857,4 @@ MpxChnlCtrls: entity MpxFA port map (	-- 5-08D
 				SUPPRESS_OUT => SUPPRESS_OUT
 				);
 ADDR_OUT <= sADDR_OUT;				
-end FMD;
+end architecture FMD;

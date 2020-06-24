@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright ï¿½ 2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -40,9 +40,9 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_unsigned.all;
 
-library work;
-use work.Gates_package.all;
-use work.Buses_package.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 
 ENTITY ChkRegInd IS
 	port
@@ -114,6 +114,7 @@ signal sANY_MACH_CHK : STD_LOGIC;
 signal sMC : STD_LOGIC_VECTOR(0 to 7);
 signal SUPR_A_REG_CHK_Set,SUPR_A_REG_CHK_Reset,ALLW_A_REG_CHK_Set,ALLW_A_REG_CHK_Reset,NOT_ALLOW_PC_SALS_Set : STD_LOGIC;
 signal REG_MC_Set,REG_MC_Reset : STD_LOGIC_VECTOR(0 to 8);
+signal N_T3 : STD_LOGIC;
 
 BEGIN
 -- Fig 5-07A
@@ -133,10 +134,11 @@ ALLW_A_REG_CHK_Set <= (P1 and USE_BASIC_CA_DECO and not GT_CA_TO_W_REG and CAX1X
 	(CAX11X and not GT_CA_TO_W_REG and USE_BASIC_CA_DECO and P1) or -- AB3F3
 	(USE_BASIC_CA_DECO and CA1XXX and P1); -- AB3K5
 ALLW_A_REG_CHK_Reset <= T1 or ROS_SCAN or sSUPPR_A_REG_CHK or ANY_PRIORITY_LCH;
-ALLW_A_REG_CHK: entity work.FLL port map(ALLW_A_REG_CHK_Set,ALLW_A_REG_CHK_Reset,ALLOW_A_REG_CHK); -- AB3K5,AB3B6,AB3J4
+ALLW_A_REG_CHK: FLL port map(ALLW_A_REG_CHK_Set,ALLW_A_REG_CHK_Reset,ALLOW_A_REG_CHK); -- AB3K5,AB3B6,AB3J4
 
 NOT_ALLOW_PC_SALS_Set <= (SET_IND_ROSAR and T4) or MACH_RST_6;
-NOT_ALLOW_PC_SALS: entity work.FLL port map(NOT_ALLOW_PC_SALS_Set,not T3,N_ALLOW_PC_SALS); -- AB3F6,AB3D7,AB3E5
+N_T3 <= not T3;
+NOT_ALLOW_PC_SALS: FLL port map(NOT_ALLOW_PC_SALS_Set,N_T3,N_ALLOW_PC_SALS); -- AB3F6,AB3D7,AB3E5
 sALLOW_PC_SALS <= not N_ALLOW_PC_SALS;
 ALLOW_PC_SALS <= sALLOW_PC_SALS;
 

@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright ï¿½ 2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -40,9 +40,9 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_unsigned.all;
 
-library work;
-use work.Gates_package.all;
-use work.Buses_package.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 
 ENTITY RegsABAssm IS
 	port
@@ -82,7 +82,8 @@ ENTITY RegsABAssm IS
 		B_BUS_OUT : OUT STD_LOGIC_VECTOR(0 to 8); -- 06B 8 is P
         
 		-- Clocks
-		T4 : IN STD_LOGIC
+		T4 : IN STD_LOGIC;
+		CLK : IN STD_LOGIC
 		
 	);
 END RegsABAssm;
@@ -174,21 +175,21 @@ LCH_G <= '1' when (CD_CTRL_REG="1010" and T4='1') or (E_SW_SEL_BUS.G_SEL='1' and
 LCH_L <= '1' when (CD_CTRL_REG="1001" and T4='1') or (E_SW_SEL_BUS.L_SEL='1' and MAN_STOR_PWR='1') or MACH_RST_2A_B='1' else '0'; -- AB1J2
 LCH_D <= '1' when (CD_CTRL_REG="1000" and T4='1') or (E_SW_SEL_BUS.D_SEL='1' and MAN_STOR_PWR='1') or MACH_RST_2A_B='1' else '0'; -- AB1J2
 
-I_REG: PHV9 port map(Z_BUS,LCH_I,sI); -- AB1G3
+I_REG: PHV port map(Z_BUS,LCH_I,sI); -- AB1G3
 I <= sI;
-J_REG: PHV9 port map(Z_BUS,LCH_J,sJ); -- AB1G4
+J_REG: PHV port map(Z_BUS,LCH_J,sJ); -- AB1G4
 J <= sJ;
-U_REG: PHV9 port map(Z_BUS,LCH_U,sU); -- AB1H3
+U_REG: PHV port map(Z_BUS,LCH_U,sU); -- AB1H3
 U <= sU;
-V_REG: PHV9 port map(Z_BUS,LCH_V,sV); -- AB1H4
+V_REG: PHV port map(Z_BUS,LCH_V,sV); -- AB1H4
 V <= sV;
-T_REG: PHV9 port map(Z_BUS,LCH_T,sT); -- AB1J4
+T_REG: PHV port map(Z_BUS,LCH_T,sT); -- AB1J4
 T <= sT;
-G_REG: PHV9 port map(Z_BUS,LCH_G,sG); -- AB1K4
+G_REG: PHV port map(Z_BUS,LCH_G,sG); -- AB1K4
 G <= sG;
-L_REG: PHV9 port map(Z_BUS,LCH_L,sL); -- AB1J2
+L_REG: PHV port map(Z_BUS,LCH_L,sL); -- AB1J2
 L <= sL;
-D_REG: PHV9 port map(Z_BUS,LCH_D,sD); -- AB1K3
+D_REG: PHV port map(Z_BUS,LCH_D,sD); -- AB1K3
 
 END FMD; 
 

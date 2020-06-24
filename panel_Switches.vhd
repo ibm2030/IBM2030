@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2015 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright ï¿½ 2015 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -40,7 +40,7 @@ use IEEE.NUMERIC_STD.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity panel_Switches is
+entity panel_switches is
 	 Generic (
 				Clock_divider : integer := 9; -- Fastest allowed is 1.4MHz / 36 for 50MHz clk
 				Read_delay : integer := 700;	-- Number of divided clocks to wait between scan drive and switch read
@@ -60,9 +60,9 @@ entity panel_Switches is
            SCL : out std_logic;
 			  SDA : inout std_logic
 			  );
-end panel_Switches;
+end panel_switches;
 
-architecture Behavioral of panel_Switches is
+architecture Behavioral of panel_switches is
 
 signal clk_out : std_logic := '0';
 signal MAX7318_SCL, new_MAX7318_SCL, MAX7318_SDA, new_MAX7318_SDA : std_logic := '1';

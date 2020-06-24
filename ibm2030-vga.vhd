@@ -41,9 +41,10 @@ USE ieee.std_logic_1164.all;
 USE ieee.std_logic_unsigned.all;
 USE ieee.numeric_std.all;
 
-library work;
-use work.Gates_package.all;
-use work.Buses_package.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
+use work.all;
 
 entity vga_panel IS
 	port
@@ -1537,8 +1538,8 @@ constant charLayout : screenCharacters := initScreen(screen);
 
 
 begin
-vgaController : entity work.vga_controller_640_60 port map (
-	rst => '0',
+vgaController : entity vga_controller_640_60 port map (
+	rst => STD_LOGIC'('0'),
 	pixel_clk => clkdiv,
 	
 	HS => HS,

@@ -41,10 +41,10 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-LIBRARY work;
-USE work.Gates_package.all;
-USE work.Buses_package.all;
-USE work.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
+use work.all;
 
 entity UDC1 is
 port(
@@ -463,7 +463,7 @@ wx_sect: entity WX_Regs (FMD) port map (
 		  );
 
     -- CCROS microcode storage
-ccros_sect: entity CCROS (FMD) port map (
+ccros_sect: entity CCROS_STORE port map (
 			-- Inputs
 			WX                  =>  WX,
 			MACH_RST_SW         =>  sMACH_RST_SW,
@@ -549,7 +549,7 @@ USE_ALT_CA_DECODER <= sUSE_ALT_CA_DECODER;
 GT_CA_TO_W_REG <= sGT_CA_TO_W_REG;
     
     -- Priority control (microcode interrupts)
-priority_sect: entity Priority (FMD) port map (
+priority_sect: entity Priority port map (
         -- Inputs        
         RECYCLE_RST             => sRECYCLE_RST,
         S_REG_1_BIT             => S(1),
@@ -1020,7 +1020,7 @@ rwstg: entity RWStgCntl port map(
 		MACH_RST_1 => MACH_RST_1,
 		MANUAL_RD_CALL => MANUAL_READ_CALL,
 		MANUAL_WR_CALL => MANUAL_WRITE_CALL,
-		HSMPX_READ_CALL => '0',
+		HSMPX_READ_CALL => STD_LOGIC'('0'),
 		SEL_RD_CALL_TO_STP => SEL_RD_CALL_TO_STP,
 		SEL_SHARE_HOLD => SEL_SHARE_HOLD,
 		SELECT_CPU_BUMP => SELECT_CPU_BUMP,
@@ -1194,7 +1194,8 @@ Regs: entity RegsABAssm port map(
 		B_BUS_OUT => B_BUS,
         
 		-- Clocks
-		T4 => T4
+		T4 => T4,
+		CLK => CLK
 	);
 GTD_CA_BITS <= sGTD_CA_BITS;
 
@@ -1236,4 +1237,4 @@ READ_ECHO_2 <= sREAD_ECHO_2;
 WRITE_ECHO_1 <= sWRITE_ECHO_1;
 WRITE_ECHO_2 <= sWRITE_ECHO_2;
 
-end FMD;
+end architecture FMD;

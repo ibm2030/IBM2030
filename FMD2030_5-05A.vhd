@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright ï¿½ 2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -40,9 +40,9 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_unsigned.all;
 
-library work;
-use work.Gates_package.all;
-use work.Buses_package.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 
 ENTITY RIndsChks IS
 	port
@@ -95,7 +95,7 @@ BEGIN
 
 	N1401_MODE_SET <= W3_TO_MATCH and not ROS_SCAN; -- AC1C4
 	N1401_MODE_RESET <= T2 or GT_SW_MACH_RST;
-	MODE1401: entity work.FLL port map(N1401_MODE_SET,N1401_MODE_RESET,sN1401_MODE); -- AB2B2,AB1B3,AB2C2
+	MODE1401: FLL port map(S=>N1401_MODE_SET,R=>N1401_MODE_RESET,Q=>sN1401_MODE); -- AB2B2,AB1B3,AB2C2
 	N1401_MODE <= sN1401_MODE;
 
 	V67_EQUALS_00 <= not V_REG_6 and not V_REG_7; -- AA1H6

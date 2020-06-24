@@ -39,9 +39,9 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_unsigned.all;
 
-library work;
-use work.Gates_package.all;
-use work.Buses_package.all;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 
 ENTITY udc3 IS
 	port
@@ -88,7 +88,7 @@ ENTITY udc3 IS
 		P1,P2,P3,P4 : IN STD_LOGIC
 		
 	);
-END udc3;
+END entity udc3;
 
 ARCHITECTURE FMD OF udc3 IS 
 
@@ -214,6 +214,7 @@ n1050_TRANSLATE : entity work.n1050_TRANSLATE port map(
 		WRITE_STROBE => WR_STROBE,
 		WRITE_LCH_RST => WRITE_LCH_RST,
 		
+		CLK => clk,
 		DEBUG => open
 		);
 		
@@ -401,7 +402,8 @@ n1050_DATA : entity work.n1050_DATA port map (
 		T1 => T1,
 		T2 => T2,
 		T3 => T3,
-		T4 => T4
+		T4 => T4,
+		CLK=>CLK
 );
 n1050_INTRV_REQ <= sn1050_INTRV_REQ;
 
@@ -492,5 +494,5 @@ n1050_ATTACH : entity work.n1050_ATTACH port map (
 n1050_CE_MODE <= sn1050_CE_MODE;
 -- PCH_1_CLUTCH <= PCH_CONN_ENTRY.PCH_1_CLUTCH_1050;
 
-END FMD; 
+END architecture FMD; 
 

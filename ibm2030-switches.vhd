@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright ï¿½ 2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -100,8 +100,9 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-use work.Buses_package.all;
-use work.Gates_package.EvenParity;
+library logic,buses;
+use logic.Gates_package.all;
+use buses.Buses_package.all;
 
 ---- Uncomment the following library declaration if instantiating
 ---- any Xilinx primitives in this code.
@@ -185,7 +186,7 @@ constant sample  : std_logic_vector(14 downto 0) := "100111000011110"; -- 19,999
 constant divider100 : std_logic_vector(4 downto 0) := "11001"; --- 25 converts 2.5kHz to 100Hz for timer
 begin
 
-max7318 : entity panel_Switches port map (
+max7318 : entity work.panel_switches port map (
 	clk => clk,
 	SCL => SCL,
 	SDA => SDA,

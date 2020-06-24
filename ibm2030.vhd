@@ -44,7 +44,8 @@ library UNISIM;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-USE work.Buses_package.all;
+LIBRARY buses;
+USE buses.Buses_package.all;
 use UNISIM.vcomponents.all;
 use work.all;
 
@@ -548,7 +549,7 @@ begin
 		Timer => N60_CY_TIMER_PULSE -- Output from Switches is actually 50Hz
 		);
 
-      core_storage : entity storage port map(
+      core_storage : entity storage (DigilentZybo) port map(
 				phys_address => sramaddr(16 downto 0),
 				phys_data => srama(8 downto 0),
 				phys_CE => sramace,
@@ -830,7 +831,7 @@ begin
 		number_LEDs : entity segment_LEDs
 		port map(
 			clk => clk,
-			number(15 downto 13) => "000",
+			number(15 downto 13) => STD_LOGIC_VECTOR'("000"),
 			number(12 downto 0) => WX_IND(0 to 12),
 			anodes => ssdan,
 			cathodes => ssd
