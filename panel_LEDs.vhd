@@ -43,9 +43,8 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-library logic,buses;
-use logic.Gates_package.all;
-use buses.Buses_package.all;
+library logic;
+use logic.Gates_package.LED_DEVICE_TYPE;
 
 ---- Uncomment the following library declaration if instantiating
 ---- any Xilinx primitives in this code.
@@ -53,30 +52,33 @@ use buses.Buses_package.all;
 --use UNISIM.VComponents.all;
 
 entity panel_LEDs is
-	 Generic (
-				Clock_divider : integer := 25; -- Default for 50MHz clock is 2, for 25MHz = 40ns = 20ns + 20ns. 25 gives 2MHz.
-				Number_LEDs : integer := 256
-				);
+	Generic (
+        Device : LED_DEVICE_TYPE := MAX6951;
+        Clock_divider : integer := 25 -- Default for 50MHz clock is 2, for 25MHz = 40ns = 20ns + 20ns. 25 gives 2MHz.
+        );
     Port ( -- Lamp input vector
-           LEDs : in std_logic_vector(0 to Number_LEDs-1);
-			  -- Other inputs
-			  clk : in STD_LOGIC; -- 50MHz
-			  
-           -- Driver outputs
-           MAX7219_CLK : out std_logic;
-			  MAX7219_DIN : out std_logic;	-- LEDs 00-3F
-			  MAX7219_LOAD : out std_logic;	-- Data latched on rising edge
-			  
-			  MAX6951_CLK : out std_logic;
-			  MAX6951_DIN : out std_logic;	-- 
-			  MAX6951_CS0 : out std_logic;	-- LEDs 00-3F Data latched on rising edge
-			  MAX6951_CS1 : out std_logic;	-- LEDs 40-7F Data latched on rising edge
-			  MAX6951_CS2 : out std_logic;	-- LEDs 80-BF Data latched on rising edge
-			  MAX6951_CS3 : out std_logic 	-- LEDs C0-FF Data latched on rising edge
-			  );
+        LED_0 : in std_logic_vector(0 to 63);
+        LED_1 : in std_logic_vector(0 to 63);
+        LED_2 : in std_logic_vector(0 to 63);
+        LED_3 : in std_logic_vector(0 to 63);
+        -- Other inputs
+        clk : in STD_LOGIC; -- 50MHz
+        
+        -- Driver outputs
+        MAX7219_CLK : out std_logic;
+        MAX7219_DIN : out std_logic;	-- LEDs 00-3F
+        MAX7219_LOAD : out std_logic;	-- Data latched on rising edge
+        
+        MAX6951_CLK : out std_logic;
+        MAX6951_DIN : out std_logic;
+        MAX6951_CS0 : out std_logic;	-- LEDs 00-3F Data latched on rising edge
+        MAX6951_CS1 : out std_logic;	-- LEDs 40-7F Data latched on rising edge
+        MAX6951_CS2 : out std_logic;	-- LEDs 80-BF Data latched on rising edge
+        MAX6951_CS3 : out std_logic 	-- LEDs C0-FF Data latched on rising edge
+        );
 end panel_LEDs;
 
-architecture Behavioral of panel_LEDs is
+architecture behavioral of panel_LEDs is
 signal clk_out : std_logic := '0';
 signal shift_reg64 : std_logic_vector(63 downto 0);
 signal reg_counter : integer range 0 to 11 := 0;
@@ -94,7 +96,6 @@ signal bit_counter64 : integer range 0 to 64 := 0;
 -- 0B Scan limit (fixed at 07 in position 10)
 -- 0C Shutdown (fixed at 01 in position 11)
 -- 0F Display test (fixed at 00 in position 12)
-
 type registers7219 is array(0 to 3,0 to 12) of std_logic_vector(15 downto 0);
 signal max7219_vector : registers7219 :=
 (
@@ -160,8 +161,6 @@ signal max7219_vector : registers7219 :=
 12 => "0000111100000000"
 )
 );
-
-
 -- MAX6951 data is 8b Address and 8b Data
 -- Address is:
 -- 00 No-op (unused)
@@ -250,7 +249,6 @@ gen_clk : process (clk) is
 		end if;
 	end process;
 
-
 max7219 : process (clk_out) is
 	begin
 	if falling_edge(clk_out) then
@@ -268,10 +266,10 @@ max7219 : process (clk_out) is
 					-- b1 =  F = XX5
 					-- b0 =  G = XX6
 					shift_reg64 <= 
-						max7219_vector(3,reg_counter)(15 downto 8) & LEDs(reg_counter*8+192+7) & LEDs(reg_counter*8+192 to reg_counter*8+192+6) &
-						max7219_vector(2,reg_counter)(15 downto 8) & LEDs(reg_counter*8+128+7) & LEDs(reg_counter*8+128 to reg_counter*8+128+6) &
-						max7219_vector(1,reg_counter)(15 downto 8) & LEDs(reg_counter*8+ 64+7) & LEDs(reg_counter*8+ 64 to reg_counter*8+ 64+6) &
-						max7219_vector(0,reg_counter)(15 downto 8) & LEDs(reg_counter*8+  0+7) & LEDs(reg_counter*8+  0 to reg_counter*8+  0+6);
+						max7219_vector(3,reg_counter)(15 downto 8) & LED_3(reg_counter*8+192+7) & LED_3(reg_counter*8+192 to reg_counter*8+192+6) &
+						max7219_vector(2,reg_counter)(15 downto 8) & LED_2(reg_counter*8+128+7) & LED_2(reg_counter*8+128 to reg_counter*8+128+6) &
+						max7219_vector(1,reg_counter)(15 downto 8) & LED_1(reg_counter*8+ 64+7) & LED_1(reg_counter*8+ 64 to reg_counter*8+ 64+6) &
+						max7219_vector(0,reg_counter)(15 downto 8) & LED_0(reg_counter*8+  0+7) & LED_0(reg_counter*8+  0 to reg_counter*8+  0+6);
 				when others =>
 					shift_reg64 <= 
 						max7219_vector(3,reg_counter) &
@@ -294,13 +292,18 @@ max7219 : process (clk_out) is
 		end if;
 	end if;
 	end process;
-	
+
 max6951 : process (clk_out) is
 	variable dev_counter : integer range 0 to 3 := 3;
 	variable reg_counter : integer range 0 to 11 := 0;
 	variable bit_counter : integer range 0 to 16 := 16;
 	variable shift_reg : std_logic_vector(16 downto 0);
+	variable LEDs : std_logic_vector(255 downto 0);
 	begin
+	LEDS(63 downto 0) := LED_0;
+	LEDS(127 downto 64) := LED_1;
+	LEDS(191 downto 128) := LED_2;
+	LEDS(255 downto 192) := LED_3;
 	if falling_edge(clk_out) then
 		if bit_counter=0 then
 			bit_counter := 16;
@@ -356,4 +359,3 @@ max6951 : process (clk_out) is
 	end process;
 
 end behavioral;
-

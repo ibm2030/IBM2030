@@ -50,7 +50,7 @@ use UNISIM.vcomponents.all;
 --use UNISIM.VComponents.all;
 
 entity storage is
-    Port ( -- Physical storage I/O from FPGA
+    Port ( -- Physical storage I/O from FPGA (S3BOARD)
 				phys_address : out std_logic_vector(16 downto 0);
 				phys_data : inout std_logic_vector(8 downto 0);
 				phys_CE : out std_logic;
@@ -61,10 +61,24 @@ entity storage is
 				-- Other inputs
 				clk : in STD_LOGIC; -- 50MHz
 				
-				-- Interface to config ROM
+				-- Interface to config ROM (S3BOARD)
 				din : in STD_LOGIC;
 				reset_prom : out STD_LOGIC;
 				cclk : out STD_LOGIC;
+				
+				-- Inteface to AXI (ZYBO)
+				BRAM_MS_WRDATA: out std_logic_vector(8 downto 0);
+				BRAM_MS_RDDATA : in std_logic_vector(8 downto 0);
+				BRAM_MS_ADDR : out std_logic_vector(15 downto 0);
+				BRAM_MS_EN : out std_logic;
+				BRAM_MS_WE : out std_logic;
+				BRAM_MS_CLK : out std_logic;
+				BRAM_LS_WRDATA: out std_logic_vector(8 downto 0);
+                BRAM_LS_RDDATA : in std_logic_vector(8 downto 0);
+                BRAM_LS_ADDR : out std_logic_vector(15 downto 0);
+                BRAM_LS_EN : out std_logic;
+                BRAM_LS_WE : out std_logic;
+                BRAM_LS_CLK : out std_logic;
 
 				-- Storage interface to CPU
 				StorageIn : out STORAGE_IN_INTERFACE;
@@ -474,4 +488,6 @@ LocalStorage: RAMB18E1
         REGCEAREGCE => 'X', REGCEB => 'X', RSTRAMARSTRAM => 'X', RSTRAMB => 'X', RSTREGARSTREG => 'X', RSTREGB => 'X'
 
     );
+    
+-- Link to AXI interface for MS (BRAM_MS)
 end DigilentZybo;

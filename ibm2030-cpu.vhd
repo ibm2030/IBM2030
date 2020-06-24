@@ -47,6 +47,112 @@ use buses.Buses_package.all;
 use UNISIM.vcomponents.all;
 use work.all;
 
+entity wrapped_cpu is
+    Port (
+    -- LEDs
+    INDICATORS_0 : out std_logic_vector(63 downto 0);
+    INDICATORS_1 : out std_logic_vector(63 downto 0);
+    INDICATORS_2 : out std_logic_vector(63 downto 0);
+    INDICATORS_3 : out std_logic_vector(63 downto 0);
+    LEDS : out std_logic_vector(1 to 4);
+    
+    -- Switches
+    SW_START,SW_LOAD,SW_SET_IC,SW_STOP,SW_POWER_OFF : IN std_logic;
+    SW_INH_CF_STOP,SW_PROC,SW_SCAN : IN std_logic;
+    SW_SINGLE_CYCLE,SW_INSTRUCTION_STEP,SW_RATE_SW_PROCESS : IN std_logic;
+    SW_LAMP_TEST,SW_DSPLY,SW_STORE,SW_SYS_RST : IN STD_LOGIC;
+    SW_CHK_RST,SW_ROAR_RST,SW_CHK_RESTART,SW_DIAGNOSTIC : IN STD_LOGIC;
+    SW_CHK_STOP,SW_CHK_SW_PROCESS,SW_CHK_SW_DISABLE,SW_ROAR_RESTT_STOR_BYPASS : IN STD_LOGIC;
+    SW_ROAR_RESTT,SW_ROAR_RESTT_WITHOUT_RST,SW_EARLY_ROAR_STOP,SW_ROAR_STOP : IN STD_LOGIC;
+    SW_ROAR_SYNC,SW_ADDR_COMP_PROC,SW_SAR_DLYD_STOP,SW_SAR_STOP,SW_SAR_RESTART : IN STD_LOGIC;
+    SW_INTRP_TIMER, SW_CONS_INTRP : IN STD_LOGIC;
+    SW_A,SW_B,SW_C,SW_D,SW_F,SW_G,SW_H,SW_J : IN STD_LOGIC_VECTOR(0 to 3);
+    SW_AP,SW_BP,SW_CP,SW_DP,SW_FP,SW_GP,SW_HP,SW_JP : IN STD_LOGIC;
+	SW_EI : IN STD_LOGIC;
+    SW_EJ : IN STD_LOGIC;
+    SW_EU : IN STD_LOGIC;
+    SW_EV : IN STD_LOGIC;
+    SW_EL : IN STD_LOGIC;
+    SW_ET : IN STD_LOGIC;
+    SW_ED : IN STD_LOGIC;
+    SW_ER : IN STD_LOGIC;
+    SW_ES : IN STD_LOGIC;
+    SW_EG : IN STD_LOGIC;
+    SW_EH : IN STD_LOGIC;
+    SW_EFI: IN STD_LOGIC;
+    SW_EFT: IN STD_LOGIC;
+
+    -- External MPX connections
+    MPX_BUS_O : OUT STD_LOGIC_VECTOR(0 to 8);
+    MPX_BUS_I : IN STD_LOGIC_VECTOR(0 to 8);
+    MPX_TAGS_OPL_OUT : OUT STD_LOGIC;
+    MPX_TAGS_ADR_OUT : OUT STD_LOGIC;
+    MPX_TAGS_ADR_OUT2: OUT STD_LOGIC;
+    MPX_TAGS_CMD_OUT : OUT STD_LOGIC;
+    MPX_TAGS_STA_OUT : OUT STD_LOGIC;
+    MPX_TAGS_SRV_OUT : OUT STD_LOGIC;
+    MPX_TAGS_HLD_OUT : OUT STD_LOGIC;
+    MPX_TAGS_SEL_OUT : OUT STD_LOGIC;
+    MPX_TAGS_SUP_OUT : OUT STD_LOGIC;
+    MPX_TAGS_MTR_OUT : OUT STD_LOGIC;
+    MPX_TAGS_OPL_IN : IN STD_LOGIC;
+    MPX_TAGS_ADR_IN : IN STD_LOGIC;
+    MPX_TAGS_STA_IN : IN STD_LOGIC;
+    MPX_TAGS_SRV_IN : IN STD_LOGIC;
+    MPX_TAGS_SEL_IN : IN STD_LOGIC;
+    MPX_TAGS_REQ_IN : IN STD_LOGIC;
+    MPX_TAGS_MTR_IN : IN STD_LOGIC;
+
+    -- Storage (RAM) interface
+	BRAM_MS_WRDATA: out std_logic_vector(8 downto 0);
+    BRAM_MS_RDDATA : in std_logic_vector(8 downto 0);
+    BRAM_MS_ADDR : out std_logic_vector(15 downto 0);
+    BRAM_MS_EN : out std_logic;
+    BRAM_MS_WE : out std_logic;
+    BRAM_MS_CLK : out std_logic;
+    BRAM_LS_WRDATA: out std_logic_vector(8 downto 0);
+    BRAM_LS_RDDATA : in std_logic_vector(8 downto 0);
+    BRAM_LS_ADDR : out std_logic_vector(15 downto 0);
+    BRAM_LS_EN : out std_logic;
+    BRAM_LS_WE : out std_logic;
+    BRAM_LS_CLK : out std_logic;
+    
+    -- PCH_CONN_ENTRY : IN PCH_CONN;
+    RDR_1_CONN_RDR_BITS : OUT STD_LOGIC_VECTOR(0 to 6);
+    RDR_1_CONN_RD_STROBE : OUT STD_LOGIC;
+    n1050_CONTROL_n1050_RST_LCH : OUT STD_LOGIC;
+    n1050_CONTROL_n1050_RESET : OUT STD_LOGIC;
+    n1050_CONTROL_HOME_RDR_START : OUT STD_LOGIC;
+    n1050_CONTROL_PROCEED : OUT STD_LOGIC;
+    n1050_CONTROL_RDR_2_HOLD : OUT STD_LOGIC;
+    n1050_CONTROL_CARR_RETURN_AND_LINE_FEED : OUT STD_LOGIC;
+    n1050_CONTROL_RESTORE : OUT STD_LOGIC;
+    
+    -- Hardware Serial Port
+    serialInput_SerialRx : in STD_LOGIC;
+    serialInput_DCD : in STD_LOGIC;
+    serialInput_DSR : in STD_LOGIC;
+    serialInput_RI : in STD_LOGIC;
+    serialInput_CTS : in STD_LOGIC;
+    serialOutput_SerialTx : out STD_LOGIC;
+    serialOutput_RTS : out STD_LOGIC;
+    serialOutput_DTR : out STD_LOGIC;
+    
+    DEBUG : INOUT std_logic_vector(1 to 5); -- DEBUG_BUS
+    USE_MAN_DECODER_PWR : OUT STD_LOGIC;
+    Clock1ms : IN STD_LOGIC;
+    N60_CY_TIMER_PULSE : IN STD_LOGIC;
+    M_CONV_OSC : OUT STD_LOGIC;
+    SwSlow : in std_logic;
+    clk : in std_logic);
+end wrapped_cpu;
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+library buses;
+use buses.Buses_package.all;
+use work.all;
+
 entity cpu is
     Port ( 
 			WX_IND : OUT std_logic_vector(0 to 12);
@@ -99,7 +205,7 @@ entity cpu is
 			SW_INTRP_TIMER, SW_CONS_INTRP : IN STD_LOGIC;
 			SW_A,SW_B,SW_C,SW_D,SW_F,SW_G,SW_H,SW_J : IN STD_LOGIC_VECTOR(0 to 3);
 			SW_AP,SW_BP,SW_CP,SW_DP,SW_FP,SW_GP,SW_HP,SW_JP : IN STD_LOGIC;
-			E_SW : E_SW_BUS_Type;
+			E_SW : IN E_SW_BUS_Type;
 			
 			-- External MPX connections
 			MPX_BUS_O : OUT STD_LOGIC_VECTOR(0 to 8);
@@ -108,8 +214,18 @@ entity cpu is
 			MPX_TAGS_I : IN MPX_TAGS_IN;
 
 			-- Storage (RAM) interface
-			StorageIn : IN STORAGE_IN_INTERFACE;
-			StorageOut : OUT STORAGE_OUT_INTERFACE;
+			BRAM_MS_WRDATA: out std_logic_vector(8 downto 0);
+            BRAM_MS_RDDATA : in std_logic_vector(8 downto 0);
+            BRAM_MS_ADDR : out std_logic_vector(15 downto 0);
+            BRAM_MS_EN : out std_logic;
+            BRAM_MS_WE : out std_logic;
+            BRAM_MS_CLK : out std_logic;
+            BRAM_LS_WRDATA: out std_logic_vector(8 downto 0);
+            BRAM_LS_RDDATA : in std_logic_vector(8 downto 0);
+            BRAM_LS_ADDR : out std_logic_vector(15 downto 0);
+            BRAM_LS_EN : out std_logic;
+            BRAM_LS_WE : out std_logic;
+            BRAM_LS_CLK : out std_logic;
 			
 --			PCH_CONN_ENTRY : IN PCH_CONN;
 			RDR_1_CONN_EXIT : OUT RDR_CONN;
@@ -127,6 +243,214 @@ entity cpu is
 			SwSlow : in std_logic;
 			clk : in std_logic);
 end cpu;
+
+architecture FMD of wrapped_cpu is
+signal sSALS : SALS_Bus;
+signal SALS : std_logic_vector(1 to 55);
+
+begin
+SALS(1) <= sSALS.SALS_PN;
+TheCPU: entity cpu (FMD) port map (
+    -- Indicators
+    WX_IND(0 to 4) => INDICATORS_0(10 to 14),
+    WX_IND(5 to 12) => INDICATORS_0(16 to 23),
+    W_IND_P => INDICATORS_0(9),
+    X_IND_P => INDICATORS_0(15),
+    IND_SALS.SALS_PN => INDICATORS_0(0),
+    IND_SALS.SALS_CN => INDICATORS_0(1 to 6),
+    IND_SALS.SALS_PS => INDICATORS_0(24),
+    IND_SALS.SALS_PA => INDICATORS_0(7),
+    IND_SALS.SALS_CH => INDICATORS_0(25 to 28),
+    IND_SALS.SALS_CL => INDICATORS_0(29 to 32),
+    IND_SALS.SALS_CM => INDICATORS_0(40 to 42),
+    IND_SALS.SALS_CU => INDICATORS_0(43 to 44),
+    IND_SALS.SALS_CA => INDICATORS_0(34 to 37),
+    IND_SALS.SALS_CB => INDICATORS_0(38 to 39),
+    IND_SALS.SALS_CK => INDICATORS_0(47 to 50),
+    IND_SALS.SALS_PK => INDICATORS_0(46),
+    IND_SALS.SALS_PC => INDICATORS_0(51),
+    IND_SALS.SALS_CD => INDICATORS_0(52 to 55),
+    IND_SALS.SALS_CF => INDICATORS_0(56 to 58),
+    IND_SALS.SALS_CG => INDICATORS_0(59 to 60),
+    IND_SALS.SALS_CV => INDICATORS_0(61 to 62),
+    IND_SALS.SALS_CC(0) => INDICATORS_0(63),
+    IND_SALS.SALS_CC(1 to 2) => INDICATORS_1(0 to 1),
+    IND_SALS.SALS_CS => INDICATORS_1(3 to 6),
+    IND_SALS.SALS_AA => INDICATORS_0(33),
+    IND_SALS.SALS_SA => INDICATORS_1(2),
+    IND_SALS.SALS_AK => INDICATORS_0(45),
+    IND_EX => INDICATORS_3(48),
+    IND_CY_MATCH => INDICATORS_3(49),
+    IND_ALLOW_WR => INDICATORS_3(50),
+    IND_1050_INTRV => INDICATORS_3(53),
+    IND_1050_REQ => INDICATORS_3(54),
+    IND_MPX => INDICATORS_3(58),
+    IND_SEL_CHNL => INDICATORS_3(59),
+    IND_MSDR => INDICATORS_3(13 to 20),
+    IND_MSDR_P => INDICATORS_3(12),
+    IND_OPNL_IN => INDICATORS_2(38),
+    IND_ADDR_IN => INDICATORS_2(39),
+    IND_STATUS_IN => INDICATORS_2(40),
+    IND_SERV_IN => INDICATORS_2(41),
+    IND_SEL_OUT => INDICATORS_2(42),
+    IND_ADDR_OUT => INDICATORS_2(43),
+    IND_CMMD_OUT => INDICATORS_2(44),
+    IND_SERV_OUT => INDICATORS_2(45),
+    IND_SUPPR_OUT => INDICATORS_2(46),
+    IND_FO => INDICATORS_2(48 to 55),
+    IND_FO_P => INDICATORS_2(47),
+    IND_A(0 to 7) => INDICATORS_3(40 to 47),
+    IND_A(8) => INDICATORS_3(39),
+    IND_B(0 to 7) => INDICATORS_3(31 to 38),
+    IND_B(8) => INDICATORS_3(30),
+    IND_ALU(0 to 7) => INDICATORS_3(22 to 29),
+    IND_ALU(8) => INDICATORS_3(21),
+    IND_M(0 to 6) => INDICATORS_2(57 to 63),
+    IND_M(7) => INDICATORS_3(0),
+    IND_M(8) => INDICATORS_2(56),
+    IND_N(0 to 7) => INDICATORS_3(2 to 9),
+    IND_N(8) => INDICATORS_3(1),
+    IND_MAIN_STG => INDICATORS_3(10),
+    IND_LOC_STG => INDICATORS_3(11),
+    IND_COMP_MODE => INDICATORS_3(60),
+    IND_CHK_A_REG => INDICATORS_3(56),
+    IND_CHK_B_REG => INDICATORS_3(55),
+    IND_CHK_STOR_ADDR => INDICATORS_3(51),
+    IND_CHK_CTRL_REG => INDICATORS_3(63),
+    IND_CHK_ROS_SALS => INDICATORS_3(62),
+    IND_CHK_ROS_ADDR => INDICATORS_3(61),
+    IND_CHK_STOR_DATA => INDICATORS_3(52),
+    IND_CHK_ALU => INDICATORS_3(57),
+    IND_SYST => INDICATORS_1(63),
+    IND_MAN => LEDS(1),
+    IND_WAIT => LEDS(2),
+    IND_TEST => LEDS(3),
+    IND_LOAD => LEDS(4),
+    -- Switches
+    SW_START => SW_START,
+    SW_LOAD => SW_LOAD,
+    SW_SET_IC => SW_SET_IC,
+    SW_STOP => SW_STOP,
+    SW_POWER_OFF => SW_POWER_OFF,
+    SW_INH_CF_STOP => SW_INH_CF_STOP,
+    SW_PROC => SW_PROC,
+    SW_SCAN => SW_SCAN,
+    SW_SINGLE_CYCLE => SW_SINGLE_CYCLE,
+    SW_INSTRUCTION_STEP => SW_INSTRUCTION_STEP,
+    SW_RATE_SW_PROCESS => SW_RATE_SW_PROCESS,
+    SW_LAMP_TEST => SW_LAMP_TEST,
+    SW_DSPLY => SW_DSPLY,
+    SW_STORE => SW_STORE,
+    SW_SYS_RST => SW_SYS_RST,
+    SW_CHK_RST => SW_CHK_RST,
+    SW_ROAR_RST => SW_ROAR_RST,
+    SW_CHK_RESTART => SW_CHK_RESTART,
+    SW_DIAGNOSTIC => SW_DIAGNOSTIC,
+    SW_CHK_STOP => SW_CHK_STOP,
+    SW_CHK_SW_PROCESS => SW_CHK_SW_PROCESS,
+    SW_CHK_SW_DISABLE => SW_CHK_SW_DISABLE,
+    SW_ROAR_RESTT_STOR_BYPASS => SW_ROAR_RESTT_STOR_BYPASS,
+    SW_ROAR_RESTT => SW_ROAR_RESTT,
+    SW_ROAR_RESTT_WITHOUT_RST => SW_ROAR_RESTT_WITHOUT_RST,
+    SW_EARLY_ROAR_STOP => SW_EARLY_ROAR_STOP,
+    SW_ROAR_STOP => SW_ROAR_STOP,
+    SW_ROAR_SYNC => SW_ROAR_SYNC,
+    SW_ADDR_COMP_PROC => SW_ADDR_COMP_PROC,
+    SW_SAR_DLYD_STOP => SW_SAR_DLYD_STOP,
+    SW_SAR_STOP => SW_SAR_STOP,
+    SW_SAR_RESTART => SW_SAR_RESTART,
+    SW_INTRP_TIMER => SW_INTRP_TIMER,
+    SW_CONS_INTRP => SW_CONS_INTRP,
+    SW_A => SW_A,
+    SW_B => SW_B,
+    SW_C => SW_C,
+    SW_D => SW_D,
+    SW_F => SW_F,
+    SW_G => SW_G,
+    SW_H => SW_H,
+    SW_J => SW_J,
+    SW_AP => SW_AP,
+    SW_BP => SW_BP,
+    SW_CP => SW_CP,
+    SW_DP => SW_DP,
+    SW_FP => SW_FP,
+    SW_GP => SW_GP,
+    SW_HP => SW_HP,
+    SW_JP => SW_JP,
+    E_SW.I_SEL => SW_EI,
+    E_SW.J_SEL => SW_EJ,
+    E_SW.U_SEL => SW_EU,
+    E_SW.V_SEL => SW_EV,
+    E_SW.L_SEL => SW_EL,
+    E_SW.T_SEL => SW_ET,
+    E_SW.D_SEL => SW_ED,
+    E_SW.R_SEL => SW_ER,
+    E_SW.S_SEL => SW_ES,
+    E_SW.G_SEL => SW_EG,
+    E_SW.H_SEL => SW_EH,
+    E_SW.FI_SEL => SW_EFI,
+    E_SW.FT_SEL => SW_EFT,
+    -- MPX
+    MPX_BUS_O => MPX_BUS_O,
+    MPX_BUS_I => MPX_BUS_I,
+    MPX_TAGS_O.OPL_OUT => MPX_TAGS_OPL_OUT,
+    MPX_TAGS_O.ADR_OUT => MPX_TAGS_ADR_OUT,
+    MPX_TAGS_O.ADR_OUT2 => MPX_TAGS_ADR_OUT2,
+    MPX_TAGS_O.CMD_OUT => MPX_TAGS_CMD_OUT,
+    MPX_TAGS_O.STA_OUT => MPX_TAGS_STA_OUT,
+    MPX_TAGS_O.SRV_OUT => MPX_TAGS_SRV_OUT,
+    MPX_TAGS_O.HLD_OUT => MPX_TAGS_HLD_OUT,
+    MPX_TAGS_O.SEL_OUT => MPX_TAGS_SEL_OUT,
+    MPX_TAGS_O.SUP_OUT => MPX_TAGS_SUP_OUT,
+    MPX_TAGS_O.MTR_OUT => MPX_TAGS_MTR_OUT,
+    MPX_TAGS_I.OPL_IN => MPX_TAGS_OPL_IN,
+    MPX_TAGS_I.ADR_IN => MPX_TAGS_ADR_IN,
+    MPX_TAGS_I.STA_IN => MPX_TAGS_STA_IN,
+    MPX_TAGS_I.SRV_IN => MPX_TAGS_SRV_IN,
+    MPX_TAGS_I.SEL_IN => MPX_TAGS_SEL_IN,
+    MPX_TAGS_I.REQ_IN => MPX_TAGS_REQ_IN,
+    MPX_TAGS_I.MTR_IN => MPX_TAGS_MTR_IN,
+    -- 1050
+    RDR_1_CONN_EXIT.RDR_BITS => RDR_1_CONN_RDR_BITS,
+    RDR_1_CONN_EXIT.RD_STROBE => RDR_1_CONN_RD_STROBE,
+    n1050_CONTROL.n1050_RST_LCH => n1050_CONTROL_n1050_RST_LCH,
+    n1050_CONTROL.n1050_RESET => n1050_CONTROL_n1050_RESET,
+    n1050_CONTROL.HOME_RDR_START => n1050_CONTROL_HOME_RDR_START,
+    n1050_CONTROL.PROCEED => n1050_CONTROL_PROCEED,
+    n1050_CONTROL.RDR_2_HOLD => n1050_CONTROL_RDR_2_HOLD,
+    n1050_CONTROL.CARR_RETURN_AND_LINE_FEED => n1050_CONTROL_CARR_RETURN_AND_LINE_FEED,
+    n1050_CONTROL.RESTORE => n1050_CONTROL_RESTORE,
+    -- Storage
+    BRAM_MS_WRDATA => BRAM_MS_WRDATA,
+    BRAM_MS_RDDATA => BRAM_MS_RDDATA,
+    BRAM_MS_ADDR => BRAM_MS_ADDR,
+    BRAM_MS_EN => BRAM_MS_EN,
+    BRAM_MS_WE => BRAM_MS_WE,
+    BRAM_MS_CLK => BRAM_MS_CLK,
+    BRAM_LS_WRDATA => BRAM_LS_WRDATA,
+    BRAM_LS_RDDATA => BRAM_LS_RDDATA,
+    BRAM_LS_ADDR => BRAM_LS_ADDR,
+    BRAM_LS_EN => BRAM_LS_EN,
+    BRAM_LS_WE => BRAM_LS_WE,
+    BRAM_LS_CLK => BRAM_LS_CLK,
+    -- Serial port
+    serialInput.SerialRx => serialInput_SerialRx,
+    serialInput.DCD => serialInput_DCD,
+    serialInput.DSR => serialInput_DSR,
+    serialInput.RI => serialInput_RI,
+    serialInput.CTS => serialInput_CTS,
+    serialOutput.SerialTx => serialOutput_SerialTx,
+    serialOutput.RTS => serialOutput_RTS,
+    serialOutput.DTR => serialOutput_DTR,
+    -- Clocks
+    Clock1ms => Clock1ms,
+    N60_CY_TIMER_PULSE => N60_CY_TIMER_PULSE,
+    M_CONV_OSC => M_CONV_OSC,
+    SwSlow => SwSlow,
+    clk => clk
+    );
+
+end FMD;
 
 architecture FMD of cpu is
 
@@ -170,6 +494,8 @@ signal	n1050_REQ_IN : STD_LOGIC;
 signal	n1050_CE_MODE : STD_LOGIC;
 signal	MPX_OPN_LT_GATE : STD_LOGIC;
 signal	ADDR_OUT : STD_LOGIC;
+signal  StorageIn : STORAGE_IN_INTERFACE;
+signal  StorageOut : STORAGE_OUT_INTERFACE;
 
 -- Outputs from UDC3 (5-10A through 5-14D)
 signal	A_BUS3 : STD_LOGIC_VECTOR(0 to 8);
@@ -813,8 +1139,8 @@ begin
 		IND_CHK_STOR_DATA => IND_CHK_STOR_DATA,
 		IND_CHK_ALU => IND_CHK_ALU,
 		
-      -- Selector & Mpx channels
-      MPX_BUS_O => sMPX_BUS_O,
+        -- Selector & Mpx channels
+        MPX_BUS_O => sMPX_BUS_O,
 		MPX_BUS_I => MPX_BUS_I,
 		MPX_TAGS_O => MPX_TAGS_O,
 		MPX_TAGS_I => MPX_TAGS_I,
@@ -826,10 +1152,10 @@ begin
 		n1050_INSTALLED => n1050_INSTALLED,
 		n1050_REQ_IN => n1050_REQ_IN,
 		n1050_OP_IN => n1050_OP_IN,
-      n1050_CE_MODE => n1050_CE_MODE,
+        n1050_CE_MODE => n1050_CE_MODE,
 	  
-	   StorageIn => StorageIn,
-	   StorageOut => StorageOut,
+	    StorageIn => StorageIn,
+	    StorageOut => StorageOut,
 		
 		-- UDC2 Debug stuff
 		DEBUG => open,
@@ -878,7 +1204,7 @@ begin
 		n1050_SEL_O => n1050_SEL_O,
 		n1050_INSTALLED => n1050_INSTALLED,
 		n1050_REQ_IN => n1050_REQ_IN,
-      n1050_CE_MODE => n1050_CE_MODE,
+        n1050_CE_MODE => n1050_CE_MODE,
 		ADDR_OUT => ADDR_OUT,
 		
 		SerialInput => SerialInput,
@@ -900,6 +1226,43 @@ begin
 		P2 => P2,
 		P3 => P3,
 		P4 => P4
+	);
+	
+	storage64 : entity storage (FMD) port map (
+	-- S3BOARD signals
+        phys_address => open,
+        phys_data => open,
+        phys_CE => open,
+        phys_OE => open,
+        phys_WE => open,
+        phys_UB => open,
+        phys_LB => open,
+    -- Interface to config ROM (S3BOARD)
+        din => '0',
+        reset_prom  => open,
+        cclk => open,
+
+        -- Other inputs
+        clk => clk, -- 50MHz
+        
+    -- Inteface to AXI (ZYBO)
+        BRAM_MS_WRDATA => BRAM_MS_WRDATA,
+        BRAM_MS_RDDATA => BRAM_MS_RDDATA,
+        BRAM_MS_ADDR => BRAM_MS_ADDR,
+        BRAM_MS_EN => BRAM_MS_EN,
+        BRAM_MS_WE => BRAM_MS_WE,
+        BRAM_MS_CLK => BRAM_MS_CLK,
+        BRAM_LS_WRDATA => BRAM_LS_WRDATA,
+        BRAM_LS_RDDATA => BRAM_LS_RDDATA,
+        BRAM_LS_ADDR => BRAM_LS_ADDR,
+        BRAM_LS_EN => BRAM_LS_EN,
+        BRAM_LS_WE => BRAM_LS_WE,
+        BRAM_LS_CLK => BRAM_LS_CLK,
+        
+    -- Storage interface to CPU
+        StorageIn => StorageIn,
+        StorageOut => StorageOut,
+        debug => open
 	);
 
 	M_CONV_OSC <= sM_CONV_OSC;
