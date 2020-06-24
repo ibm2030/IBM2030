@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="38" Path="/home/ljw/Documents/Xilinx/IBM2030/IBM2030.xpr">
+<Project Version="7" Minor="38" Path="/home/ljw/Documents/IBM/IBM2030/IBM2030.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="745df05d147041efb98a694587fb0e57"/>
@@ -23,7 +23,7 @@
     <Option Name="ActiveSimSet" Val="sim_1"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
     <Option Name="ProjectType" Val="Default"/>
-    <Option Name="IPRepoPath" Val="$PPRDIR/../../../../media/ljw/LJW2014/Xilinx/Digilent/vivado-library"/>
+    <Option Name="IPRepoPath" Val="$PPRDIR/../../../../../media/ljw/LJW2014/Xilinx/Digilent/vivado-library"/>
     <Option Name="IPOutputRepo" Val="$PCACHEDIR/ip"/>
     <Option Name="IPCachePermission" Val="read"/>
     <Option Name="IPCachePermission" Val="write"/>
@@ -63,285 +63,279 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
       <Filter Type="Srcs"/>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/Buses2030.vhd">
+      <File Path="$PPRDIR/Buses2030.vhd">
         <FileInfo>
           <Attr Name="Library" Val="buses"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/Gates2030.vhd">
+      <File Path="$PPRDIR/Gates2030.vhd">
         <FileInfo>
           <Attr Name="Library" Val="logic"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-01A-B.vhd">
+      <File Path="$PPRDIR/FMD2030_5-01A-B.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/ccros.vhd">
+      <File Path="$PPRDIR/ccros.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-01C-D.vhd">
+      <File Path="$PPRDIR/FMD2030_5-01C-D.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-02A-B.vhd">
+      <File Path="$PPRDIR/FMD2030_5-02A-B.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-03A.vhd">
+      <File Path="$PPRDIR/FMD2030_5-03A.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-03B.vhd">
+      <File Path="$PPRDIR/FMD2030_5-03B.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-03C.vhd">
+      <File Path="$PPRDIR/FMD2030_5-03C.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-03D.vhd">
+      <File Path="$PPRDIR/FMD2030_5-03D.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-04A-B.vhd">
+      <File Path="$PPRDIR/FMD2030_5-04A-B.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-04C.vhd">
+      <File Path="$PPRDIR/FMD2030_5-04C.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-04D.vhd">
+      <File Path="$PPRDIR/FMD2030_5-04D.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-05A.vhd">
+      <File Path="$PPRDIR/FMD2030_5-05A.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-05B.vhd">
+      <File Path="$PPRDIR/FMD2030_5-05B.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-05C.vhd">
+      <File Path="$PPRDIR/FMD2030_5-05C.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-05D.vhd">
+      <File Path="$PPRDIR/FMD2030_5-05D.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-06A-B.vhd">
+      <File Path="$PPRDIR/FMD2030_5-06A-B.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-06C-D.vhd">
+      <File Path="$PPRDIR/FMD2030_5-06C-D.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-07A1.vhd">
+      <File Path="$PPRDIR/FMD2030_5-07A1.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-07A2.vhd">
+      <File Path="$PPRDIR/FMD2030_5-07A2.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-07B1.vhd">
+      <File Path="$PPRDIR/FMD2030_5-07B1.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-07B2.vhd">
+      <File Path="$PPRDIR/FMD2030_5-07B2.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-07B_2.vhd">
+      <File Path="$PPRDIR/FMD2030_5-07B_2.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-07C.vhd">
+      <File Path="$PPRDIR/FMD2030_5-07C.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-08B.vhd">
+      <File Path="$PPRDIR/FMD2030_5-08B.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-08C.vhd">
+      <File Path="$PPRDIR/FMD2030_5-08C.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-08D.vhd">
+      <File Path="$PPRDIR/FMD2030_5-08D.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-09C.vhd">
+      <File Path="$PPRDIR/FMD2030_5-09C.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-10A.vhd">
+      <File Path="$PPRDIR/FMD2030_5-10A.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-10B.vhd">
+      <File Path="$PPRDIR/FMD2030_5-10B.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-10C.vhd">
+      <File Path="$PPRDIR/FMD2030_5-10C.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/RS232RefComp.vhd">
+      <File Path="$PPRDIR/RS232RefComp.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/ibm1050.vhd">
+      <File Path="$PPRDIR/ibm1050.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-10D.vhd">
+      <File Path="$PPRDIR/FMD2030_5-10D.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_UDC1.vhd">
+      <File Path="$PPRDIR/FMD2030_UDC1.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_UDC2.vhd">
+      <File Path="$PPRDIR/FMD2030_UDC2.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_UDC3.vhd">
+      <File Path="$PPRDIR/FMD2030_UDC3.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/cpu.vhd">
+      <File Path="$PPRDIR/cpu.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/ibm2030-storage.vhd">
+      <File Path="$PPRDIR/ibm2030-storage.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/ibm2030-cpu.vhd">
+      <File Path="$PPRDIR/ibm2030-cpu.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/panel_Switches.vhd">
+      <File Path="$PPRDIR/panel_Switches.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/ibm2030-switches.vhd">
+      <File Path="$PPRDIR/ibm2030-switches.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/vga_controller_640_60.vhd">
+      <File Path="$PPRDIR/ibm2030-vga.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/ibm2030-vga.vhd">
+      <File Path="$PPRDIR/panel_LEDs.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/panel_LEDs.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/ibm2030.vhd">
+      <File Path="$PPRDIR/ibm2030.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -355,45 +349,25 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/FMD2030_5-08A.vhd">
+      <File Path="$PPRDIR/FMD2030_5-08A.vhd">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/PROM_reader_serial.vhd">
+      <File Path="$PPRDIR/Testbench_panel_LEDs.vhd">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/Testbench_panel_LEDs.vhd">
+      <File Path="$PPRDIR/Testbench_panel_Switches.vhd">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/Testbench_panel_Switches.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../Documents/IBM/IBM2030/clock_management.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/ljw/Xilinx/IBM2030/import_ise_summary.txt">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../IBM2030/import_ise_summary.txt"/>
-          <Attr Name="ImportTime" Val="1591734367"/>
         </FileInfo>
       </File>
       <Config>
@@ -407,7 +381,7 @@
       <File Path="$PSRCDIR/constrs_1/imports/IBM2030/digilentSP3.ucf">
         <FileInfo>
           <Attr Name="UserDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../IBM2030/digilentSP3.ucf"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/digilentSP3.ucf"/>
           <Attr Name="ImportTime" Val="1368725426"/>
         </FileInfo>
       </File>
@@ -486,16 +460,20 @@
   <Runs Version="1" Minor="10">
     <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xc7z020clg400-1" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2018"/>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2018">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2018"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
     </Run>
-    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xc7z020clg400-1" ConstrsSet="constrs_1" Description="Default settings for Implementation." WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/impl_1" SynthRun="synth_1" IncludeInArchive="true" GenFullBitstream="true">
+    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xc7z020clg400-1" ConstrsSet="constrs_1" Description="Default settings for Implementation." WriteIncrSynthDcp="false" State="current" SynthRun="synth_1" IncludeInArchive="true" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2018"/>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2018">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -506,7 +484,6 @@
         <Step Id="post_route_phys_opt_design"/>
         <Step Id="write_bitstream"/>
       </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2018"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
     </Run>

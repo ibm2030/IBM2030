@@ -5,7 +5,6 @@
 preplace port btns_4bits -pg 1 -y -450 -defaultsOSRD -left
 preplace port DDR -pg 1 -y -230 -defaultsOSRD
 preplace port hdmi_out_ddc -pg 1 -y -190 -defaultsOSRD
-preplace port hdmi_out -pg 1 -y 160 -defaultsOSRD
 preplace port FIXED_IO -pg 1 -y -210 -defaultsOSRD
 preplace inst storage_ls_2kx9 -pg 1 -lvl 6 -y 1300 -defaultsOSRD
 preplace inst rst_ps7_0_133M -pg 1 -lvl 5 -y 720 -defaultsOSRD
@@ -30,10 +29,10 @@ preplace netloc processing_system7_0_DDR 1 5 5 2860 -230 N -230 N -230 NJ -230 N
 preplace netloc ps7_0_axi_periph_M02_AXI 1 5 3 2750J 70 NJ 70 3970
 preplace netloc xlconstant_1_dout 1 1 1 40
 preplace netloc xlconstant_2_dout 1 1 1 30
-preplace netloc v_tc_out_irq 1 6 3 N 220 N 220 4420
+preplace netloc v_tc_out_irq 1 6 3 N 210 N 210 4420
 preplace netloc axi_gpio_video_ip2intc_irpt 1 8 1 4410
 preplace netloc wrapped_cpu_0_BRAM_MS_WRDATA 1 2 4 N 340 NJ 340 2180J 620 2750J
-preplace netloc rst_ps7_0_133M_peripheral_aresetn 1 5 2 NJ 760 3410
+preplace netloc rst_ps7_0_133M_peripheral_aresetn 1 5 2 NJ 760 3400
 preplace netloc rst_ps7_0_133M_interconnect_aresetn 1 5 2 2810J 540 NJ
 preplace netloc axi_bram_ctrl_ms_BRAM_PORTA 1 5 1 2780
 preplace netloc wrapped_cpu_0_BRAM_MS_WE 1 2 4 780 450 NJ 450 2170J 610 2770J
@@ -51,7 +50,6 @@ preplace netloc processing_system7_0_IIC_0 1 5 5 2860 -190 N -190 N -190 NJ -190
 preplace netloc axi_mem_intercon_M00_AXI 1 4 4 2280 -350 N -350 N -350 3960
 preplace netloc ibm2030_BRAM_MS_CLK 1 2 4 870 10 NJ 10 NJ 10 2800J
 preplace netloc axi_bram_ctrl_ms_bram_wrdata_a 1 5 1 2790
-preplace netloc rgb2dvi_0_TMDS 1 6 4 3390 160 N 160 N 160 NJ
 preplace netloc xlconcat_rd_ms1_dout 1 5 2 2880 1180 3400J
 preplace netloc wrapped_cpu_0_BRAM_MS_ADDR 1 2 4 850 350 NJ 350 2200J -310 2820J
 preplace netloc ps7_0_axi_periph_GP0_M01_AXI 1 4 2 2270 30 2730
@@ -63,7 +61,7 @@ preplace netloc processing_system7_0_FIXED_IO 1 5 5 2860 -210 N -210 N -210 NJ -
 preplace netloc ps7_0_axi_periph_GP0_M05_AXI 1 4 2 2280 580 2730
 preplace netloc storage_ls_2kx9_doutb_cpu 1 1 6 80J 1410 NJ 1410 NJ 1410 NJ 1410 NJ 1410 3380
 preplace netloc wrapped_cpu_0_BRAM_LS_CLK 1 2 4 NJ 520 N 520 2160 600 2760
-preplace netloc axi_vdma_0_mm2s_introut 1 6 3 NJ 200 NJ 200 4440
+preplace netloc axi_vdma_0_mm2s_introut 1 6 3 NJ 190 NJ 190 4440
 preplace netloc axi_bram_ctrl_ls_BRAM_PORTA 1 5 1 2870
 preplace netloc ibm2030_INDICATORS_0 1 2 1 780
 preplace netloc xlconstant_0000_dout 1 1 1 50
@@ -72,7 +70,7 @@ preplace netloc ibm2030_INDICATORS_1 1 2 1 790
 preplace netloc wrapped_cpu_0_BRAM_LS_WE 1 2 4 840J -290 N -290 2180 -380 2830
 preplace netloc blk_mem_gen_0_doutb 1 1 6 70J 1290 NJ 1290 NJ 1290 2260J 1170 NJ 1170 3400
 preplace netloc processing_system7_0_FCLK_CLK0 1 3 6 1580 90 2220 -330 2870 40 NJ 40 3990 700 N
-preplace netloc Net 1 4 3 2260 -340 2890 60 3400
+preplace netloc Net 1 4 3 2260 -340 2890 60 3390
 preplace netloc ps7_0_axi_periph_M00_AXI 1 5 1 2760
 preplace netloc ps7_0_axi_periph_GP0_M04_AXI 1 5 1 2770
 preplace netloc ibm2030_INDICATORS_2 1 2 1 800
