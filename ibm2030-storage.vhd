@@ -44,11 +44,6 @@ use buses.Buses_package.all;
 library UNISIM;
 use UNISIM.vcomponents.all;
 
----- Uncomment the following library declaration if instantiating
----- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity storage is
     Port ( -- Physical storage I/O from FPGA (S3BOARD)
 				phys_address : out std_logic_vector(16 downto 0);
@@ -75,7 +70,7 @@ entity storage is
 				BRAM_MS_CLK : out std_logic;
 				BRAM_LS_WRDATA: out std_logic_vector(8 downto 0);
                 BRAM_LS_RDDATA : in std_logic_vector(8 downto 0);
-                BRAM_LS_ADDR : out std_logic_vector(15 downto 0);
+                BRAM_LS_ADDR : out std_logic_vector(10 downto 0);
                 BRAM_LS_EN : out std_logic;
                 BRAM_LS_WE : out std_logic;
                 BRAM_LS_CLK : out std_logic;
@@ -86,6 +81,181 @@ entity storage is
 				debug : out STD_LOGIC
            );
 end storage;
+
+architecture DigilentZybo of storage is
+
+begin
+
+-- Unused external storage
+PHYS_CE <= 'X';
+PHYS_OE <= 'X';
+PHYS_WE <= 'X';
+PHYS_UB <= 'X';
+PHYS_LB <= 'X';
+phys_address <= (others=>'X');
+phys_data <= (others=>'X');
+
+StorageIn.ReadData <= BRAM_MS_RDDATA when StorageOut.MainStorage='1' else BRAM_LS_RDDATA;
+
+BRAM_MS_WRDATA <= StorageOut.WriteData;
+BRAM_MS_WE <= StorageOut.WritePulse and StorageOut.MainStorage;
+BRAM_MS_EN <= StorageOut.MainStorage and (StorageOut.WritePulse or StorageOut.ReadPulse);
+BRAM_MS_ADDR <= StorageOut.MSAR(0 to 15);
+
+BRAM_LS_WRDATA <= StorageOut.WriteData;
+BRAM_LS_WE <= StorageOut.WritePulse and not StorageOut.MainStorage;
+BRAM_LS_EN <= not StorageOut.MainStorage and (StorageOut.WritePulse or StorageOut.ReadPulse);
+BRAM_LS_ADDR <= StorageOut.MSAR(1 to 3) & StorageOut.MSAR(8 to 15);
+
+end DigilentZybo;
+
+architecture XDigilentZybo of storage is
+
+--
+-- declaration of serial configuration PROM reading interface
+--
+  component prom_reader_serial
+    generic(    length : integer := 5;                      --sync pattern 2^length
+             frequency : integer := 50 );                   --system clock speed in MHz
+    port(        clock : in std_logic; 
+                 reset : in std_logic;                      --active high
+                  read : in std_logic;                      --active low single cycle pulse
+             next_sync : in std_logic;                      --active low single cycle pulse
+                   din : in std_logic;
+          sync_pattern : in std_logic_vector((2**length) - 1 downto 0);
+                  cclk : out std_logic;
+                  sync : out std_logic;                     --active low single cycle pulse
+            data_ready : out std_logic;                     --active low single cycle pulse
+            reset_prom : out std_logic;                     --active high to /OE of PROM (reset when high)
+                  dout : out std_logic_vector(7 downto 0));
+  end component;
+
+-- Signals for RAM clearing and initialisation purposes (at startup)
+signal drive_out : std_logic;
+signal addr : std_logic_vector(15 downto 0) := "0000000000000000";
+signal len  : std_logic_vector(15 downto 0) := "0000000000000000";
+signal init_CE : std_logic;
+signal init_WE : std_logic;
+signal init_OE : std_logic;
+signal init_drive_out, clear_data_out, clear_local_data_out, init_data_out: std_logic;
+signal clear_data : std_logic_vector(7 downto 0) := "00000000"; -- Value written into storage locations when clearing
+signal init_data : std_logic_vector(7 downto 0);
+
+-- Signals for Block RAM
+signal b : integer range 0 to 8;
+signal CascadeA, CascadeB : STD_ULOGIC_VECTOR(0 to 8);
+signal LSaddress : STD_LOGIC_VECTOR(13 downto 0);
+signal LSDataIn : STD_LOGIC_VECTOR(0 to 8);
+signal MSDataIn : STD_LOGIC_VECTOR(0 to 8);
+signal MSRead, MSWrite, LSRead, LSWrite : STD_LOGIC;
+signal MSWEA : STD_LOGIC_VECTOR(3 downto 0);
+signal MSWEB : STD_LOGIC_VECTOR(7 downto 0);
+signal LSWEA : STD_LOGIC_VECTOR(1 downto 0);
+signal LSWEB : STD_LOGIC_VECTOR(3 downto 0);
+signal LSDI : STD_LOGIC_VECTOR(15 downto 0);
+signal DIA : STD_LOGIC_VECTOR(31 downto 0);
+
+--
+-- Signals for serial PROM reader 
+--
+signal     reset_prom_reader : std_logic;
+signal       prom_read_pulse : std_logic;
+signal       prom_sync_pulse : std_logic;
+signal prom_data_ready_pulse : std_logic;
+
+
+
+begin
+
+-- Unused external storage
+PHYS_CE <= 'X';
+PHYS_OE <= 'X';
+PHYS_WE <= 'X';
+PHYS_UB <= 'X';
+PHYS_LB <= 'X';
+phys_address <= (others=>'X');
+phys_data <= (others=>'X');
+
+
+
+StorageIn.ReadData <= MSDataIn when StorageOut.MainStorage='1' else LSDataIn;
+MSWrite <= StorageOut.WritePulse and StorageOut.MainStorage;
+MSRead <= StorageOut.ReadPulse and StorageOut.MainStorage;
+LSAddress <= "000" & StorageOut.MSAR(1 to 3) & StorageOut.MSAR(8 to 15);
+LSWrite <= StorageOut.WritePulse and not StorageOut.MainStorage;
+LSRead <= StorageOut.ReadPulse and not StorageOut.MainStorage;
+MSWEA <= "000" & MSWrite;
+LSWEA <= "0" & LSWrite;
+MSWEB <= "00000000";
+LSWEB <= "0000";
+LSDI <= "0000000" & StorageOut.WriteData;
+    
+-- Block RAM for Main storage 64kx9 & Local storage 2kx9, RAM blocks are 36Kb, or 4kB
+GENBRAM: FOR b IN 0 TO 8 GENERATE
+    FIRST32K:   RAMB36E1
+    generic map(
+        READ_WIDTH_A => 1, WRITE_WIDTH_A => 1,
+        RAM_EXTENSION_A => "LOWER", RAM_EXTENSION_B => "LOWER"
+    ) 
+    port map(
+        CASCADEINA => 'X', CASCADEINB => 'X',
+        CASCADEOUTA => CascadeA(b), CASCADEOUTB => CascadeB(b),
+        CLKARDCLK => clk,
+        ADDRARDADDR => StorageOut.MSAR,
+        ENARDEN => MSRead, 
+        WEA => MSWEA, 
+        DIADI(0) => StorageOut.WriteData(b), DIADI(31 downto 1) => (others=>'0'),
+        -- AXI ports
+        ENBWREN => '0', WEBWE => MSWEB, ADDRBWRADDR => "XXXXXXXXXXXXXXXX", DIBDI => (31 downto 0 => 'X'), CLKBWRCLK => '0',
+        -- Unused ports...
+        DIPADIP => "XXXX", DIPBDIP => "XXXX", INJECTDBITERR => 'X', INJECTSBITERR => 'X',
+        REGCEAREGCE => 'X', REGCEB => 'X', RSTRAMARSTRAM => 'X', RSTRAMB => 'X',
+        RSTREGARSTREG => 'X', RSTREGB => 'X'
+    );
+    SECOND32K:  RAMB36E1
+    generic map(
+        READ_WIDTH_A => 1, WRITE_WIDTH_A => 1,
+        RAM_EXTENSION_A => "UPPER", RAM_EXTENSION_B => "UPPER"
+    ) 
+    port map(
+        CASCADEINA => CascadeA(b), CASCADEINB => CascadeB(b),
+        CLKARDCLK => clk,
+        ADDRARDADDR => StorageOut.MSAR,
+        DIADI(0) => StorageOut.WriteData(b), DIADI(31 downto 1) => (others=>'0'),
+        ENARDEN => MSRead, WEA => MSWEA,
+        DOADO(0) => MSDataIn(b), DOADO(31 downto 1) => open,
+        -- AXI ports
+        ENBWREN => '0', WEBWE => MSWEB, ADDRBWRADDR => "XXXXXXXXXXXXXXXX",  DIBDI => (31 downto 0 => 'X'), CLKBWRCLK => 'X',
+        -- Unused ports...
+        DIPADIP => "XXXX", DIPBDIP => "XXXX", INJECTDBITERR => 'X', INJECTSBITERR => 'X',
+        REGCEAREGCE => 'X', REGCEB => 'X', RSTRAMARSTRAM => 'X', RSTRAMB => 'X',
+        RSTREGARSTREG => 'X', RSTREGB => 'X'
+    );
+END GENERATE;
+
+LocalStorage: RAMB18E1
+    generic map(
+        READ_WIDTH_A => 9, WRITE_WIDTH_A => 9
+    )
+    port map (
+        CLKARDCLK => clk,
+        ADDRARDADDR => LSAddress,
+        DIADI(7 downto 0) => LSDI(7 downto 0), DIADI(15 downto 8) => "00000000",
+        DIPADIP(0) => LSDI(8), DIPADIP(1) => '0',
+        ENARDEN => LSRead, WEA => LSWEA,
+        DOADO(7 downto 0) => LSDataIn(0 to 7), DOADO(15 downto 8) => open,
+        DOPADOP(0 to 0) => LSDataIn(8 to 8), DOPADOP(1 to 1) => open,
+        -- AXI ports
+        ENBWREN => '0', WEBWE => LSWEB, CLKBWRCLK => '0', DIBDI => "XXXXXXXXXXXXXXXX",  ADDRBWRADDR => "XXXXXXXXXXXXXX",
+        -- Unused
+        DIPBDIP => "XX",
+        
+        REGCEAREGCE => 'X', REGCEB => 'X', RSTRAMARSTRAM => 'X', RSTRAMB => 'X', RSTREGARSTREG => 'X', RSTREGB => 'X'
+
+    );
+    
+-- Link to AXI interface for MS (BRAM_MS)
+end XDigilentZybo;
 
 architecture DigilentS3BOARD of storage is
 
@@ -343,151 +513,3 @@ debug <= init_drive_out;
                     dout => init_data);             --byte received from serial prom
 
 end DigilentS3BOARD;
-
-architecture DigilentZybo of storage is
-
---
--- declaration of serial configuration PROM reading interface
---
-  component prom_reader_serial
-    generic(    length : integer := 5;                      --sync pattern 2^length
-             frequency : integer := 50 );                   --system clock speed in MHz
-    port(        clock : in std_logic; 
-                 reset : in std_logic;                      --active high
-                  read : in std_logic;                      --active low single cycle pulse
-             next_sync : in std_logic;                      --active low single cycle pulse
-                   din : in std_logic;
-          sync_pattern : in std_logic_vector((2**length) - 1 downto 0);
-                  cclk : out std_logic;
-                  sync : out std_logic;                     --active low single cycle pulse
-            data_ready : out std_logic;                     --active low single cycle pulse
-            reset_prom : out std_logic;                     --active high to /OE of PROM (reset when high)
-                  dout : out std_logic_vector(7 downto 0));
-  end component;
-
--- Signals for RAM clearing and initialisation purposes (at startup)
-signal drive_out : std_logic;
-signal addr : std_logic_vector(15 downto 0) := "0000000000000000";
-signal len  : std_logic_vector(15 downto 0) := "0000000000000000";
-signal init_CE : std_logic;
-signal init_WE : std_logic;
-signal init_OE : std_logic;
-signal init_drive_out, clear_data_out, clear_local_data_out, init_data_out: std_logic;
-signal clear_data : std_logic_vector(7 downto 0) := "00000000"; -- Value written into storage locations when clearing
-signal init_data : std_logic_vector(7 downto 0);
-
--- Signals for Block RAM
-signal b : integer range 0 to 8;
-signal CascadeA, CascadeB : STD_ULOGIC_VECTOR(0 to 8);
-signal LSaddress : STD_LOGIC_VECTOR(13 downto 0);
-signal LSDataIn : STD_LOGIC_VECTOR(0 to 8);
-signal MSDataIn : STD_LOGIC_VECTOR(0 to 8);
-signal MSRead, MSWrite, LSRead, LSWrite : STD_LOGIC;
-signal MSWEA : STD_LOGIC_VECTOR(3 downto 0);
-signal MSWEB : STD_LOGIC_VECTOR(7 downto 0);
-signal LSWEA : STD_LOGIC_VECTOR(1 downto 0);
-signal LSWEB : STD_LOGIC_VECTOR(3 downto 0);
-signal LSDI : STD_LOGIC_VECTOR(15 downto 0);
-signal DIA : STD_LOGIC_VECTOR(31 downto 0);
-
---
--- Signals for serial PROM reader 
---
-signal     reset_prom_reader : std_logic;
-signal       prom_read_pulse : std_logic;
-signal       prom_sync_pulse : std_logic;
-signal prom_data_ready_pulse : std_logic;
-
-
-
-begin
-
--- Unused external storage
-PHYS_CE <= 'X';
-PHYS_OE <= 'X';
-PHYS_WE <= 'X';
-PHYS_UB <= 'X';
-PHYS_LB <= 'X';
-phys_address <= (others=>'X');
-phys_data <= (others=>'X');
-
-
-
-StorageIn.ReadData <= MSDataIn when StorageOut.MainStorage='1' else LSDataIn;
-MSWrite <= StorageOut.WritePulse and StorageOut.MainStorage;
-MSRead <= StorageOut.ReadPulse and StorageOut.MainStorage;
-LSAddress <= "000" & StorageOut.MSAR(1 to 3) & StorageOut.MSAR(8 to 15);
-LSWrite <= StorageOut.WritePulse and not StorageOut.MainStorage;
-LSRead <= StorageOut.ReadPulse and not StorageOut.MainStorage;
-MSWEA <= "000" & MSWrite;
-LSWEA <= "0" & LSWrite;
-MSWEB <= "00000000";
-LSWEB <= "0000";
-LSDI <= "0000000" & StorageOut.WriteData;
-    
--- Block RAM for Main storage 64kx9 & Local storage 2kx9, RAM blocks are 36Kb, or 4kB
-GENBRAM: FOR b IN 0 TO 8 GENERATE
-    FIRST32K:   RAMB36E1
-    generic map(
-        READ_WIDTH_A => 1, WRITE_WIDTH_A => 1,
-        RAM_EXTENSION_A => "LOWER", RAM_EXTENSION_B => "LOWER"
-    ) 
-    port map(
-        CASCADEINA => 'X', CASCADEINB => 'X',
-        CASCADEOUTA => CascadeA(b), CASCADEOUTB => CascadeB(b),
-        CLKARDCLK => clk,
-        ADDRARDADDR => StorageOut.MSAR,
-        ENARDEN => MSRead, 
-        WEA => MSWEA, 
-        DIADI(0) => StorageOut.WriteData(b), DIADI(31 downto 1) => (others=>'0'),
-        -- AXI ports
-        ENBWREN => '0', WEBWE => MSWEB, ADDRBWRADDR => "XXXXXXXXXXXXXXXX", DIBDI => (31 downto 0 => 'X'), CLKBWRCLK => '0',
-        -- Unused ports...
-        DIPADIP => "XXXX", DIPBDIP => "XXXX", INJECTDBITERR => 'X', INJECTSBITERR => 'X',
-        REGCEAREGCE => 'X', REGCEB => 'X', RSTRAMARSTRAM => 'X', RSTRAMB => 'X',
-        RSTREGARSTREG => 'X', RSTREGB => 'X'
-    );
-    SECOND32K:  RAMB36E1
-    generic map(
-        READ_WIDTH_A => 1, WRITE_WIDTH_A => 1,
-        RAM_EXTENSION_A => "UPPER", RAM_EXTENSION_B => "UPPER"
-    ) 
-    port map(
-        CASCADEINA => CascadeA(b), CASCADEINB => CascadeB(b),
-        CLKARDCLK => clk,
-        ADDRARDADDR => StorageOut.MSAR,
-        DIADI(0) => StorageOut.WriteData(b), DIADI(31 downto 1) => (others=>'0'),
-        ENARDEN => MSRead, WEA => MSWEA,
-        DOADO(0) => MSDataIn(b), DOADO(31 downto 1) => open,
-        -- AXI ports
-        ENBWREN => '0', WEBWE => MSWEB, ADDRBWRADDR => "XXXXXXXXXXXXXXXX",  DIBDI => (31 downto 0 => 'X'), CLKBWRCLK => 'X',
-        -- Unused ports...
-        DIPADIP => "XXXX", DIPBDIP => "XXXX", INJECTDBITERR => 'X', INJECTSBITERR => 'X',
-        REGCEAREGCE => 'X', REGCEB => 'X', RSTRAMARSTRAM => 'X', RSTRAMB => 'X',
-        RSTREGARSTREG => 'X', RSTREGB => 'X'
-    );
-END GENERATE;
-
-LocalStorage: RAMB18E1
-    generic map(
-        READ_WIDTH_A => 9, WRITE_WIDTH_A => 9
-    )
-    port map (
-        CLKARDCLK => clk,
-        ADDRARDADDR => LSAddress,
-        DIADI(7 downto 0) => LSDI(7 downto 0), DIADI(15 downto 8) => "00000000",
-        DIPADIP(0) => LSDI(8), DIPADIP(1) => '0',
-        ENARDEN => LSRead, WEA => LSWEA,
-        DOADO(7 downto 0) => LSDataIn(0 to 7), DOADO(15 downto 8) => open,
-        DOPADOP(0 to 0) => LSDataIn(8 to 8), DOPADOP(1 to 1) => open,
-        -- AXI ports
-        ENBWREN => '0', WEBWE => LSWEB, CLKBWRCLK => '0', DIBDI => "XXXXXXXXXXXXXXXX",  ADDRBWRADDR => "XXXXXXXXXXXXXX",
-        -- Unused
-        DIPBDIP => "XX",
-        
-        REGCEAREGCE => 'X', REGCEB => 'X', RSTRAMARSTRAM => 'X', RSTRAMB => 'X', RSTREGARSTREG => 'X', RSTREGB => 'X'
-
-    );
-    
--- Link to AXI interface for MS (BRAM_MS)
-end DigilentZybo;

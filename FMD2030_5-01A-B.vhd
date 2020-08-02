@@ -52,7 +52,8 @@ port (
 		-- Indicators
 		W_IND_P : OUT STD_LOGIC;
 		X_IND_P : OUT STD_LOGIC;
-		WX_IND :  OUT  STD_LOGIC_VECTOR(0 to 12);
+		W_IND :  OUT  STD_LOGIC_VECTOR(3 to 7);
+		X_IND :  OUT  STD_LOGIC_VECTOR(0 to 7);
 
 		-- CCROS interface
 		WX : OUT STD_LOGIC_VECTOR(0 to 12); -- 01BA5 01BA6 to 01CC1 04BD3
@@ -146,7 +147,8 @@ signal  sCTRL_REG_CHK : STD_LOGIC;
 signal  sSAL_PC : STD_LOGIC;
 signal  PA_LCH : STD_LOGIC;
 -- WX display
-signal	WX_IND_X : STD_LOGIC_VECTOR(0 to 12);
+signal	W_IND_X : STD_LOGIC_VECTOR(3 to 7);
+signal	X_IND_X : STD_LOGIC_VECTOR(0 to 7);
 signal	W_IND_P_X, X_IND_P_X : STD_LOGIC;
 -- New WX value
 signal  W_ASSM : STD_LOGIC_VECTOR(3 to 8); -- 8 is P
@@ -182,8 +184,10 @@ WINDP: PH port map(W_P,SET_IND,W_IND_P_X); -- AA3J2
 W_IND_P <= W_IND_P_X or TEST_LAMP;
 XINDP: PH port map(X_P,SET_IND,X_IND_P_X); -- AA3J3
 X_IND_P <= X_IND_P_X or TEST_LAMP;
-WXIND: PHV port map(sWX,SET_IND,WX_IND_X); -- AA3J2,AA3J3
-WX_IND <= WX_IND_X or (WX_IND'range=>TEST_LAMP);
+WIND: PHV port map(sWX(0 to 4),SET_IND,W_IND_X); -- AA3J2,AA3J3
+W_IND <= W_IND_X or (W_IND'range=>TEST_LAMP);
+XIND: PHV port map(sWX(5 to 12),SET_IND,X_IND_X); -- AA3J2,AA3J3
+X_IND <= X_IND_X or (X_IND'range=>TEST_LAMP);
 
 -- SALS parity checking
 -- ?? I have added a latch (FL) on PA to hold it at T4, as are W_IND_P and X_IND_P

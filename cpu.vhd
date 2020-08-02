@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
---    Copyright © 2010 Lawrence Wilkinson lawrence@ljw.me.uk
+--    Copyright ï¿½ 2010 Lawrence Wilkinson lawrence@ljw.me.uk
 --
 --    This file is part of LJW2030, a VHDL implementation of the IBM
 --    System/360 Model 30.
@@ -42,7 +42,8 @@ library UNISIM;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-USE work.Buses_package.all;
+library buses;
+USE buses.Buses_package.all;
 use UNISIM.vcomponents.all;
 use work.all;
 
@@ -544,7 +545,7 @@ begin
 		CLOCK_START_LCH => CLOCK_START_LCH,
 		
 		-- UDC1 Debug stuff
-		DEBUG => DEBUG,
+		DEBUG => open,
 		-- End of Debug stuff
 
 		T1 => T1,
@@ -772,7 +773,7 @@ begin
 		MPX_TAGS_I => MPX_TAGS_I,
 	  
 		-- UDC2 Debug stuff
---		DEBUG => DEBUG,
+		DEBUG => open,
 		
 		SEL_T1 => SEL_T1,
 		T1 => T1,

@@ -64,14 +64,14 @@ component SS is port( Clk : in STD_LOGIC; Count : in integer; D: in STD_LOGIC; s
 --component DEGLITCH2 is port( D,Clk: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
 component DelayEdge is port( D : in STD_LOGIC; Clk: in STD_LOGIC; signal Q:out STD_LOGIC); end component;
 component XilinxIOVector is port( I : in STD_LOGIC_VECTOR; T : in STD_LOGIC; O : out STD_LOGIC_VECTOR; IO : inout STD_LOGIC_VECTOR); end component;
-type LED_DEVICE_TYPE is (MAX6951, MAX7219);
+--type LED_DEVICE_TYPE is (MAX6951, MAX7219);
 end Gates_package;
 
 
 -- FL is no longer an edge-triggered SR flip-flop
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity FLE is port(S,R,clock: in STD_LOGIC; signal Q:inout STD_LOGIC); end;
+entity FLE is port(S,R,clock: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 
 architecture slt of FLE is
 begin
@@ -81,8 +81,6 @@ if (R='1') then -- Reset takes priority
 	Q<='0' after 1ns;
 elsif (S='1') then
 	Q<='1' after 1ns;
-else
-    Q<=Q;
 end if;
 end process;
 end slt;
@@ -90,7 +88,7 @@ end slt;
 -- FLL is a level-triggered SR flip-flop
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity FLL is port(S,R: in STD_LOGIC; signal Q:inout STD_LOGIC); end;
+entity FLL is port(S,R: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 
 architecture slt of FLL is
 begin
@@ -100,8 +98,6 @@ if (S='1') then -- Set takes priority
 	Q<='1' after 1ns;
 elsif (R='1') then
 	Q<='0' after 1ns;
-else
-    Q<=Q;
 end if;
 end process;
 end slt;
@@ -109,7 +105,7 @@ end slt;
 -- Simple PH (polarity hold) latch - Transparent Latch
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PH is port(D: in STD_LOGIC; L: in STD_LOGIC; signal Q:inout STD_LOGIC); end;
+entity PH is port(D: in STD_LOGIC; L: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 
 architecture slt of PH is
 begin
@@ -117,8 +113,6 @@ process (L,D)
 begin
 if (L='1') then
 	Q <= D;
-else
-    Q <= Q;
 end if;
 end process;
 end slt;
@@ -126,7 +120,7 @@ end slt;
 -- Simple PH (polarity hold) latch - Transparent Latch, STD_LOGIC_VECTOR version
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHV is port(D: in STD_LOGIC_VECTOR; L: in STD_LOGIC; signal Q:inout STD_LOGIC_VECTOR); end;
+entity PHV is port(D: in STD_LOGIC_VECTOR; L: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end;
 
 architecture slt of PHV is
 alias D1 : STD_LOGIC_VECTOR(Q'range) is D;
@@ -136,8 +130,6 @@ begin
 for i in Q'range loop
 if (L='1') then
 	Q(i) <= D1(i);
-else
-    Q(i) <= Q(i);
 end if;
 end loop;
 end process;
@@ -146,7 +138,7 @@ end slt;
 -- PH Latch with asynchronous reset - Reset has priority
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHR is port( D: in STD_LOGIC; L,R: in STD_LOGIC; signal Q:inout STD_LOGIC); end;
+entity PHR is port( D: in STD_LOGIC; L,R: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 
 architecture slt of PHR is
 begin
@@ -156,8 +148,6 @@ if (R='1') then
 	Q <= '0';
 elsif (L='1') then
 	Q <= D;
-else
-    Q <= Q;
 end if;
 end process;
 end slt;
@@ -165,7 +155,7 @@ end slt;
 -- PH Latch with asynchronousreset, STD_LOGIC_VECTOR version
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHRV is port(D: in STD_LOGIC_VECTOR; L,R: in STD_LOGIC; signal Q:inout STD_LOGIC_VECTOR); end;
+entity PHRV is port(D: in STD_LOGIC_VECTOR; L,R: in STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end;
 
 architecture slt of PHRV is
 alias D1 : STD_LOGIC_VECTOR(Q'range) is D;
@@ -177,8 +167,6 @@ if (R='1') then
    Q(i) <= '0';
 elsif (L='1') then
 	Q(i)<=D1(i);
-else
-    Q(i)<=Q(i);
 end if;
 end loop;
 end process;
@@ -187,7 +175,7 @@ end slt;
 --- PH Latch with asynchronous set & reset, Reset has priority, then Set, then input
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity PHSR is port(D,L,S,R: in STD_LOGIC; signal Q:inout STD_LOGIC); end;
+entity PHSR is port(D,L,S,R: in STD_LOGIC; signal Q:out STD_LOGIC); end;
 
 architecture slt of PHSR is
 begin
@@ -199,8 +187,6 @@ elsif (S='1') then
 	Q <= '1';
 elsif (L='1') then
 	Q <= D;
-else
-    Q <= Q;
 end if;
 end process;
 end slt;
@@ -208,7 +194,7 @@ end slt;
 -- Simple FL (SR) flipflops, edge-triggered S,R inputs
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity FLV is port( S,R: in STD_LOGIC_VECTOR; signal clock: STD_LOGIC; signal Q:inout STD_LOGIC_VECTOR); end;
+entity FLV is port( S,R: in STD_LOGIC_VECTOR; signal clock: STD_LOGIC; signal Q:out STD_LOGIC_VECTOR); end;
 
 architecture slt of FLV is
 alias S1 : STD_LOGIC_VECTOR(Q'range) is S;
@@ -223,8 +209,6 @@ if (rising_edge(clock)) then
 			Q(i) <= '0';
 		elsif (S(i)/=S2(i) and S(i)='1') then
 			Q(i) <= '1';
-		else
-		    Q(i) <= Q(i);
 		end if;
 		R2 <= R1;
 		S2 <= S1;
@@ -236,7 +220,7 @@ end slt;
 -- FL vector, level triggered S,R inputs
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-entity FLVL is port( S,R: in STD_LOGIC_VECTOR; signal Q:inout STD_LOGIC_VECTOR); end;
+entity FLVL is port( S,R: in STD_LOGIC_VECTOR; signal Q:out STD_LOGIC_VECTOR); end;
 
 architecture slt of FLVL is
 alias S1 : STD_LOGIC_VECTOR(Q'range) is S;
@@ -249,8 +233,6 @@ if (S1(i)='1') then -- Set takes priority
 	Q(i)<='1';
 elsif (R1(i)='1') then
 	Q(i)<='0';
-else
-    Q(i) <= Q(i);
 end if;
 end loop;
 end process;
@@ -385,7 +367,7 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 LIBRARY logic;
 USE logic.Gates_package.all;
-entity AddParity is port ( I : in STD_LOGIC_VECTOR; O : out STD_LOGIC_VECTOR); end;
+entity AddParity is port ( I : in STD_LOGIC_VECTOR(31 downto 0); O : out STD_LOGIC_VECTOR(35 downto 0)); end;
 architecture behavioral of AddParity is
 begin
 O <= AddByteParityToVector(I);
@@ -429,27 +411,31 @@ begin
 end;
 
 function AddByteParityToVector( I : std_logic_vector ) return std_logic_vector is
-variable O : std_logic_vector(I'length + ((I'length+7)/8) downto 0);
+variable O : std_logic_vector(I'length - 1 + ((I'length+7)/8) downto 0);
 variable inBit : integer range I'range;
 variable outBit : integer range 0 to I'length + ((I'length+7)/8);
-variable by : integer range 0 to ((I'length+7)/8);
+variable by : integer range 1 to ((I'length+7)/8);
 variable bi : integer range 0 to 7;
 variable p : std_logic;
 begin
     inBit := I'low;
-    outbit := 0;
+    outbit := O'low;
     for by in 1 to (I'length+7)/8 loop
-        p := '0';
+        p := '1';
         for bi in 0 to 7 loop
             if (inBit <= I'high) then
                 O(outBit) := I(inBit);
                 p := p xor I(inBit);
-                inBit := inBit + 1;
-                outBit := outBit + 1;
+                if (inBit < I'high) then
+                    inBit := inBit + 1;
+                    outBit := outBit + 1;
+                end if;
             end if;
         end loop;
         O(outBit) := p;
-        outBit := outBit + 1;
+        if (outBit < O'high) then
+            outBit := outBit + 1;
+        end if;
     end loop;
     return O;
 end function;
@@ -457,24 +443,29 @@ end function;
 function RemoveByteParityFromVector( I : std_logic_vector ) return std_logic_vector is
 variable O : std_logic_vector(I'length - ((I'length+8)/9) downto 0);
 variable inBit : integer range I'range;
-variable outBit : integer range 0 to I'length + ((I'length+7)/8);
-variable by : integer range 0 to ((I'length+7)/8);
+variable outBit : integer range 0 to I'length - ((I'length+8)/9);
+variable by : integer range 1 to ((I'length+8)/9);
 variable bi : integer range 0 to 7;
 begin
     inBit := I'low;
     outbit := 0;
-    for by in 1 to (I'length+7)/8 loop
+    for by in 1 to (I'length+8)/9 loop
         for bi in 0 to 7 loop
             if (inBit <= I'high) then
                 O(outBit) := I(inBit);
-                inBit := inBit + 1;
-                outBit := outBit + 1;
+                if (inBit < I'high) then
+                    inBit := inBit + 1;
+                    outBit := outBit + 1;
+                end if;
             end if;
         end loop;
-        inBit := inBit + 1;
+        if (inBit < I'high) then
+            inBit := inBit + 1;
+        end if;
 end loop;
 return O;
 end function;
 
+--type LED_DEVICE_TYPE is (MAX6951, MAX7219);
 
 end Gates_package;

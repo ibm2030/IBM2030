@@ -43,8 +43,8 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-library logic;
-use logic.Gates_package.LED_DEVICE_TYPE;
+--library logic;
+--use logic.Gates_package.LED_DEVICE_TYPE;
 
 ---- Uncomment the following library declaration if instantiating
 ---- any Xilinx primitives in this code.
@@ -53,7 +53,7 @@ use logic.Gates_package.LED_DEVICE_TYPE;
 
 entity panel_LEDs is
 	Generic (
-        Device : LED_DEVICE_TYPE := MAX6951;
+--        Device : LED_DEVICE_TYPE := MAX6951;
         Clock_divider : integer := 25 -- Default for 50MHz clock is 2, for 25MHz = 40ns = 20ns + 20ns. 25 gives 2MHz.
         );
     Port ( -- Lamp input vector
@@ -79,6 +79,7 @@ entity panel_LEDs is
 end panel_LEDs;
 
 architecture behavioral of panel_LEDs is
+
 signal clk_out : std_logic := '0';
 signal shift_reg64 : std_logic_vector(63 downto 0);
 signal reg_counter : integer range 0 to 11 := 0;
@@ -249,7 +250,7 @@ gen_clk : process (clk) is
 		end if;
 	end process;
 
-max7219 : process (clk_out) is
+max7219gen : process (clk_out) is
 	begin
 	if falling_edge(clk_out) then
 		if bit_counter64=0 then
@@ -293,7 +294,7 @@ max7219 : process (clk_out) is
 	end if;
 	end process;
 
-max6951 : process (clk_out) is
+max6951gen : process (clk_out) is
 	variable dev_counter : integer range 0 to 3 := 3;
 	variable reg_counter : integer range 0 to 11 := 0;
 	variable bit_counter : integer range 0 to 16 := 16;
@@ -309,7 +310,7 @@ max6951 : process (clk_out) is
 			bit_counter := 16;
 			case reg_counter is
 				when 0 to 7 =>
-					shift_reg := '0' & max6951_vector(dev_counter,reg_counter)(15 downto 8) & LEDs(dev_counter*64+reg_counter*8 to dev_counter*64+reg_counter*8+7);
+					shift_reg := '0' & max6951_vector(dev_counter,reg_counter)(15 downto 8) & LEDs((dev_counter*64+reg_counter*8+7) downto (dev_counter*64+reg_counter*8));
 				when others =>
 					shift_reg := '0' & max6951_vector(dev_counter,reg_counter);
 			end case;

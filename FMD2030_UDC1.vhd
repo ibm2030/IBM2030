@@ -63,7 +63,8 @@ port(
 		-- Indicators
 		W_IND_P : OUT STD_LOGIC;
 		X_IND_P : OUT STD_LOGIC;
-		WX_IND :  OUT  STD_LOGIC_VECTOR(0 to 12);
+		W_IND :  OUT  STD_LOGIC_VECTOR(3 to 7);
+		X_IND :  OUT  STD_LOGIC_VECTOR(0 to 7);
 		IND_LOAD : OUT STD_LOGIC;
 		IND_SYST,IND_MAN,IND_WAIT,IND_TEST,IND_EX,IND_CY_MATCH,IND_ALLOW_WR : OUT STD_LOGIC;
 		IND_1050_INTRV,IND_1050_REQ,IND_MPX,IND_SEL_CHNL : OUT STD_LOGIC;
@@ -388,7 +389,8 @@ begin
 wx_sect: entity WX_Regs (FMD) port map (
         W_IND_P                 =>  W_IND_P,
         X_IND_P                 =>  X_IND_P,
-        WX_IND                  =>  WX_IND,
+        W_IND                  =>  W_IND,
+        X_IND                  =>  X_IND,
         WX                      =>  WX,
         CROS_STROBE             => CROS_STROBE,
         CROS_GO_PULSE           => CROS_GO_PULSE,
