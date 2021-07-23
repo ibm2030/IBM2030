@@ -1,0 +1,106 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\ltrpar\lang1033\f0\fs14                   0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+                                                                                                                                                                                                                         \par
+                     This page separates the RR Branch and Link from the Set                                                                                                                                             \par
+                     Program Mask op.Set Program Mask branches to the load                                                                                                                                                   \par
+A                    PSW program where it shares ords with that routine.                                                                                                                                                                             \par
+                     Branch and Link determines if a branch is to be taken                                                                                                                                                  \par
+                     and if it is,reads out the branch address into UV.                                                                                                                                                    \par
+                     Stats at end of page                                                                                                                                                                                 \par
+                     UV=Branch address                                                                                                                                                                                   \par
+                     S2=1=Invalid BR address(hi bit not zero or low bit not zero)\par
+B                    S4=1=No branch to be taken\par
+                     S6=1=Hi bits of branch addr not zero\par
+                                                                          00 --- 02DC                                                                                                                                     \par
+                                                                      K 0000,1      |                                                                                                                                     \par
+                                                                      A TH>T        |                                                                                                                                          \par
+C                                                                 ----S WRITE   K>W R*-------------------------------------------------------------------------------------------------------------------------------------------------QA921------CCE\par
+                                                                  |   |             |                                                                                                                                                  (01)   \par
+                                                                  |   |             |                                                                                                                                                  Set Prg Mask\par
+                                                                  |   R 0,1       51R                                                                                                                                    \par
+                                                                  |   C3--    01 --CC                                                                                                                                     \par
+                                                                  |  T=R1 Hi Addr\par
+D                                                                 |\par
+                                                                  |\par
+                              01 --- 02E1                         |       01 --- 02DD           00 --- 01AC           00 --- 0130           00 --- 01B0           10 --- 01B2                                 01 --- 01B1\par
+                          |             |                         |   K 0001,0      |       |             |       |             |       |             |       |             |                             K 0001        |\par
+                          A RX>D        |                         |   A V+0+1>V     |       A R>L         |       A V+0+1>V     |       A R>U         |       A R>V         |                             A V.KL>Z      |    \par
+E   QA011.EGE------------*S UV>MN    LS S*------------------------O---S WRITE   K>W R*O-----S UV>MN    LS S*--O---S WRITE       |*------S UV>MN       |*------S WRITE       S*--O-------------------------S STORE       |*---                        \par
+    (01)                  |             |                             C 0>S2        | |     C ANSNZ>S2    |   |   C 0>S6        |       C 0>S4,S5     |       |             |   |                         C ANSNZ>S2    |   |\par
+    RR BR Link            |             |                             |             | |     |             |   |   |             |       |             |       |             |   |                     ----|             |   |\par
+    Set Prg Mask          R 0,G7      DCR                             R S1,S5     ACR |     R 0,0       30R   |   R 0,0       B0R       R 1,0       B2R       R S2,1      B1R   |                     |   R S1,1      ADR   |\par
+                          E1--    0* --EA                             E3--    ** --EC |     E4--    00 --ED   |   E5--    00 --EE       E6--    10 --EF       E7--    *1 --EG   |                     |   E9--    *1 --EJ   |\par
+                         DH=Prg Mask                                 BR and Link      |    Branch Test        |                                                                 |                     |  Test Lo bit        |\par
+F                        DL=Cond Reg                                                  |    for Hi bits=0      |                                                                 |                     |  of BR addr         |\par
+                         S4=1                                                         |                       |                                                                 |                     |  for zero           |\par
+                         S5=1,R2=0(No branch)                                         |         10 --- 01AE   |                                                                 |       11 --- 01B3   |                     |\par
+                         V=Reg addr of hi order                                       |     |             |   |                                                                 |   K 0000,0      |   |                     |\par
+                           branch addr                                                |     A R>L         |   |                                                                 |   A L>R         |   |                     |\par
+G                        T=Lo addr of link reg                                        O-----S UV>MN    LS S----                                                                 ----S *A8         |*---                     |                        \par
+                         G7=1=BR and Link                                             |     C ANSNZ>S2    |                                                                         C 1>S6        |                         |\par
+                         G7=0=Set Prg Mask                                            |     |             |                                                                         |             |                         |\par
+                                                                                      |     R 0,0       30R                                                                         R 0,1       B1R                         |\par
+                                                                                      |     G4--    00 --GD                                                                         G8--    01 --GH                         |\par
+                                                                                      |    BR IC stored                                                                            Store unavail                            |\par
+H                                                                                     |    Test for Hi bits=0                                                                      IC bits                                  |\par
+                                                                                      | -------------------------------------------------------------------------------------------------------------------------------------\par
+                                                                                      | |       01 --- 01AD                                                                                                              \par
+                                                                                      | O---|             |                                                                                                               \par
+                                                                                      | |   A J>R         |                                                                                                                  \par
+J                                                                                     O-|---S T>MN     LS S*---------------------------------------------------------------------------------------------------------------------------QA891------JDE\par
+                                                                                      | |   |             |                                                                                                                            (10)\par
+                                                                                      | |   |             |                                                                                                                            Continue BR\par
+                                                                                      | |   R 1,0       6AR                                                                                                                            and Link\par
+                                                                                      | |   J4--    10 --JD                                                                                                                \par
+                                                                                      | |  No branch\par
+K                                                                                     | |\par
+                                                                                      | |\par
+                                                                                      | |       11 --- 01AF                                                                                                               \par
+                                                                                      | ----K 0010,1      |                                                                                                                \par
+                                                                                      |     |             |                                                                                                                    \par
+L                                                                                     ------S *A4      LS S*---------------------------------------------------------------------------------------------------------------------------QA001------LDE\par
+                                                                                            |             |                                                                                                                            (11)\par
+    QA891.GDE------------------------------------------------------------------------------*|             |                                                                                                                            Restore IC\par
+    (11)                                                                                    R 1,1       F3R                                                                                                                \par
+    Start IC                                                                                L4--    11 --LD                                                                                                               \par
+    restore                                                                                No BR IC stored\par
+M                                                                                          Restore IC so that link can be performed\par
+\par
+                                                                                                                                                                                                                          \par
+                                                                                                                                                                                                                         \par
+                                                                                                                                                                                                                               \par
+N                                                                                                                                                                                                                                                    \par
+                                                                                                                                                                                                                             \par
+                                                                                                                                                                                                                          \par
+                                                                                                                                                                                                                         \par
+                                                                                                                                                                                                                              \par
+\par
+P\par
+\par
+                                                                                                                                                                                                                         \par
+                                                                                                                                                                                                                           \par
+                                                                                                                                                                                                                             \par
+Q                                                                                                                                                                                                                                                    \par
+                                                                                                                                                                                                                              \par
+                                                                                                                                                                                                                           \par
+                                                                                                                                                                                                                           \par
+                                                                                                                                                                                                                           \par
+\par
+R\par
+\par
+\par
+\par
+\par
+S\par
+\par
+ Q\par
+ A\par
+ 1\par
+ 8                                                                                                                                                | 128015        09/27/65 | Mach          2030       | Date  11/17/65          Sheet    1  QA181 |\par
+ 1                                                                                                                                                | 128016        10/01/65 | Name                     | Log    3563             Version           |\par
+                                                                                                                                                  | 128045        11/17/65 | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837012     |    RR Branch and Link                     |\par
+                                                                                                                                                  |                        | IBM Corp.                |                                           |\par
+}
+ 

@@ -1,0 +1,106 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\ltrpar\lang1033\f0\fs14 QA371             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+ \par
+                                          This page moves the operand from loc stg FC-FF\par
+                                          or F8-FF back into the dest register, shifting\par
+A                                         left 0 to 3 bits as required. At the end of this\par
+                                          page the operation has been completed except\par
+                                          for setting the condition reg if required.\par
+ \par
+ \par
+                                          S2=1 if operand not zero\par
+B                                         S3=1 if overflow has occurred (used for Alg shifts\par
+                                             only)\par
+                                          G3=1 if dbl shift and even reg has not been\par
+                                               loaded yet\par
+                                          G5=0 if sgl shift or if dbl shift and even reg\par
+C                                              is being loaded\par
+                                          G6=0 if Log shift\par
+                                          G6=1 if Alg shift\par
+ \par
+ \par
+\par
+D\par
+                                            -------------------------------------------------------------------------------------------------------------------------------------\par
+                                            |       01 --- 0471           00 --- 04F8                                 00 --- 0470           01 --- 048D                         |\par
+                                            |   |             |       |             |                             |             |*------|             |                         |\par
+                                            |   A T-0>T       |       A R>L         |                             A L>R         |       A V-0>V       |                         |\par
+E   QA361.CCE-------------------------------O--*S T>MN     LS S*--O---S WRITE       |*------------------------O---S UV>MN    LS S       S STORE       |-------------------------O\par
+    (01,11)                                 |   C 0>S7        |   |   |             |                         |   C ANSNZ>S2    |       C 0>S6        |                         |\par
+    Move operand    V=lo order dest         |   |             |   |   |             |                         |   |             |   ----|             |                         |\par
+    back to reg       reg addr (odd         |   R G2,G3     F8R   |   R VZ,0      70R                         |   R 0,1       8DR   |   R AC,1      71R                         |\par
+                      if dbl shift)         |   E2--    ** --EB   |   E3--    *0 --EC                         |   E5--    01 --EE   |   E6--    *1 --EF                         |\par
+                    T=FF                    |  Note 2             |  Zero shift left                          |  Store L            |  Note 3                                   |\par
+F                                           |                     |                                           |                     |                                           |\par
+                                            |                     |                                           |                     |                                           |\par
+                                            |       11 --- 0473   |       01 --- 04F9                         |       10 --- 0472   |       11 --- 048F                         |\par
+                                            |   |             |   |   |             |                         |   |             |   |   |             |                         |\par
+                                            |   A T-0>T       |   |   A R+R+C>LC    |                         |   A L>R         |   |   A V-0>V       |                         |\par
+G                                           ----S T>MN     LS S---O---S WRITE       |-------------------------O---S UV>MN    LS S   O---S STORE       |-------------------------O\par
+                                                C 1>S7        |   |   |             |                             C ANSNZ>S2    |   |   C 1>S6        |                         |\par
+                                                |             |   |   |             |                             |             |*- |   |             |                         |\par
+                                                R G2,G3     F8R   |   R VZ,0      70R                             R 0,G5      F4R | |   R AC,1      71R                         |\par
+                                                G2--    ** --GB   |   G3--    *0 --GC                             G5--    ** --GE | |   G6--    *1 --GF                         |\par
+                                               Note 2             |  Shift left                                  Store L.         | |  Note 3                                   |\par
+H                   Zero shift left                               |  1 bit Note 4                                Note 1           | |                                           |\par
+                    S3,S6,S7 not used                             |                                                               | |                                           |\par
+                    Shift left 1 bit                              |       10 --- 04FA                                 00 --- 04F0 | |                                           |\par
+                    S3=bit to be shifted in                       |   |             |                             |             | | |                                           |\par
+                    S6,S7 not used                                |   A R+R+C>LC    |                             A L+L>R       | | |                                           |\par
+J                   Shift left 2 bits                             O---S WRITE       |*------------------------O---S UV>MN    LS S*+-O                                           |\par
+                    S3=1st bit to be shifted in                   |   |             |                         |   C ANSNZ>S2    | | |                                           |\par
+                    S6 not used                                   |   |             |                         |   |             | | |                                           |\par
+                    S7= 2nd bit to be shifted in                  |   R VZ,S7     F0R                         |   R AC,1      8DR | |                                           |\par
+                                                                  |   J3--    *0 --JC                         |   J5--    *1 --JE | |                                           |\par
+                                                                  |  Shift left                               |  Shift L again    | |                                           |\par
+K                                                                 |  2 btis,Note 4                            |  and store.       | |                                           |\par
+                    Shift left 3 bits                             |                                           |  Carry in (S7)=0  | |                                           |\par
+                      S3=1st bit to be shifted in                 |       11 --- 04FB           00 --- 0464   |       01 --- 04F1 | |       01 --- 04F5           01 --- 0409   |\par
+                      S6=2nd bit to be shifted in                 |   |             |       |             |   |   |             |-+--   K 1100        |       K 0100        |   | In steps LG and NG, G5 is set to 0\par
+                      S7=3rd bit to be shifted in                 |   A R+R+C>LC    |       A L+L>L       |   |   A L+L+1>R     | |     A V-KL>V      |       A G.-KL>G     |   | so that shifting will end after\par
+L                   Prg is entered from QA361 with                ----S WRITE       |*--O---|             |---O---S UV>MN    LS S O-----S STORE       |*--O---|             |---O the remaining 32 bits have been\par
+                    S3 and S6 set as req. The branch                  |             |   |   |             |   |   C ANSNZ>S2    | |     C 0>S6        |   |   C 0>S7        |   | shifted into the even dest reg.\par
+                    from QA361 will cause S7 to be                    |             |   |   |             |   |   |             | |     |             |   |   |             |   | Note 2.\par
+                    set as req.                                       R S6,0      64R   |   R VZ,S7     F0R   |   R AC,1      8DR |     R AC,1      09R   |   R 0,1       71R   |\par
+                                                                      L3--    *0 --LC   |   L4--    ** --LD   |   L5--    *1 --LE |     L6--    *1 --LF   |   L7--    *1 --LG   |\par
+                                                                     Shift left         |  Shift L again      |  Shift L again    |    Dbl,V=lo order     |                     |\par
+M                                                                    3 bits Note 4      |  Carry in (S6)=0    |  and store.       |    even reg.          |                     |\par
+                                                                                        |                     |  Carry in (S7)=1  |    Note 3             |                     |\par
+                                                                                        |       10 --- 0466   |       10 --- 04F2 |         11 --- 04F7   |       11 --- 040B   |\par
+                                                                                        |   |             |   |   |             | |     K 1100        |   |   K 0100        |   |\par
+                                                                                        |   A L+L+1>L     |   |   A L+L>R       | |     A 0+KH>G      |   |   A G.-KL>G     |   |\par
+N                                                                                       ----|             |---O---S UV>MN    LS S-O-----S STORE       |---O---|             |----\par
+                                                                                            |             |   |   C ANSNZ>S2    | |     C 1>S6        |       C 1>S7        |\par
+                                                                                            |             |   |   |             | |     |             |       |             |\par
+                                                                                            R VZ,S7     F0R   |   R AC,G5     F4R |     R AC,1      09R       R 1,1       73R\par
+                                                                                            N4--    ** --ND   |   N5--    ** --NE |     N6--    *1 --NF       N7--    *1 --NG\par
+                    Note 1-In these steps, the hi orer addr of the                         Shift L again      | Shift L again     |    Dbl, V=lo order\par
+P                     reg has been reached  The branch on AC,G5 or                         Carry in (S6)=1    | and store. Carry  |    even reg\par
+                      0,G5 will determine the setting of S6 and whether                                       | in (S7)=0. Note 1 |\par
+                      the full operand has been shifted yet (G5=1 ind-                                        |       11 --- 04F3 |         00 --- 04F4\par
+                      icates that the even reg of a dbl shift has not                                         |   |             | |     K 1000        |\par
+                      yet been shifted)                                                                       |   A L+L+1>R     | |     A 0+KH>G      |\par
+Q                   Note 2-These steps set S7 to the value of the                                             ----S UV>MN    LS S-O-----S STORE       |*--O----------------------------------------------------------------------------QA361------QFE\par
+                      2nd bit of a 2 bit shift or the 3rd bit of                                                  C ANSNZ>S2    | |     C 0>S6        |   |                                                                            (00,01,10,11)\par
+                      a 3 bit shift.                                                                              |             | |     |             |   |                                                                            Shift end\par
+                    Note 3-These steps set S6 to the value of the                                                 R AC,G5     F4R |     R G6,S5     E8R   |                                                                            routines\par
+                      2nd bit of a 3 bit shift                                                                    Q5--    ** --QE |     Q6--    ** --QF   |\par
+                    Note 4-These steps shift L left 1 bit, shifting                                             Shift L again     |                       |  In steps QF and SF, the shift into the dest\par
+R                     in the value of the first bit to be shifted in                                            and store. Carry  |                       |  reg has been completed  G is set to 80 to\par
+                      (S3). S3 is then set up to be the correct value                                           in (S7)=1. Note 1 |                       |  be used as a mask for sign testing in Alg\par
+                      of the 1st bit to be shifted into the next                                                                  |         10 --- 04F6   |  shifts.\par
+                      byte.                                                                                                       |     K 1000        |   |\par
+                                                                                                                                  |     A 0+KH>G      |   |\par
+S                                                                                                                                 ------S STORE       |----\par
+                                                                                                                                        C 0>S6        |\par
+ Q                                                                                                                                      |             |\par
+ A                                                                                                                                      R G6,S5     E8R\par
+ 3                                                                                                                                      S6--    ** --SF\par
+ 7                                                                                                                                                | 128015        07/07/65 | Mach          2030       | Date  07/07/66          Sheet    1  QA371 |\par
+ 1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    2187             Version           |\par
+                                                                                                                                                  | 128059        06/30/66 | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837028     |    Shifts, move operand back to           |\par
+                                                                                                                                                  |                        | IBM Corp.                |    regs shifting left 0-3 bits            |\par
+}
+ 

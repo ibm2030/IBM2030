@@ -1,0 +1,119 @@
+{\rtf1\ansi\deff0\adeflang1025
+{\fonttbl{\f0\froman\fprq2\fcharset0 Times New Roman;}{\f1\froman\fprq2\fcharset0 Times New Roman;}{\f2\fnil\fprq2\fcharset0 Lucida Sans Unicode;}{\f3\fmodern\fprq1\fcharset0 Courier New;}{\f4\fnil\fprq2\fcharset0 Tahoma;}{\f5\fnil\fprq0\fcharset0 Tahoma;}}
+{\colortbl;\red0\green0\blue0;\red128\green128\blue128;}
+{\stylesheet{\s1\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af4\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\snext1 Default;}
+{\s2\sa120\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af4\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon1\snext2 Text body;}
+{\s3\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon2\snext3 List;}
+{\s4\sb120\sa120\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs20\lang255\ai\ltrch\dbch\af2\afs20\langfe255\ai\loch\f0\fs20\lang1033\i\sbasedon1\snext4 Caption;}
+{\s5\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon1\snext5 Index;}
+{\s6\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033\sbasedon1\snext6 Preformatted Text;}
+}
+{\info{\creatim\yr2004\mo4\dy24\hr13\min23}{\operator Hans PUFAL}{\revtim\yr2004\mo5\dy17\hr7\min7}{\printim\yr1601\mo1\dy1\hr0\min0}{\comment StarWriter}{\vern6450}}\deftab709
+{\*\pgdsctbl
+{\pgdsc0\pgdscuse195\lndscpsxn\pgwsxn23818\pghsxn16834\marglsxn1440\margrsxn1440\margtsxn576\margbsxn576\pgdscnxt0 Default;}}
+\landscape\paperh16834\paperw23818\margl1440\margr1440\margt576\margb576\sectd\sbknone\lndscpsxn\pgwsxn23818\pghsxn16834\marglsxn1440\margrsxn1440\margtsxn576\margbsxn576\ftnbj\ftnstart1\ftnrstcont\ftnnar\aenddoc\aftnrstcont\aftnstart1\aftnnrlc
+\pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0 QA761             0                    1                    2                     3                     4                     5                     6                     7                     8                     9}
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                       This prg determines which of the hi order SS ops are               -stat settings at end of page-}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                       being attempted. For the moves nad logics, the source              moves and logics}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                       operand is read out and a branch is made to determine if           S6=0=moves}
+\par {\loch\f3\fs14\lang1033\i0\b0 A                                                                                     the addr is valid (hi 8 bits=0). For the translate,                S6=1=logics}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                       tests are made to determine if the hi 2 bits of the table          Translate, Translate and test}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                       base addr are 00 or FF  For edit (if decimal option is in          S0=0=hi 0 bit of table base addr=}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                       machine), the fill char is read out and stored in                  S0=1=hi 0 bit of table addr=}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                       the T reg. S1 is also set to indicate if the                       Edit, edit and mark (if installed)}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                       soucre addr is valid or not.                                       S0=0=Edit}
+\par {\loch\f3\fs14\lang1033\i0\b0 B                                                                                                                                                        S0=1=Edit and mark}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                          S1=0=Source addr invalid}
+\par    
+\par    
+\par    
+\par {\loch\f3\fs14\lang1033\i0\b0 C  }
+\par    
+\par    
+\par    
+\par    
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 D}
+\par 
+\par                                               
+\par                                               
+\par                                                
+\par {\loch\f3\fs14\lang1033\i0\b0 E                                           O------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------QA771------JAE}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                                                                                                                                                                                          (01)}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                                                                                                                                                                                          SS moves}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                                                                                                                                                                                          and logics}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                                                                                                                                                                                                    }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |}
+\par {\loch\f3\fs14\lang1033\i0\b0 F                                           |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                               11 --- 0317   |                                                   00 --- 0278           00 --- 0400                                                                             11 ---  XXX}
+\par {\loch\f3\fs14\lang1033\i0\b0                           K 0010,0      |   |                                               K 0100,0      |       K 0101,0      |                                                                         | Go TO       |}
+\par {\loch\f3\fs14\lang1033\i0\b0                           A TV-0>Z      |   |                                               A V>T         |       A 0+KL>L      |                                                                         | GA879,CAE   |    }
+\par {\loch\f3\fs14\lang1033\i0\b0 G   QA081.QCE---------O--*S         K>W R*----------------------------------------------O---S         K>W R*--O---|             |*------------------------O-----------------------------------------------|             |                             }
+\par {\loch\f3\fs14\lang1033\i0\b0     (00,01,10,11)     |   C 0>S6        |   |                                           |   C 1>S0        |   |   C 0>S6        |                         |                                               |             |    }
+\par {\loch\f3\fs14\lang1033\i0\b0     SS hi order       |   |             |   |                                           |   |             |   |   |             |                         |                                               |             |}
+\par {\loch\f3\fs14\lang1033\i0\b0     ops               |   R G6,Z=0    78R   |                                           |   R 0,Z=0     00R   |   R 1,CA01>W  46R                         |                                               |             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   G1--    ** --GA   |                                           |   G4--    0* --GD   |   G5--    11 --GE                         |                                               G9--    11 --GJ}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |  Test hi bits=FF    |                                           |  Trans addr may     |  Inv addr                                 |                                              Prg int}
+\par {\loch\f3\fs14\lang1033\i0\b0 H                     |                     |                                           |  be valid           |                                           |     }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                     |                                           |                     |                                           |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |       00 --- 0314   |                                           |       01 --- 0279   |                                           | }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   |             |   |                                           |   K 0100,0      |   |                                           | }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   A V+0+1>VC    |   |                                           |   A V>T         |   |                                           | }
+\par {\loch\f3\fs14\lang1033\i0\b0 J                     O---S UV>MN    MS S*--O                                           O---S         K>W R---O------------------------------------------------------------------------------------------------------------------------QA781------GDE}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   C 0>S4        |   |                                           |   C 0>S0        |                                               |                                                                            (01)}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   |             |   |                                           |   |             |                                               |                                                                            Translates}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   R S2,1      05R   |                                           |   R 0,1       01R                                               |                                                                     }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   J1--    *1 --CA   |                                           |   J4--    0* --JD                                               |                                                                    }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |  Moves              |                                           |  Trans addr is                                                  |}
+\par {\loch\f3\fs14\lang1033\i0\b0 K                     |                     |                                           |  valid                                                          |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                     |                                           |                                                                 |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |       01 --- 0315   |       11 --- 0307                         |       10 --- 027A           10 --- 02DE                         |  }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   |             |   |   K 0101,0      |                         |   |             |       K 1001,0      |                         |  }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   A V+0+1>VC    |   |   A 0+KL>L      |                         |   A 0>S         |       A 0+R>T       |                         |  }
+\par {\loch\f3\fs14\lang1033\i0\b0 L                     O--*S UV>MN    MS S*--O---S WRITE       |*---                     O---S IJ>MN    MS S*--O---S WRITE       |*---                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   C 1>S6        |       C 0>S6        |   |                     |   |             |   |   C 0>S0        |   |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   |             |       |             |   |                     |   |          007V   |   R ASCII>X6    |   |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   R S2,1      05R       R 1,CA01>W  46R   |                     |   R 1,G7      DER   |   R 1,CA07>W  FDR   |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   L1--    *1 --LA       L2--    11 --LB   |                     |   L4--    1* --LD   |   L5--    *1 --LE   |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                        Inv addr           |                     |  Edit source        |  Put fill char      |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0 M                     |                                           |                     |  addr invalid       |  int                |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                           |                     |  set S1=0           |  S0-0=Edit          |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |       10 --- 0316                         |                     |       11 --- 027B   |       11 --- 02DF   |                     |  }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   K 0001,1      |                         |                     |   |             |   |   K 1001,0      |   |                     |  }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   A 0+0+1>L     |                         |                     |   |             |   |   A 0+R>T       |   |                     |  }
+\par {\loch\f3\fs14\lang1033\i0\b0 N                     ----S         K>W R*------------------------O                     ----S IJ>MN    MS S*--O---S WRITE       |*--O--------------------------------------------------------------------------------------------------QB151------LEE}
+\par {\loch\f3\fs14\lang1033\i0\b0                           C 0>S6        |                         |                         C 0>S7        |       C 1>S0        |                         |                                                                            (01,11)}
+\par {\loch\f3\fs14\lang1033\i0\b0                           |             |                         |                         |          007V       R ASCII>X6    |                         |                                                                            Edits}
+\par {\loch\f3\fs14\lang1033\i0\b0                           R 1,1       47R                         |                         R 1,G7      DER       R 1,CA07>W  FDR                         |                                                               }
+\par {\loch\f3\fs14\lang1033\i0\b0                           N1--    11 --NA                         |                         N4--    1* --ND       N5--    *1 --NE                         |                                                                }
+\par {\loch\f3\fs14\lang1033\i0\b0                          Inv op                                   |                        Edit source           Put fill char int                        |}
+\par {\loch\f3\fs14\lang1033\i0\b0 P                                                                 |                        addr valid            S0-1=Edit and                            |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   |                        (ver007)              mark                                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   |                                                                                       |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   -----------------------------------------------------------------------------------------}
+\par                     
+\par {\loch\f3\fs14\lang1033\i0\b0 Q                           }
+\par                     
+\par                     
+\par                     
+\par                     
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 R}
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                    Note-Only WDS LD and ND are ver 007}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                              all others ar 000}
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 S}
+\par 
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0  Q}
+\par {\loch\f3\fs14\lang1033\i0\b0  A}
+\par {\loch\f3\fs14\lang1033\i0\b0  7}
+\par {\loch\f3\fs14\lang1033\i0\b0  6                                                                                                                                                | 128015        10/01/65 | Mach          2030       | Date  11/17/65          Sheet    1  QA761 |}
+\par {\loch\f3\fs14\lang1033\i0\b0  1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    3563             Version    007    |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | Mode          Manual     |                                           |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | P.N.          837051     |    SS hi order op decode                  |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | IBM Corp.                |                                           |}
+\par }

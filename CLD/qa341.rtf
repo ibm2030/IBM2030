@@ -1,0 +1,106 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\ltrpar\lang1033\f0\fs14 QA341             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+ \par
+                         This page performs the preliminary set up for moving                                                    S0=0  if Log for Alg +\par
+                         the operand to loc stg FC-FF or F8-FF shifted right                                                     S0=1  if Alg-\par
+A                        to winthin 3 bits of the final amount, as explained                                                     S4=1  if 8 bit shifting is complete\par
+                         on page QA311. If the lo 2 bits of the org shift                                                        S7=0  if move to loc stg is to be skewed\par
+                         amount are not zero, the operand will be shifted one\par
+                         4 bit group too far. Tests are made to determine if\par
+                         this move must ne straight or skewed. This page also\par
+                         sets the necessary hi order bits of LS FC-FF or\par
+B                        F8-FF to ones if the shift is algebraic minus or zero\par
+                         otherwise. This propagates the sign bit for algebraic\par
+                         shifts or fills in vacated bit positions with zeroes\par
+                         for logical shifts\par
+                         At ehe end of this page, everything has been set\par
+C                        up to perform the move to loc stg FC-FF or F8-FF\par
+                         with the operand shifted to within 3 bits of its\par
+                         final position\par
+ \par
+ \par
+\par
+D\par
+                                            -----------------------------------------------------------------\par
+                                            |       00 --- 044C           01 --- 047D           01 --- 040D |\par
+                                            |   K          BINA       K 0001        |       |             | |\par
+                                            |   A 0#0>R       |       A L-KH=1>L    |       A T+0+1>T     | |\par
+E   QA311.JHE-------------------------------O---|             |*--O---S T>MN     LS S*------S STORE       |--\par
+    (00,10)                                 |   |             |   |   C HZ>S4       |       |             | \par
+    Shift right     LH=No. of 8 bit         |   |             |   |   |             |       |             | \par
+                       bytes to be          |   R AC,1      7DR   |   R 0,1       0DR       R S4,0      4CR \par
+                       shifted.             |   E2--    *1 --EB   |   E3--    01 --EC       E4--    *0 --ED \par
+                    LL=Lo 3 bits of         |  Shift greater      |  Store correct\par
+F                      shift amt shifted    |  than 8. Set        |  hi bits in LS\par
+                       left 1 bit           |  R=FF if Alg        |  F row. Test for\par
+                                            |  minus,R=00         |  end of 8 bit\par
+                                            |  otherwise          |  shifting (S4=1)\par
+                                            |                     |\par
+G                   AC=0                    |                     |\par
+                    S5=1 if lo 3 bits       |                     |\par
+                        of shift amt        |                     |\par
+                        are 0.              |                     |\par
+                                            |                     |\par
+                                            |                     |\par
+H                                           |                     |\par
+                                            |                     |\par
+                                            |                     |       11 --- 047F                                 01 --- 0419\par
+                                            |                     |   |             |                             K 0011        |\par
+                                            |                     |   A 0-0>T       |                             A G.-KH>G     |\par
+J                                           |                     ----|             |*--O-------------------------|             |*-----------------------------------------------------------------------------------------------------QA361------JEE\par
+                                            |                         C 0,S6        |   |                         C 0>S4,S5     |                                                                                                      (00)\par
+                                            |                         |             |   |                         |             |                                                                                                      Shift\par
+                                            |                         R 0,1       19R   |                         R 0,0       E4R                                                                                                      complete\par
+                                            |                         J3--    01 --JC   |                         J5--    00 --JE\par
+                                            |                        Finished,last      |                   In the preceeding steps it\par
+K                                           |                        addr stored was    |                   was found that the shift amt\par
+                                            |                        FF. Set T=FF       |                   exceeded the size of thre reg.\par
+                                            |       10 --- 044E           10 --- 047E   |                   LS FC-FF (sgl) or LS F8-FF (dbl)                                            00 --- 02F8\par
+                                            |   K 1001        |       |             |   |                   has been set to all ones if                                             |             |\par
+                                            |   A LXH-KH+1>Z  |       A 0-0>T       |   |                   Alg minus or all zeroes otherwise.                                      A V+0+1>V     |\par
+L                                           ----|             |*--O---|             |----                   The above step sets G2,G3 to zero                                   ----S UV>MN    LS S*------------------------O----------QA351------LHE\par
+                                                |             |   |   C 0>S6        |                       so as to indicate no left shifting as                               |   C 0>S7        |                         |          (10)\par
+                                                |             |   |   |             |                       LS F row is moved back into dest                                    |   |             |                         |          Move to loc\par
+                                                R AC,0      7CR   |   R 0,1       19R                       register.                                                           |   R 1,0       62R                         |          stg and shift\par
+                                                L2--    *0 --LB   |   L3--    01 --LC                                                                                           |   L8--    10 --LH                         |          right 0 or 4\par
+                                              Test for lo 3       |  Finished last                                                                                              | Lo 3 bits of shift amt are less           |          bits\par
+M                                             bits fo shift amt   |  addr stored was                                                                                            | than 5 but not zero. Skew                 |\par
+                                              less than 5         |  FF. Set T=FF                                                                                               |                                           |\par
+                                              (AC will be 0 for   |       00 --- 047C                                                                                           |       01 --- 02F9                         |\par
+                                              this case)          |   K 0010,0   BINA                                                                                           |   |             |                         |\par
+                                                                  |   A 0#0>L       |                                                                                           |   A V+0+1>V     |                         |\par
+N                                                                 ----|         K>W R*------------------------------------------------------------------------------------------O---S UV>MN    LS S--------------------------\par
+                                                                      |             |                                                                                           |   C 1>S7        |                          \par
+                                                                      |             |                                                                                           |   |             |                      \par
+                                                                      R AC,S5     F8R                                                                                           |   R 1,0       62R                      \par
+                                                                      N3--    ** --NC                                                                                           |   N8--    10 --NH                      \par
+                                                                     L=FF if Alg                                                                                                | Lo 3 bits of shift amt are\par
+P                                                                    minus.L=00                                                                                                 | zero. No skew\par
+                                                                     otherwise                                                                                                  |\par
+                                                                                                                                                                                |       10 --- 02FA\par
+                                                                                                                                                                                |   K          BINA\par
+                                                                                                                                                                                |   A 0#0>R       |\par
+Q                                                                                                                                                                               ----|             |*-----------------------------------QA351------QHE\par
+                                                                                                                                                                                    C 1>S7        |                                    (01)\par
+                                                                                                                                                                                    |             |                                    Move to loc\par
+                                                                                                                                                                                    R 0,1       F1R                                    stg and shift\par
+                                                                                                                                                                                    Q8--    01 --QH                                    right with\par
+                                                                                                                                                                                  Lo 3 bits of shift amt are                           no skew\par
+R                                                                                                                                                                                 greater than 4. No skew.\par
+                                                                                                                                                                                  Set R=FF if Alg minus. Set\par
+                                                                                                                                                                                  R=00 otherwise (1 more byte\par
+                                                                                                                                                                                  of high order bits will be\par
+                                                                                                                                                                                  stored in LS row F  The net\par
+S                                                                                                                                                                                 result will be that the bits\par
+                                                                                                                                                                                  in row F are shifted right too\par
+ Q                                                                                                                                                                                far by 1 4 bit group )\par
+ A\par
+ 3\par
+ 4                                                                                                                                                | 128015        09/27/65 | Mach          2030       | Date  07/07/66          Sheet    1  QA341 |\par
+ 1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    2187             Version           |\par
+                                                                                                                                                  | 128059        06/30/66 | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837025     |    Shift Right Initial Bit Shift          |\par
+                                                                                                                                                  |                        | IBM Corp.                |                                           |\par
+}
+ 

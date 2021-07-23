@@ -1,0 +1,106 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\ltrpar\lang1033\f0\fs14 QA911             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+ \par
+                                            This page performs further op decoding to separate\par
+                                            Set Sys Mask, Load PSW, and Diagnose. Since these are all\par
+A                                           priviledged ops, K25 loc stg is read out and the problem\par
+                                            bit tested to see that it is zero. If not, a prviledged\par
+                                            op prog check trap is taken.\par
+ \par
+ \par
+\par
+B\par
+\par
+                              00 --- 0324           01 --- 03B1\par
+                          K 1001,0      |       K 0000,0      |\par
+                          |             |       A 0+0+1>L     |\par
+C   QA071.EFE---------O--*S *B9      LS S*--O---S WRITE       |*---------------------------------------------------------------------\par
+    (00)              |   |             |   |   C 0>S6        |                                                                     |\par
+    Set sys Mask      |   |             |   |   |             |                                                                     |\par
+    (01)              |   R 0,G7      B0R   |   R 1,CA01>W  47R                                                                     |\par
+    Read/Write        |   C1--    0* --CA   |   C2--    11 --CB                                                                     |\par
+    Direct            |                     |  Inv op                                                                               |\par
+D   (10)              |                     |                                                                                       |\par
+    Load PSW          |                     |                                                                                       |\par
+    Diagnose          |       10 --- 0326   |       00 --- 03B0           10 --- 03B4                                               |\par
+                      |   K 1001,0      |   ----K 0001        |       K 0101,0      |                                               |\par
+                      |   A H>D         |       A R.KL>Z      |       A 0+KL>L      |                                               |\par
+E                     O---S *B9      LS S*------S WRITE       |*--O---|             |-----------------------------------------------O\par
+                      |   |             |       C 0>S7        |   |   C 0>S6        |                                               |\par
+                      |   |             |   ----|             |   |   |             |                                               |\par
+                      |   R 0,0       B0R   |   R S2,0      B4R   |   R 1,CA01>W  47R                                               |\par
+                      |   E1--    00 --EA   |   E2--    *0 --EB   |   E3--    11 --EC                                               |\par
+                      |  Store H in D for   |  Test prob bit      |  Inv addr                                                       |\par
+F                     |  diagnose code      |                     |                                                                 |\par
+                      |                     |                     |                                                                 |\par
+                      |       01 --- 0325   |                     |       00 --- 03B4           00 --- 03B8                         |\par
+                      |   R 1001,0      |   |                     |   K 0111        |       K 0010,0      |                         |\par
+                      |   |             |   |                     |   A VX.KH>Z     |       A 0+KL>L      |                         |\par
+G                     ----S *B9      LS S*---                     ----|             |*--O---|             |-------------------------O\par
+                          |             |                             C HZ>S4       |   |   C 0>S6        |                         |\par
+                          |             |                             |             |   |   |             |                         |\par
+                          R 0,0       B0R                             R G6,Z=0    B8R   |   R 1,CA01>W  47R                         |\par
+                          G1--    00 --GA                             G3--    ** --GC   |   G4--    11 --GD                         |\par
+                                                                                        |  Priv op                                  |\par
+H                                                                                       |                   ------------------------O\par
+                                                                                        |                   |                       |\par
+                                                                                        |       10 --- 03BA |         00 --- 03BC   |                                                                         11 ---  XXX\par
+                        Loc stg B9=addr                                                 |   K 0010,0      | |     K 0110,0      |   |                                                                     | Go to       |\par
+                        of prot key and                                                 |   A 0+KL>L      | |     A 0+KL>L      |   |                                                                     | QA879.CAE   |\par
+J                       the AMWP bits                                                   O---|             |-- ----S WRITE       |---O---------------------------------------------------------------------|             |\par
+                                                                                        |   C 0>S6        |   |   C 0>S6        |                                                                         |             |\par
+                                                                                        |   |             |   |   |             |                                                                         |             |\par
+                                                                                        |   R 1,CA01>W  47R   |   R 1,CA01>W  47R                                                                         |             |\par
+                                                                                        |   J4--    11 --JD   |   J5--    11 --JE                                                                         J9--    11 --JJ\par
+                                                                                        |  Priv op            |  Inv spec                                                                                Prg int\par
+K                                                                                       |                     |\par
+                                                                                        |                     O------------------------------------------------------------------------------------------------------------------------QA921------LDE\par
+                                                                                        |       11 --- 03BB   |       01 --- 03BD                                                                                                      (10)\par
+                                                                                        |   K 0100        |   |   |             |                                                                                                      Continue\par
+                                                                                        |   A H.-KH>H     |   |   A D>H         |                                                                                                      Ld PSW\par
+L                                                                                       O---S UV>MN    MS S*--O---S WRITE       |     The diagnose op dumps\par
+                                                                                        |   C 1>S7        |   |   |             |     the contents of the UV reg\par
+                                                                                        |   |             |   |   R UV>WX       |     into the WX register\par
+                                                                                        |   R S4.G7     BCR   |   R 0,0       00R     therefore the next ROS\par
+                                                                                        |   L4--    ** --LD   |   L5--    ** --LE     word read out will be\par
+                                                                                        |  Load PSW, diag     |  Diagnose             the addr specified by\par
+M                                                                                       |  reset hi to        |  Restore H reg        the UV reg.\par
+                                                                                        |  reset 1st error    |\par
+                                                                                        |  indication         |       11 --- 03BF\par
+                                                                                        |                     |   |             |\par
+                                                                                        |                     |   A D>H         |\par
+N                                                                                       |                     ----S WRITE       |\par
+                                                                                        |                         |             |\par
+                                                                                        |                         R UV>WX       |\par
+                                                                                        |                         R 0,0       00R\par
+                                                                                        |                         N5--    00 --NE\par
+                                                                                        |                        Diagnose\par
+P                                                                                       |                        Restore H reg\par
+                                                                                        |\par
+                                                                                        |       01 --- 03B9           10 --- 03DE\par
+                                                                                        |   |             |       K 0011,0      |\par
+                                                                                        |   |             |       A V+0+1>V     |\par
+Q                                                                                       ----S UV>MN    MS S*--O---S WRITE       |*-----------------------------------------------------------------------------------------------------QA921------QEE\par
+                                                                                            C 0>S7        |   |   C K>FB        |                                                                                                      (01)\par
+                                                                                            |             |   |   |             |                                                                                                      Continue\par
+                                                                                            R 1,G5      DER   |   R 0,1       B5R                                                                                                      Set Sys Mask\par
+                                                                                            Q4--    1* --QD   |   Q5--    01 --QE\par
+                                                                                           Set Sys Mask       |  FB=K3,X sets the Sys Mask\par
+R                                                                                          or Direct          |  hdwe from the R reg\par
+                                                                                           Control            |\par
+                                                                                                              |\par
+                                                                                                              -------------------------------------------------------------------------------------------------------------------------QA221------QDE\par
+                                                                                                                                                                                                                                       (11)\par
+S                                                                                                                                                                                                                                      Direct Control\par
+\par
+ Q\par
+ A\par
+ 9\par
+ 1                                                                                                                                                | 128015        09/27/65 | Mach          2030       | Date  11/17/65          Sheet    1  QA911 |\par
+ 1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    3564             Version           |\par
+                                                                                                                                                  |                        | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837063     |    Load PSW, Set Sys Mask,                |\par
+                                                                                                                                                  |                        | IBM Corp.                |    Diagnose, Direct Control               |\par
+}
+ 

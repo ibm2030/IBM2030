@@ -1,0 +1,106 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\ltrpar\lang1033\f0\fs14 QA331             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+ \par
+                         This page examines the operand for the position of the                                                                                               S0=0 if Log or Alg +\par
+                         shift amount less than 8 bits. It will determine if                                                                                                  S0=1 if Alg -\par
+A                        the shift to loc stg should be straight or skewed.                                                                                                   S2 used to detect overflow\par
+                         It then tests that the sign bit will not change as a                                                                                                 S3=1 if overflow was detected\par
+                         result of the shift. If the sign bit will change                                                                                                     S6=0 if dbl shift and all of even reg\par
+                         overflow is indicated. This is ignored in case of logical                                                                                                 has not been read out\par
+                         shifts.\par
+                         At the end of this page, everything has been set up                                                                                                  S6=1 if sgl shift or if all of even reg\par
+B                        to perform the move to loc stg FC-FF or F8-FF                                                                                                             for dbl shift has been read out\par
+                         with the operand shifted to within 3 bits of its                                                                                                     S7=0 if move to loc stg is to be\par
+                         final position.                                                                              00 --- 0710           00 --- 0714                            skewed\par
+                                                                                                                  K 0111        |       K 0010,0      |                       S7=1 if move to loc stg is not to be\par
+                                                                                                                  A R.-KL>Z     |       A 0#R>L       |                            skewed\par
+C                                                                                                             ----|             |*--O---|         K>W R*---                   G2,G3 lo 2 bits of shift amount\par
+                                                                                                              |   C ANSNZ>S2    |   |   |             |   |\par
+                                                                                                              |   |             |   |   |             |   |\par
+                                                                                                              |   R VZ,S7     14R   |   R S2,1      7DR   |\par
+                                                                                                              |   C5--    ** --CE   |   C6--    *1 --CF   |\par
+                                                                                                              |  Shift 0-4 bits     |  Not end of reg.    |\par
+D                                                                                                             |  See below          |  Skewed.            |\par
+                                                                                                              |                     |  L=orig bits in R   |\par
+                                                    11 --- 044F           01 --- 0461           10 --- 071E   |                     |  (re-inverted if    |                             11 --- 027F\par
+                                                K 0100        |       K 0111,0   BINA       |             |   |                     |  Alg minus)         |                         |             |\par
+                                                A D.KL>Z      |       A 0#R>R       |       A 0>L         |   |                     |                     |                         A 0-0+1>ZC    |\par
+E   QA311.JHE---------O------------------------*|             |*------|         K>W R*O-----|             |*--O                     |                     |                     ----|             |----\par
+    (11)              |                         |             |       C 0>S7        | |     C 0>S2        |   |                     |                     |                     |   |             |   |\par
+    Shift left        |                         |             |       |             | | ----|             |   |                     |                     |                     |   |             |   |\par
+    less than 8       |                         R 0,1       61R       R 1,Z=0     1ER | |   R G2,G3     10R   |                     |                     |                     |   R 0,1       7DR   |\par
+                      |                         E2--    01 --EB       E3--    1* --EC | |   E4--    ** --ED   |                     |                     |                     |   E8--    *1 --EH   |\par
+                      |                        Test for shift        Invert R if      | |  Shift 4 or         |                     |                     |                     |  Overflow.Sign      |\par
+F                     |                        less than 8           Alg minus.       | |  greater. BR        |                     |                     |                     |  bit will change.   |\par
+                      |                                                               | |  on lo 2 bits       |                     |                     |                     |  Set S3=1.          |\par
+                      |                                                               | |  of shift amt.      |       01 --- 0711   |       01 --- 0715   |                     |  Note 1             |\par
+    QA321.CFE----------                                                               | |                     |   K 0011        |   |   K 0010,0      |   |                     |                     |                  \par
+    (11)                                                                              | |                     |   A R.-KL>Z     |   |   A V-0>V       |   |                     |                     |                      \par
+G   Test for                                                                          | |                     O---|             |---O---|         K>W R---O---------------------O---------------------O--------------------------------QA351------CFE\par
+    additional                                                                        | |                     |   C ANSNZ>S2    |   |   |             |   |                                                                            (01)\par
+    shift less                                                                        | |                     |   |             |   |   |             |   |                                                                            Move to loc\par
+    than 8                                                                            | |                     |   R VZ,S7     14R   |   R S2,1      7DR   |                                                                            stg and shift\par
+                                                                                      | |                     |   G5--    ** --GE   |   G6--    *1 --GF   |                                                                            left\par
+                                                                                      | |                     |  Shift 1-5 bits     |  Not end of reg.    |\par
+H                                                                                     | |                     |  See below          |  Not skewed.        |\par
+                                                                                      | --------------------- |                     |  R has been des-    |\par
+                                                                                      |         11 --- 071F | |                     |  troyed. Sub 1 from |\par
+                                                                                      |     |             | | |                     |  V to read out      |\par
+                                                                                      |     A RXL>R       | | |                     |  byte again.        |\par
+J                                                                                     ------|             |*- |                     |                     |\par
+                                                                                            C 1>S7        |   |                     |                     |\par
+                                                                                            |             |   |                     |                     |\par
+                                                                                            R 1,0       1ER   |                     |                     |\par
+                                                                                            J4--    10 --JD   |                     |                     |\par
+                                                                                           Shift less than    |                     |                     |\par
+K                                                                                          4. Set S7=1 to     |                     |                     |\par
+                                                                                           indicate no skew.  |                     |                     |\par
+                                                                                           Move hi bits of    |       10 --- 0712   |       11 --- 0717   |\par
+                                                                                           R to lo and set    |   K 0001        |   |   K 0010,0      |   |\par
+                                                                                           hi bits to zero    |   A R.-KL>Z     |   |   A V-0>V       |   |\par
+L                                                                                          for overflow test. O---|             |---O---|             |---O\par
+                                                                                                              |   C ANSNZ>S2    |   |   |             |   |\par
+                                                                                                              |   |             |   |   |             |   |\par
+                                                                                                              |   R VZ,S7     14R   |   R S2,1      7DR   |\par
+                                                                                                              |   L5--    ** --LE   |   L6--    *1 --LF   |\par
+                                                                                                              |  Shift 2-6 bits     |  End of reg.        ---------------------\par
+M                                                                                                             |  See below          |  Not skewed.                            |\par
+                                                                                                              |                     |  R has been des-                        |\par
+                                                                                                              |                     |  troyed. Sub 1 from         00 --- 026C |                               11 --- 0293\par
+                                                                                                              |                     |  V to read out          K 0001        |--                           |             |\par
+                                                                                                              |                     |  byte again.            A VH+KH>V     |                             A 0-0+1>ZC    |    \par
+N                                                                                                             |                     |                     ----|             |                         ----|             |----\par
+                                                                                                              |                     |                     |   C 1>S6        |                         |   |             |   |\par
+                                                                                                              |                     |                     |   |             |                         |   |             |   |\par
+                                                                                                              |                     |                     |   R S2,1      7DR                         |   R 0,1       91R   |\par
+                                                                                                              |                     |                     |   N7--    *1 --NG                         |   N9--    01 --NJ   |\par
+                                                                                                              |                     |                     |  Dbl. V=hi addr                           |  Overflow. Sign     |\par
+P                                                                                                             |                     |                     |  of odd reg. S6=1 to indicate             |  bit will change.   |\par
+                                                                                                              |                     |                     |  even reg is all read out.                |  Set S3=1.          |\par
+                                                                                                              |       11 --- 0713   |       10 --- 0716   |       10 --- 026E                         |  Note 1             |\par
+                                               Note 1-All overflow tests will                                 |   |             |   |   K 0010,0      |   |   |             |                         |                     |\par
+                                                      be ignored if logical shift.                            |   A R>Z         |   |   A 0#R>L       |   |   A LXH>R       |                         |                     |\par
+Q                                                                                                             ----|             |---O---|             |*--O---|             |*------------------------O---------------------O----------QA351------QGE\par
+                                                                                                                  C ANSNZ>S2    |       |             |       C 1>S7        |                                                          (01)\par
+                                                                                                                  |             |       |             |       |             |                                                          Move to loc\par
+                                                                                                                  R VZ,S7     14R       R S6,0      6CR       R S2,1      91R                                                          stg and shift\par
+                                                                                                                  Q5--    ** --QE       Q6--    *0 --QF       Q7--    *1 --QG                                                          left special\par
+                                                                                                                 Shift 3-7 bits        End of reg.          Operand is completely read out.                                            entry\par
+R                                                                                                                The above 4 steps     Skewed               All necessary skewing is done\par
+                                                                                                                 check that the        L=orig bits          in the above step. Set S7=1 to\par
+                                                                                                                 sign bit will not     in R.                indicate no skew in move to\par
+                                                                                                                 change as the         (re-inverted         loc stg F8-FF or FC-FF\par
+                                                                                                                 result of shifting    if Alg minus)\par
+S                                                                                                                S2=1 if sign bit\par
+                                                                                                                 will change\par
+ Q\par
+ A\par
+ 3\par
+ 3                                                                                                                                                | 128015        08/30/65 | Mach          2030       | Date  07/07/66          Sheet    1  QA331 |\par
+ 1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    2187             Version           |\par
+                                                                                                                                                  | 128059        06/30/66 | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837024     |    Shift left initial bit shift           |\par
+                                                                                                                                                  |                        | IBM Corp.                |    and overflow                           |\par
+}
+ 

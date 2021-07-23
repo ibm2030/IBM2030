@@ -1,0 +1,119 @@
+{\rtf1\ansi\deff0\adeflang1025
+{\fonttbl{\f0\froman\fprq2\fcharset0 Times New Roman;}{\f1\froman\fprq2\fcharset0 Times New Roman;}{\f2\fnil\fprq2\fcharset0 Lucida Sans Unicode;}{\f3\fmodern\fprq1\fcharset0 Courier New;}{\f4\fnil\fprq2\fcharset0 Tahoma;}{\f5\fnil\fprq0\fcharset0 Tahoma;}}
+{\colortbl;\red0\green0\blue0;\red128\green128\blue128;}
+{\stylesheet{\s1\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af4\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\snext1 Default;}
+{\s2\sa120\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af4\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon1\snext2 Text body;}
+{\s3\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon2\snext3 List;}
+{\s4\sb120\sa120\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs20\lang255\ai\ltrch\dbch\af2\afs20\langfe255\ai\loch\f0\fs20\lang1033\i\sbasedon1\snext4 Caption;}
+{\s5\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon1\snext5 Index;}
+{\s6\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033\sbasedon1\snext6 Preformatted Text;}
+}
+{\info{\creatim\yr2004\mo4\dy24\hr13\min23}{\operator Hans PUFAL}{\revtim\yr2004\mo4\dy28\hr8\min59}{\printim\yr1601\mo1\dy1\hr0\min0}{\comment StarWriter}{\vern6450}}\deftab709
+{\*\pgdsctbl
+{\pgdsc0\pgdscuse195\lndscpsxn\pgwsxn23818\pghsxn16834\marglsxn1440\margrsxn1440\margtsxn576\margbsxn576\pgdscnxt0 Default;}}
+\landscape\paperh16834\paperw23818\margl1440\margr1440\margt576\margb576\sectd\sbknone\lndscpsxn\pgwsxn23818\pghsxn16834\marglsxn1440\margrsxn1440\margtsxn576\margbsxn576\ftnbj\ftnstart1\ftnrstcont\ftnnar\aenddoc\aftnrstcont\aftnstart1\aftnnrlc
+\pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0                   0                    1                    2                     3                     4                     5                     6                     7                     8                     9}
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         This micro program performs the indexing function of}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         adding 24 bits from the base or index register to the 12}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         bit displacment to generate the effective address.}
+\par {\loch\f3\fs14\lang1033\i0\b0 A                                                                                       Also detection is made for using addreses greater than}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         64K since the 2030 has no memeory size which is larger.}
+\par  
+\par  
+\par  
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 B}
+\par 
+\par  
+\par  
+\par  
+\par {\loch\f3\fs14\lang1033\i0\b0 C}
+\par  
+\par  
+\par  
+\par  
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   -------------------------------------------------------------------------------------------------------------------------------------                                }
+\par {\loch\f3\fs14\lang1033\i0\b0 D                                                                 |                                                                                                                                   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   |                                                                                                                                   |                         }
+\par {\loch\f3\fs14\lang1033\i0\b0                               10 --- 012E                         |       00 --- 0138           10 --- 010A           00 --- 013C           01 --- 013D           00 --- 0140           10 --- 0132   |                    }
+\par {\loch\f3\fs14\lang1033\i0\b0                           |             |                         ----|             |       |             |       |             |       |             |       K 0011        |       |             |   |                  }
+\par {\loch\f3\fs14\lang1033\i0\b0                           A R>V         |                             A T-0>T       |       A V+R>VC      |       A T-0>T       |       A U+R+C>UC    |       A LXH+KL>T    |       A R+0+C>DC    |   |                      }
+\par {\loch\f3\fs14\lang1033\i0\b0 E   QA021.EGE---------O--*S T>MN     LS S*--O-------------------------S WRITE       |*------S T>MN     LS S*--O---S WRITE       |*--O---S T>MN     LS S*--O---S WRITE       |*------S T>MN     LS S*---                                              }
+\par {\loch\f3\fs14\lang1033\i0\b0     (10,11)           |   |             |   |                         |             |       |             |   |   C 0>S0        |   |   C 0>S4,S5     |   |   |             |       C 1>S6        |                          }
+\par {\loch\f3\fs14\lang1033\i0\b0     Index loop        |   |             |   |                     ----|             |       |             |   |   |             |   |   |             |   |   |             |       |             |                      }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   R 0,S3      38R   |                     |   R 1,0       0AR       R S6,0      3CR   |   R S0,1        |   |   R 0,S5      40R   |   R 1,0       32R       R 0,0       38R                      }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   E1--    0* --EA   |                     |   E3--    .. --EC       E4--    *0 --ED   |   E5--    *1 --EE   |   E6--    0* --EF   |   E7--    10 --EG       E8--    00 --EH                       }
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033{\loch\f3\fs14\lang1033\i0\b0\fs14                       |  Start indexing     |                     |  Decrement addr        Read out hi        |  Decrement addr     |  RX indexing for B  |  Set up X reg}
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0 F                     |  read out reg       |                     |                        addr, add low      |                     |  Test if X=0        |  addr low order}
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033{\loch\f3\fs14\lang1033\i0\b0\fs14                       |  low order addr     |                     |                        order data to V    |                     |  Add for hi addr    |                                                                    --------QA051------GGE}
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0                       |  put DD in V        |       01 --- 0139   |                        for low order      |                     |       11 --- 013F   |       01 --- 0141                                                  |       (00)}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                     |   |             |   |                        effective addr     |                     |   |             |   --- |             |                                                  |       Half ops}
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033{\loch\f3\fs14\lang1033\i0\b0\fs14                       |                     |   A I+0+1>I     |   |                                           |                     |   A U+R+C>UC    |       A R+0+C>DC    |                                                  |}
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0 G                     |                     ----|             |*---                                           |                     ----S T>MN     LS S*------S WRITE       |*--O----------------------------------------------O-------QA061------GGE}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                         |             |                                               |                         C 0>S4,S5     |       C ANSNZ>S2    |   |                                              |       (01)}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                         |             |                                               |                         |             |       |             |   |                                              |       RX fixed point}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                         R 0,0       30R                                               |                         R 0,1       41R       R G2,G3     48R   |                                              |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                         G2--    00 --GB                                               |                         G6--    01 --GF       G7--    .. --GG   |                                              |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                                                                       |                        RX indexing X         RX index over      |                                              --------QB261------GGE}
+\par {\loch\f3\fs14\lang1033\i0\b0 H                     |                                                                                       |                        only                  start op branch    |                                                      (10,11)}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                                                                       |                                                                 |                                                      RX float point}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                                                                       |       10 --- 013E           00 --- 0144           01 --- 0145   |                                        }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                                                                       |   |             |       |             |       |             |   |                                        }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                                                                       |   A T-0>T       |       A U+R+C>UC    |       A D+R+C>DC    |   |                                            }
+\par {\loch\f3\fs14\lang1033\i0\b0 J                     |                                                                                       ----S WRITE       |*--O---S T>MN     LS S*------S WRITE       |*--O                                                                     }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                                                                           |             |   |   C 0>S4,S5     |       C ANSNZ>S2    |   |                                            }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                                                                           |             |   |   |             |       |             |   |                                        }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                                                                           R G0,0      44R   |   R 0,1       45R       R G2,G3     48R   |                                        }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                                                                           J5--    *0 --JE   |   J6--    01 --JF       J7--    ** --JG   |                                        }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                                                                          RS,SI,SS index     |                        RX double index    |                      }
+\par {\loch\f3\fs14\lang1033\i0\b0 K                     |                                                                                          or RX 2nd index    |                        over, start op     |                      }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                                                                                             |                        branch, add to     |                      }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |       11 --- 012F                                 10 --- 013A                                               |                        test for un-       |                                        }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   |             |                             |             |                                               |                        availbale addr     |                                        }
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   A R>V         |                             A 0>D         |                                               |                                           |                                            }
+\par {\loch\f3\fs14\lang1033\i0\b0 L                     ---*|             |*--O-------------------------|             |*-------------------------------------------------------------------------------------------                                            }
+\par {\loch\f3\fs14\lang1033\i0\b0                           C 0>S4,S5     |   |                         C 0>S0        |                                               |                                                                                        }
+\par {\loch\f3\fs14\lang1033\i0\b0                           |             |   |                     ----|             |                                               |                                                                                    }
+\par {\loch\f3\fs14\lang1033\i0\b0                           R 1,S3       3AR  |                     |   R G2,G3     48R                                               |                                                                                    }
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033{\loch\f3\fs14\lang1033\i0\b0\fs14                           L1--    1* --LA   |                     |   L3--    ** --LC                                               |                                                                                    }
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0                          RX no index        |                     |  Begin op                                                       |}
+\par {\loch\f3\fs14\lang1033\i0\b0 M                        Put DD in V        |                     |  branching                                                      ---------------------------------------------------------------------------------------------------QA071------JEE}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                     |                                                                                                                                                                    (10)}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |       11 --- 013B   |                                                                                                                                                                    RS, SS index}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |   |             |   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |   A I+0+1>I     |   |}
+\par {\loch\f3\fs14\lang1033\i0\b0 N                                           ----|             |*---}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                 |             |    }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                 |             |    }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                 R 1,0       48R    }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                 N2--    10 --NB    }
+\par                                                                   
+\par {\loch\f3\fs14\lang1033\i0\b0 P                                                       }
+\par 
+\par   
+\par   
+\par   
+\par {\loch\f3\fs14\lang1033\i0\b0 Q }
+\par   
+\par   
+\par   
+\par   
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 R}
+\par 
+\par 
+\par 
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 S}
+\par 
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0  Q}
+\par {\loch\f3\fs14\lang1033\i0\b0  A}
+\par {\loch\f3\fs14\lang1033\i0\b0  0}
+\par {\loch\f3\fs14\lang1033\i0\b0  3                                                                                                                                                | 128015        09/27/65 | Mach          2030       | Date  11/17/65          Sheet    1  QA031 |}
+\par {\loch\f3\fs14\lang1033\i0\b0  1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    3563             Version           |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | Mode          Manual     |                                           |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | P.N.          837008     |    Index loop                             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | IBM Corp.                |                                           |}
+\par }

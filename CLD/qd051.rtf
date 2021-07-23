@@ -1,0 +1,151 @@
+{\rtf1\ansi\ansicpg1252\deff0
+{\fonttbl
+{\f0\fnil\fcharset0\fprq0\fttruetype Courier New;}
+{\f1\fnil\fcharset0\fprq0\fttruetype NULL;}
+{\f2\fnil\fcharset0\fprq0\fttruetype Dingbats;}
+{\f3\fnil\fcharset0\fprq0\fttruetype Symbol;}
+{\f4\fnil\fcharset0\fprq0\fttruetype Times New Roman;}
+{\f5\fnil\fcharset0\fprq0\fttruetype Arial;}}
+{\colortbl
+\red0\green0\blue0;
+\red255\green255\blue255;}
+{\stylesheet
+{\s7\sl240\slmult1\f4\fs24 Default;}
+{\s18\sl240\slmult1\fi-431\li720\sbasedon19 Lower Roman List;}
+{\s20\sl240\slmult1\tx431\sbasedon10\snext19 Numbered Heading 1;}
+{\s21\sl240\slmult1\tx431\sbasedon11\snext19 Numbered Heading 2;}
+{\s8\sl240\slmult1\fi-431\li720 Diamond List;}
+{\s22\sl240\slmult1\tx431\sbasedon12\snext19 Numbered Heading 3;}
+{\s23\sl240\slmult1\fi-431\li720 Numbered List;}
+{\s10\sl240\slmult1\sb440\sa60\f5\fs34\b\sbasedon19\snext19 Heading 1;}
+{\s27\sl240\slmult1\fi-431\li720 Square List;}
+{\s6\sl240\slmult1\fi-431\li720 Dashed List;}
+{\s29\sl240\slmult1\sa117\f4\fs24\sbasedon7 Text body;}
+{\s13\sl240\slmult1\fi-431\li720 Heart List;}
+{\s33\sl240\slmult1\fi-431\li720\sbasedon23 Upper Roman List;}
+{\s25\sl240\slmult1\f0\fs20\sbasedon7 Preformatted Text;}
+{\s4\sl240\slmult1\sb117\sa117\f4\fs20\i\sbasedon7 Caption;}
+{\s31\sl240\slmult1\fi-431\li720 Triangle List;}
+{\s32\sl240\slmult1\fi-431\li720\sbasedon23 Upper Case List;}
+{\s3\sl240\slmult1\fi-431\li720 Bullet List;}
+{\s9\sl240\slmult1\fi-431\li720 Hand List;}
+{\s26\sl240\slmult1\tx1584\sbasedon20\snext19 Section Heading;}
+{\s11\sl240\slmult1\sb440\sa60\f5\fs28\b\sbasedon19\snext19 Heading 2;}
+{\s12\sl240\slmult1\sb440\sa60\f5\fs24\b\sbasedon19\snext19 Heading 3;}
+{\s30\sl240\slmult1\fi-431\li720 Tick List;}
+{\s19\sl240\slmult1\f4\fs24 Normal;}
+{\s17\sl240\slmult1\fi-431\li720\sbasedon23 Lower Case List;}
+{\s1\sl240\slmult1\li1440\ri1440\sa117\sbasedon19 Block Text;}
+{\s16\sl240\slmult1\f4\fs24\sbasedon29 List;}
+{\s15\sl240\slmult1\f4\fs24\sbasedon7 Index;}
+{\s14\sl240\slmult1\fi-431\li720 Implies List;}
+{\s2\sl240\slmult1\fi-431\li720 Box List;}
+{\s28\sl240\slmult1\fi-431\li720 Star List;}
+{\s24\sl240\slmult1\f0\sbasedon19 Plain Text;}
+{\s5\sl240\slmult1\tx1584\sbasedon20\snext19 Chapter Heading;}}
+\kerning0\cf0\viewkind1\paperw23811\paperh16837\margl1440\margr1440\landscape\widowctl
+\sectd\sbknone\colsx360\margtsxn720\margbsxn720\pgncont\ltrsect
+\pard\plain\ltrpar\s19\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}QD051             0                    1                     2                     3                     4                     5                     6                     7                     8                     9}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}
+\par}\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         This routine is used when doing a Start I/O or chaining.}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         It fetches and checks parts of the CCW, and starts the}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}A                        unit selection if it is a Start I/O.}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         CCW bytes which are checked:}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         1. Byte 000-Test for TIC and invalid op.}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         2. Byte 001-Test that it is zero.}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         3. Byte 100-Flag byte-Test that 3 low order bits are zero.}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         4. Bytes 110 and 111-Count bytes-Test for zero cout.}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}B                        If a Start I/O or CC is being done, the microprogram goes}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         to the Unit Selection CC and Start I/O routine. If CD, it}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         goed to the CD data address fetch routine.                             11 --- 0953    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                            K 0010,0      |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                            A V+KL>V      |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}C                                                                                       ----S WRITE    GR S*---}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |   C 0>S2        |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |   |          014V   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |   R S6,0      A8R   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |   C4--    *0 --CD   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |  TIC                -------------------------------------------------------------------------------------------------------------------------QD041------CDE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}D                                                                                       |                                                                                                                                              (00,10)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                                                                                                                              Selr Ch TIC}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                              10 --- 0972           10 --- 0922           00 --- 09DC   |       10 --- 0953           01 --- 0921           11 --- 0923           01 --- 09DD           00 --- 0930    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          K 1100,0      |       K 1000,0      |       K 1111,0      |   |   K 0011,0      |       |             |       K 0011        |       K 0111        |       |             |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          A V+0+1>V     |       A GRL^KL>Z    |       A GR.KL>Z     |   |   A V+KL>V      |       A GR>Z        |       A V+KL>V      |       A GR.KL>Z     |       A V-0>V       |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}E   QD061.EHE------------*S UV>MN    MS S*--O---S WRITE    GR S*------S UV>MN    MS S*--O---S WRITE    GR S*------S UV>MN    MS S*------S WRITE    GR S*------S UV>MN    MS S*------S WRITE    GR S*---}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (10)                  C K>GH        |   |   |             |       C LZ>S5       |       C 0>S2        |       C ANSNZ>S2    |       C GR>GF       |       C ANSNZ>S2    |       C 0>S6        |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Selr Ch CC            |          014V   |   |          014V   ----|          014V       |          014V       |          014V       |          014V       |          014V       |          014V   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    CCW fetch             R S2,0      20R   |   R 0,0       DCR   |   R 1,Z=0     52R       R 0,1       21R       R 1,1       23R       R 0,1       DDR       R 0,0       30R       R S2,1      31R   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          E1--    *0 --EA   |   E2--    00 --EB   |   E3--    1* --EC       E4--    01 --ED       E5--    11 --EE       E6--    01 --EF       E7--    00 --EG       E8--    *1 --EH   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                            |                     |  Fetch CCW byte 001    Not TIC               Fetch CCW byte 100    GF=Flags              Fetch CCW byte 111                       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}F   QD061.CFE----------                     |                     |  Test for invalid op                         (Flags)                                     (low count)                              |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (10)              |                     |                     |  (XXXX 0000)                                 Test byte 001=0                             Test valid flag byte                     |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Selr Ch CD        |       10 --- 0904   |       00 --- 0920   |       10 --- 09DE                                                                        (XXXX X000)                              |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    CCW fetch         |   |             |   |   K 1000,0      |   |   K 1000,0      |   ---------------------------------------------------------------------------------------------------------------}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                      |   A V+0+1>V     |   |   A GRL^KL>Z    |   |   A FT.KL>Z     |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}G   QD041.NFE---------O--*S UV>MN    MS S---O---S WRITE    GR S*--O---|             |*--+---------------------------------------------------------------O-----------------------O------------------------------------------------------QD181------GCE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (10)                  |             |       |             |       |             |   |                                                               |                       |                                                      (01)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Selr Ch               |          014V       |          014V   ---*|          014V   |                                                               |                       |                                                      Selr Ch}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    CCW fetch             R S2,0      20R       R S4,0      DCR   |   R 0,1       5DR   |                                                               |                       |                                                      Prog Chk}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Start I-O+TIC         G1--    *0 --GA       G2--    *0 --GB   |   G3--    01 --GC   |                                                               |                       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         Fetch CCW byte 000    Test for TIC       |  CCW wrap +         |                                                               |                       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}H                        (Op byte)             (XXXX 1000)        |  CD count=0         |                                                               |                       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QD081.JEE------------------------------------------------------                     |                                                               |                       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (10)                                                                                |                                                               |         00 --- 0938   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Selr Ch CD                                                                          |                                                               |     K 1000        |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    cnt zero                                                                            |                                                               |     A FT.KL>Z     |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}J                                                                                       |                                                               | ----S WRITE    GR S---O}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                                               | |   |             |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                                               | |   |          014V   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                                               | |   R 0,1       5DR   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                                               | |   J7--    01 --JG   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                                               | |  Cnt=zero           |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}K                                                                                       |                                                               | |                     |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                                               | |                     |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                                   11 --- 0933 | |       01 --- 0939   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                               K 1000        | | |   K 0100        |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                               A FT.KL>Z     | | |   A FT.KL>Z     |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}L                                                                                       O-----------------------------------------------|             |-- O---S WRITE    GR R----}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                               |             |   |   |             |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                           ----|          014V   |   |          014V    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                           |   R 0,1       5DR   |   R 0,1       5DR    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                           |   L6--    01 --LF   |   L7--    01 --LG    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                           |  Byte 001#0         |  Cnt=zero}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}M                                                                                       |                                           |  Invalid flag byte  |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                           |  Invalid op         |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |       01 --- 0931           00 --- 0934   |       10 --- 0932   |       11 --- 093B           01 --- 0935    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |   K 1111        |       K 1111        |   |   K 0101,1      |   |   K 1100,0      |       K 1100,0      |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |   A GR+K>ZC     |       A GR+K+C>ZC   |   |   A GTXH-K>Z    |   |   A GR>RC       |       |             |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}N                                                                                       ----S UV>MN    MS S*--O---S WRITE    GR S*--O---S *8D      LS S*--O---S WRITE    GR S*------|             |*---}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                            C GR>GV       |   |   C GR>GU       |       C GUV>GCD     |   |   C K>GA        |       C K>GH        |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                            |          014V   |   |          014V       |          014V   |   |          014V       |          014V   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                            R S0,0      34R   |   R 1,S5      32R       R AC,S7     38R   |   R 0,1       35R       R 1,0       3AR   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                            N4--    *0 --ND   |   N5--    1* --NE       N6--    ** --NF   |   N7--    01 --NG       N8--    10 --NH   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                           Fetch CCW byte 110 |  CC=Test high count#0  Fetch device addr  |  Start I-O             Sel Out            |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}P                                                                                          (high count)       |  GV=high count         Test adr in force  |  Addr Out                                 |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                           Test low count#0   |                        GCD=count          | -------------------------------------------}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                           GV=low count       |       10 --- 0936                         | |     10 --- 093A    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                              |   K 0101        |                         | --K 0111        |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                              |   A V^KL>V      |                         |   A V.-KL>V     |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}Q                                                                                                             ----S WRITE    GR S*---                     ----S WRITE       |*---------------------------------------------------------QD081------QGE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                  C GR>GU       |   |                         |             |                                                          (00,10)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                  |          014V   |                         |          014V                                                          Selr Ch}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                  R 0,1       F5R   |                         R AC,0      B0R                                                          Unit Selection}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                  Q5--    01 --QE   |                         Q7--    *0 --QG                                                          CC+Start I-O}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                 CD                 |                        CD=Addr Out and}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}R                                                                                                                GU=high count      |                        Sel Out have been}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                    |                        activated earlier}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                    |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                    ---------------------------------------------------------------------------------------------------QD081------QEE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                                                                                                       (01)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}S                                                                                                                                                                                                                                      Selr Ch CD}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                                                                                                       Data address}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} Q                                                                                                                                                                                                                                     fetch}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} D}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 0}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 5                                                                                                                                                | 128053        02/23/66 | Mach          2030       | Date  04/06/66          Sheet    1  QD051 |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 1                                                                                                                                                | 128054        04/04/66 | Name                     | Log    2104             Version    014    |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  |                        | Mode          Manual     |                                           |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  |                        | P.N.          837191     |    Selr Channel CCW fetch                 |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  |                        | IBM Corp.                |                                           |}
+\par\pard\plain\ltrpar\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}}}

@@ -1,0 +1,106 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\ltrpar\lang1033\f0\fs14 QB611             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+ \par
+                         Start procedure                        Looping test with 2/T stops                                                                 Micro trace\par
+                         1.Diagnostic mode                      1.Roar restart match at 0BA9                                                                BFF B0C B33 B15 B07 B08 B09 B1F B26 B1F\par
+A                        2.Store FF in S-reg (checks sys rst)                                                                                               B2A B1F B25 B1F\par
+                         3.System Reset                         Looping test without 2/T stops\par
+                         4.Roar Reset                           1.System Reset\par
+                         5.Start at 0BFF                        2.Store 80 in R-reg\par
+                         6.Sys should stop at ABC with ALU and  3.Execute 0B33 to set Bus-O-reg\par
+                           A-reg chks indicated                 4.Roar Reset\par
+B                        7.Check Reset                          5.Start at 0B07\par
+                         8.Press Start\par
+                         9.System should stop at 0B07           FTS is conditioned by Bus-O-reg. This prevents setting\par
+                         10.Press Start to repeat test          supr half trap lth at end of test.\par
+ \par
+C\par
+ \par
+ \par
+ \par
+ \par
+\par
+D\par
+    QB681.LHE--------------------------------------------------------------------------------------------------                   -------------------------                       -----------------------------------------\par
+    (11)                      11 --- 0BFF           00 --- 0B0C           11 --- 0B33           01 --- 0B15   |       11 --- 0B07 |         00 --- 0B08   |       01 --- 0B09     |     11 --- 0B1F                       |\par
+    Repeat                K 1111,0      |   ----K 1111,0      |       K 1000,0      |       K 1011,0   DECA   ---*K 0000,0      | |     K 1111,0      |   ----K 0111,0      |     --K 1111,0      |                       |\par
+    test                  A T0^K0>G     |   |   A T0^K0>R     |       A RX^0>L      |       A 0^+-D0>G    |       A 0^K>I       | |     A 0^-K0>G     |       A SL^KH>S     |       A G^K>L       |                       |  \par
+E                         S T>MN    MPX S*O-+---|             |*--O---S WRITE       |*--O---|             |*--O---|             |*O-----|             |*O-----|             |*----O-|             |*--O-------------------+------------QB821------EHE\par
+                          C HZ>S4,LZ>S5 | | |   C GR>GK       |   |   C K>FA        |   |   C ANSNZ>S2    |   |   C ANSNZ>S2    |       C 0>S0        | |     C 1>S6        |     | C 1>S0        |   |                   |            (11)\par
+                      ----|             | | | -*|             |   | --|             |   | --C 0>MC        |   |   |             |     --|             | | ----|             |   --+*|             |   |                   |            Continued\par
+                      |   R 0,0       0CR | | | R S4,S5     33R   | | R S0,Z=0    15R   | | R VZ,Z=0    07R   |   R 0,S7      08R     | R S6,1      09R | |   R G0,G1     1FR   | | R S6,S7     26R   |                   |\par
+                      |   E1--    ** --EA | | | E2--    ** --EB   | | E3--    ** --EC   | | E4--    ** --ED   |   E5--    0* --EE     | E6--    *1 --EF | |   E7--    ** --EG   | | E8--    ** --EH   |                   |\par
+                      |  CA is T in case  | | |GR>GK may set      | |S0 is 0 from       | |V is zero from     |  S7 is zero from      |0^-0>FF          | |  0C^70>7C           | |FF^FF>00           |                   |\par
+F                     |  W=CA is cond.    | | |S0 if basic not    | |system reset.      | |system reset.      |  system reset.        |Compl. add       | |  B-reg is 7E        | |A-and B-regs       |                   |\par
+                      |  erroneously.     | | |CS0 is cond.       | |R-reg is zero      | |Reset MC-reg.      |  B-gate is open       |causes B-entry   | |  from ALU and       | |are FF for the     |                   |\par
+                      |  B-gate must      | | |erroneously.       | |from 0B0C.         | |RS=0,^#,sets       |  for the first        |to be FF.        | |  1>S6.              | |1st time and       |                   |\par
+                      |  block B-reg FF.  | | |Bit side of ALU    | |Reset Bus-O-reg    | |supr half trap     |  time.                |                 | |                     | |^ must result      |                   |\par
+                      |  Not bit side of  | | |is stored in       | |to decond. all     | |latch. This        |                       |                 | |                     | |in 00.             |                   |  \par
+G                     |  ALU is stored    | | |R-reg.             | |mpx tags-in.       | |allows MC and      |                       |                 | |                     | |                   |                   |\par
+                      |  in G-reg.        | | |                   | |                   | |zero test stops    |                       |                 | |                     | |                   |                   |\par
+    QA951.QEE---------+-------------------+-+--                   | |                   | |CB is D to         |                       |                 | |                     | |                   |                   |\par
+    (00)              |                   | |                     | |                   | |prevent B-reg      |                       |                 | |                     | |                   |                   |\par
+    Syst rst to       |                   | |                     | |                   | |from R-reg.        |                       |                 | |                     | |                   |                   |\par
+    basic test        |                   | |                     | |                   | --------------------+--------------------   |                 | |                     | |                   |                   |\par
+H   QB621.JCE---------+-------------------+-+---------------------+-+-------------------+---------------------+-------------------+---+-----------------+-+---------------------- |                   |                   |\par
+    (11)              O-------------------+-+---------------------+-+-------------------+-------------------- |                   |   |                 | |                       |                   |                   |\par
+    Retry             |                   | |       01 --- 0B0D   | |     10 --- 0B32   |       11 --- 0B17 | |       01 --- 0B05 |   |                 | |       11 --- 0B08     |     00 --- 0B1C   |       10 --- 0B26 |\par
+                      |                   | |   |             |   | | |             |   |   |             | | |   |             | |   |                 | |   |             |     | |             |   |   |             | |\par
+                      |                   | |   A SP^0>Z      |   | | A SP^0>Z      |   |   A SP+0>G      | | |   A SP^0>V      | |   |                 | |   A SP^0>Z      |     | A SP^-0>G     |   |   A G0^-L>R     | |  \par
+J                     |                   O-+---S WRITE       |-- O-+-S WRITE       |-- O---|             |*- O---|             |*-   |                 --+---|             |*-   O-|             |*- O---|             |*O\par
+                      |                   | |   |             | | | | |             | | |   C 0>SC        |   |   |             |     |                   |   |             | |   | C 0>S7        | | |   C 0>S6        | |\par
+    QB621.ECE---------+-------------------+-+--*|             | | | | |             | | |   |             |   |   |             |     |                   |   |             | |   | |             | | |   |             | |\par
+    (01)              |                   | |   R 0,0       0CR | | | R 1,1       33R | |   R 1,1       FFR   |   R 0,1       15R     |                   |   R 0,0       08R |   | R 0,1       09R | |   R G2,G3     1FR |\par
+    Ch failure        |                   | |   J2--    ** --JB | | | J3--    ** --JC | |   J4--    11 --JD   |   J5--    01 --JE     |                   |   J7--    00 --JG |   | J8--    01 --JH | |   J9--    ** --JJ |\par
+                      |                   | |                   | | |                 | |                     |                       --------------------+--------------------   |                 | |  0^-0>FF          |\par
+K                     |                   | |                   | | |                 | |                     |                                           |                       |                 | |  A-gate must      |\par
+                      |                   O-+-------------------O | ------------------+-+-------------------- |                                           |                       |                 | |  block G-reg FF.  |\par
+                      |                   | |       10 --- 0B0E | |       01 --- 0B31 | |       10 --- 0B16 | |       10 --- 0B06                         |                       |     01 --- 0B1D | |       00 --- 0B24 |\par
+                      |                   | |   |             | | |   |             | | |   |             | | |   |             |                         |                       | |             | | |   K 1111,0      | |\par
+                      |                   | |   A SP^0>Z      | | |   A SP^0>Z      | | |   A SP^0>Z      | | |   A SP^0>Z      |                         |                       | A SP^-0>G     | | |   A 0^K0>TA     | |\par
+L                     |                   --+---S WRITE       |-- O---S WRITE       |-O O---|             |*- ----|             |--                       |                       O-|             |-O O---|             |-O\par
+                      |                     |   |             |   |   |             | | |   C 0>S0        |       |             | |                       |                       | C 0>S7        | | |   C 1>S7        | |\par
+                      |                     |   |             |   |   |             | | |   |             |       |             | |                       |                       | |             | | |   C 1>F0        | |\par
+                      |                     |   R 0,0       0CR   |   R 1,1       33R | |   R 1,1       33R       R 1,1       FFR |                       |                       | R 0,1       09R | |   R G4,G5     1FR |\par
+                      |                     |   L2--    ** --LB   |   L3--    ** --LC | |   L4--    11 --LD       L5--    11 --LE |                       |                       | L8--    01 --LH | |   L9--    ** --LJ |\par
+                      |                     |                     |                   | |                                         |                       |                       |                 | |  1>F0 conds.      |\par
+M                     |                     |                     |                   | |                                         |                       |                       |                 | |  ext intrp.       |\par
+                      ----------------------+---------------------+-------------------+-+------------------------------------------                       |                       |                 | |                   |    --------QB921------QAE\par
+                                            |                     |       00 --- 0B30 | |       00 --- 0B14                                               |                       |     10 --- 0B1E | |       01 --- 0B25 |    |       (11)\par
+                                            |                     |   |             | | |   |             |                                               |                       | |             | | |   K 1111,0      | |    |       1620 test\par
+                                            |                     |   A SP^0>Z      | | |   A SP^0>Z      |                                               |                       | A SP^-0>G     | | |   A 0^-K0>Z     | |    |\par
+N                                           |                     O---S WRITE       |-O ----|             |*-                                             |                       --|             |-O ----|             |--    O-------QB701------QAE\par
+                                            |                     |   |             | |     |             | |                                             |                         C 0>S7        | |     C 1>S6        |      |       (11) 2 mic\par
+                                            |                     |   |             | |     |             | |                                             |                         |             | |     |             |      |       R/W storage\par
+                                            |                     |   R 1,1       33R |     R 0,0       0CR |                                             |                         R 0,1       09R |     R G6,G7     1FR      |       W/C pattern\par
+                                            |                     |   N3--    ** --NC |     N4--    00 --ND |                                             |                         N8--    01 --NH |     N9--    ** --NJ      |\par
+                        Start Alternate     |                     |                   |                     |                                             |                                         |                          |\par
+P                                           |                     |                   |                     |                                             |                                         |                          |\par
+                                            |                     ---------------------                     |                                             -------------------------------------------                          O-------QB702------QAE\par
+                              10 --- 0BFE   |                                                               |                                                                                                                  |       (11) 1.5 mic\par
+                          |             |   -----------------------------------------------------------------                                                                                                                  |       R/W storage\par
+                          |             |                                                                                                                                                                                      |       W/C pattern\par
+Q                         |             |*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------O-------QB771------QAE\par
+                          |             |                                                                                                                                                                                      |       (11)\par
+                          |             |                                                                                                                                                                                      |       Stg prot test\par
+                          R 1,1       B8R                                                                                                                                                                                      |\par
+                          Q1--    11 --QA                                                                                                                                                                                      | \par
+                         This word                                                                                                                                                                                             |\par
+R                        addresses 0BB8                                                                                                                                                                                        O-------QB841------QAE\par
+                         which is the                                                                                                                                                                                          |       (11)\par
+                         start addr of                                                                                                                                                                                         |       LS map\par
+                         the test in the                                                                                                                                                                                       |\par
+                         repopulation                                                                                                                                                                                          --------QB881------QAE\par
+S                        area.                                                                                                                                                                                                         (11)\par
+                                                                                                                                                                                                                                       Mpx test\par
+ Q                                                                                                                                                                                                                               \par
+ B\par
+ 6\par
+ 1                                                                                                                                                | 128056        04/27/66 | Mach          2030       | Date  05/09/66          Sheet    1  QB611 |\par
+ 1                                                                                                                                                |                        | Name                     | Log    2142             Version           |\par
+                                                                                                                                                  |                        | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837114     |    Diagnostic test-basic                  |\par
+                                                                                                                                                  |                        | IBM Corp.                |    ID 3345                                |\par
+}
+ 

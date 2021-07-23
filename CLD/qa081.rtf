@@ -1,0 +1,118 @@
+{\rtf1\ansi\deff0\adeflang1025
+{\fonttbl{\f0\froman\fprq2\fcharset0 Times New Roman;}{\f1\froman\fprq2\fcharset0 Times New Roman;}{\f2\fnil\fprq2\fcharset0 Lucida Sans Unicode;}{\f3\fmodern\fprq1\fcharset0 Courier New;}{\f4\fnil\fprq2\fcharset0 Tahoma;}{\f5\fnil\fprq0\fcharset0 Tahoma;}}
+{\colortbl;\red0\green0\blue0;\red128\green128\blue128;}
+{\stylesheet{\s1\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af4\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\snext1 Default;}
+{\s2\sa120\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af4\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon1\snext2 Text body;}
+{\s3\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon2\snext3 List;}
+{\s4\sb120\sa120\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs20\lang255\ai\ltrch\dbch\af2\afs20\langfe255\ai\loch\f0\fs20\lang1033\i\sbasedon1\snext4 Caption;}
+{\s5\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon1\snext5 Index;}
+{\s6\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033\sbasedon1\snext6 Preformatted Text;}
+}
+{\info{\creatim\yr2004\mo4\dy24\hr13\min18}{\operator Hans PUFAL}{\revtim\yr2004\mo4\dy24\hr13\min22}{\printim\yr2004\mo4\dy24\hr13\min21}{\comment StarWriter}{\vern6450}}\deftab709
+{\*\pgdsctbl
+{\pgdsc0\pgdscuse195\lndscpsxn\pgwsxn23811\pghsxn16837\marglsxn1440\margrsxn1440\margtsxn720\margbsxn720\pgdscnxt0 Default;}}
+\landscape\paperh16837\paperw23811\margl1440\margr1440\margt720\margb720\sectd\sbknone\lndscpsxn\pgwsxn23811\pghsxn16837\marglsxn1440\margrsxn1440\margtsxn720\margbsxn720\ftnbj\ftnstart1\ftnrstcont\ftnnar\aenddoc\aftnrstcont\aftnstart1\aftnnrlc
+\pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0                   0                    1                    2                     3                     4                     5                     6                     7                    8                    9}
+\par 
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                       This microprogram stores the instruction counter in local}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                       storage for SS ops and finishes the I cycle op}
+\par {\loch\f3\fs14\lang1033\i0\b0 A                                                                                                                                     Branching for SS ops the routine tests for a wrapped}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                       storage condition after the second syllable of the  SS}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                       format and gives an invalid address program trap if it}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                       exists. If a storage wrap would occur after the third}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                       syllable (beginning of the next instruction) the}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                       condition is stored and will be restored upon}
+\par {\loch\f3\fs14\lang1033\i0\b0 B                                                                                                                                     completion of the op when the instruction counter will}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                       be restored.}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                 01 --- 03A1           01 --- 0371}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                             |             |       |             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                             A I>R         |       A I-0>I       |}
+\par {\loch\f3\fs14\lang1033\i0\b0 C                                                                                       ----|             |*------S Write       |*---}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   |             |       |             |    |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   C Y>WRAP      |       |             |    |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   R 0,1       71R       R 0,1       06R    |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   C4--    01 --CD       CS--    10 --CE    |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                        Reduce I for        |}
+\par {\loch\f3\fs14\lang1033\i0\b0 D                                                                                       |                        third syllable      |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                        readout             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                               00 --- 0370           00 --- 0384           11 --- 035F   |       00 --- 03A0                          |      10 --- 0306           10 --- 032A           10 --- 0376}
+\par {\loch\f3\fs14\lang1033\i0\b0                           K 0010.1      |       |             |       K 0001,1      |   |   |             |                          ---K 0100        |       K 0100,0      |       K 0001,0      |}
+\par {\loch\f3\fs14\lang1033\i0\b0                           A J+KL>RC     |       A U>D         |       A I+0+C>IC    |   |   A I>R         |                             A SQKH>S      |       A GXL+KH>R    |       A I>I         |}
+\par {\loch\f3\fs14\lang1033\i0\b0 E   QA071,NDE---------O--*S *AA      LS S*------S Store       |*--O---S *A9      LS S*--O---|             |*----------------------------S Write       |*------S *BC      LS S*------S Store   K>W R*----------------------------------QA021------EHE}
+\par {\loch\f3\fs14\lang1033\i0\b0     (00.10.11)        |   |             |       |             |   |   |             |       |             |                             |             |       |             |       C 1>S7        |                                   (01)}
+\par {\loch\f3\fs14\lang1033\i0\b0     SS ending         |   |             |       R WRAP>X6     |   |   |             |       C Y>WRAP      |                             |             |       |             |   ----|             |                                   SS 2nd index}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   R 0.0       B4R       R 1.1       SFR   |   R 0,53      ADR       R 1,0       06R                             R 1,0       2AR       R 1,0       76R   |   R 0,1       15R}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   E1--    00 --EA       E2--    *1 --EB   |   E3--    0* --EC       E4--    10 --ED                             E6--    10 --EF       E7--    10 --EG   |   E8--    01 --EH}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |  End of first          Test for wrap      |  Store HI IC                                                       Set S1 to             Store ILC          | Return for second index.}
+\par {\loch\f3\fs14\lang1033\i0\b0 F                     |  index. Start          after second       |  No wrap                                                           indicate IC           and PSW bit        | Set S7 to indicate this}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |  store IC.             syllable.          |                                                                    stored                                   | I=I resets wrap latch}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |  Update lo IC                             |       01 --- 035D                                                                                           |       01 000 0374}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |  by 2 and store                           |   K 0100        |                                                                                           |   K 0101,0      |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |  in local stor.                           |   A 0+KH>G      |                                                                                           |   A 0+KL>L      |}
+\par {\loch\f3\fs14\lang1033\i0\b0 G                     |                                           ----|             |*----------------------------------------------------------------------------------------------|             |*---}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                               |             |                                                                                           |   C 0>S6        |   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                               |             |                                                                                           O---|             |   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                               R 0.0       74R                                                                                           |   R 1,CA01>W  46R   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                               G3--    00 --GC                                                                                           |   GB--    11 --GH   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                              Storage wrap                                                                                               |  Inv addr           |}
+\par {\loch\f3\fs14\lang1033\i0\b0 H                     |                                              Reduce ILC to 01                                                                                           |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                     -------------------------------------------------------------------------------------------------------------------------------------                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |       10 --- 0372   |                            00 --- -3F8                                                                                                                  |       11 ---  XXX}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   |             |   |                        K 0000.0      |                                                                                                                  |   | GO TO       |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   A U>D         |   |                        A             |                                                                                                                  |   | QA879CAE    |}
+\par {\loch\f3\fs14\lang1033\i0\b0 J                     O---|             |*---                     ---|             |---O----------------------O---------------------------------------------------------------------------------------O---|             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   |             |                         |  C 0>S6        |   |                      |                                                                                       |   |             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   R WRAP>X5     |                         |  |             |   |                      |                                                                                       |   |             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   R 1.0       76R                         |  R 1.ca01>W  46R   |                      |                                                                                       |   J9--    11 --JJ}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   J1--    *0 --JA                         |  J3--    11 --JC   |                      |                                                                                       |  Prt int}
+\par {\loch\f3\fs14\lang1033\i0\b0                       | End of first index                        | Inv op             |                      |                                                                                       |}
+\par {\loch\f3\fs14\lang1033\i0\b0 K                     | called by execute op                      |                    |                      |                                                                                       |}
+\par {\loch\f3\fs14\lang1033\i0\b0     QB061,AJE--------------------------------------------------------------------------------------------------------------------------------------------------------------------                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0     (01)              |                                           |       10 --- 03FA  |        11 --- 038B   |                             10 --- 030E                         |       01 --- 037D   |}
+\par {\loch\f3\fs14\lang1033\i0\b0     Set inv op        |                                           |   K 0000.0      |  |    K 0101.0      |   |                         |             |                         ---*K 0000.0      |   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                           |   A 0+0+1>L     |  /    A 0+KL>L      |   |                         A I+0+1>I     |                             A 0+0+1>l     |   |}
+\par {\loch\f3\fs14\lang1033\i0\b0 L                     |                                           O---|             |--   --|             |----                     ----|             |*---                     ----|             |----}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                           |   C 0>S6        |    /  C 0>S6        |                         |   |             |   |                     |   C 0>S6        |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                           |   |             |    |  |             |                         |   |             |   |                     |   |             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                           |   R 1+CA01>W  46R    |  R 1+CA01>W  46R                         |   R 0.0       0CR   |                     |   R 1,CA01>W  46R}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                           |   L3--    11 --LC    |  L4--    11 --LD                         |   L6--    00 --LF   |                     |   L8--    .. --LH}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                           |  Inv op              | Inv addr                                 |                     |                     |  Inv op}
+\par {\loch\f3\fs14\lang1033\i0\b0 M                     |                                           |                      |                                          |                     |                     |                                          -----------QA791------NGE}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |                                           |                      |                                          |                     |                     |                                          |          (00)}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |       11 --- 0373                         |       11 --- 03FB    |      01 --- 0389                         |                     |       00 --- 030C   |                                          |          PACK, UNPACK,}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   |             |                         |   |             |    |  |             |                         |                     ----|             |   |                                          |          MOVE W/OFFSET}
+\par {\loch\f3\fs14\lang1033\i0\b0                       |   A LX>D        |                         |   A J+DL>J      |    |  A V+LL>VC     |                         |                         A U+0+C>UC    |   |                                          |}
+\par {\loch\f3\fs14\lang1033\i0\b0 N                     ---*|             |*------------------------O---|             |*---O--|             |*------------------------O-------------------------|             |*--O------------------------------------------0----------QB001------NGE}
+\par {\loch\f3\fs14\lang1033\i0\b0                           C HZ>S4       |                         |   |             |       |             |                                                   |             |                                              |          (10)}
+\par {\loch\f3\fs14\lang1033\i0\b0                           |             |                         |   |             |       |             |                                                   |             |                                              |          DEC ADD, SUB}
+\par {\loch\f3\fs14\lang1033\i0\b0                           R G2,G3     FBR                         |   R S2.1      89R       R AC.0      0CR                                                   R G4.G5     7CR                                              |          CMP, Z ADD}
+\par {\loch\f3\fs14\lang1033\i0\b0                           N1--    ** --NA                         |   N3--    *1 --NC       N4--    *0 --ND                                                   N7--    ** --NG                                              |}
+\par {\loch\f3\fs14\lang1033\i0\b0                         End of second index.                      |  Add length to         Add length to                                                                                                                   -----------QB061------NGE}
+\par {\loch\f3\fs14\lang1033\i0\b0 P                       Begin of branching                        |  address to give       give lo order                                                                                                                              (11)}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   |  lo order addr         addr.}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   |       01 --- 03F9}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   |   |             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   |   A T>Z         |}
+\par {\loch\f3\fs14\lang1033\i0\b0 Q                                                                 ----|             |*------------------------------------------------------------------------------------------------------------------------------------------------QA761------QCE}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                       C 0>S0        |                                                                                                                                                 (00,01,10,11)}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                       |             |                                                                                                                                                 SS hi order}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                       Q3--    ** --QC                                                                                                                                                 ops}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                      Hi order ops}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                      finish op br}
+\par {\loch\f3\fs14\lang1033\i0\b0 R}
+\par 
+\par 
+\par 
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 S}
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0  Q}
+\par {\loch\f3\fs14\lang1033\i0\b0  A}
+\par {\loch\f3\fs14\lang1033\i0\b0  0}
+\par {\loch\f3\fs14\lang1033\i0\b0  8                                                                                                                                                | 128015        09/27/65 | Mach          2030       | Date  11/17/65          Sheet    1  QA081 |}
+\par {\loch\f3\fs14\lang1033\i0\b0  1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    3563             Version           |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | Mode          Manual     |                                           |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | P.N.          837008     |    SS Store IC                            |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | IBM Corp.     SDD        |    SS ending                              |}
+\par }

@@ -1,0 +1,151 @@
+{\rtf1\ansi\ansicpg1252\deff0
+{\fonttbl
+{\f0\fnil\fcharset0\fprq0\fttruetype Courier New;}
+{\f1\fnil\fcharset0\fprq0\fttruetype NULL;}
+{\f2\fnil\fcharset0\fprq0\fttruetype Dingbats;}
+{\f3\fnil\fcharset0\fprq0\fttruetype Symbol;}
+{\f4\fnil\fcharset0\fprq0\fttruetype Times New Roman;}
+{\f5\fnil\fcharset0\fprq0\fttruetype Arial;}}
+{\colortbl
+\red0\green0\blue0;
+\red255\green255\blue255;}
+{\stylesheet
+{\s7\sl240\slmult1\f4\fs24 Default;}
+{\s18\sl240\slmult1\fi-431\li720\sbasedon19 Lower Roman List;}
+{\s20\sl240\slmult1\tx431\sbasedon10\snext19 Numbered Heading 1;}
+{\s21\sl240\slmult1\tx431\sbasedon11\snext19 Numbered Heading 2;}
+{\s8\sl240\slmult1\fi-431\li720 Diamond List;}
+{\s22\sl240\slmult1\tx431\sbasedon12\snext19 Numbered Heading 3;}
+{\s23\sl240\slmult1\fi-431\li720 Numbered List;}
+{\s10\sl240\slmult1\sb440\sa60\f5\fs34\b\sbasedon19\snext19 Heading 1;}
+{\s27\sl240\slmult1\fi-431\li720 Square List;}
+{\s6\sl240\slmult1\fi-431\li720 Dashed List;}
+{\s29\sl240\slmult1\sa117\f4\fs24\sbasedon7 Text body;}
+{\s13\sl240\slmult1\fi-431\li720 Heart List;}
+{\s33\sl240\slmult1\fi-431\li720\sbasedon23 Upper Roman List;}
+{\s25\sl240\slmult1\f0\fs20\sbasedon7 Preformatted Text;}
+{\s4\sl240\slmult1\sb117\sa117\f4\fs20\i\sbasedon7 Caption;}
+{\s31\sl240\slmult1\fi-431\li720 Triangle List;}
+{\s32\sl240\slmult1\fi-431\li720\sbasedon23 Upper Case List;}
+{\s3\sl240\slmult1\fi-431\li720 Bullet List;}
+{\s9\sl240\slmult1\fi-431\li720 Hand List;}
+{\s26\sl240\slmult1\tx1584\sbasedon20\snext19 Section Heading;}
+{\s11\sl240\slmult1\sb440\sa60\f5\fs28\b\sbasedon19\snext19 Heading 2;}
+{\s12\sl240\slmult1\sb440\sa60\f5\fs24\b\sbasedon19\snext19 Heading 3;}
+{\s30\sl240\slmult1\fi-431\li720 Tick List;}
+{\s19\sl240\slmult1\f4\fs24 Normal;}
+{\s17\sl240\slmult1\fi-431\li720\sbasedon23 Lower Case List;}
+{\s1\sl240\slmult1\li1440\ri1440\sa117\sbasedon19 Block Text;}
+{\s16\sl240\slmult1\f4\fs24\sbasedon29 List;}
+{\s15\sl240\slmult1\f4\fs24\sbasedon7 Index;}
+{\s14\sl240\slmult1\fi-431\li720 Implies List;}
+{\s2\sl240\slmult1\fi-431\li720 Box List;}
+{\s28\sl240\slmult1\fi-431\li720 Star List;}
+{\s24\sl240\slmult1\f0\sbasedon19 Plain Text;}
+{\s5\sl240\slmult1\tx1584\sbasedon20\snext19 Chapter Heading;}}
+\kerning0\cf0\viewkind1\paperw23811\paperh16837\margl1440\margr1440\landscape\widowctl
+\sectd\sbknone\colsx360\margtsxn720\margbsxn720\pgncont\ltrsect
+\pard\plain\ltrpar\s19\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}QB091             0                    1                     2                     3                     4                     5                     6                     7                     8                     9}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}
+\par}\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         This page performs the main compute loop for all decimal}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         multiplies and divides  It either adds or subtracts the}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}A                        div/plier field straight or skewed (stored in loc stg)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         from the div/cand field (in main stg). The results are}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         always stored in the dvd/cand field and eventually will}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         become the quo/rem or the product. At the hi end of the}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         field a 90 or 09 is appended to the div/plier field for}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         the last step in the loop. Data is checked for being}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}B                        valid decimal digits since in divide, the dvd field was}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         not previously checked}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                      00 ---  7B8                                                                             11 ---  XXX}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                  K 0111,0      |                                                                         | Go to       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                  A 0+KL>L      |                                                                         | QA879.CAE   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}C                                                                                                           ------S WRITE       |*O-----------------------------------------------------------------------|             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                            |     C 0>S6        | |                                                                       |             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                            |     C          007V |                                                                       |             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                            |     R 1,CA01>W  47R |                                                                       |             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                            |     C5--    11 --CE |                                                                       C9--    11 --CJ}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                            |    Invalid data     |                                                                      Prg Int}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}D                                                                                                           |                     | ---------------------------------------------------------------------------------------------------QB121------JEE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                            |                     | |                                                                                                  (01)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                            |         10 ---  7BA | |       00 ---  7BC                                 00 ---  7C4                                    Special cycle}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                            |     K 0111,0      | | |   |             |                             |             |                                    end}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                            |     A 0+KL>L      | | |   A V-0>V       |                             A J+LL+1>JC   |                          }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}E                                                                                                           O-----S WRITE       |-- O---S UV>MN    LS S*-                     ------S WRITE       |*-----------------------------------QB101------EHE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                            |     C 0>S6        |   |   |             | |                     |     |             |                                    (00,10)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QB101.CCE--------                                                                                       |     C          007V   |   C          007R |                     | ----C          007V                                    Multiply}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (00,01)         |                                                                                       |     R 1,CA01>W  47R   |   R 1,0       B6R |                     | |   R S4,0      CCR                                    straight}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    |                                                                                       |     E5--    11 --EE   |   E6--    10 --EF |                     | |   E8--    *0 --EH                                    loop out}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    |                                                                                       |    Invalid data       |                   |                     | |  Multiply-Note 1}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}F                   |                                                                                       |                       |                   |                     | |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QB111.EJE-------O                         --------------------------------------------------------------+-----------------------+-------------------O                     | ---------------------}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (00,01)         |         00 ---  7B0     |     10 ---  7B6           11 ---  7B7           10 ---  7AA |         01 ---  7B9   |       10 ---  7BE |         00 ---  7C0 |         10 ---  7C6 |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    |     |             |     --|             |       |             |       K          DECA |     |             |   |   |             | |     K 1001     DECA |     K 1001        | |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    |     A V-0>VC      |       A R>D         |       A J-0>J       |       A R+-D+C>RC   | |     A I-0>I       |   |   A V-0>V       | |     A R+-KH+C>RC  | |     A RH-KH+1>Z   | |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}G   QB131.GCE-------O----*S UV>MN    LS S*--O---S WRITE       |*O-----S IJ>MN    MS S*------|             |*O-----S WRITE       |*- O---S UV>MN    LS S--     |             |*O-----S WRITE       |*-}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (00,01)         |     C 0>S4,S5     |   |   |             | |     |             |       C 0>S2        | |     |             | | |   |             |       C HZ>S4,LZ>S5 | |     C HZ>S4       |  }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Start           | ----C          007V   |   C          007V | ----C          007V       C          007V |     C          007V | |   C          007V   ----C          007V |     C          007V  }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    main loop       | |   R S0,0      B4R   |   R G0,1      B5R | |   R 1,0       AAR       R AC,R=VDD  B8R |     R 1,1       BBR | |   R 1,0       B6R   |   R S0,G7     C4R |     R 0,0       C4R  }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    | |   G1--    *0 --GA   |   G2--    *1 --GB | |   G3--    10 --GC       G4--    ** --GD |     G5--    11 --GE | |   G6--    10 --GF   |   G7--    ** --GG |     G8--    00 --GH  }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    | |  Set S3=1           |  D=div/plier char | |  RO dvd/cand           Compute cycle    |                     | |                     |                   |   Multiply-Sub cycle}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}H                   | |                     |                   | |                                         |                     | |                     |                   |   test for hi digit=9}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    | --------------------- |                   | ---------------------                     | --------------------- |                     |                   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    |         01 ---  7B1 | |       00 ---  7B4 |         01 ---  7B5 |                     | |       11 ---  7BB   |       11 ---  7BF   |       01 ---  7C1 |         01 ---  7C5}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    |     |             | | ----|             | |     |             | |                     | ----K 1000        |   |   |             |   |   K 1001     DECA |     |             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    |     A I+0+1>I     | |     A R>DC        | |     A 0>Z         | |                     |     A V^K>Z       |   |   A TL-0>Z      |   |   A R+-KH+C>RC  | |     A J+LL+1>JC   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}J                   ------|             |*-     S WRITE       |-O-----|             |*-                     ------S WRITE       |*--O---S IJ>MN    MS S*--O---|             |-O-----S WRITE       |*--O--------------------------------QB131------JHE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          |             |       |             |       C LZ>S5       |                             C LZ>S5       |       C ANSNZ>S2    |   |   C HZ>S4,LZ>S5 | |     |             |   |                                (10,11)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          C          007V       C          007V       C          007V                             C          007V       C          007V   |   C          007V |     C          007V   |                                Divide}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          R 0,0       B0R       R G0,1      B5R       R 1,1       B7R                             R G2,S5     BCR       R S6,S3     C0R   |   R S0,G7     C4R |     R 1,S5      66R   |                                straight}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          J1--    00 --JA       J2--    *1 --JB       J3--    11 --JC                             J5--    ** --JE       J6--    ** --JF   |   J7--    ** --JG |     J8--    1* --JH   |                                loop out}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                               Will be adding        Div/plier is a                              Test for end          End of minor       |  Above 2 steps    |    Divide-Note 1      |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}K                                              Set S3=0              1 char field                                of minor loop         loop, test         |  add or sub 90    |                       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                               D=div/plier char      Set S5=1                                    (S5=1)                for end of         |  and test for     |                       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                       major loop         |  results=0        |         11 ---  7C7   |       11 ---  7AF}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    IJ=Dvd/cand addr                                                                                                   (S2=0)             |  at the end of    |     |             |   |   K 1001        |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                     V=Div/plier addr                                                                                                                     |  a straight cycle |     A J+LL+1>JC   |   |   A R-K+1>Z     |  }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}L                   TL=Count for times thru                                                                                                               |                   ------S WRITE       |----   S STORE       |*-}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                       major loop                                                                                                                         |                         |             |       C HZ>S4,LZ>S5 | |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    S0=0=Add cycle                                                                                                                        |                         C          007V ------C          007V |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    S0=1=Sub cycle                                                                                                                        |                         R 1,S5      66R |     R 0,1       ADR |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    S2 set to 0 at step GB  If it stays off at                                                                                            |                         L8--    1* --LH |     L9--    01 --LJ |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                       step JF, it signifies the end of the major loop                                                                                    |                        Divide-Note 1    |    Sub cycle, test  |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}M                   S4,S5=used to test for results of last cycle=0 if                                                                                     |                                         |    for digits=9     |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                        S0=0 or 9 if S0=1. S5 also used to detect                                                                                         |                                         | ---------------------}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                        end of minor loop.                                                                                                                |       10 ---  7C2           10 ---  7B2 | |       01 ---  7AD}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                      S6=0=Straight cycle                                                                                                                 |   K 1001     DECA       |             | | ----|             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                      S6=1=Skewed cycle                                                                                                                   |   A R+-KL>D     |       A RH+DL>R     | |     A J+LL+1>JC   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}N                     G0=0=Div/plier is a 1 char field                                                                                                    O---S WRITE       |*--O---S IJ>MN    MS S*O-----S STORE       |*-------------QB101------NJE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                      G2=0=In special loop                                                                                                                |   |             |   |   C HZ>S4,LZ>S5 |       |             |              (00,01,10,11)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                      G7=0=Multiply                                                                                                                       |   C          007V   |   C          007V       C          007V              Multiply}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                      G7=1=Divide                                                                                                                         |   R 1,G7      B2R   |   R S0,1      ADR       R S4,S5     C8R              skewed}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                          |   N7--    1* --NG   |   N8--    *1 --NH       N9--    ** --NJ              loop out}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                          |                     |  Mpy-test for          Multiply-Note 1}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}P                                                                                                                                                         |                     |  digits=zero}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                          |                     |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                          |       11 ---  7C3   |       11 ---  7B3           11 ---  7AB}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                             Note 1 - This steps adds L2+1 to             |   K 1001     DECA   |   |             |       |             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                      the dvd/cand addr  This             |   A R+-KL+1>D   |   |   A RH+DL>R     |       A J+LL+1>JC   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}Q                                                                                                                     increments it to the                ----S WRITE       |---O---S IJ>MN    MS S*------S STORE       |*-------------QB131------QJE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                      correct lo order addr                   |             |       |             |       |             |              (10,11)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                      for start of next minor                 C          007V       C          007V   ---*C          007V              Divide}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                      loop                                    R 1,G7      B2R       R 1,1       ABR   |   R 1,S3      62R              skewed}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                              Q7--    1* --QG       Q8--    11 --QH   |   Q9--    1* --QJ              loop out}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                        Above 2 steps add          Above 2 steps      |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}R                                                                                                                                                       or sub 09 at end           store lo digits    |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                        of a skewed cycle.         results without    |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                        A carry is added in        disturbing hi      |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                        at QG without              digit.             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                        disturbing S3                                 |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}S   QB121.DFE------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (11)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} Q  Add back}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} B  divisor}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 0}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 9                                                                                                                                                | 128015        09/27/65 | Mach          2030       | Date  11/17/65          Sheet    1  QB091 |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    3564             Version    007    |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  |                        | Mode          Manual     |                                           |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  |                        | P.N.          837083     |    Decimal multiply/divide                |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  |                        | IBM Corp.                |    Main loop                              |}
+\par\pard\plain\ltrpar\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}}}

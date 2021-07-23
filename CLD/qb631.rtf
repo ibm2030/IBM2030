@@ -1,0 +1,106 @@
+{\rtf1\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\lang1033\f0\fs14 QB631             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+ \par
+                                              Register test\par
+                                              Each register is checked individually as follows.\par
+A                                             1.The register is set to 00.\par
+                                              2.Then all other CD decodes are destined with other than\par
+                                                00 on the Z-bus\par
+                                              3.The original register is read out and checked for 00.\par
+                                              4.The loop is repeated for the next register\par
+\par
+B                                             The CD decode is ok if a reg is still 00 after destining\par
+                                              all other regs.\par
+                                              The CA and CB decodes are ok if only the 00 from the\par
+                                              original reg is read out to the A or B bus with all other\par
+                                              regs containing some data.\par
+C \par
+  \par
+  \par
+  \par
+  \par
+\par
+D\par
+\par
+                              11 --- 0B2F           01 --- 0B35           10 --- 0B36           11 --- 0B3B           11 --- 0B43           01 --- 0B3D           10 --- 0B4A           01 --- 0B45           10 --- 0B4E\par
+                          K 1111,0      |       K 1110,0      |       K 1111,0      |       K 1111,0      |       K 0000,1      |       K 0110,0      |       K 0110,1      |       K 0110,0      |       K 0000,0      |\par
+                          A 0^KH>G      |       A S!KL>S      |       A 0^K>TE      |       A 0^K>H       |       A 0^-0>R      |       A 0^-0>D      |       A 0^-0>L      |       A 0^-0>T      |       A 0^-0>V      |    \par
+E   QB621.EJE------------*|             |*O-----|             |*O-----|             |*--O---|             |*----O-|             |*----O-|             |*----O-|             |*----O-|             |*----O-|             |*-------------QB621------EJE\par
+    (11)                  C HZ>S4       | |     |             | |     C 1>S7        |   |   |             |     | C K>FA        |     | C K>FB        |     | C K>FB        |     | C K>FA        |     | C K>FA        |              (00,01)\par
+    Reg test              |             | |     |             | | ----|             |   |   |             |   --+-|             |   --+-|             |   --+-|             |   --+-|             |   --+-|             |              More reg\par
+                          R S4,1      35R |     R 1,S5      36R | |   R 1,S7      3BR   |   R G0,1      43R   | | R 0,G1      3DR   | | R G2,0      4AR   | | R 0,G3      45R   | | R G4,0      4ER   | | R 0,G5      51R\par
+                          E1--    *1 --EA |     E2--    1* --EB | |   E3--    1* --EC   |   E4--    *1 --ED   | | E5--    0* --EE   | | E6--    *0 --EF   | | E7--    0* --EG   | | E8--    *0 --EH   | | E9--    0* --EJ\par
+                         00^F0=F0         |    D*!0E=D*         | |  00^FF=FF           |  00^FF=FF           | |00^-00=FF          | |00^-00=FF          | |00^-00=FF          | |00^-00=00          | |00^-00=00\par
+F                        S4 must be 0     |    S5 must be 0     | |  Bran on S7=0       |  Bran on G0=0       | |Bran on G1=0       | |Bran on G2=0       | |Bran on G3=0       | |Bran on G4=0       | |Bran on G5=0\par
+                         from B11.        |    from B2C         | |  to check H-reg     |  to check R-reg     | |to check D-reg     | |to check L-reg     | |to check T-reg     | |to check V-reg     | |to check U-reg\par
+                         CS 0010 may      |    Set S4 and S5    | |  for 0. CS 1101     |  for 0.             | |for 0. Set         | |for 0. Reset       | |for 0. Set         | |for 0. Reset       | |for 0. Reset\par
+                         cause S5 to be   |                     | |  may cause S2       |                     | |cmd start to       | |Mpx opn latch      | |Mpx opn latch      | |cmd start          | |addr out\par
+                         set erroneously  |                     | |  to set erron.      |                     | |block FT3          | |                   | |                   | |CS 1111 may        | |\par
+G                                         |                     | |                     |                     | |                   | |                   | |                   | |cause Mpx          | |\par
+                                          | --------------------- |                     |                     | |                   | |                   | |                   | |opn latch to       | |\par
+                                          | |                     |                     |                     | |                   | |                   | |                   | |reset erron.       | |\par
+                                          | |                     |                     |                     | |                   | |                   | |                   | |                   | |\par
+                                          | |                     |                     |                     | |                   | |                   | |                   | |                   | |\par
+                                          | |                     |                     |                     | |                   | |                   | |                   | |                   | |\par
+H                                         | |                     |                     |                     | |                   | |                   | |                   | |                   | |\par
+                                          | |                     |                     |                     | |                   | |                   | |                   | |                   | |\par
+                                          | |       11 --- 0B37   |                     |       10 --- 0B3A   | |     01 --- 0B41   | |     00 --- 0B3C   | |     00 --- 0B48   | |     00 --- 0B44   | |     00 --- 0B4C\par
+                                          | ----|             |   |                     |   |             |   | | |             |   | | K 1100,0      |   | | K 1110,0      |   | | K 0010,0      |   | | K 0001,0      |\par
+                                          |     A SP^0>Z      |   |                     |   A H^0>G       |   | | A R^0>G       |   | | A MC^D>Z      |   | | A 0^L>Z       |   | | A 0^-KH>G     |   | | A 0^-KH>G     |  \par
+J                                         ------|             |*- |                     ----|             |*- | --|             |*- | --|             |*- | --|             |*- | --|             |*- | --|             |*-\par
+                                                |             | | |                         C ANSNZ>S2    | | |   C ANSNZ>S2    | | |   C ANSNZ>S2    | | |   C ANSNZ>S2    | | |   |             | | |   |             | |\par
+                                                |             | | |                         |             | | |   |             | | |   C Y>WRAP      | | |   |             | | |   |             | | |   |             | |\par
+                                                R 0,1       11R | |                         R 1,0       3ER | |   R 0,1       65R | |   R 1,0       46R | |   R 0,1       49R | |   R 1,1       47R | |   R 1,1       4FR |\par
+                                                J2--    01 --JB | |                         J4--    10 --JD | |   J5--    01 --JE | |   J6--    10 --JF | |   J7--    01 --JG | |   J8--    11 --JH | |   J9--    11 --JJ |\par
+                                                                | |                        Check CA and CD  | |  Check CA and CD  | |  Check CB and CD  | |  Check CB and CD. | |  00^-20=DF        | |  00^-10=EF        |\par
+K                                                               | |                        decodes of H     | |  decodes of R     | |  of D and CA of MC| |  decodes of L     | |                   | |                   |\par
+                                                                | |                     --------------------- | ------------------- | ------------------- | ------------------- | ------------------- | -------------------\par
+                                                                | |                     |       10 --- 0B3E   | |     01 --- 0B65   | |     10 --- 0B46   | |     01 --- 0B49   | |     11 --- 0B47   | |     11 --- 0B4F\par
+                                                                | |                     |   K 1111,0      |   | | K 1111,0      |   | | K 1000,0      |   | | K 0100,0      |   | | |             |   | | |             |\par
+                                                                | |                     |   A C0^K>G      |   | | A G^R>H       |   | | A 0^-KH>G     |   | | A 0^-KH>G     |   | | A T^0>L       |   | | A V^0>T       |  \par
+L                                                               | |                     ----|             |*- | --|             |*- | --|             |*- | --|             |*- | --|             |*- | --|             |*-\par
+                                                                | |                         C 0>S6        | | |   C ANSNZ>S2    | | |   C 0>S2        | | |   C 0>S2        | | |   C ANSNZ>S2    | | |   C ANSNZ>S2    | |\par
+                                                                | |                         |             | | | --|             | | |   |             | | |   |             | | O---|             | | O---|             | |\par
+                                                                | |                         R 1,0       36R | | | R 0,G3      64R | |   R 1,1       3FR | |   R 1,1       4BR | |   R G2,1      45R | |   R 1,G3      4ER |\par
+                                                                | |                         L4--    10 --LD | | | L5--    0* --LE | |   L6--    11 --LF | |   L7--    11 --LG | |   L8--    *1 --LH | |   L9--    1* --LJ |\par
+                                                                | |                        CA is 0 to       | | |Check CB of R    | |  C0^-60=7F        | |  00^-40=BF        | |  Check CA and CD  | |  Check CA and CD  |\par
+M                                                               | |                        reset intv       | | |and CA of G      | |                   | |                   | |  decode of T      | |  decode of V      |\par
+                                                                | |                        timer            | | O------------------ | ------------------- | ------------------- --------------------- ---------------------\par
+                                                                | ------------------------------------------- | |     00 --- 0B64   | |     11 --- 033F   | |     11 --- 0B4B  \par
+                                                                |                                             | | K 1111,0      |   | | |             |   | | |             |  \par
+                                                                |                                             | | A 0^K>G       |   | | A D^0>R       |   | | A L^0>D       |  \par
+N                                                               |                                             | --|             |*- | --|             |*- | --|             |*-\par
+                                                                |                                             |   C 0>S7        | | |   C ANSNZ>S2    | | |   C ANSNZ>S2    | |\par
+                                                                |                                             |   |             | | O---|             | | O---|             | |\par
+                                                                |                                             |   R 1,1       43R | |   R G0,1      3DR | |   R 1,G1      4AR |\par
+                                                                |                                             |   N5--    11 --NE | |   N6--    *1 --NF | |   N7--    1* --NG |\par
+                                                                |                                             |                   | |  Check CA decode  | |  Check CA decode  |\par
+P                                                               |                                             |                   | |  of D             | |  of L             |\par
+                                                                |                                             --------------------- --------------------- ---------------------\par
+                                                                |\par
+                                                                |\par
+                                                                | \par
+Q                                                               |\par
+                                                                |\par
+                                                                |\par
+                                                                |\par
+                                                                |\par
+                                                                |\par
+R                                                               -----------------------------------------------------------------------------------------------------------------------------------------------------------------------QB621------JBE\par
+                                                                                                                                                                                                                                       (01)\par
+                                                                                                                                                                                                                                       Reg\par
+                                                                                                                                                                                                                                       loop\par
+\par
+S\par
+\par
+ Q\par
+ B\par
+ 6\par
+ 3                                                                                                                                                | 128056        04/18/66 | Mach          2030       | Date  05/09/66          Sheet    1  QB631 |\par
+ 1                                                                                                                                                |                        | Name                     | Log    2142             Version           |\par
+                                                                                                                                                  |                        | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837117     |    Diagnostic test-basic                  |\par
+                                                                                                                                                  |                        | IBM Corp.                |    ID 3345                                |\par
+}
+ 

@@ -1,0 +1,151 @@
+{\rtf1\ansi\ansicpg1252\deff0
+{\fonttbl
+{\f0\fnil\fcharset0\fprq0\fttruetype Courier New;}
+{\f1\fnil\fcharset0\fprq0\fttruetype NULL;}
+{\f2\fnil\fcharset0\fprq0\fttruetype Dingbats;}
+{\f3\fnil\fcharset0\fprq0\fttruetype Symbol;}
+{\f4\fnil\fcharset0\fprq0\fttruetype Times New Roman;}
+{\f5\fnil\fcharset0\fprq0\fttruetype Arial;}}
+{\colortbl
+\red0\green0\blue0;
+\red255\green255\blue255;}
+{\stylesheet
+{\s7\sl240\slmult1\f4\fs24 Default;}
+{\s18\sl240\slmult1\fi-431\li720\sbasedon19 Lower Roman List;}
+{\s20\sl240\slmult1\tx431\sbasedon10\snext19 Numbered Heading 1;}
+{\s21\sl240\slmult1\tx431\sbasedon11\snext19 Numbered Heading 2;}
+{\s8\sl240\slmult1\fi-431\li720 Diamond List;}
+{\s22\sl240\slmult1\tx431\sbasedon12\snext19 Numbered Heading 3;}
+{\s23\sl240\slmult1\fi-431\li720 Numbered List;}
+{\s10\sl240\slmult1\sb440\sa60\f5\fs34\b\sbasedon19\snext19 Heading 1;}
+{\s27\sl240\slmult1\fi-431\li720 Square List;}
+{\s6\sl240\slmult1\fi-431\li720 Dashed List;}
+{\s29\sl240\slmult1\sa117\f4\fs24\sbasedon7 Text body;}
+{\s13\sl240\slmult1\fi-431\li720 Heart List;}
+{\s33\sl240\slmult1\fi-431\li720\sbasedon23 Upper Roman List;}
+{\s25\sl240\slmult1\f0\fs20\sbasedon7 Preformatted Text;}
+{\s4\sl240\slmult1\sb117\sa117\f4\fs20\i\sbasedon7 Caption;}
+{\s31\sl240\slmult1\fi-431\li720 Triangle List;}
+{\s32\sl240\slmult1\fi-431\li720\sbasedon23 Upper Case List;}
+{\s3\sl240\slmult1\fi-431\li720 Bullet List;}
+{\s9\sl240\slmult1\fi-431\li720 Hand List;}
+{\s26\sl240\slmult1\tx1584\sbasedon20\snext19 Section Heading;}
+{\s11\sl240\slmult1\sb440\sa60\f5\fs28\b\sbasedon19\snext19 Heading 2;}
+{\s12\sl240\slmult1\sb440\sa60\f5\fs24\b\sbasedon19\snext19 Heading 3;}
+{\s30\sl240\slmult1\fi-431\li720 Tick List;}
+{\s19\sl240\slmult1\f4\fs24 Normal;}
+{\s17\sl240\slmult1\fi-431\li720\sbasedon23 Lower Case List;}
+{\s1\sl240\slmult1\li1440\ri1440\sa117\sbasedon19 Block Text;}
+{\s16\sl240\slmult1\f4\fs24\sbasedon29 List;}
+{\s15\sl240\slmult1\f4\fs24\sbasedon7 Index;}
+{\s14\sl240\slmult1\fi-431\li720 Implies List;}
+{\s2\sl240\slmult1\fi-431\li720 Box List;}
+{\s28\sl240\slmult1\fi-431\li720 Star List;}
+{\s24\sl240\slmult1\f0\sbasedon19 Plain Text;}
+{\s5\sl240\slmult1\tx1584\sbasedon20\snext19 Chapter Heading;}}
+\kerning0\cf0\viewkind1\paperw23811\paperh16837\margl1440\margr1440\landscape\widowctl
+\sectd\sbknone\colsx360\margtsxn720\margbsxn720\pgncont\ltrsect
+\pard\plain\ltrpar\s19\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}QC011             0                    1                     2                     3                     4                     5                     6                     7                     8                     9}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}
+\par}\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                   This routine contains the completion of CAW check for}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                   the Start I/O instruction and the final breakout of SIO }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}A                                                                                                                                  and TIO to the designated channel routines, also found}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                   on this page is the Transfer-in-Channel (TIC) routine}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                   used when specified in command-chaining (CC) and data}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                   chaining (CDA). TIC is an illegal initial command (the}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                   CAW cannot legally specify a 1st CCW which contains a}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                   TIC command-format XXXX1000).}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}B}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                   On TIC error (bad format or address S2=1) we update the}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                    10 --- 058A           11 006 050B           00 --- 050C                        next CCW address in the UCW +8 in preparation for}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                |             |       |             |       |             |                        a full CSW store. If no error we update UCW}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                A R>Z         |       A RL>Z        |       A UL!RH>U     |                        and IJ with the new CCW address +8 as}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}C   QC001.JHE-------------------------------O---S T>MN     MS S*------S WRITE       |*------|             |*---                    specified by the TIC.}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (11,10)                                 |   C ANSNZ>S2    |       C ANSNZ>S2    |       |             |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    CAW handling                            |   |             |       |          006V       |             |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    routine for                             |   R 1,1       0BR       R 0,0       0CR       R 1,0       72R   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Start IO-                               |   C2--    11 --CB       C3--    00 --CC       C4--    10 --CD   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    MP portion                              |  A8-Mem Prot           Chk lo 4 bits         Load prot tag      |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}D                                           |  byte in CAW           must be zero          into U high        |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                            ------------------------------------------------------------------+----------------------}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                              |       10 --- 0572   |       11 --- 058B}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                              |   K 0111        |   ---*K 0111,1      |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                              |   A U.KL>Z      |       A 0+KL>LC     |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}E   QC351.EHE-------------------------------------------------------------------------------------------------O---S IJ>MN    MS S*--O---S WRITE       |*-------------------------------------------------------------------------------QD461------EFE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (10)                                                                                                          C ANSNZ>S2    |   |   C 1>S7        |                                                                                (01) JB}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    IPL entry                                                                                                     |             |   |   |             |                                                                                Program err}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    to Start IO                                                                                                   R S2,1      89R   |   R 0,CA0A>W  89R                                                                                Interrupt}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    routine                                                                                                       E5--    *1 --EE   |   E6--    01 --EF                                                                                exit}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                 Chk chnl addr      |  CAW format bad                                                                                  L=07}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}F                                                                                                                in U lo for 000    |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QC001.LDE-------------------------------------------------------------------------------------------------   Begin access       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (01)                                                                                                     |   to CCW cmd         |       01 --- 0589           11 014 058F}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    From Test                                                                                                |   byte--000          |   K 1001,0      |       K 1001,1      |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    IO or Intrpt                                                                                             |                      |   A J+0+1>J     |       A UL>Z        |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}G   initialization                                                                                           -----------------------O---S WRITE       |*--O---|         K>W R*--O------------------------------------------------------QD131------GGE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                        C K>FB        |   |   |             |   |                                                      (11)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                        |             |   |   |          014V   |                                                      Selr ch}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                        R S2,G7     8CR   |   R S4,1      1BR   |                                                      I-O commands}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                        G6--    ** --GF   |   G7--    *1 --GG   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                       Good CAW pnt       |  Selr TIO cmd       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}H                                                                                                                                      Load XH,XL=00      |  or interrupt       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                          |                     |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                    00 --- 0544           10 --- 0512                                                                     |       10 014 058E   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QC131.LHE----------------------------------*K 0010        |       K 0111        |                                                                     |   K 1001,1      |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (00)                                        A J+KL>J      |       A J!KL>J      |                                                                     |   A UL>Z        |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}J   Enter CCW                                   S IJ>MN    MS S*--O---S WRITE       |*---                                                                 O---|         K>W R---O------------------------------------------------------QD011------GGE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    chk routine                                 |             |   |   |             |   |                                                                 |   |             |                                                          (01)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    from command                            ---*|             |   |   |             |   |                                                                 |   |             |                                                          Selr ch}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    chaining                                |   R 1,Z=0     12R   |   R 0,0       1CR   |                                                                 |   R 0,1       19R                                                          I-O commands}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    S0=0                                    |   J2--    1* --JB   |   J3--    00 --JC   |                                                                 |   J7--    *1 --JG    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                            |  CCW byte 1         |  No TIC             |                                                                 |  Selr Stt IO}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}K                                           |  (must be zero)     |                     |                                                                 |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QC101.CGE--------------------------------  BR on TIC cmd      |                     ------------------------------------------------------------------+----------------------------------------------------------------------------QC021------JCE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (00)                                                          |       11 --- 0513                                 10 --- 0526                         |                                                                            (00) JD}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Enter TIC                                                     |   |             |                             K 1001,1      |                         |                                                                            Enter CCW cmd}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    check rtne                                                    |   A R>Z         |                             A 0+KL>L      |                         |                                                                            routine}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}L   from CDA                                                      ----S WRITE       |*---                     ----|             |*------------------------+----------------------------------------------------------------------------QC461------LEE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    routine                                                           C ANSNZ>S2    |   |                     |   C 1>S7        |                         |                                                                            (01,11) JB,NB}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                      |             |   |                     |   |             |                         |                                                                            Program err}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                      R 0,1       19R   |                     |   R ?0,CA0A>W 89R                         |                                                                            interrupt}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                      L3--    01 --LC   |                     |   L5--    *1 --LE                         |                                                                            Exit-L=09}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                     TIC on chaning     |                     |  TIC cmd format                           |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}M                                                                    Chk byte 1 for NZ  |                     |  bad-bad addr                             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                            ---------------------------------------------                     -------------------------                   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                            |       01 --- 0519           01 --- 0821                                                 |     00 --- 0524   |       00 --- 058C}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                            |   K 0011,1      |       K 0111        |                                                 | |             |   O---K 1000        |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                            |   A J^KL>J      |       A RL.KL>Z     |                                                 | A J+0+1>JC    |   |   A RL^KL>Z     |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}N                                           ----S IJ>MN    MS S*------S WRITE       |*---                                             O-S IJ>MN    MS S*--+---S WRITE       |*---------------------------------------------------------QC021------NGE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                |             |       C ANSNZ>S2    |   |                                             | |             |   |   |             |                                                          (00) EB}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                |             |       |             |   |                                             | |             |   |   |             |                                                          TIC complete}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                R 0,1       21R       R 0,1       0DR   |                                             | R 0,0       8CR   |   R 0,0       1?R                                                          Enter CCW chk}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                N2--    01 --NB       N3--    01 --NC   |                                             | N6--    00 --NF   |   N7--    00 --NG                                                          routine}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                               CCW byte 3            Chk lo 3 bits      |                                             |Read-out CCW       |  SIO or Chain}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}P                                              New CCW adr lo        for non zero       |                                             |op byte 0          |  Chk for TIC}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                      -------------------------------------------------------------------                                             |                   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                      |       01 --- 050D           00 --- 0522           01 --- 05AD           11 --- 05CB           .00--- 0510     | New CCW addr      |       01 --- 058D           01 --- 0561}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                      |   K 0111        |       K 1000        |       K 0001        |       |             |       |             |     | is now in IJ      |   |             |       K 1001,0      |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                      |   A T!KL>T      |       A J+KL>RC     |       A T^KL>T      |       A I+0+C>RC    |       |             |     |                   |   A 0>S         |       A 0-0>L       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}Q                     ---*|             |*--O---S T>MN    MPX S*------S STORE       |*------S T>MN    MPX S*------S STORE       |*-----                   ----|             |*------|             |*-----------------------------------QC041------QHE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          |             |   |   |             |       |             |       |             |       |             |                             |             |       C K>FB        |                                    (01) ED}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          |             |   |   |             |       |             |       |             |       |             |                             |             |       |             |                                    Enter T addr}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          R S2,0      20R   |   R 0,1       ADR       R 1,1       CBR       R 0,0       10R       R S2,0      24R                             R 0,1       61R       R 0,1       9?R                                    formation}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          Q1--    *0 --QA   |   Q2--    01 --QB       Q3--    11 --QC       Q4--    00 --QD       Q5--    *0 --QE                             Q7--    01 --QG       Q8--    01 --QH                                    routine-TIO}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                            |                                                                                                                Mplx chnl TIO         Set L=FF as}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}R                                           --------------------------------------------O------------------------------------------------------------------  or interrupt          a mask for}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |                                                                 |                        later use,}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                        |       00 --- 0520           01 --- 0541           11 --- 0543   |                        XXH,XH,XL=000}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    This version for system with                                        |   K 0010        |       |             |       |             |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                    memory protect and with at least                                    |   A J!KL>J      |       A R>J         |       A R>Z         |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}S                   one selector channel                                                ----|             |*------S IJ>MN    MS S*------S WRITE       |----}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                            |             |       |             |       |             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} Q                                                                                          |             |       |             |       |             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} C                                                                                          R 0,1       41R       R 1,1       43R       R 1,0       22R}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 0                                                                                          S4--    01 --SD       S5--    11  -SE       S6--    *0 --SF}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 1                                                                                                                                                | 128065        07/26/67 | Mach          2030       | Date  09/24/68          Sheet    1  QC011 |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 1                                                                                                                                                | 128066        11/14/67 | Name                     | Log    2016             Version    A03    |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  | 128069        09/09/68 | Mode          Manual     |                                           |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  |                        | P.N.          837142     |    Selector Cnl op breakout               |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  |                        | IBM Corp.     SDD        |    and Mplx Cnl TIC routine               |}
+\par\pard\plain\ltrpar\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}}}

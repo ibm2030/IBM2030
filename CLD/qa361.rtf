@@ -1,0 +1,106 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\ltrpar\lang1033\f0\fs14 QA361             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+ \par
+                                          The top routine on this page wll transfer the overflow                                      The bottom routine on this page ends the logical\par
+                                          indication to S5 to free up S3. It also examines the                                        shifts without overflow testing and without setting\par
+A                                         hi 2 bits of the L reg as required to set up S6 and S7.                                     the cond reg. It ends algebraic shifts by\par
+                                          At the end of this routine,everything is ready to enter                                     setting the cond reg and by setting the correct\par
+                                          QA371 which will move the operand from the loc stg F                                        sign bit if an overflow has occurred.\par
+                                          row back to the dest reg, shifting left 0 to 3 bits\par
+                                          as required.\par
+    QA341.JEE------------\par
+B   (00)                | \par
+    Shift complete      |\par
+                        |                                                 00 --- 04E4 \par
+                        ---------------------------------------------*K 0011        | \par
+                                                                      A VH+KL>V     | \par
+C   QA351.GJE-------------------------------O------------------------*|             |*--------------------------------------------O---------------------------------------------O------------------------------------------------------QA371------CCE\par
+    (00,01,10,11)                           |                         C 0>S2        |                                             |                                             |                                                      (01,11)\par
+    Determine       S3=Value of 1st         |                     ----|             |                                             |                                             |                                                      Move operand\par
+    left shift         bit to be shifted    |                     |   R 0,1       71R                                             |                                             |                                                      back to reg\par
+    amount and         in                   |                     |   C3--    01 --CC                                             |                                             |\par
+    overflow        S4,S5 0                 |                     | Left shift 0 or 1 bit.                                        |                                             |\par
+D                   VH=Register (odd        |                     | V=lo order reg addr                                           |                                             |\par
+                       if dbl shift)        |                     |                                                               |                                             |\par
+                                            |       01 --- 04E5   |                                                   00 --- 04A0 |                               00 --- 0478   |\par
+                                            |   |             |   |                                               K 0011        | |                           K 0011        |   |\par
+                                            |   A 0>Z         |   |                                               A VH+KL>V     | |                           A VH+KL>V     |   |\par
+E                                           O---|             |*---                                           ----|             |--                       ----|             |---O\par
+                                            |   C LZ>S5       |                                               |   |             |                         |   C 0>S6        |   |\par
+                                            |   |             |                                               |   |             |                         |   |             |   |\par
+                                            |   R 0,0       E4R                                               |   R AC,1      71R                         |   R AC,1      71R   |\par
+                                            |   E2--    00 --EB                                               |   E5--    *1 --EE                         |   E7--    *1 --EG   |\par
+                                            |  Overflow                                                       | Left shift 2. V=lo order reg              |  See below          |\par
+F                                           |  Set S5=1                                                       | addr. BR on AC will set S7=2nd            |                     |\par
+                                            |                                                                 | bit during the next step.                 |                     |\par
+                                            |                             10 --- 04E6                         |       01 --- 04A1                         |       10 --- 047A   |\par
+                                            |                         |             |                         |   |             |                         |   K 0011        |   |\par
+                                            |                         A L+L>L       |                         |   A L+L>Z       |                         |   A VH+KL>V     |   |\par
+G                                           O-------------------------|             |*------------------------O---|             |*------------------------O---|             |----\par
+                                            |                         C 0>S2        |                             |             |                             C 1>S6        |\par
+                                            |                     ----|             |                             |             |                             |             |\par
+                                            |                     |   R 0,G3      A0R                             R AC,0      78R                             R AC,1      71R\par
+                                            |                     |   G3--    0* --GC                             G5--    *0 --GE                             G7--    *1 --GG\par
+                                            |                     | Left shift 2 or 3                           Left shift 3. Shift L again to              In the above 2 steps, V=lo order reg\par
+H                                           |                     | bits. Shift L to                            determine 3rd bit to be shifted in.         addr. S6 will be set to the value of\par
+                                            |                     | determine 2nd bit                                                                       the 2nd bit. The BR on AC will set\par
+                                            |       11 --- 04E7   | to be shifted in                                                                        S7=3rd bit during the next step.\par
+                                            |   |             |   |\par
+                                            |   A 0>Z         |   |\par
+J                                           ----|             |*---\par
+                                                C LZ>S5       | \par
+                                                |             | \par
+                                                R 1,0       E6R \par
+                                                J2--    10 --JB \par
+                                               Overflow\par
+K                                              Set S5=1\par
+\par
+                                                                          00 --- 04E8                                                                                                                         ** ---  XXX\par
+                                                                      K 0001,0      |                                                                                                                     | Go to       |\par
+                                                                      A 0>L         |                                                                                                                     | QA001.CBB   |\par
+L                                                                 ---*S         K>W R*--O-----------------------------------------------------------------------------------------------------------------|             |\par
+                                                                  |   C 0>S2        |   |                                                                                                                 |             |\par
+                                                                  |   |             |   |                                                                                                                 |             |\par
+                                                                  |   R S1,INTR   00R   |                                                                                                                 |             |\par
+                                                                  |   L3--    ** --LC   |                                                                                                                 L9--    ** --LJ\par
+                                                                  |  Log,end op         |                                                                                                                Normal I\par
+M                                                                 |                     |                                                                                                                cycle start\par
+                                                                  |                     |\par
+                                                                  |       01 --- 04E9   |       11 --- 047B\par
+                                                                  |   K 0001,0      |   |   K 1000        |\par
+                                                                  |   A 0>L         |   |   A R!KH>R      |\par
+N   QA371.QFE-----------------------------------------------------O---S         K>W R----   |             |    \par
+    (00,01,10,11)                                                 |   C 0>S2        |       C 0>S7        |    \par
+    Shift end          S0=0 if Log or Alg +                       |   |             |   ----|             |----\par
+    routines           S0=1 if Alg -                              |   R S1,INTR   00R   |   R 1,1       ABR   |\par
+                       G=80                                       |   N3--    ** --NC   |   N4--    11 --ND   |\par
+                                                                  |  Log,end op         |  Set sign bit -     |\par
+P                                                                 |                     |                     |\par
+                                                                  |                     |                     |\par
+                                                                  |       11 --- 04EB   |       01 --- 0479   |       11 --- 04AB\par
+                                                                  |   |             |   |   K 1000        |   |   K 0001,0      |\par
+                                                                  |   |             |   |   A R.-KH>R     |   |   |             |\par
+Q                                                                 O---S UV>MN    LS S*--O---|             |*--O---S WRITE   K>W R*-----------------------------------------------------------------------------------------------------QA421------QEE\par
+                                                                  |   |             |       C 0>S7        |       |             |                                                                                                      (01)\par
+                                                                  |   |             |       |             |       |             |                                                                                                      Set overflow\par
+                                                                  |   R S0,1      79R       R 1,1       ABR       R 0,1       D9R                                                                                                      and check\par
+                                                                  |   Q3--    *1 --QC       Q4--    11 --QD       Q5--    01 --QE                                                                                                      mask\par
+                                                                  |  Overflow              Set sign bit +       S7=0 in previous steps to cause mask to be examined\par
+R                                                                 |                                             in set. overflow cond reg routine.\par
+                                                                  |                   In step SC, it has been determined that the Alg.\par
+                                                                  |       10 --- 04EA shifts ended with no overflow. The sign is then\par
+                                                                  |   K 0001,0      | tested for setting the cond reg.\par
+                                                                  |   A GH.RH>Z     |\par
+S                                                                 ----S         K>W R*-------------------------------------------------------------------------------------------------------------------------------------------------QA421------SCE\par
+                                                                      |             |                                                                                                                                                  (00)\par
+ Q                                                                    |             |                                                                                                                                                  Set shift\par
+ A                                                                    R 0,0       D8R                                                                                                                                                  cond reg\par
+ 3                                                                    S3--    00 --SC\par
+ 6                                                                                                                                                | 128015        09/27/65 | Mach          2030       | Date  07/07/66          Sheet    1  QA361 |\par
+ 1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    2187             Version           |\par
+                                                                                                                                                  | 128059        06/30/66 | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837027     |    Shifts, left shift tests               |\par
+                                                                                                                                                  |                        | IBM Corp.     SDD        |    and end routine                        |\par
+}
+ 
