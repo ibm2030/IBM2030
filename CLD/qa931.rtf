@@ -1,0 +1,119 @@
+{\rtf1\ansi\deff0\adeflang1025
+{\fonttbl{\f0\froman\fprq2\fcharset0 Times New Roman;}{\f1\froman\fprq2\fcharset0 Times New Roman;}{\f2\fnil\fprq2\fcharset0 Lucida Sans Unicode;}{\f3\fmodern\fprq1\fcharset0 Courier New;}{\f4\fnil\fprq2\fcharset0 Tahoma;}{\f5\fnil\fprq0\fcharset0 Tahoma;}}
+{\colortbl;\red0\green0\blue0;\red128\green128\blue128;}
+{\stylesheet{\s1\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af4\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\snext1 Default;}
+{\s2\sa120\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af4\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon1\snext2 Text body;}
+{\s3\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon2\snext3 List;}
+{\s4\sb120\sa120\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs20\lang255\ai\ltrch\dbch\af2\afs20\langfe255\ai\loch\f0\fs20\lang1033\i\sbasedon1\snext4 Caption;}
+{\s5\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon1\snext5 Index;}
+{\s6\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033\sbasedon1\snext6 Preformatted Text;}
+}
+{\info{\creatim\yr2004\mo4\dy24\hr13\min23}{\operator Hans PUFAL}{\revtim\yr2004\mo5\dy12\hr8\min4}{\printim\yr1601\mo1\dy1\hr0\min0}{\comment StarWriter}{\vern6450}}\deftab709
+{\*\pgdsctbl
+{\pgdsc0\pgdscuse195\lndscpsxn\pgwsxn23818\pghsxn16834\marglsxn1440\margrsxn1440\margtsxn576\margbsxn576\pgdscnxt0 Default;}}
+\landscape\paperh16834\paperw23818\margl1440\margr1440\margt576\margb576\sectd\sbknone\lndscpsxn\pgwsxn23818\pghsxn16834\marglsxn1440\margrsxn1440\margtsxn576\margbsxn576\ftnbj\ftnstart1\ftnrstcont\ftnnar\aenddoc\aftnrstcont\aftnstart1\aftnnrlc
+\pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0 QA931             0                    1                    2                     3                     4                     5                     6                     7                     8                     9}
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0                         This page completes the load PSW, it reads out                                                                                   Stats at end of page}
+\par {\loch\f3\fs14\lang1033\i0\b0                         and loads the rest of the IC, and if the hi bits                                                                                     S0, S7=1 = Wait state        }
+\par {\loch\f3\fs14\lang1033\i0\b0                         are not zero it stores them in K16, and sets S6=1.                                                                                   S2=1=Invalid prot key, or inv IC addr}
+\par {\loch\f3\fs14\lang1033\i0\b0 A                       If S1=1 it and the PSW bit in K4 are reset to                                                                                              (hi bits /= 0), or IC not on even boundaries.}
+\par {\loch\f3\fs14\lang1033\i0\b0                         zero. If at the end of the page, S2=1, the MC trap                                                                                   S3=1 = Take MC trap}
+\par {\loch\f3\fs14\lang1033\i0\b0                         is entered, if S5=0 the wait state is entered. If                                                                                    S5=1= Wait state}
+\par {\loch\f3\fs14\lang1033\i0\b0                         non of these things are true, and there are no interrupts                                                                            S4=1= Hi IC bits /= 0 (Stored in K16)}
+\par {\loch\f3\fs14\lang1033\i0\b0                         pending, I cycles are again started.}
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 B}
+\par 
+\par    
+\par    
+\par    
+\par {\loch\f3\fs14\lang1033\i0\b0 C  }
+\par    
+\par    
+\par    
+\par    
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 D}
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0                                                     11 --- 0047           00 --- 0044           10 --- 0046                                                                                                                }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                 |             |       |             |       K 0000,0      |                                                                                                                 }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                 A V-0>V       |       A R>J         |       A D>R         |                                                                                                                   }
+\par {\loch\f3\fs14\lang1033\i0\b0 E   QA921.LGE----------------------------------*S UV>MN    MS S*--O---S WRITE       |*------S *AB      LS S*---------------------------------------------------------------------------------------------------------------------------QA921------EDE}
+\par {\loch\f3\fs14\lang1033\i0\b0     (11)                                        |             |   |   |             |       C 1>S6        |                                                                                                                            (11)}
+\par {\loch\f3\fs14\lang1033\i0\b0     Rd lo                                       |             |   |   |             |       |             |                                                                                                                            Share store}
+\par {\loch\f3\fs14\lang1033\i0\b0     IC bits                                     R 0,Z=0     44R   |   R 1,0       46R       R 1,1       A7R                                                                                                                            cycle}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                 E2--    0* --EB   |   E3--    10 --EC       E4--    11 --ED                                                                                                                  }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                Rd lo IC and       |  Hi IC not zero store in K16 and set S6=1}
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033{\loch\f3\fs14\lang1033\i0\b0\fs14 F                                              test for hi        |}
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0                                                IC=0               |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   |       01 --- 0045           10 --- 004A           01 --- 004D                                                                                              }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   |   |             |       K 0001        |       K 0001,0      |                                                                                           }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                   |   A R>J         |       A J.KL>L      |       A R>I         |                                                                                               }
+\par {\loch\f3\fs14\lang1033\i0\b0 G                                                                 ----S WRITE       |*--O---S UV>MN    MS S*--O---S WRITE   K>W R*-----------------------------------------------------------------------------------------------------QA001------QEE}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                       |             |   |   C ANSNZ>S2    |   |   |             |                                                                                                      (00,01)}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                       |             |   |   |             |   |   |             |                                                                                                      Branch I}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                       R 1,S3      4AR   |   R S1S5      4CR   |   R 0,INTR    00R                                                                                                      cycle start}
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033{\loch\f3\fs14\lang1033\i0\b0\fs14                                                                       G3--    1* --GC   |   G4--    ** --GD   |   G5--    .. --GE                                                                                           }
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0                                                                      Store lo IC        |  Test lo bit =0     |  S1 off, not wait}
+\par {\loch\f3\fs14\lang1033\i0\b0 H                                                                    in J.              |  L=0 if lo bit=0    |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |  S2=1 if lo bit =0  |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |  Rd middel IC       |       11 --- 004F       }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |  bits               |   K 0001,0      |       }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   A R>I         |       }
+\par {\loch\f3\fs14\lang1033\i0\b0 J                                                                                       |                     O---S WRITE   K>W R*---   }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   C 0>S7        |   |   }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   |             |   |   }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   R 1,0       F2R   |   }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   J5--    10 --JE   |   }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |  S1 on, not wait    | }
+\par {\loch\f3\fs14\lang1033\i0\b0 K                                                                                       |                     |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |       10 --- 004E   |       10 --- 01F2                                                                  }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   K 0001,0      |   |   K 0100,0      |                                                                      }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   A R>I         |   |   A S.-KH>S     |                                                                        }
+\par {\loch\f3\fs14\lang1033\i0\b0 L                                                                                       |                     O---S WRITE   K>W R*--O---S *8C      LS S*-------------------------------------------------------------------------------QA001------LFE}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   |             |       |             |                                                                                (01)}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   |             |       |             |                                                S7=1 = Wait state               Reset PSW bit}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   R 1,0       F2R       R 0,1       69R                                                                         }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   L5--    10 --LE       L6--    01 --LF                                                                     }
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033{\loch\f3\fs14\lang1033\i0\b0\fs14                                                                                         |                     |  S1 on, wait           Reset S1}
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0 M                                                                                       |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |       00 --- 004C                                                                                           }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   |             |                                                                                                  }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   A R>I         |                                                                                             }
+\par {\loch\f3\fs14\lang1033\i0\b0 N                                                                                       |                     ----S WRITE       |*-----------------------------------------------------------------------------------------------------QA941------NEE}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                         C 1>S0        |                                                                                                      (11)}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                         |             |                                                                                                      Go to wait}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                         R 1,1       2BR                                                                                           }
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033{\loch\f3\fs14\lang1033\i0\b0\fs14                                                                                         |                         N5--    11 --NE                                                                                            }
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                        S1 off, wait}
+\par {\loch\f3\fs14\lang1033\i0\b0 P                                                                                       |                        S0=1 to indicate}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                        wait state}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |       11 --- 004B           01 --- 00F9                                                                                         }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   K 0100        |       |             |                                                                                            }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   A H!KH>H      |       A R>I         |                                                                                             }
+\par {\loch\f3\fs14\lang1033\i0\b0 Q   QA921.LEE---------------------------------------------------------------------------O---S UV>MN    MS S*------S WRITE       |*-----------------------------------------------------------------------------------------------------QA961------QEE}
+\par {\loch\f3\fs14\lang1033\i0\b0     (10,11)                                                                                 C 0>S7        |       |             |                                                                                                      (11)}
+\par {\loch\f3\fs14\lang1033\i0\b0     Rd middle                                                                               |             |       |             |                                                                                                      Take MC trap}
+\par {\loch\f3\fs14\lang1033\i0\b0     IC bits                                                                                 R 0,1       F9R       R 1,1       B3R                                                                                           }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                             Q4--    01 --QD       Q5--    .. --QE                                                                                             }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                            Set H1=1 and take machine check}
+\par {\loch\f3\fs14\lang1033\i0\b0 R                                                                                          trap because MC mask bit was}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                            1 and MC reg was not zero.}
+\par 
+\par 
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 S}
+\par 
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0  Q}
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033{\loch\f3\fs14\lang1033\i0\b0\fs14  A}
+\par {\loch\f3\fs14\lang1033\i0\b0\fs14  9}
+\par \pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0  3                                                                                                                                                | 128015        09/23/65 | Mach          2030       | Date  11/17/65          Sheet    1  QA931 |}
+\par {\loch\f3\fs14\lang1033\i0\b0  1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    3564             Version           |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | Mode          Manual     |                                           |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | P.N.          837056     |    Load PSW                               |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | IBM Corp.                |                                           |}
+\par }

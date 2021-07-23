@@ -1,0 +1,106 @@
+{\rtf1\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\lang1033\f0\fs14 QB641             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+ \par
+                         Reg contents                                                                                                                       Micro trace\par
+                         S D3                                                                                                                               B2D B0A B52 B82 B82 B82 B82 B82 B82 B82\par
+A                        G FF                                                                                                                               B82 B82 B82 B83 B6E B03 B72 B39 B5d B5E BB4\par
+                         R FF                                                                                                                               B85 B5E BB7 B86 BB4 B84 B29 B38 B42 B66\par
+                         L FF\par
+                         D FF\par
+                         T FF\par
+                         I FF\par
+B                        J FF\par
+                         U FF\par
+                         V FF\par
+                         M FF\par
+ \par
+C\par
+ \par
+ \par
+ \par
+ \par
+                                                                                      ---------------------------\par
+D                                                                                     |                         |\par
+                                                                                      |   -------------------   |\par
+                              01 --- 0B2D           10 --- 0B0A           10 --- 0B52 |   |     10 --- 0B82 |   |     11 --- 0B83           10 --- 0B6E           11 --- 0B03           10 --- 0B72\par
+                          |             |       |             |       K 1111,0      | |   --K 0110,0      | |   --|             |       K 0111,0      |       K 1000,0      |       |             |\par
+                          A Q^-D>S      |       A S^-R>D      |       A 0^K>S       | |     A D+D+C>DC    | |     A H+D>GC      |       A FTXH+K>R    |       A 0+0>TA      |       A FTXL-0>G    |\par
+E   QB621.EJE------------*|             |*------|             |*------|             |*O-----|             |*O-----|             |*------|             |*------|             |*------|             |*-\par
+    (01)                  C ANSNZ>S2    |       C ANSNZ>S2    |       C 0>S6        |       C 0>S7        |       C 0>S0        |       C 0>S0        |       C K>FA        |       |             | |\par
+    Exit reg              |             |       |             |       |             |       |             |       |             |   ----|             |       |             |       |             | |\par
+                          R 1,0       0AR       R 1,0       52R       R 1,AI      82R       R 1,Z=0     82R       R 1,0       6ER   |   R 1,1       03R       R 1,0       72R       R 0,1       39R |\par
+                          E1--    10 --EA       E2--    10 --EB       E3--    1* --EC       E4--    1* --ED       E5--    10 --EE   |   E6--    11 --EF       E7--    10 --EG       E8--    01 --EH |\par
+                         00^-FF=00             00^-FF=00             00^FF=FF              01,02,04,08,10        FF+01=00           |  00+77=77              Sets Bus-O-reg        03-00=02         |\par
+F                        Check CD and          Check CA of           CS 1010 may           20,40,80,00,01        Check H for FF     |     or                 to 77 to cond         FT2=1 from B4A   |\par
+                         CA for Q-reg          S-reg.                reset Mpx             Each pos of Z         Check D for 01     |  40+77=B7              AI,OPI and SVI        FT3=1 from B03   |\par
+                         Check D-reg           Check R-reg           opn latch             bus must keep         To check Z=0       |  If looping                                  Op In conds FT3  |\par
+                         for FF                for FF                erroneously           Z=0 down.             branch ctrl.       |  test on FT5.                                                 |\par
+                                                                                           CS 1100 may                              |  Set R too cond.                                              |\par
+G                                                                                          reset Mpx opn                            |  Bus-O-reg.                                                   |\par
+                                                                                           latch erron.                             |                                                               |\par
+                                                                                                                                    |                                                               |\par
+                                                                                                                                    |                                                               |\par
+                                                                                                                                    |                                                               |\par
+                      --------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------\par
+H                     |                                                               -----------------------------------------------                                                                \par
+                      |                                           --------------------+--------------------------------------------                                                                  \par
+                      |       01 --- 0B39           01 --- 0B5D   |       10 --- 0B5E |         00 --- 0BB4           01 --- 0B85 |\par
+                      |   K 1101,1      |       K 0100,0      |   O---K 1010,0      | |     K 1010,0      |       K 1110,0      | |\par
+                      |   A V+D>Z       |       A T^-0>Z      |   |   A D+L>Z       | |     A FH^LH>R     |       A F^-R0>I     | |\par
+J                     ----|             |*O-----|             |*O-+---|             |*+-O---|             |*--O---|             |*O\par
+                          C ANSNZ>S2    | |     C ANSNZ>S2    | | |   C ANSNZ>S2    | | |   |             |   |   C ANSNZ>S2    | |\par
+                          C 0>LOAD      | | ----A HJ>B        | | | --R INT>X6X7    | | | --|             |   |   C 0>F         | |\par
+                          R S0,AI     5DR | |   R G6,G5       | | | | R 1,1       B7R | | | R G4,INTR   85R   |   R R0,S7     5ER |\par
+                          J1--    ** --JA | |   J2--    .. --JB | | | J3--    ** --JC | | | J4--    ** --JD   |   J5--    ** --JE |\par
+                         FF+01=00         | |  G5,G6 branches   | | |Ext intr is cond | | |Note 1.            |  FF^-00=00        |\par
+K                        Check V for FF   | |  Check FT2 and    | | |in B611-L9 and   | | |70^F0=80           |  Reset ext intr   |\par
+                         S0=0 from B6E    | |  FT3 in B03.      | | |B621-E1.         | | |0^00=70            |  Check reset off  |\par
+                         Load may cause   | |  HJ decode may    | | |                 | | |     01 --- 0BB5   |       00 --- 0B84 |         01 --- 0B29           00 --- 0B38           10 --- 0B42           10 --- 0B66\par
+                         AC force         | |  cause erron      | | |                 | | | |             |   |   K 1110,0      | |     K 1011,0      |       K 1111,0      |       K 1101,0      |       K 1111,0      |\par
+                                          | |  AC force         | | |                 | | | A SP^0>Z      |   |   A U+L>Z       | |     A J^-0>Z      |       A 0.K>I       |       A T.0>D       |       A TX.K>G      |    \par
+L                                         | |                   | | |                 | O-+-|             |*- O---|             |*+-----|         K>W R*------|             |*------|             |*------|             |*-------------QB651------LJE\par
+                                          | |                   | | |                 | | | |             | | |   C ANSNZ>S2    | |     C ANSNZ>S2    |       C ANSNZ>S2    |       C ANSNZ>S2    |       C 1>S7        |              (11)\par
+                                          | |                   | | |                 | | O-|             | | |   C 0>F         | |     C 0>MC        |       |             |       C 0>LOAD      |       |             |              Go-on\par
+                                          | |                   | | |                 | | | R 1,0       5ER | |   R 0,1       29R |     R 0,0       38R       R 1,0       42R       R 1,0       66R       R 1,1       67R\par
+                                          | |                   | | |                 | | | L4--    10 --LD | |   L5--    01 --LE |     L6--    00 --LF       L7--    10 --LG       L8--    10 --LH       L9--    11 --LJ\par
+                                          | --------------------O | |                 | | |                 | |  Reset ext int    |    Check J for FF        Start of AND          Load may cond         FF.FF=FF\par
+M                                         |                     | | ------------------+-+-+-----------------O |  Check U for FF   |    MC=0 may cond         test                  ext intr\par
+                                          |                     | |                   | | |                 | |                   |    ext intr.\par
+                                          |                     | |       00 --- 0B5C | | |     10 --- 0BB6 | |       11 --- 0B87 |\par
+                                          |                     | O---K 1111,0      | | | | |             | | |   K 0011,0      | |\par
+                                          |                     | |   A SP^0>Z      | | | | A SP^0>Z      | | |   A SP^0>Z      | |\par
+N                                         |                     O-+---|             |*O O-+-|             |-- ----|             |--\par
+                                          |                     | |   |             | | | | |             |       C K>FB        |  \par
+                                          O---------------------+-+---C 1>F0        | | | O-|             |     --|             |  \par
+                                          |                     | |   R 1,0       6ER | | | R 1,0       5ER     | R 1,0       5ER  \par
+                                          |                     | |   N3--    10 --NC | | | N4--    10 --ND     | N5--    ** --NE  \par
+                                          |                     | |                   | | |                     |\par
+P                                         |                     | |                   | | |                     |\par
+                                          |                     | |                   | | ----------------------+--------------------\par
+                                          |                     | |       11 --- 0B5F | |       11 --- 0BB7     |     10 --- 0B86   |\par
+                                          |                     | ----|             | | |   K 0011,0      |     | K 1111,0      |   |\par
+                                          |                     |     A SP^0>Z      | | |   A I+0+1>Q     |     | A Q0+0+1>L    |   |\par
+Q                                         |                     ------|             |-- ----|             |*----O-|             |*---\par
+                                          |                           |             |       C K>FB        |       |             |    \par
+                                          ----------------------------|             |       |             |       C 1>F0        |    \par
+                                                                      R 1,0       6ER       R 1,INTR    B6R       R G2,Z=0    B4R    \par
+                                                                      Q3--    10 --QC       Q4--    1* --QD       Q5--    ** --QE    \par
+                          Note                                                             Extr intr is reset    00+00+1=01\par
+R                         1.CK 10 may cond. test intr erroneously.                         in B85.               Cond ext intr\par
+                                                                                           Reset ext trao\par
+                                                                                           mask latch.\par
+                                                                                           I is 00 from B85\par
+\par
+S\par
+\par
+ Q\par
+ B\par
+ 6\par
+ 4                                                                                                                                                | 128056        04/27/66 | Mach          2030       | Date  11/07/67          Sheet    1  QB641 |\par
+ 1                                                                                                                                                | 128065        07/26/67 | Name                     | Log    2046             Version           |\par
+                                                                                                                                                  |                        | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837118     |    Diagnostic test-basic                  |\par
+                                                                                                                                                  |                        | IBM Corp.                |    Test interrupt ID 3345                 |\par
+}
+ 

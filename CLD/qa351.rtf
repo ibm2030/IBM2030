@@ -1,0 +1,106 @@
+{\rtf1\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\lang1033\f0\fs14 QA351             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+ \par
+                         This page performs the actual move to loc stg F row.                               S2 used to detect end of LS field (FF)\par
+                         In case of a right shift, some bits may have already                               S3=1 If overflow. After branch at step GJ,\par
+A                        been stored. In case of a left shift, if the operand                                    it is set to the value of the 1st bit\par
+                         ends, any remaining bits are filled in with zeroes.                                     which may be shifted into the dest reg.\par
+                         At the end of the page, the 1st bit of the possible                                S6=0 If dbl shift and all of even reg has not\par
+                         3 which may be shifted left into the dest reg has been                                  yet been read out\par
+                         set into S3. The remaining 2 possible bits are left                                S6=1 If sgl shift or if all of even reg for dbl\par
+                         in the hi 2 bits of the L reg.                                                          shift has been read out\par
+B                                                                                                           S7=0 Move skewed\par
+                                                                                                            S7=1 Move not skewed\par
+ \par
+ \par
+ \par
+C\par
+ \par
+ \par
+ \par
+ \par
+\par
+D                                             -----------------------------------------------------------------------------------------------------------\par
+    QA341.LHE------------------------------   |                                                                                                         |\par
+    (10)                                  |   |     01 --- 0265           10 --- 0262           00 --- 02F0                                 01 --- 0269 |         00 --- 02F4                                 01 --- 026D\par
+    Move to loc                           |   | |             |       |             |       |             |                             |             |*-     |             |                             K 0001        |\par
+    stg and shift                         |   | A V+0+1>V     |       A LXH+RL>L    |       A RXL+LH>R    |                             A T+0+1>T     |       A LXH>R       |                             A VH+KH>V     | \par
+E   right 0 or 4                          |   --S UV>MN    LS S*--O---S WRITE       |*--O---S T>MN     LS S*------------------------O---S STORE       |   ----|             |*-----------------------     |             |*-\par
+    bits                                  |     |             |   |   C 0>S2        |   |   |             |                         |   |             |   |   |             |                       |     |             | |\par
+                                          |     |             | --+--*|             |   |   |             |                         |   |             | --+---|             |                       | ----|             | |\par
+                                          |     R 1,Z=0     62R | |   R VZ,S7     F0R   |   R 0,1       69R                         |   R 0,1       65R | |   R 0,1       F5R                       | |   R 1,1       6FR |\par
+                                          |     E2--    1* --EB | |   E3--    ** --EC   |   E4--    01 --ED                         |   E6--    01 --EF | |   E7--    01 --EG                       | |   E9--    11 --EJ |\par
+                                          |                     | |  LH=old skew bits   |  Skewed,R=                                |                   | |  End of LS field, skewed.               | |  V=hi order addr  |\par
+F                                         ----------------------O |  LL=new skew bits   |  shifted bits                             |                   | |  R=last skewed bits                     | |  of odd reg       |\par
+                                                                | |                     |                                           |                   | | ----------------------------------------- | -------------------\par
+                                                    01 --- 027D | |                     |       01 --- 02F1                         |                   | | |     01 --- 02F5                         | |     11 --- 026F\par
+                                                |             | | |                     |   |             |                         |                   | | --|             |                         | --K 0100,0      |\par
+                                                A V+0+1>V     | | |                     |   |             |                         |                   | |   A 0-0>T       |                         |   A R+R>LC      |    \par
+G   Q|331.CFE----------------------------------*S UV>MN    LS S-- |                     O---S T>MN     LS S-------------------------O                   | O---|             |*------------------------O---|         K>W R*-------------QA341------GJE\par
+    (01)                                        |             |   |                     |   |             |                         |                   | |   |             |                             C 0>S4,S5     |              (00,01,10,11)\par
+    Move to loc                                 |             |   |                   --+--*|             |                         |                   O-+---|             |                             |             |              Determine\par
+    stg and shift                               R 1,0       62R   |                   | |   R 0,1       69R                         |                   | |   R S6,1      6DR                             R G2,S3     E4R              left shift\par
+    left                                        G2--    10 --GB   |                   | |   G4--    01 --GD                         |                   | |   G7--    *1 --GG                             G9--    ** --GJ              amount and\par
+                                                                  |                   | | Not skewed, store                         |                   | |  End of LS field                            Start bit shifting             overflow\par
+H                                                                 |                   | | R directly                                |                   | |  Set T=FF                                   S3=value of 1st\par
+                                                                  |                   | |                                           |                   | |                                             bit to be shifted\par
+                                                                  |                   | |       10 --- 02F2           00 --- 027C   |                   | |       10 --- 02F6\par
+    QA341.QHE-----------------------------------------------------+-------------------- |   |             |       K 0001        |   |                   | |   |             |\par
+    (01)                                                          |                     |   A RXL+LH>R    |       A VH+KH>V     |   |                   | |   A LXH>R       |\par
+J   Move to loc                                                   |                     O---S T>MN     LS S*--O---S STORE       |----                   | O---S T>MN     LS S*-------------------------\par
+    stg and shift                                                 |                     |   |             |   |   C 1>S6        |                       | |   C 1>S7        |                         |\par
+    right with                                                    |                     |   |             |   |   |             |                       | |   |             |                         |\par
+    no skew                                                       |                     |   R S6,0      7CR   |   R 0,1       69R                       | |   R 1,0       7ER                         |\par
+                                                                  |                     |   J4--    *0 --JD   |   J5--    01 --JE                       | |   J7--    10 --JG                         |\par
+                                                                  |                     | End of reg, skewed  |  Dbl, even reg not read out             | | Store last skewed bits  Set S7=1          |\par
+K                                                                 |                     | R=shifted bits      |  yet. V=hi order addr of                | | to store zeroes in remaining              |\par
+                                                                  |                     |                     |  even reg.                              | | LS field.                                 |\par
+                                                                  |                     |       11 --- 02F3   |       10 --- 027E           10 --- 0282 | |       11 --- 02F7                         |\par
+                                                                  |                     |   |             |   |   |             |       |             | | |   |             |                         |\par
+                                                                  |                     |   |             |   |   A T+0+1>T     |       A 0>R         | | |   |             |                         |\par
+L                                                                 |                     ----S T>MN     LS S---O---S STORE       |*------|             |*+-O---S T>MN     LS S-------------------------O\par
+                                                                  |                         |             |       C ANSNZ>S2    |       C 0>S2        | |     |             |                         |\par
+                                                                  |                         |             |   ----|             |   ----|             | |     |             |                         |\par
+                                                                  |                         R S6,0      7CR   |   R 1,0       82R   |   R S2,S7     F4R |     R 1,0       7ER                         |\par
+                                                                  |                         L4--    *0 --LD   |   L5--    10 --LE   |   L6--    ** --LF |     L7--    10 --LG                         |\par
+                                                                  |                        End of reg, not    |  Test for end of    |                   |    Store zeroes                             |\par
+M                                                                 |                        skewed, store      |  field (S2=0)       |                   |                                             |\par
+                                                                  |                        R directly         O---------------------+-------------------+----------------------------------------------\par
+                                                                  |                             01 --- 0291   |                     |                   |\par
+                                                                  |                         |             |   |                     |                   |\par
+                                                                  |                         |             |   |                     |                   |\par
+N   QA331.QGE-----------------------------------------------------+------------------------*S T>MN     LS S----                     |                   |\par
+    (01)                                                          |                         C 0>S2        |                         |                   |\par
+    Move to loc                                                   |                         |             |                         |                   |\par
+    stg and shift                                                 |                         R 1,0       7ER                         |                   |\par
+    left special                                                  |                         N4--    10 --ND                         |                   |\par
+    entry                                                         |                                                                 |                   |\par
+P                                                                 |                                                                 |                   |\par
+                                                                  |                                                                 |                   |\par
+                                                                  |       11 --- 0263                                               |                   |\par
+                                                                  |   |             |                                               |                   |\par
+                                                                  |   |             |                                               |                   |\par
+Q                                                                 ----S WRITE       |*----------------------------------------------+--------------------\par
+                                                                      |             |                                               |\par
+                                                                      |             |                                               |\par
+                                                                      R 0,S7      F4R                                               |\par
+                                                                      Q3--    0* --QC                                               |\par
+                                                                    FF was last LS addr                                             |\par
+R                                                                   store in. Right shifting                                        |\par
+                                                                    completed except for                                            |\par
+                                                                    storing any overflowed                                          |\par
+                                                                    bits in R.                                                      |\par
+                                                                                                                                    |\par
+S   QA321.QGE------------------------------------------------------------------------------------------------------------------------\par
+    (10)\par
+ Q  Sgl shift\par
+ A  greater than\par
+ 3  31 bits\par
+ 5                                                                                                                                                | 128015        07/07/65 | Mach          2030       | Date  11/17/65          Sheet    1  QA351 |\par
+ 1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    2187             Version           |\par
+                                                                                                                                                  | 128059        06/30/66 | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837026     |    Shifts, move operand to                |\par
+                                                                                                                                                  |                        | IBM Corp.                |    loc stg shifted within 3 bits          |\par
+}
+ 

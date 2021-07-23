@@ -1,0 +1,106 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\ltrpar\lang1033\f0\fs14 QA321             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+                           This page examines the operand for left shifts of over 8         In case of a sgl shift or over 31 bits, loc stg FC is\par
+                           bits. It reads out each  byte of the operand that will           set to zero and the prg directed to QA351 where the\par
+                           be completely shifted out of the register and tests it           rest of the loc stg field is set to zero  All other\par
+A                          to be sure that the sign bit will not change in case it          cases are directed to QA331 where any additional shift\par
+                           was an algebraic shift. Should it find that the sign             amount less than 8 is examined.\par
+                           bit will change,overflow is indicated.Overflow indication\par
+                           are ignored for logical shifts.\par
+ \par
+\par
+B\par
+                                            ---------------------------------------------------------------------------------------------------------------\par
+                                            |                                                   00 --- 04E0                                 00 --- 0460   |\par
+                                            |                                               K 0001        |                             |             |   |\par
+                                            |                                               A L-KH+1>L    |                             A V+0+1>V     |   |\par
+C                                           |                     --------------------------S UV>MN    LS S*--O-------------------------S WRITE       |*--O----------------------------------------------------------------------------QA331------CFE\par
+                                            |                     |                         C HZ>S4       |   |                         C 0>S2        |                                                                                (11)\par
+                                            |                     |                         |             |   |                   ------|             |                                                                                Test for\par
+                                            |                     |                         R S2,0      60R   |                   |     R S4,1      4DR                                                                                additional\par
+                                            |                     |                         C4--    *0 --CD   |                   |     C6--    *1 --CF                                                                                shift less\par
+                                            |                     |                        Sgl. Reg no ended  |                   |    BR to see if 8                                                                                  than 8\par
+D                                           |                     |                        Test for end of    |                   |    bit shifting is\par
+                                            |                     |                        8 bit shifting     |                   |    complete\par
+                                            |       01 --- 044D   |                        (S4=1). Ro next    |                   |\par
+                                            ----|          BINA   |                        byte               |                   |\par
+                                                A 0#R>Z       |   |                                           |                   |\par
+E   QA311.JHE----------------------------------*|             |*--O                                           |                   |\par
+    (01)                                        C ANSNZ>S2    |   |                                           |                   |\par
+    Shift left                                  |             |   |                                           |                   |\par
+    more than 8                                 R VZ,G5     E0R   |                                           |                   |\par
+                                                E2--    ** --EB   |                                           |                   |\par
+                           LH=no. of 8 bit     S2=1 if all 8      |                                           |                   |                        S0=0 if Log or Alg +\par
+F                             bytes to be      bits are not equal |                                           |                   |                        S0=1 if Alg -\par
+                              shifted.         to the sign bit.   |                                           |                   |                        S2   used to detect overflow\par
+                                               (R is inverted if  |                             01 --- 04E1   |       10 --- 0462 |                        S3=1 if overflow was detected\par
+                                               sign is -).        |                         K 0001        |   |   |             | |                        S4=1 8 bit shifting is complete\par
+                                                                  |                         A L-KH+1>L    |   |   A 0-0+1>ZC    | |                        S5=1 if high bit of operand is zero\par
+G                                                                 O-------------------------S UV>MN    LS S---O---|             |*-                        S6=0 if dbl shift and all of even reg has not\par
+                                                                  |                         C HZ>S4       |       |             |                               been read out yet\par
+                                                                  |                   ------|             |       |             |                          S6=1 if sgl shift or if all of even reg on\par
+                                                                  |                   |     R S2,0      60R       R 0,0       60R                               dbl shift has been read out\par
+                                                                  |                   |     G4--    *0 --GD       G5--    00 --GE\par
+                                                                  |                   |    Dbl. Reg not ended    Overflow. Sign\par
+H                                                                 |                   |    Test for end of       bit will change\par
+                                                                  |                   |    8 bit shifting        Set S3=1\par
+                                                                  |                   |    (S4=1). Ro next       Note 1\par
+                                                                  |                   |    byte\par
+                                                                  |                   |\par
+J                                                                 |                   |\par
+                                                                  |                   |\par
+                                                                  |                   |\par
+                                                                  |                   |\par
+                                                                  |                   |\par
+                                                                  |                   |\par
+K                                                                 |                   |\par
+                                                                  |                   |\par
+                                                                  |       11 --- 04E3 |\par
+                                                                  |   K 0001        | |\par
+                                                                  |   A VH+KH>V     | |\par
+L                                                                 O---|             |*-\par
+                                                                  |   C 1>S6        |  \par
+                                                                  |   |             |  \par
+                                                                  |   R 0,1       E1R  \par
+                                                                  |   L3--    01 --LC  \par
+                                                                  |  Dbl. End of even\par
+M                                                                 |  reg. Set V=hi order\par
+                                                                  |  addr of odd reg and\par
+                                                                  |  re-enter loop. S6=1                                                    10 --- 04EE\par
+                                                                  |  to indicate even reg                                               |             |\par
+                                                                  |  is all read out                                                    A 0-0+1>LC    |\par
+N                                                                 |                                           --------------------------S STORE       |*-----\par
+                                                                  |                                           |                         |             |     |\par
+                                                                  |                                           |                   ------|             |     |\par
+                                                                  |                                           |                   |     R 1,1       EFR     |\par
+                                                                  |                                           |                   |     N6--    11 --NF     |\par
+                                                                  |                                           |                   |    Overflow.Sign        |\par
+P                                                                 |                                           |                   |    bit will change.     |\par
+                                                                  |                                           |                   |    Set S3=1.            |\par
+                                                                  |                             10 --- 04E2   |       00 --- 04EC |    Note 1               |     11 --- 04EF\par
+                                                                  |                         |             |   |   |             | |                         --K 0010,0      |\par
+                                                                  |                         A 0>R         |   |   A 0>L         | |                           A T+0+1>T     |\par
+Q                                                                 --------------------------S T>MN     LS S*--O---S STORE       |*O---------------------------|         K>W |*---------------------------------------------------------QA351------QGE\par
+                                                                                            |             |       |             |                             C ANSNZ>S2    |                                                          (10)\par
+                                                                                            |             |       |             |                             |             |                                                          Sgl shift\par
+                                                                                            R S2,0      ECR       R 1,S5      EER                             R 1,0       B2R                                                          31 bits\par
+                                                                                            Q4--    *0 --QD       Q5--    1* --QE                             Q7--    10 --QG                                                          greater than\par
+                           Note 1-All overflow tests will                                  Sgl. End of reg.      BR to test sign                             T=FD,S2=1\par
+R                                 be ignored if logical shift.                             Shift is greater      (sign- is oflo)\par
+                                                                                           than 31 bits.\par
+                                                                                           Set LS FC=0.\par
+                                                                                           BR to test for\par
+                                                                                           oflo. Note 1\par
+S\par
+\par
+ Q\par
+ A\par
+ 3\par
+ 2                                                                                                                                                | 128015        09/13/65 | Mach          2030       | Date  07/07/66          Sheet    1  QA321 |\par
+ 1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    2187             Version           |\par
+                                                                                                                                                  | 128059        06/30/66 | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837023     |    Shift left initial byte shift          |\par
+                                                                                                                                                  |                        | IBM Corp.                |    and overflow                           |\par
+}
+ 

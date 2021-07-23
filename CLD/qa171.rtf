@@ -1,0 +1,106 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\ltrpar\lang1033\f0\fs14                   0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+                                                                                      This microprogram decrements the register specified               Timing                                                            \par
+                                                                                      by R1 in the instruction by 1.                                    RR format                                                             \par
+                                                                                      S0=1 Previous non zero                                            R2=0 14-22 nsec                                                          \par
+A                                                                                     S0=0 No previous non zero                                         R2=0 14-27 nsec                                                                              \par
+                                                                                      S5=0 Branch if count non zero                                     No branch 25 nsec                                                     \par
+                                                                                      S5=1 Count but dont branch                                        RX format                                                        \par
+                                                                                                                                                        Branch 21-29 nsec                                                 \par
+                                                                                                                                                        No branch 27 nsec                                                  \par
+\par
+B\par
+\par
+                                                                                                                                                                                                                         \par
+                                                                                                                                                                                                                          \par
+                                                                                                                                                                                                                             \par
+C                                                                                                                                                                                                                                                    \par
+                                                                                                                                                                                                                              \par
+                                                                                                                                                                                                                         \par
+                                                                                                                                                                                                                           \par
+                                                                                                                                                                                                                         \par
+\par
+D                     -------------------------------------------------------------------------------------------------------------------------------------\par
+                      |                                                                                                                                   |\par
+                      |       00 --- 0270           10 --- 0202           00 --- 0204           01 --- 0205           11 --- 0273           00 --- 0280   |       01 --- 0271                                             \par
+                      |   |             |       |             |       |             |       |             |       K 0000,0      |       |             |   |---K 0001        |                                            \par
+                      |   A R>L         |       A V+0+1>V     |       A R>U         |       A R>V         |       A L>R         |       |             |       A V.KL>Z      |                                                   \par
+E   QA161.CBE---------O--*S UV>MN    LS S*------| WRITE       |*------S UV>MN    LS S*------S WRITE       |*--O---S *A8      LS S*------S STORE       |*------S T>MN     LS S*---                                                                    \par
+    (00,01)               C ANSNZ>S2    |       |             |       |             |       |             |   |   |             |       C 1>S5        |       C ANSNZ>S2    |   |                                              \par
+    RR Branch             |             |       |             |       |             |       |             |   |   |             |       |             |   |---|             |   |                                           \par
+    on count              R 1,0       02R       R 0,0       04R       R 0,1       05R       R S2,1      71R   |   R 0,0       80R       R 0,1       71R   |   R 1,1       07R   |                                           \par
+                          E1--    10 --EA       E2--    00 --EB       E3--    01 --EC       E4--    *1 --ED   |   E5--    00 --EE       E6--    01 --EF   |   E7--    11 --EG   |                                        \par
+                         Test unavail                                Store in U            Store in V         |  Store non zero                           |  Test BR addr       |\par
+F                        addr                                        Read out Low                             |  unavail addr                             |  specification      |\par
+                         Read out Hi                                 address                                  |  in LS A8                                 |                     | \par
+                         address                                                                              |                                           |                     |                                         \par
+                                                                                                              ---------------------------------------------                     |                                          \par
+                                                                                                                                                                                |                                              \par
+G                                           -------------------------------------------------------------------------------------------------------------------------------------                                                                     \par
+                                            |                                                                                                                                                                                \par
+                                            |                                                                                                                                                                            \par
+                                            |                                                                                                                                                                              \par
+                                            |                                                                                                                                                                               \par
+                                            |\par
+H                                           |\par
+                                            |\par
+                              10 --- 015A   |       11 --- 0207           00 --- 0208           00 --- 020C           01 --- 0211                                                                                         \par
+                          K 0000,0      |   |   |             |       |             |       |             |       |             |                                                                                           \par
+                          |             |   |   A R-0>RC      |       A T-0>T       |       A TL>Z        |       A 0>L         |                                                                                             \par
+J   QA051.JCE------------*S T>MN     LS S---O---|             |*------S WRITE       |*--O---S T>MN     LS S*--O---S WRITE       |*----------------------------------------------O------------------------------------------------------QA161------JEE\par
+    (10)                  | 0>S0        |       |             |       |             |   |   C 1>S0        |   |   |             |                                               |                                                      (00,01,10,11)\par
+    RX Branch             |             |       |             |   ----|             |   |   |             |   |   |             |                                               |                                                      BR ending\par
+    on count              R 1,CA02^W    |       R 0,0       08R   |   R 0,Z=0     0CR   |   R 0,S3      10R   |   R S2,S5     74R                                               |                                           \par
+                          J1--    11 --CA       J2--    00 --JB   |   J3--    0* --JC   |   J4--    0* --JD   |   J5--    ** --JE                                               |                                          \par
+                         Read out low          Subtract 1         |  Test for zero      |  Test carry         |  Test no branch                                                 |                      \par
+K                        count                                    |                     |                     |                                                                 |                      \par
+                                                                  |                     |                     |                                                                 |                      \par
+                                                                  |       10 --- 0204   |       01 --- 020D   |       00 --- 0210           11 --- 020B                         |                                         \par
+                                                                  |   |             |   |   |             |   ----|             |       |             |                         |                                         \par
+                                                                  |   A T-0>T       |   |   A TL>Z        |       A R-0+C>RC    |       A 0>L         |                         |                                              \par
+L                                                                 O---S WRITE       |---O---S T>MN     LS S*------|             |*--O---S WRITE       |-------------------------O                                                                    \par
+                                                                  |   |             |       |             |       |             |   |   |             |                         |                                             \par
+                                                                  |   |             |       |             |       |             |   |   |             |                         |                                        \par
+                                                                  |   R 0,Z=0     0CR       R 0,0       10R       R S0,Z=0    08R   |   R S2,S5     74R                         |                                         \par
+                                                                  |   L3--    0* --LC       L4--    00 --LD       L5--    .. --LE   |   L6--    ** --LF                         |                                          \par
+                                                                  |  Test for zero                               Test previous      |  Test no branch                           |                      \par
+M                                                                 |  Had previous                                non zero           |                                           |                      \par
+                                                                  |  non-zero                                    Test if hi order   |                                           |                      \par
+                                                                  |                                              (TL=0)             |       01 --- 0209           10 --- 020E   |                                           \par
+                                                                  |                                                                 |   |             |       |             |   |                                              \par
+                                                                  |                                                                 |   A 0>L         |       |             |   |                                               \par
+N                                                                 ------------------------------------------------------------------O---S WRITE       |*--O---|             |----                                                                    \par
+                                                                                                                                        |             |   |   |             |                                                  \par
+                                                                                                                                        |             |   |   |             |                                                \par
+                                                                                                                                        R 1,Z=0     0ER   |   R S2,S5     74R                                              \par
+                                                                                                                                        N6--    1* --NF   |   N7--    ** --NG                                              \par
+                                                                                                                                       Test for zero      |  Test no branch      \par
+P                                                                                                                                      hi count           |                      \par
+                                                                                                                                                          |\par
+                                                                                                                                                          |       11 --- 020F                                 ** ---  XXX\par
+                                                                                                                                                          |   K 0001,0      |                             | GO TO       |\par
+                                                                                                                                                          |   A 0>S         |                             | QA001.CBB   |    \par
+Q                                                                                                                                                         ----S         K>W R*----------------------------|             |                            \par
+                                                                                                                                                              |             |                             |             |    \par
+     QE801.GHE------------------------------------------------------------------------------------------------------------------------------------------------|             |                             |             |\par
+     (11)                                                                                                                                                     R S1,INTR   00R                             |             |\par
+     Load + store                                                                                                                                             Q7--    ** --QG                             Q9--    ** --QJ\par
+     variables                                                                                                                                               No branch                                   Normal I\par
+R    return                                                                                                                                                  Count zero                                  cycle start\par
+\par
+\par
+\par
+\par
+S\par
+\par
+ Q\par
+ A\par
+ 1\par
+ 7                                                                                                                                                | 128015        08/31/65 | Mach          2030       | Date  11/17/65          Sheet    1  QA171 |\par
+ 1                                                                                                                                                | 128016        10/01/65 | Name                     | Log    3563             Version           |\par
+                                                                                                                                                  | 128045        11/17/65 | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837011     |    Branch on count                        |\par
+                                                                                                                                                  |                        | IBM Corp.     SDD        |                                           |\par
+}
+ 

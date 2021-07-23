@@ -1,0 +1,106 @@
+{\rtf1\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\lang1033\f0\fs14 QB651             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+ \par
+                          Reg contents                                                                                                                      Micro trace\par
+                          S 7F                                                                                                                              B67 B68 B69 BA2 B6A B6B BB2 BB3 AFC AF9 AFA\par
+A                         G FF                                                                                                                              AF8 AFB AFE B76 B75 B78 B7B B7E\par
+                          R 70\par
+                          L 01\par
+                          D 00\par
+                          T FF\par
+                          I 00\par
+B                         J FF\par
+                          U FF\par
+                          V FF\par
+                          H FF\par
+ \par
+C\par
+ \par
+ \par
+ \par
+ \par
+                                              ----------------------O---------------------O------------------\par
+D                                             |                     |                     |                 |\par
+                                              |                     |                     |                 |\par
+                              11 --- 0B67     |     00 --- 0B68     |     01 --- 0B69     |     10 --- 0B6A |         11 --- 0B6B           10 --- 0BB2           11 --- 0BB3           00 --- 0AFC           01 --- 0AF9\par
+                          K 1111,0   BINA     --K 1111,0      |     --K 1111,0      |     --K 0011,0      | |     K 1111,0      |       K 1111,0      |       K 1010,1      |       K 1111,0      |       K 1111,0      |\par
+                          A G^+-K>Z     |       A GXL^KL>I    |       A GXH^KH>D    |       A 0L^0>R      | |     A R^KL>I      |       A RX^KH>D     |       A GH^0>R      |       A R^KH>V      |       A RX^KL>D     |  \par
+E   QB641.LJE------------*|             |*------|             |*--O---|             |*- ----|             |*O-----|             |*------|             |*------|         K>W R*--O---|             |*------|             |*-\par
+    (11)                  C ANSNZ>S2    |       C ANSNZ>S2    |   |   C ANSNZ>S2    | | |   C K>FB        |       C ANSNZ>S2    |       C ANSNZ>S2    |       |             |   |   C ANSNZ>S2    |       C ANSNZ>S2    | |\par
+    Go-on                 |             |       |             |   |   |             | | |   R WRAP>X6     |   ----|             |       |             |   ----|             |   |   |             |       |             | |\par
+                          R 0,0       68R       R AC,1      69R   |   R 1,0       A2R | |   R 1,1       6BR   |   R 1,0       B2R       R 1,1       B3R   |   R 0,0       FCR   |   R 0,1       F9R       R 1,INTR    FAR |\par
+                          E1--    00 --EA       E2--    *1 --EB   |   E3--    10 --EC | |   E4--    ** --ED   |   E5--    10 --EE       E6--    11 --EF   |   E7--    00 --EG   |   E8--    01 --EH       E9--    1* --EJ |\par
+                         FF^FF=00              0F^0F=00           |  F0^F0=00         | |  0F^00=0F           |  0F^0F=00              F0^F0=00           |  F0^00=F0           |  F0^F0=00              0F^0F=00         |\par
+F                        S0=0 from B6E         Start of A         |                   | |  Set ext trap       |                                           |  First module       |                        Int should       |\par
+                                               entry test         | ------------------- |  mask latch.        |                                           |  switch             |                        not be cond.     |\par
+                                                                  | |     10 --- 0BA2   |  There should       |                                           |                     |       00 --- 0BFC                       |\par
+                                                                  | | |             |   |  be no wrap         |                                           |                     |   |             |                       |\par
+                                                                  | | A 0^L>R       |   |  condition          |                                           |                     |   A SP^0>Z      |                       |\par
+G                                                                 | --|             |----                     |                                           |                     ----|             |*-                     |\par
+                                                                  |   |             |                         |                                           |                         |             | |                     |\par
+                                                                  |   |             |                         |                                           |                         |             | |                     |\par
+                                                                  |   R 1,0       6AR                         |                                           |                         R 1,1       B3R |                     |\par
+                                                                  |   G3--    10 --GC                         |                                           |                         G8--    11 --GH |                     |\par
+                                                                  ---------------------------------------------                                           -------------------------------------------                     |\par
+H                                                                                                                                                                                                                         |\par
+                                                                                                                                                                                                                          |\par
+                                                                                                                                                                                                                          |\par
+    QB661.JBE--------------------------------------------------------------------------------------------------------------------------------------------------------------------                                         |\par
+    (11)                                                                                                                                                                        |                                         |\par
+J   S3 again          --------------------------------------------O-------------------------------------------------------------------------------------------------------------+------------------------------------------\par
+                      |                                           |                                                                                                             |                                          \par
+                      |                                           |                                                                                                             |                                          \par
+                      |                                           |                                                                                                             |                                          \par
+                      |                                           |                                                                                                             |                                          \par
+                      |                                           |                                                                                                             |\par
+K                     |                                           |                                                                                                             |\par
+                      |                                           |                                                                                                             |\par
+                      |       10 --- 0AFA           00 --- 0AF8   |       11 --- 0AFB           10 --- 0AFE           10 --- 0B76           01 --- 0B75           00 --- 0B78   |       11 --- 0B7B           10 --- 0B7E\par
+                      |   K 0100,0      |       K 1000,1      |   ----K 1111,0      |       K 1011,0      |       K 1111,0      |       K 0101,0      |       K 1011,0      |   ----K 1010,0      |       K 0101,0      |*-------------QB661------LJD\par
+                      |   A FTXH+KH>R   |       A 0!-0>D      |       A G^D>R       |       A G+0>DC      |       A G+K+1>I     |       A 0+D+1>UC    |       A T+0+1>TC    |       A 0^K>V       |       A T.D>Z       |              (00)\par
+L                     ----|             |*------|             |*------|             |*------|         K>W R*------|             |*--O---|             |*--O---|             |*----O-|             |*--O---|             |*---          Early force\par
+                          |             |       C K>FA        |       C ANSNZ>S2    |       C 1>S0        |       |             |   |   |             |   |   C ANSNZ>S2    |     | |             |   |   C ANSNZ>S2    |   |\par
+                          |             |       |             |       C 1>F0        |   ----|             |   ----|             |   |   |             |   | --C 0>MC        |   --+-|             |   |   R ACFORCE     |   -----------QB661------LJE\par
+                          R 0,0       F8R       R 1,1       FBR       R 1,0       FER   |   R 1,0       76R   |   R AC,1      75R   |   R R0,S3     78R   | | R 1,S3        |   | | R AC,0      7ER   |   R 0,1       81R              (01)\par
+                          L1--    00 --LA       L2--    11 --LB       L3--    10 --LC   |   L4--    10 --LD   |   L5--    *1 --LE   |   L6--    ** --LF   | | L7--    .. --LG   | | L8--    *0 --LH   |   L9--    01 --LJ              On ward\par
+                         00+40=40              OR test               Cond ext int       |  FF+00=FF           |  FF+FF+1=FF         |  00+FF+1=00         | |FF+00+1=00         | |00^AA=AA           |  No AC here\par
+M                        40+40=80              Restore Bus-O         Check D-reg        |  No ALU carry       |  ALU carry          |  Insert 1 causes    | |MC=0  may          | |                   |\par
+                         If looping            reg to decond.        from OR test       |  Reset S3           |  should not         |  carry to set S3    | |cause test int     | |                   |\par
+                         test with FT5         SVI,OPI,AI                               |                     |  set S3             |  CK5 may cause      | |                   | |                   |\par
+                                                                                        |                     |                     |  AC force           | |                   | |                   |\par
+                                                                                        |                     |                     |                     | |                   | |                   |\par
+N                                                                                       |                     |                     |                     | |                   | |                   |\par
+                                                                                        |                     |                     |                     | |                   | |                   |\par
+                                                                                        |                     |                     |                     | --------------------+-+-----------------O-+--------------------\par
+                                                                                        |                     |                     |                     |                     | |                 | |                   |\par
+                                                                                        |                     |                     |                     |                     | |                 | |                   |\par
+                                                                                        |                     |                     |                     O---------------------O |                 | |                   |\par
+P                                                                                       |                     |                     |                     |                     | |                 | |                   |\par
+                                                                                        |                     |                     |                     |                     | |                 | |                   |\par
+                                                                                        |                     |                     |       11 --- 0B77   |       01 --- 0B79   | |     10 --- 0B7A | |       00 --- 0B7C |\par
+                                                                                        |                     |                     |   |             |   |   K 1010,1      |   | --|             | | |   |             | |\par
+                                                                                        |                     |                     |   A SP^0>Z      |   |   A SP^0>Z      |   |   A SP+D+1>UC   | | |   A SP^0>Z      | |\par
+Q                                                                                       |                     |                     ----|             |*- ----|         K>W R*- ----|             |-- ----|             |*-\par
+                                                                                        |                     |                         |             | |     |             | |     |             |       |             |  \par
+                                                                                        |                     |                         |             | |     |             | |     |             |       |             |\par
+                                                                                        |                     |                         R 1,0       76R |     R 1,0       FER |     R 0,0       78R       R 0,0       78R\par
+                                                                                        |                     |                         Q6--    10 --QF |     Q7--    10 --QG |     Q8--    00 --QH       Q9--    00 --QJ\par
+                                                                                        |                     -------------------------------------------                     |\par
+R                                                                                       |                                                                                     |\par
+                                                                                        ---------------------------------------------------------------------------------------\par
+\par
+\par
+\par
+S\par
+\par
+ Q\par
+ A\par
+ 6\par
+ 5                                                                                                                                                | 128056        04/27/66 | Mach          2030       | Date  05/09/66          Sheet    1  QB651 |\par
+ 1                                                                                                                                                |                        | Name                     | Log    2142             Version           |\par
+                                                                                                                                                  |                        | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837119     |    Diagnostic test-basic A entry          |\par
+                                                                                                                                                  |                        | IBM Corp.                |    and carry controls ID 3345             |\par
+}
+ 

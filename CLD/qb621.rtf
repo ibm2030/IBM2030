@@ -1,0 +1,106 @@
+{\rtf1\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\lang1033\f0\fs14 QB621             0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+ \par
+                        Reg contents                                                                                                                      Micro trace\par
+                        S - FF                                                                                                                            B27 B23 B28 B0F B12 B11 ---\par
+A                       G - FF                                                                                                                            See chart below for trace of reg test\par
+                        R - FF\par
+                        L - 00\par
+                        D - SR(System reset)\par
+                        T - SR\par
+                        I - 00\par
+B                       J - SR\par
+                        U - SR\par
+                        V - SR\par
+                        H - SR\par
+ \par
+C\par
+ \par
+ \par
+ \par
+ \par
+\par
+D   QB631.JBE------------------------------------------------------------------------------------------------------------------------\par
+    (01)                                                                              ----------------------------------------------+--------------------------------------------------------------------------------------------------QB611------ECE\par
+    Reg loop                  11 --- 0B27           11 --- 0B23           00 --- 0B28 |         11 --- 0B0F           10 --- 0B12   |       01 --- 0B11           00 --- 0B2C           10 --- 0B1A           00 --- 0B58              (01)\par
+                          K 0011,0      |       |          BINA       K 1001,0      | |     K 1111,0      |       K 0001,0      |   ---*K 0100,0      |       K 1111,0      |       |             |       K 1111,0      |              Ch failure\par
+                          A 0^-0>Z      |       A 0^+-R>G     |       A 0^-0>J      | |     A S^K>Z       |       A 0^-KL>G     |       A 0^KH>TA     |       A 0^KL>JE     |       A J^0>J       |       A 0^K>Z       |    \par
+E   QB611.EHE------------*|             |*O-----|             |*------|             |*O-----|             |*O-----|             |*------|             |*O-----|             |*--O---|             |*------|             |*O------------QB631------EJE\par
+    (11)                  C K>FB        | |     C ANSNZ>S2    |       |             |       C ANSNZ>S2    | |     C 0>S2        |       C HZ>S4       | |     C LZ>S5       |   |   C 1>S0        |       C 1>S6        | |            (11)\par
+    Continued         ----|             | |     |             |       R ASCII>X6    |   ----|             | | ----|             |   ----|             | | ----|             |   |   |             |       |             | |            Reg test\par
+                      |   R S0,Z=0    23R |     R 0,0       28R       R 1,1       0FR   |   R 1,Z=0     12R | |   R 0,1       11R   |   R S2,0      2CR | |   R ST,0      1AR   |   R 0,0       58R       R S6,1      2FR |\par
+                      |   E1--    ** --EA |     E2--    00 --EB       E3--    *1 --EC   |   E4--    1* --ED | |   E5--    01 --EE   |   E6--    *0 --EF | |   E7--    *0 --EG   |   E8--    00 --EH       E9--    *1 --EJ |\par
+                      |  Set ext trap     |    0^-FF>0               0^-0>FF            |  FF^FF>00         | |  0^-01>FE           |  0^40>40          | |  0^0F>0F            |  Set S0.               S6=0 last        |\par
+F                     |  mask latch       |    S0=1 causes           ASCII latch        |  S0=1 from B1F    | |  Set up G-reg       |  Start reg test.  | |  Reset S5           |                        time through     |\par
+                      |                   |    compl. add            should be off.     |  S1,2,3 from B09  | |  for branch ctrl    |  Reset S4.        | |                     |                        the reg loop.    |\par
+                      |                   |                          First ch 1         |  S4,5 from BFF    | |  in reg test        |                   | |                     |                                         |\par
+                      |                   |                          branch.            |  S6 from B25      | |  loop.              |                   | |                     |                                         |\par
+                      |                   |                                             |  S7 from B24      | |                     |                   | |                     |                                         |\par
+G                     |                   |                                             |  Check Z not      | |                     |                   | |                     |                                         -------------QB641------EJE\par
+                      |                   |                                             |  equal zero       | |                     |                   | |                     |                                                      (01)\par
+                      |                   |                                             |  branch.          | |                     |                   | |                     |                                                      Exit reg\par
+                      |                   |                                             |                   | |                     |                   | |                     |                                                      test\par
+                      |                   |                                             |                   | |                     |                   | |                     |                                          \par
+                      |                   |                                             |                   | |                     |                   | |                     |                                          \par
+H                     |                   |                                             |                   | |                     |                   | |                     |                                          \par
+                      |                   O------------------------                     |                   | ----------------------+--                 | ----------------------+--------------------\par
+                      |                   |         01 --- 0B21   |       10 --- 0B22   |                   |         11 --- 0B13   | |                 |         10 --- 0B2E   |       00 --- 0B18 |\par
+                      |                   |     |             |   |   |             |   |                   |     |             |   | |                 |     |             |   |   K 1000,0      | |\par
+                      |                   |     A SP^0>Z      |   |   A SP^0>Z      |   |                   |     A SP^-0>Z     |   | |                 |     A SP^-0>S     |   |   A SP^0>R      | |\par
+J                     |                   ------|             |*- ----|             |*- |                   ------|             |*- | |                 ------|             |*- ----|             |*-\par
+                      |                         C 1>S0        | |     |             | | |                         |             | | | |                       |             | |     C K>FA        |  \par
+                      |                         |             | |     |             | | |                         |             | | | |                       |             | |     |             |  \par
+                      |                         R 1,1       27R |     R 1,1       1FR | |                         R 1,1       0FR | | |                       R 1,0       12R |     R 0,0       2CR  \par
+                      |                         J2--    11 --JB |     J3--    11 --JC | |                         J5--    11 --JE | | |                       J7--    10 --JG |     J8--    00 --JH  \par
+                      |                                         |                     | |                                         | | |                                       |\par
+K                     |                                         |                     | ------------------------------------------- | -----------------------------------------\par
+                      -------------------------------------------                     ----------------------------------------------+--------------------------------------------------------------------------------------------------QB611------JCE\par
+                              01 --- 0B51           10 --- 0B56           11 --- 0B5B           01 --- 0B19           00 --- 0B34   |                                                                                                  (11)\par
+                          K 1111,0      |       K 1111,0      |       |             |       K 0000,1      |       K 1101,0      |   |                                                                                                  Re-try\par
+                          A 0^K>U       |       A 0^K>J       |       A I^-0>Z      |       A 0^-0>I      |       A SH^KH>Z     |   |\par
+L   QB631.EJE---------O--*|             |*----O-|             |*--O---|             |*------|             |*------|             |*---\par
+    (00,01)           |   |             |     | C 0>S4,S5     |   |   C ANSNZ>S2    |       C K>FB        |       C ANSNZ>S2    |\par
+    More reg        --+---|             |   --+-|             |   |   |             |   ----|             |       |             |\par
+                    | |   R G6,0      56R   | | R 1,G7      5AR   |   R 0,1       19R   |   R 0,0       34R       R 0,1       11R\par
+                    | |   L1--    *0 --LA   | | L2--    1* --LB   |   L3--    01 --LC   |   L4--    00 --LD       L5--    01 --LE\par
+                    | |                     | |                   |                     |  K>FB should not       D0^D0>0                                                 Register test trace\par
+M                   | |                     | |                   |                     |  change anything.      S0=1 from B1A                              Starts with I=00 and branches out of main loop on G=FE\par
+                    | |                     | |                   |                     -----------------------  S1=1 from B0F                              Destine Seq BR   BR-trace    Chk Next BR Nxt Return to\par
+                    | |       00 --- 0B50   | |     00 --- 0B54   |       10 --- 0B5A           01 --- 0B4D   |  S2=0 from B12                              Not 00      Ctrl             Reg Ctrl    Reg main loop\par
+                    | |   K 1000,0      |   | | K 0100,0      |   |   K 0010,0      |       K 0000,0      |   |  S3=1 from B0F                              B11 TA\par
+                    | |   A 0^-KL>G     |   | | A 0^-KL>G     |   |   A 0^-KL>G     |       A I^K>J       |   |                                             B2C JE\par
+N                   | ----|             |*- | --|             |*- ----|             |*------|             |*- |                                             B1A J\par
+                    |     |             | | |   |             | |     C GR>GG       |       C ANSNZ>S2    | | |                                             B58 Z   10  S6=0 End of test Q                QB641\par
+                    |     |             | | |   |             | |     |             |       |             | | |                                             B2F Q\par
+                    |     R 1,1       53R | |   R 1,1       57R |     R 0,1       4DR       R 1,1       1BR | |                                             B35 S\par
+                    |     N1--    11 --NA | |   N2--    11 --NB |     N3--    01 --NC       N4--    11 --ND | |                                             B36 TE  9   S7=0 B3A B3E     H   S6=0      Q  B36\par
+                    |    0^-0B>F7         | |  0^-04>FB         |    0^-02>FD                               | |                                             B38 H   8   G=7F B41 B65 B64 R   S7=0      H  B43\par
+P                   |                     | |                   |    GR>GG causes                           | |                                             B43 R   7   G=BF B3C B46 B3F D   G=7F      R  B3D\par
+                    | --------------------- | -------------------    Z/T stop if        --------------------- |                                             B3D D   6   G=DF B48 B49 B4B L   G=BF      D  B4A\par
+                    | |       11 --- 0B53   | |     11 --- 0B57      basic CS0 is       |       11 --- 0B1B   |                                             B4A L   5   G=EF B46 B47     T   G=DF      L  B45\par
+                    | |   |             |   | | |             |      conditioned        |   K 0011,0      |   |                                             B45 T   4   G=F7 B4C B4F     V   G=EF      T  B4E\par
+                    | |   A U^0>V       |   | | A J^0>U       |      erroneously.       |   A SL^KL>Z     |   |                                             B4E V   3   G=FB B50 B53     U   G=F7      V  B51\par
+Q                   | ----|             |*- | --|             |*-                       ----|             |*--O                                             B51 U   2   G=FD B54 B57     J   G=FB      U  B56\par
+                    |     C ANSNZ>S2    | | |   C ANSNZ>S2    | |                           C ANSNZ>S2    |   |                                             B56 J   1   G=FE B5A B4D B1B I   G=FD      J  B19\par
+                    O-----|             | | O---|             | |                       ----|             |   |                                             B5B\par
+                    |     R G4,1      51R | |   R 1,G5      56R |                       |   R G6,1      19R   |                                             B19 I\par
+                    |     Q1--    *1 --QA | |   Q2--    1* --QB |                       |   Q4--    *1 --QD   |                                             B34\par
+                    |                     | |                   |                       |  03^03>0            |                                             --- Loop back to B11\par
+R                   |                     | |                   |                       |  S4,S5=0 from B56   |\par
+                    |                     | |                   |                       |  S6=1 from B35      |\par
+                    |                     | |                   |                       |  S7=1 from B36      |\par
+                    ----------------------- ---------------------                       -----------------------\par
+\par
+S\par
+\par
+ Q\par
+ B\par
+ 6\par
+ 2                                                                                                                                                | 128056        04/18/66 | Mach          2030       | Date  05/09/66          Sheet    1  QB621 |\par
+ 1                                                                                                                                                |                        | Name                     | Log    2142             Version           |\par
+                                                                                                                                                  |                        | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837115     |    Diagnostic test-basic                  |\par
+                                                                                                                                                  |                        | IBM Corp.                |    ID 3345                                |\par
+}
+ 

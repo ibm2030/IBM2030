@@ -1,0 +1,106 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\deftab709{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}}
+\viewkind4\uc1\pard\ltrpar\lang1033\f0\fs14                   0                    1                    2                     3                     4                     5                     6                     7                     8                     9\par
+\par
+                                                                                                                                                                                                                         \par
+                      This page further decodes the opcodes and separates                                                                                                                                                  \par
+                      super call from the stg prot codes and the invalid op.                                                                                                                                                  \par
+A                     Super call branches directly to the Int programs. The                                                                                                                                                                           \par
+                      Stg Prot codes are completely contained on this page.                                                                                                                                                   \par
+                      T=Lo addr of reg where key is stored                                                                                                                                                               \par
+                      UV=Stg prot block addr or reg where block addr is stored.                                                                                                                                           \par
+                      G7=0=Set Key                                                                                                                                                                                        \par
+                      G7=1=Insert Key\par
+B                     S0=Loop control\par
+\par
+                              00 --- 0124                                                                                                                                                                                \par
+                          K 1001,0      |                                                                                                                                                                                \par
+                          A D>L         |                                                                                                                                                                                     \par
+C   QA041.NCE------------*S *B9      LS S*--O------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------QA891------CAE\par
+    (00)                  C 0>S4,S5     |   |                                                                                                                                                                                          (10)\par
+    Keys and              |             |   |                                                                                                                                                                                          Supervisor\par
+    Super call            R G6,G7     B8R   |                                                                                                                                                                                          Call\par
+                          C1--    ** --CA   |                                                                                                                                                                             \par
+                         Rd key and prog    |\par
+D                        bit. Put int code  |\par
+                         for super call     |\par
+                         in L.              |       11 --- 01BB                                                                                                                                               11 ---  XXX\par
+                                            |   |             |                                                                                                                                           | Go to       |\par
+                                            |   A 0+0+1>L     |                                                                                                                                           | QA879.CAE   |    \par
+E                                           O---S WRITE       |*----------------------------------------------O-------------------------------------------O-------------------------------------------O---|             |                            \par
+                                            |   C 0>S6        |                                               |                                           |                                           |   |             |    \par
+                                            |   |             |                                               |                                           |                                           |   |             |\par
+                                            |   R 1,1       47R                                               |                                           |                                           |   |             |\par
+                                            |   E2--    11 --EB                                               |                                           |                                           |   E9--    11 --EJ\par
+                                            |  Invalid Op                                                     |                                           |                                           |  Prg Int\par
+F                                           |                                                                 |                                           |                                           |\par
+                                            |                                                                 |                                           |                                           |\par
+                                            |       00 --- 01B8                                 00 --- 01BC   |                             10 --- 01BE   |                             10 --- 01C2   |                    \par
+                                            |   K 1110        |                             K 0010        |   |                         K 0101        |   |                         K 0110        |   |                  \par
+                                            |   A R.-KL>L     |                             A 0+KL>L      |   |                         A 0+KL>L      |   |                         A 0+KL>L      |   |                        \par
+G                                           O---S WRITE       |*---                     ---*S WRITE       |----                     ----S WRITE       |----                     ----S WRITE       |----                                              \par
+                                            |   C LZ>S5       |   |                     |   C 0>S6        |                         |   C 0>S6        |                         |   C 0>S6        |                           \par
+                                            |   |             |   |                     |   |             |                         |   |             |                         |   |             |                        \par
+                                            |   R 0,1       B5R   |                     |   R 1,1       47R                         |   R 1,1       47R                         |   R 1,1       47R                       \par
+                                            |   G2--    01 --GB   |                     |   G4--    11 --GD                         |   G6--    11 --GF                         |   G8--    11 --GH                       \par
+                                            |  Set key            |                     |  Priv op check                            |  Inv addr                                 |  Spec check\par
+H                                           |  Test prob bit      |                     |                                           |                                           |\par
+                                            |  LH=PSW key         |                     |                                           |                                           |\par
+                                            |       01 --- 01B9   |       01 --- 01B5   |       01 --- 01BD           11 --- 01B7   |       11 --- 01BF           00 --- 01C0   |       11 --- 01C3                        \par
+                                            |   K 1110        |   |   K 0010        |   |   |             |       |             |   |   |             |       |             |   |   |             |                      \par
+                                            |   A R.-KL>L     |   |   A V+KL>V      |   |   A R>Z         |       A V-0>V       |   |   A RL>Z        |       A R>V         |   |   A R>U         |                             \par
+J                                           ----S WRITE       |---O---S UV>MN    LS S---O---S WRITE       |*------S UV>MN    LS S*--O---S WRITE       |*------S UV>MN    LS S*--O---S WRITE       |*---                                               \par
+                                                C LZ>S5       |       C             |       |             |       |             |       |             |       |             |       C 1>S0        |   |                       \par
+                                                |             |       |          006V       |             |       |             |       |             |       |             |       |             |   |                   \par
+                                                R 0,1       B5R       R 0,S5      BCR       R 1,1       B7R       R 1,Z=0     BER       R 0,0       C0R       R 1,Z=0     C2R       R 0,G7      C4R   |                   \par
+                                                J2--    01 --JB       J3--    0* --JC       J4--    11 --JD       J5--    1* --JE       J6--    00 --JF       J7--    1* --JG       J8--    0* --JH   |                    \par
+                                               Insert key            Rd hi 8 bits          Test for zero         Rd lo 8 bits          Test lo 4=0           Rd middle 8 bits                         |\par
+K                                              Test prob bit         (VER006)                                                                                                                         |\par
+                                               LH=PSW key                                                     -----------------------------------------------------------------------------------------\par
+                                                                                                              |                                                   00 --- 01C4           11 --- 01CB                      \par
+                                                                                                              |                                               |             |       |             |                         \par
+                                                                                                              |                                               A D>R         |       A RXL>D       |                           \par
+L                                                                                                             O-----------------------------------------------S T>MN     LS S*--O---S WRITE       |*---                                              \par
+                                                                                                              |                                               |             |   |   C 0>S0        |   |                       \par
+                                                                                                              |  Set key sequence of steps                ----|             |   |   |             |   |                     \par
+                                                                                                              |  LG,LG,QE,QF and QH                       |   R S0,1      C9R   |   R 0,1       C5R   |                    \par
+                                                                                                              |                                           |   L7--    *1 --LG   |   L8--    01 --LH   |                    \par
+                                              All words on this page are VER000                               |                                           |  Set key op.        |  Put key in DL      |\par
+M                                             except for Wd JC which is VER006                                |                                           |  Put key in RH      |                     |\par
+                                                                                                              |                                           |  for insert key     |                     |\par
+                                                                                                              |                             10 --- 01CA   |                     |                     |                   \par
+                                                                                                              |                         |             |   |                     |                     |                    \par
+                                                                                                              |                         A QXH>D       |   |                     |                     |                       \par
+N                                                                                                             |                     ----S WRITE       |*---                     |                     |                                              \par
+                                                                                                              |                     |   C 0>S0        |                         |                     |                      \par
+                                                                                                              |                     |   |             |                         |                     |                   \par
+                                                                                                              |                     |   R 0,0       C4R                         |                     |                    \par
+                                                                                                              |                     |   N6--    00 --NF                         |                     |                    \par
+                                                                                                              |                     |  Store key in D so that                   |                     |\par
+P                                                                                                             |                     |  share cycles cannot destroy it           |                     |\par
+                                                                                                              |                     |                                           |                     |\par
+                                                                                                              |       01 --- 01C5   |       00 --- 01C8                         |       01 --- 01C9   |       ** ---  XXX\par
+                                                                                                              |   |             |   |   |             |                         ----|             |   |   | Go to       |\par
+                                                                                                              |   |             |   |   A LH+DL>Q     |                             A 0>L         |   |   | QA001.CBB   |    \par
+Q                                                                                                             ----S UV>MN|   MS S*--O---|             |*----------------------------S STORE       |*------|             |                            \par
+                                                                                                                  C 0>S6        |       |             |                             C 0>S2        |   |   |             |    \par
+                                                                                                              ----|             |       |             |                             |             |   |   |             |\par
+                                                                                                              |   R S0,0      C8R       R 0,1       C9R                             R S1.INTR   00R   |   |             |\par
+                                                                                                              |   Q5--    *0 --QE       Q6--    01 --QF                             Q8--    ** --QH   |   Q9--    ** --QJ\par
+                                                                                                              |  Insert kiey op        Change key                                                     |  Norm I cycle\par
+R                                                                                                             |                                                                                       |  start\par
+                                                                                                              |                       Insert key sequence of steps                                    |\par
+                                                                                                              |                       QE,NF,LG and QH                                                 |\par
+                                                                                                              -----------------------------------------------------------------------------------------\par
+\par
+S\par
+\par
+ Q\par
+ A\par
+ 2\par
+ 1                                                                                                                                                | 128013        11/12/65 | Mach          2030       | Date  11/17/65          Sheet    1  QA211 |\par
+ 1                                                                                                                                                | 128045        11/17/65 | Name                     | Log    3563             Version    006    |\par
+                                                                                                                                                  |                        | Mode          Manual     |                                           |\par
+                                                                                                                                                  |                        | P.N.          837015     |    Set Key, Insert Key and                |\par
+                                                                                                                                                  |                        | IBM Corp.                |    Supervisor Call                        |\par
+}
+ 

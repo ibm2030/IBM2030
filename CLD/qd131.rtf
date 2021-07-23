@@ -1,0 +1,151 @@
+{\rtf1\ansi\ansicpg1252\deff0
+{\fonttbl
+{\f0\fnil\fcharset0\fprq0\fttruetype Courier New;}
+{\f1\fnil\fcharset0\fprq0\fttruetype NULL;}
+{\f2\fnil\fcharset0\fprq0\fttruetype Dingbats;}
+{\f3\fnil\fcharset0\fprq0\fttruetype Symbol;}
+{\f4\fnil\fcharset0\fprq0\fttruetype Times New Roman;}
+{\f5\fnil\fcharset0\fprq0\fttruetype Arial;}}
+{\colortbl
+\red0\green0\blue0;
+\red255\green255\blue255;}
+{\stylesheet
+{\s7\sl240\slmult1\f4\fs24 Default;}
+{\s18\sl240\slmult1\fi-431\li720\sbasedon19 Lower Roman List;}
+{\s20\sl240\slmult1\tx431\sbasedon10\snext19 Numbered Heading 1;}
+{\s21\sl240\slmult1\tx431\sbasedon11\snext19 Numbered Heading 2;}
+{\s8\sl240\slmult1\fi-431\li720 Diamond List;}
+{\s22\sl240\slmult1\tx431\sbasedon12\snext19 Numbered Heading 3;}
+{\s23\sl240\slmult1\fi-431\li720 Numbered List;}
+{\s10\sl240\slmult1\sb440\sa60\f5\fs34\b\sbasedon19\snext19 Heading 1;}
+{\s27\sl240\slmult1\fi-431\li720 Square List;}
+{\s6\sl240\slmult1\fi-431\li720 Dashed List;}
+{\s29\sl240\slmult1\sa117\f4\fs24\sbasedon7 Text body;}
+{\s13\sl240\slmult1\fi-431\li720 Heart List;}
+{\s33\sl240\slmult1\fi-431\li720\sbasedon23 Upper Roman List;}
+{\s25\sl240\slmult1\f0\fs20\sbasedon7 Preformatted Text;}
+{\s4\sl240\slmult1\sb117\sa117\f4\fs20\i\sbasedon7 Caption;}
+{\s31\sl240\slmult1\fi-431\li720 Triangle List;}
+{\s32\sl240\slmult1\fi-431\li720\sbasedon23 Upper Case List;}
+{\s3\sl240\slmult1\fi-431\li720 Bullet List;}
+{\s9\sl240\slmult1\fi-431\li720 Hand List;}
+{\s26\sl240\slmult1\tx1584\sbasedon20\snext19 Section Heading;}
+{\s11\sl240\slmult1\sb440\sa60\f5\fs28\b\sbasedon19\snext19 Heading 2;}
+{\s12\sl240\slmult1\sb440\sa60\f5\fs24\b\sbasedon19\snext19 Heading 3;}
+{\s30\sl240\slmult1\fi-431\li720 Tick List;}
+{\s19\sl240\slmult1\f4\fs24 Normal;}
+{\s17\sl240\slmult1\fi-431\li720\sbasedon23 Lower Case List;}
+{\s1\sl240\slmult1\li1440\ri1440\sa117\sbasedon19 Block Text;}
+{\s16\sl240\slmult1\f4\fs24\sbasedon29 List;}
+{\s15\sl240\slmult1\f4\fs24\sbasedon7 Index;}
+{\s14\sl240\slmult1\fi-431\li720 Implies List;}
+{\s2\sl240\slmult1\fi-431\li720 Box List;}
+{\s28\sl240\slmult1\fi-431\li720 Star List;}
+{\s24\sl240\slmult1\f0\sbasedon19 Plain Text;}
+{\s5\sl240\slmult1\tx1584\sbasedon20\snext19 Chapter Heading;}}
+\kerning0\cf0\viewkind1\paperw23811\paperh16837\margl1440\margr1440\landscape\widowctl
+\sectd\sbknone\colsx360\margtsxn720\margbsxn720\pgncont\ltrsect
+\pard\plain\ltrpar\s19\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}QD131             0                    1                     2                     3                     4                     5                     6                     7                     8                     9}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}
+\par}\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         This routine is generally used to decide what type of CSW         If the addr of the device being addressed by the Test I/O         Start I/O or Halt I/O. The channel reset near the end of}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         should be stored, if any, to zero out the CSW if necessary        is the same as the device which has the interrupt in the          this routine will reset the Channel Busy and I/O}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}A                        and to store the status bytes. For a selector channel I/O         channel, a complete CSW will be stored. If not, condition         interrupt latches.}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         interrupt, a complete CSW is stored if the cahnnel is             code 2 is set. For Halt I/O ending sequence, if the}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         busy. If not, the status has been queued back to the              channel is busy, condition code 2 is set. If not, the}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         control unit and a Test I/O must be done to obtain the            status bytes are stored. For selector channel CSW store}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         status, after which only the status bytes are stored and          error routine, S2=0 indicates Test I/O and S2=1 indicates}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         the reset of the CSW is set to zeros. The Test I/O addr           start of Halt I/O, S5=1. The storing of status bytes is}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}B                        compare is used only when the channel is busy and contains        done after the rest of the CSW has been stored, if a}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         an intrp.                                                         complete CSW store is necessary, or by themselves for a}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}C}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}
+\par}\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}D}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}
+\par}\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                              11 --- 091B           11 --- 09DB           01 --- 09D9    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          K 0001        |       K 0010        |       |             |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          A GTX.KL>Z    |       A GT.KL>S     |       A 0>V         |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}E   QC011.GGE------------*|             |*------|             |*--O---|             |*-------------------------------------------------------------------------------------------------------------------------------------------------QD031------ECE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (11)                  C LZ>S5       |       |             |   |   C 1>S6        |                                                                                                                                                  (10)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Selr Ch               |          014V       |          014V   |   |          014V                                                                                                                                                  Selr Ch}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    I-O interrupt         R 1,1       DBR       R 0,S5      D8R   |   R 1,0       02R                                                                                                                                                  Set Poll Ctrl}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          E1--    11 --EA       E2--    0* --EB   |   E3--    10 --EC                                                                                                                                                  I-O intrp}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         Test Ch busy          S6=0=PCI           |  Ch not busy}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}F                                                                 |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                  |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                              10 --- 0906           00 --- 0970   |       00 --- 09D8    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          K 0101,1      |       |             |   ----K 0100        |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                          A 0+0+1>S     |       A V^R>Z       |       A 0+KH>T      |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}G   QD011.GGE------------*S *8D      LS S*------S WRITE       |*------|             |*O------------------------------------------------------------------------------------------------------------------------------------------------QD141------GCE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (10)                  C 1>S6        |       C ANSNZ>S2    |       |             | |                                                                                                                                                (00)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Selr Ch               |          014V       |          014V   ---*|          014V |                                                                                                                                                Selr Ch}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Test I-O              R 0,0       70R       R 0,0       D8R   |   R S2,S5     24R |                                                                                                                                                CSW store}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    addr compare          G1--    00 --GA       G2--    00 --GB   |   G3--    ** --GC |                                                                                                                                                Ch busy}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                         Fetch device          Addr compare       |  Ch busy          |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}H                        addr                  S2=0=Addr match    |  T=40             |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QD101.LHE---------O--------------------------------------------                   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (00)              |                                                               |         10 --- 0926    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Selr Ch           |                                                               |     K 1011,1      |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Halt I-O seq      |                                                               |     |             |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}J   ending            |                                                               O-----S *BB      LS S*---------------------------------------------------------------------------------------------------------------------------QD021------JDE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                      |                                                               |     |             |                                                                                                                            Selr Ch set}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QD181.GGE----------                                                               |     |          014V                                                                                                                            Cond Code 2}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (00)                                                                              |     R 0,1       85R    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Selr Ch                                                                           |     J4--    01 --JD    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    CSW store                                                                         |    Test I-O,Ch busy addr mismatch}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}K   error routine                                                                     |    Halt I-O,Ch busy}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                      |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                      |         01 --- 0925           01 --- 09D5    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QD071.NEE-------------------------------------------------------------------------+----*K 1001        |       |             |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (01)                                                                              |     A TXH+KH>U    |       A T+0+1>T     |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}L   Selr Ch                                                                           O-----S T>MN     MS S*------S STORE       |*---}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Store CSW                                                                         |     |             |       |             |   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Ch not busy                                                                       | ----|          014V       |          014V   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                      | |   R 0,1       D5R       R AC,1      25R   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                      | |   L4--    01 --LD       L5--    *1 --LE   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                      | |  Set the entire CSW to zero after         |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}M                                                                                     | |  which the two sta bytes will be stored   |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                      | O--------------------------------------------}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                          11 --- 09F3 | |       11 --- 0927           10 --- 09EA           11 --- 09E3           11 --- 09EB           11 --- 09EF           01 --- 09E9}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                      |             | | ----K 0100        |       |             |       |             |       K 0100        |       K 1001,1      |       K 0010        |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                      |             | |     A 0+K>T       |       A GR>R        |       A T+0+1>T     |       A GJ+K0>R     |       A 0+0+1>S     |       A 0+KL>S      |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}N   QD071.JHE--------------------------------------------------------*|             |*+-----|             |*------S T>MN     MS S*--O---S STORE       |*--O---|             |*------S T>MN     MS S*--O---S STORE       |*-------------QD021------NJE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (11)                                                              |             | |     C 1>S0        |       |             |   |   |             |   |   |             |       C K>GB        |   |   |             |              (01)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Selr Ch                                                           |          014V ------|          014V   ---*|          014V   |   |          014V   |   |          014V       |          014V   |   |          014V              Selr Ch set}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Store status                                                      R 1,1       27R       R 1,0       EAR   |   R S0,1      E1R   |   R 1,1       EBR   |   R 1,1       EFR       R 0,S7      E8R   |   R 0,1       89R              Cond Code 1}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    bytes CD busy                                                     N3--    11 --NC       N4--    10 --ND   |   N5--    *1 --NE   |   N6--    11 --NF   |   N7--    11 --NG       N8--    0* --NH   |   N9--    01 --NJ}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                     Rst Sel Out           T=44               |  Store Dev sta      |                     |  R=Ch status           Store Ch sta       |  CSW stored by I-O op}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}P                                                                                                             |  LSW byte 100       |                     |                        CSW byte 101       |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QD141.LHE----------                                                                                       |                     |                     |                        Ch reset           |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (10)              |                                                                                       |                     |       01 --- 09E1   |                                           |       00 --- 09E8}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QD091.NFE---------O----------------------------------------------------------------------------------------                     |   K 0001,0      |   |                                           |   K 0111,1      |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (10)              |                                                                                                             |   A T+0+1>T     |   |                                           |   A 0+K+1>V     |    }
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}Q   QD181.GEE----------                                                                                                             ----S STORE       |----                                           ----S STORE       |*-------------QA921------QJE}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (10)                                                                                                                                C K>GA        |                                                   |             |              (11)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Selr Ch                                                                                                                             |          014V                                               ---*|          014V              Start Load}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    CSW store                                                                                                                           R 1,1       EBR                                               |   R 1,CA03>W  77R              PSW}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    status bytes                                                                                                                        Q6--    11 --QF                                               |   Q9--    11 --QJ}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                       Srv Out                                                        |  CSW stored by intrp}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}R                                                                                                                                                                                                     |  V=78 S=01 V=0}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    QD141.JHE------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    (00)}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    Selr CH}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}    PCI intr}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}S   ending}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}
+\par}\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} Q}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} D}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 1}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 3                                                                                                                                                | 128053        02/18/66 | Mach          2030       | Date  04/06/66          Sheet    1  QD131 |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0} 1                                                                                                                                                | 128054        04/04/66 | Name                     | Log    2104             Version    014    |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  |                        | Mode          Manual     |                                           |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  |                        | P.N.          837199     |    Selr Channel Start CSW store           |}
+\par\pard\plain\ltrpar\s25\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}                                                                                                                                                  |                        | IBM Corp.                |    and store status bytes                 |}
+\par\pard\plain\ltrpar\sl240\slmult1{\f0\fs14\lang1033{\*\listtag0}}}

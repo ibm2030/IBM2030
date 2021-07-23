@@ -1,0 +1,119 @@
+{\rtf1\ansi\deff0\adeflang1025
+{\fonttbl{\f0\froman\fprq2\fcharset0 Times New Roman;}{\f1\froman\fprq2\fcharset0 Times New Roman;}{\f2\fnil\fprq2\fcharset0 Lucida Sans Unicode;}{\f3\fmodern\fprq1\fcharset0 Courier New;}{\f4\fnil\fprq2\fcharset0 Tahoma;}{\f5\fnil\fprq0\fcharset0 Tahoma;}}
+{\colortbl;\red0\green0\blue0;\red128\green128\blue128;}
+{\stylesheet{\s1\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af4\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\snext1 Default;}
+{\s2\sa120\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af4\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon1\snext2 Text body;}
+{\s3\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon2\snext3 List;}
+{\s4\sb120\sa120\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs20\lang255\ai\ltrch\dbch\af2\afs20\langfe255\ai\loch\f0\fs20\lang1033\i\sbasedon1\snext4 Caption;}
+{\s5\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af5\afs24\lang255\ltrch\dbch\af2\afs24\langfe255\loch\f0\fs24\lang1033\sbasedon1\snext5 Index;}
+{\s6\cf0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs20\lang1033\sbasedon1\snext6 Preformatted Text;}
+}
+{\info{\creatim\yr2004\mo4\dy24\hr13\min23}{\operator Hans PUFAL}{\revtim\yr2004\mo5\dy17\hr21\min19}{\printim\yr1601\mo1\dy1\hr0\min0}{\comment StarWriter}{\vern6450}}\deftab709
+{\*\pgdsctbl
+{\pgdsc0\pgdscuse195\lndscpsxn\pgwsxn23818\pghsxn16834\marglsxn1440\margrsxn1440\margtsxn576\margbsxn576\pgdscnxt0 Default;}}
+\landscape\paperh16834\paperw23818\margl1440\margr1440\margt576\margb576\sectd\sbknone\lndscpsxn\pgwsxn23818\pghsxn16834\marglsxn1440\margrsxn1440\margtsxn576\margbsxn576\ftnbj\ftnstart1\ftnrstcont\ftnnar\aenddoc\aftnrstcont\aftnstart1\aftnnrlc
+\pard\plain \ltrpar\s6\cf0\sl0\slmult0{\*\hyphen2\hyphlead2\hyphtrail2\hyphmax0}\aspalpha\ql\rtlch\af3\afs20\lang255\ltrch\dbch\af3\afs20\langfe255\loch\f3\fs14\lang1033 {\loch\f3\fs14\lang1033\i0\b0 QA771             0                    1                    2                     3                     4                     5                     6                     7                     8                     9}
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0                        This program performs the SS moves and logics. All these          S3=0=End of field for all ops, in compare log, it also}
+\par {\loch\f3\fs14\lang1033\i0\b0                        ops work form hi to lo order. The compare logical                 has the following meanins as the end of op}
+\par {\loch\f3\fs14\lang1033\i0\b0                        terminates as soon as it finds the first unequal source           S3=0=Dest less than source}
+\par {\loch\f3\fs14\lang1033\i0\b0 A                      and destination. All other ops continue to the end of             S3=1=Dest greater than source}
+\par {\loch\f3\fs14\lang1033\i0\b0                        the field.                                                        S3 also stores carry for upating V}
+\par    
+\par    
+\par    
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 B}
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0                               01 --- 0305                                 10 --- 0352                                 01 --- 0359           00 --- 0178        }
+\par {\loch\f3\fs14\lang1033\i0\b0                           |             |                             |             |                             K 0001,0      |       |             |       }
+\par {\loch\f3\fs14\lang1033\i0\b0                           A R>D         |                             A L-0>LC      |                             A R-0+1>ZC    |       |             |  }
+\par {\loch\f3\fs14\lang1033\i0\b0 C   QA761.JAE------------*S WRITE       |*--O-------------------------S IJ>UV    MS S*------------------------O---S         K>W R*--O---S WRITE       |*-------------------------------------------------------------------------------QA431------CPE}
+\par {\loch\f3\fs14\lang1033\i0\b0     (01)                  |             |   | Logics                  |             |                         |   C ANSNZ>s2    |   |   |             |                                                                                (10)     }
+\par {\loch\f3\fs14\lang1033\i0\b0     SS moves              |             |   |                     ----|             |                         |   |             |   |   |             |                                                                                Logic CR   }
+\par {\loch\f3\fs14\lang1033\i0\b0     and logics            R S6,S3     50R   |                     |   R G6,G7     58R                         |   R 0,S3      78R   |   A 1,0       72R                                                                                branch          }
+\par {\loch\f3\fs14\lang1033\i0\b0                           C1--    ** --CA   |                     |   C3--    ** --CC                         |   C5--    0* --CE   |   C6--    10 --CF                                                                      }
+\par {\loch\f3\fs14\lang1033\i0\b0                          Store source       |                     |  Decrement length                         |  Cmp log            |  End}
+\par {\loch\f3\fs14\lang1033\i0\b0 D                        char in D          |                     |  S3=0=end of field                        |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                          UV=source addr     |                     |                                           |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                          IJ=dest addr       |       11 --- 0353   |                                           |       00 --- 0358   |       01 --- 0179           10 --- 017A                                            }
+\par {\loch\f3\fs14\lang1033\i0\b0                          S6=0=moves         |   |             |   |                                           |   |             |   |   |             |       K 1011,1      |                                             }
+\par {\loch\f3\fs14\lang1033\i0\b0                          S6=1=logics        |   A U+0+C>UC    |   |                                           |   A R.D>R       |   \\   A J+0+1>J     |       |             |                                                       }
+\par {\loch\f3\fs14\lang1033\i0\b0 E                        L=length of        O---|             |*---                                           O---|             |*-- ---S WRITE       |*--O---S *BB      LS S*---------------------------------------------------------QA421------EGE}
+\par {\loch\f3\fs14\lang1033\i0\b0                          dest operand       |   |             |                                               |   C ANSNZ>S2    |   \\   |             |   |   C 0>S0        |                                                          (00,01,10,11)}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |   |             |                                               |   |             |   |   |             |   |   |             |                                                          Set logics CR}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |   R 1,0       52R                                               |   R 1,0       AER   |   R 1,Z=0     7AR   |   R S2,S3     E0R                                                }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |   E2--    10 --EB                                               |   E5--    10 --EE   |   E6--    1* --EF   |   E7--    ** --EG                                                  }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                                                                 |  AND                |  Test for diff      |  End}
+\par {\loch\f3\fs14\lang1033\i0\b0 F                                           |                                                                 |                     |  =0                 |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                                                                 |                     |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                             00 --- 0350                         |       10 --- 035A   |       10 --- 03AE   |       11 --- 017B           11 --- 0173                      }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                         |             |                         |   |             |   |   K 0001,0      |   |   |             |       |             |                      }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                         A L-0>LC      |                         |   A R!D>R       |   |   A J+0+1>J     |   |   A V+0+1>VC    |       A I+0+1>I     |                           }
+\par {\loch\f3\fs14\lang1033\i0\b0 G                                           O-------------------------S IJ>MN    MS S*---                     O---|             |*--O---S WRITE   K>W R---O---S UV>MN    MS S*--O---|             |*---                                               }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             | Moves                   C 0>S0        |   |                     |   C ANSNZ>S2    |   |   |             |       |             |   |   |             |   |                      }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                     ----|             |   |                     |   |             |   |   |             |       |             |   |   |             |   |                  }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                     |   R G6,G7     54R   |                     |   R 1,0       AER   |   R 1,S3      7AR       R AC,1      71R   |   R 0,1       71R   |                  }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                     |   G3--    ** --GC   |                     |   G5--    10 --GE   |   G6--    1* --GF       G7--    *1 --GG   |   G8--    01 --GH   |                  }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                     |  Decrement length   |                     |  OR                 |  Test for end                            |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0 H                                           |                     |  S3=0=end of        |                     |                     |  of field                                 |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                     |  field              |                     |                     |                                           |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |       01 --- 0351   |                     |       01 --- 0355   |       11 --- 035B   |                             01 --- 017D   |                     |       01 --- 0171}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |   |             |   |                     |   |             |   |   |             |   |                         |             |   |                     ----K 0011,1      |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |   A U+0+C>UC    |   |                     |   A RH+DL>R     |   \\   A R^D>R       |   |                         A V+0+1>VC    |   |                         A R>D         |    }
+\par {\loch\f3\fs14\lang1033\i0\b0 J                                           O---|             |*---                     O---|             |*-- ---|             |*---                     ----S UV>MN    MS S*--O-------------------------S WRITE   K>W R*---                        }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |   |             |                         |   |             |   \\   C ANSNZ>S2    |                         |   |             |                             |             |   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |   |             |                         |   |             |   |   |             |                         |   |             |                             |             |   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |   R 0,0       50R                         |   R 1,0       56R   |   R 1,0       AER                         |   R AC,1      71R                             R S4,S3     50R   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |   J2--    00 --JB                         |   J4--    10 --JD   |   J5--    10 --JE                         |   J7--    *1 --JG                             J9--    ** --JJ   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                             |                                           |  Move numerics      |  XOR                                      |                                              Store source       |}
+\par {\loch\f3\fs14\lang1033\i0\b0 K                                           |                                           |                     |                                           |                                              char in D          |   }
+\par {\loch\f3\fs14\lang1033\i0\b0                                             --------------------------------------------|---------------------|-------------------------------------------|------------------------------------------------------------------}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |       10 --- 0356                         |       00 --- 017C                                            }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     ----K 0001,0      |                         |   K 0010,1      |                                            }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                         A J+0+1>J     |                         |   A 0>S         |                                                   }
+\par {\loch\f3\fs14\lang1033\i0\b0 L                                                                                       O-------------------------S STORE   K>W R*------------------------O---S *AA      LS S*---------------------------------------------------------QA001------LGE}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                         |             |                             |             |                                                          (11)    }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     ----|             |                             |             |                                                          Restore IC     }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   R 0,S3      7CR                             R 1,1       F3R                                                 }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |   L5--    0* --LE                             L7--    11 --LG                                                 }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |  Move                                        End. Start IC   }
+\par {\loch\f3\fs14\lang1033\i0\b0 M                                                                                       |                     |                                              restore}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |                     |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |       11 --- 0357   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   |             |   |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   A DH+RL>R     |   |}
+\par {\loch\f3\fs14\lang1033\i0\b0 N                                                                                       O---|             |*---}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   |             |    }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   |             |    }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   R 1,0       56R    }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   N4--    10 --ND    }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |  Move zones}
+\par {\loch\f3\fs14\lang1033\i0\b0 P                                                                                       |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |       00 --- 0354                                                                                                   11 ---  XXX}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   K 0001,0      |                                                                                               | GO TO       |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                         |   A 0+0+1>L     |                                                                                               | GA879.CAE   |     }
+\par {\loch\f3\fs14\lang1033\i0\b0 Q                                                                                       ----S WRTE    K>W R*----------------------------------------------------------------------------------------------|             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                             C 0>S6        |                                                                                               |             |    }
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                             |             |                                                                                               |             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                             R 1,1       47R                                                                                               |             |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                             Q4--    11 --QD                                                                                               Q9--    11 --QJ}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                            Inv op                                                                                                        Prg int}
+\par {\loch\f3\fs14\lang1033\i0\b0 R}
+\par 
+\par 
+\par 
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0 S}
+\par 
+\par 
+\par {\loch\f3\fs14\lang1033\i0\b0  Q}
+\par {\loch\f3\fs14\lang1033\i0\b0  A}
+\par {\loch\f3\fs14\lang1033\i0\b0  7}
+\par {\loch\f3\fs14\lang1033\i0\b0  7                                                                                                                                                | 128015        09/10/65 | Mach          2030       | Date  11/17/65          Sheet    1  QA771 |}
+\par {\loch\f3\fs14\lang1033\i0\b0  1                                                                                                                                                | 128016        10/01/65 | Name                     | Log    3563             Version           |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   | 128045        11/17/65 | Mode          Manual     |                                           |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | P.N.          837052     |    SS Moves and Logics                    |}
+\par {\loch\f3\fs14\lang1033\i0\b0                                                                                                                                                   |                        | IBM Corp.                |                                           |}
+\par }
