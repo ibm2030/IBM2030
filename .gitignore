@@ -2,6 +2,13 @@ xst/
 _xmsgs/
 iseconfig/
 isim/
+*.cache/
+*.hw/
+*.runs/
+*.sdk/
+*.srcs/
+*.tmp/
+import_ise_summary.txt
 *.gise
 *.xise
 *.cmd_log
@@ -42,3 +49,4 @@ fuse*
 xilinxsim.*
 _ngo/
 xlnx_auto*
+
