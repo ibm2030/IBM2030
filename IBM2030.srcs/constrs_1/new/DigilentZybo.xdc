@@ -7,8 +7,8 @@
 ## - rename the used ports (in each line, after get_ports) according to the top level signal names in the project
 
 ##Clock signal
-#set_property -dict { PACKAGE_PIN K17   IOSTANDARD LVCMOS33 } [get_ports { sysclk }]; #IO_L12P_T1_MRCC_35 Sch=sysclk
-#create_clock -add -name sys_clk_pin -period 8.00 -waveform {0 4} [get_ports { sysclk }];
+set_property -dict { PACKAGE_PIN K17   IOSTANDARD LVCMOS33 } [get_ports { sysclk }]; #IO_L12P_T1_MRCC_35 Sch=sysclk
+create_clock -add -name sys_clk_pin -period 8.00 -waveform {0 4} [get_ports { sysclk }];
 
 
 ##Switches
@@ -206,23 +206,23 @@ set_property -dict { PACKAGE_PIN D18   IOSTANDARD LVCMOS33 } [get_ports { led[3]
 # The names of the ports must match exactly between this file and the design.
 
 # clock
-NET "clk" LOC = "T9"; # 50 MHz
+#NET "clk" LOC = "T9"; # 50 MHz
 
 # LEDs
-NET "led<7>" LOC = "P11"; 
-NET "led<6>" LOC = "P12";
-NET "led<5>" LOC = "N12";
-NET "led<4>" LOC = "P13";
+#NET "led<7>" LOC = "P11"; 
+#NET "led<6>" LOC = "P12";
+#NET "led<5>" LOC = "N12";
+#NET "led<4>" LOC = "P13";
 #NET "led<3>" LOC = "N14";
 #NET "led<2>" LOC = "L12";
 #NET "led<1>" LOC = "P14";
 #NET "led<0>" LOC = "K12";
 
 # slide switches
-NET "sw<7>" LOC = "K13"; 
-NET "sw<6>" LOC = "K14";
-NET "sw<5>" LOC = "J13";
-NET "sw<4>" LOC = "J14";
+#NET "sw<7>" LOC = "K13"; 
+#NET "sw<6>" LOC = "K14";
+#NET "sw<5>" LOC = "J13";
+#NET "sw<4>" LOC = "J14";
 #NET "sw<3>" LOC = "H13";
 #NET "sw<2>" LOC = "H14";
 #NET "sw<1>" LOC = "G12";
@@ -235,27 +235,27 @@ NET "sw<4>" LOC = "J14";
 #NET "pb<0>" LOC = "M13";
 
 # seven segment display - shared segments
-NET "ssd<7>" LOC = "P16"; 
-NET "ssd<6>" LOC = "N16";
-NET "ssd<5>" LOC = "F13";
-NET "ssd<4>" LOC = "R16";
-NET "ssd<3>" LOC = "P15";
-NET "ssd<2>" LOC = "N15";
-NET "ssd<1>" LOC = "G13";
-NET "ssd<0>" LOC = "E14";
+#NET "ssd<7>" LOC = "P16"; 
+#NET "ssd<6>" LOC = "N16";
+#NET "ssd<5>" LOC = "F13";
+#NET "ssd<4>" LOC = "R16";
+#NET "ssd<3>" LOC = "P15";
+#NET "ssd<2>" LOC = "N15";
+#NET "ssd<1>" LOC = "G13";
+#NET "ssd<0>" LOC = "E14";
 
 # seven segment display - anodes
-NET "ssdan<3>" LOC = "E13";
-NET "ssdan<2>" LOC = "F14";
-NET "ssdan<1>" LOC = "G14";
-NET "ssdan<0>" LOC = "D14";
+#NET "ssdan<3>" LOC = "E13";
+#NET "ssdan<2>" LOC = "F14";
+#NET "ssdan<1>" LOC = "G14";
+#NET "ssdan<0>" LOC = "D14";
 
 # VGA port
-NET "vga_r" LOC = "R12";
-NET "vga_g" LOC = "T12";
-NET "vga_b" LOC = "R11";
-NET "vga_hs" LOC = "R9";
-NET "vga_vs" LOC = "T10";
+#NET "vga_r" LOC = "R12";
+#NET "vga_g" LOC = "T12";
+#NET "vga_b" LOC = "R11";
+#NET "vga_hs" LOC = "R9";
+#NET "vga_vs" LOC = "T10";
 
 # PS/2 port
 #NET "ps2_clk" LOC="M16";
@@ -267,46 +267,46 @@ NET "vga_vs" LOC = "T10";
 # 1 Gnd
 # 2 VU (+5V)
 # 3 Vcco (+3.3V)
-NET "pa_io1" LOC="E6"; # HexSw Bit0
-NET "pa_io1" PULLDOWN;
-NET "pa_io2" LOC="D5"; # HexSw Bit1
-NET "pa_io2" PULLDOWN;
-NET "pa_io3" LOC="C5"; # HexSw Bit2
-NET "pa_io3" PULLDOWN;
-NET "pa_io4" LOC="D6"; # HexSw Bit3
-NET "pa_io4" PULLDOWN;
-NET "pa_io5" LOC="C6";   # HexSwA
-NET "pa_io6" LOC="E7";   # HexSwB
+#NET "pa_io1" LOC="E6"; # HexSw Bit0
+#NET "pa_io1" PULLDOWN;
+#NET "pa_io2" LOC="D5"; # HexSw Bit1
+#NET "pa_io2" PULLDOWN;
+#NET "pa_io3" LOC="C5"; # HexSw Bit2
+#NET "pa_io3" PULLDOWN;
+#NET "pa_io4" LOC="D6"; # HexSw Bit3
+#NET "pa_io4" PULLDOWN;
+#NET "pa_io5" LOC="C6";   # HexSwA
+#NET "pa_io6" LOC="E7";   # HexSwB
 # 10:
-NET "pa_io7" LOC="C7";   # HexSwC
-NET "pa_io8" LOC="D7";   # HexSwD
-NET "pa_io9" LOC="C8";   # HexSwE
-NET "pa_io10" LOC="D8";  # HexSwF 
-NET "pa_io11" LOC="C9";  # HexSwG
-NET "pa_io12" LOC="D10"; # HexSwH
-NET "pa_io13" LOC="A3";  # HexSwJ
-NET "pa_io14" LOC="B4";  # HexSwAdrComp
-NET "pa_io15" LOC="A4"; # SwE Inner
-NET "pa_io15" PULLDOWN;
-NET "pa_io16" LOC="B5"; # SwE Outer
-NET "pa_io16" PULLDOWN;
+#NET "pa_io7" LOC="C7";   # HexSwC
+#NET "pa_io8" LOC="D7";   # HexSwD
+#NET "pa_io9" LOC="C8";   # HexSwE
+#NET "pa_io10" LOC="D8";  # HexSwF 
+#NET "pa_io11" LOC="C9";  # HexSwG
+#NET "pa_io12" LOC="D10"; # HexSwH
+#NET "pa_io13" LOC="A3";  # HexSwJ
+#NET "pa_io14" LOC="B4";  # HexSwAdrComp
+#NET "pa_io15" LOC="A4"; # SwE Inner
+#NET "pa_io15" PULLDOWN;
+#NET "pa_io16" LOC="B5"; # SwE Outer
+#NET "pa_io16" PULLDOWN;
 # 20:
-NET "pa_io17" LOC="A5"; # ROS Ctl INH_CF_STOP
-NET "pa_io17" PULLDOWN;
-NET "pa_io18" LOC="B6";  # ROS Ctl SCAN
-NET "pa_io18" PULLDOWN;
-NET "ma2_db0" LOC="B7";  # Rate INST_STEP
-NET "ma2_db0" PULLDOWN;
-NET "ma2_db1" LOC="A7";  # Rate SINGLE_CYCLE
-NET "ma2_db1" PULLDOWN;
-NET "ma2_db2" LOC="B8"; # Chk Ctk DIAGNOSTIC
-NET "ma2_db2" PULLDOWN;
-NET "ma2_db3" LOC="A8"; # Chk Ctl DISABLE
-NET "ma2_db3" PULLDOWN;
-NET "ma2_db4" LOC="A9"; # Chk Ctl STOP
-NET "ma2_db4" PULLDOWN;
-NET "ma2_db5" LOC="B10"; # Chk Ctl RESTART
-NET "ma2_db5" PULLDOWN;
+#NET "pa_io17" LOC="A5"; # ROS Ctl INH_CF_STOP
+#NET "pa_io17" PULLDOWN;
+#NET "pa_io18" LOC="B6";  # ROS Ctl SCAN
+#NET "pa_io18" PULLDOWN;
+#NET "ma2_db0" LOC="B7";  # Rate INST_STEP
+#NET "ma2_db0" PULLDOWN;
+#NET "ma2_db1" LOC="A7";  # Rate SINGLE_CYCLE
+#NET "ma2_db1" PULLDOWN;
+#NET "ma2_db2" LOC="B8"; # Chk Ctk DIAGNOSTIC
+#NET "ma2_db2" PULLDOWN;
+#NET "ma2_db3" LOC="A8"; # Chk Ctl DISABLE
+#NET "ma2_db3" PULLDOWN;
+#NET "ma2_db4" LOC="A9"; # Chk Ctl STOP
+#NET "ma2_db4" PULLDOWN;
+#NET "ma2_db5" LOC="B10"; # Chk Ctl RESTART
+#NET "ma2_db5" PULLDOWN;
 #NET "ma2_db6" LOC="A10"; # Sys Reset
 #NET "ma2_db6" PULLDOWN;
 #NET "ma2_db7" LOC="B11"; # ROAR Reset
@@ -327,78 +327,11 @@ NET "ma2_db5" PULLDOWN;
 
 #A3
 
-# SRAM
-NET "sramaddr<17>" LOC="L3";
-NET "sramaddr<16>" LOC="K5";
-NET "sramaddr<15>" LOC="K3";
-NET "sramaddr<14>" LOC="J3";
-NET "sramaddr<13>" LOC="J4";
-NET "sramaddr<12>" LOC="H4";
-NET "sramaddr<11>" LOC="H3";
-NET "sramaddr<10>" LOC="G5";
-NET "sramaddr<9>" LOC="E4";
-NET "sramaddr<8>" LOC="E3";
-NET "sramaddr<7>" LOC="F4";
-NET "sramaddr<6>" LOC="F3";
-NET "sramaddr<5>" LOC="G4";
-NET "sramaddr<4>" LOC="L4";
-NET "sramaddr<3>" LOC="M3";
-NET "sramaddr<2>" LOC="M4";
-NET "sramaddr<1>" LOC="N3";
-NET "sramaddr<0>" LOC="L5";
-#NET "srama<15>" LOC="R1";
-#NET "srama<15>" PULLDOWN;
-#NET "srama<14>" LOC="P1";
-#NET "srama<14>" PULLDOWN;
-#NET "srama<13>" LOC="L2";
-#NET "srama<13>" PULLDOWN;
-#NET "srama<12>" LOC="J2";
-#NET "srama<12>" PULLDOWN;
-#NET "srama<11>" LOC="H1";
-#NET "srama<11>" PULLDOWN;
-#NET "srama<10>" LOC="F2";
-#NET "srama<10>" PULLDOWN;
-#NET "srama<9>" LOC="P8";
-#NET "srama<9>" PULLDOWN;
-NET "srama<8>" LOC="D3";
-NET "srama<7>" LOC="B1";
-NET "srama<6>" LOC="C1";
-NET "srama<5>" LOC="C2";
-NET "srama<4>" LOC="R5";
-NET "srama<3>" LOC="T5";
-NET "srama<2>" LOC="R6";
-NET "srama<1>" LOC="T8";
-NET "srama<0>" LOC="N7";
-NET "sramace" LOC="P7";
-NET "sramaub" LOC="T4";
-NET "sramalb" LOC="P6";
-# NET "sramb<15>" LOC="N1";
-# NET "sramb<14>" LOC="M1";
-# NET "sramb<13>" LOC="K2";
-# NET "sramb<12>" LOC="C3";
-# NET "sramb<11>" LOC="F5";
-# NET "sramb<10>" LOC="G1";
-# NET "sramb<09>" LOC="E2";
-# NET "sramb<08>" LOC="D2";
-# NET "sramb<07>" LOC="D1";
-# NET "sramb<06>" LOC="E1";
-# NET "sramb<05>" LOC="G2";
-# NET "sramb<04>" LOC="J1";
-# NET "sramb<03>" LOC="K1";
-# NET "sramb<02>" LOC="M2";
-# NET "sramb<01>" LOC="N2";
-# NET "sramb<00>" LOC="P2";
-# NET "srambce" LOC="N5";
-# NET "srambub" LOC="R4";
-# NET "sramblb" LOC="P5";
-NET "sramwe" LOC="G3";
-NET "sramoe" LOC="K4";
-
 # For the other peripherals and ports listed here,
 # consult the Xilinx documentation.
 # RS-232 port
-NET "serialRx" LOC="T13";
-NET "serialTx" LOC="R13";
+#NET "serialRx" LOC="T13";
+#NET "serialTx" LOC="R13";
 
 # expansion connectors
 #
@@ -406,19 +339,19 @@ NET "serialTx" LOC="R13";
 # 1 Gnd
 # 2 VU (+5V)
 # 3 Vcco (+3.3V)
-NET "MAX7219_CLK" LOC="C10";  # B1- 4
-NET "MAX7219_LOAD" LOC="T3";  # B1- 5
-NET "MAX7219_DIN" LOC="E10"; # B1- 6
-NET "MAX7318_SCL" LOC="N11"; # B1- 7
-NET "MAX7318_SDA" LOC="C11"; # B1- 8
-NET "MAX7318_SDA" PULLUP;
+#NET "MAX7219_CLK" LOC="C10";  # B1- 4
+#NET "MAX7219_LOAD" LOC="T3";  # B1- 5
+#NET "MAX7219_DIN" LOC="E10"; # B1- 6
+#NET "MAX7318_SCL" LOC="N11"; # B1- 7
+#NET "MAX7318_SDA" LOC="C11"; # B1- 8
+#NET "MAX7318_SDA" PULLUP;
 #NET "B1-09" LOC="P10"; # B1- 9
-NET "MAX6951_CLK" LOC="D11";  # B1-10
-NET "MAX6951_CS0" LOC="R10";  # B1-11
-NET "MAX6951_CS1" LOC="C12";  # B1-12
-NET "MAX6951_CS2" LOC="T7";   # B1-13
-NET "MAX6951_CS3" LOC="D12";  # B1-14
-NET "MAX6951_DIN" LOC="R7";   # B1-15
+#NET "MAX6951_CLK" LOC="D11";  # B1-10
+#NET "MAX6951_CS0" LOC="R10";  # B1-11
+#NET "MAX6951_CS1" LOC="C12";  # B1-12
+#NET "MAX6951_CS2" LOC="T7";   # B1-13
+#NET "MAX6951_CS3" LOC="D12";  # B1-14
+#NET "MAX6951_DIN" LOC="R7";   # B1-15
 #NET "B1-16" LOC="E11";
 #NET "B1-17" LOC="N6";
 #NET "B1-18" LOC="B16";
@@ -448,9 +381,9 @@ NET "MAX6951_DIN" LOC="R7";   # B1-15
 #
 # XCF04S Serial PROM connections
 #
-NET "din" LOC = "M11";
-NET "reset_prom" LOC = "N9";
-NET "rclk" LOC = "A14";
+#NET "din" LOC = "M11";
+#NET "reset_prom" LOC = "N9";
+#NET "rclk" LOC = "A14";
 #NET "progb" LOC="B3";
 #NET "fpgadone" LOC="R14";
 #NET "fpgacclk" LOC="T15";

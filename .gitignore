@@ -49,4 +49,4 @@ fuse*
 xilinxsim.*
 _ngo/
 xlnx_auto*
-
+*\.gen/

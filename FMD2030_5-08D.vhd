@@ -230,7 +230,6 @@ FI <= MPX_BUS_IN_BITS;
 
 -- Output tag indicators not really shown
 SELECT_OUT <= sSEL_O_FT6;
-ADDR_OUT <= sADDR_OUT;
 COMMAND_OUT <= CMD_OUT;
 SERVICE_OUT <= SERV_OUT;
 SUPPRESS_OUT <= sSUPPR_O;

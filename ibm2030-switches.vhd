@@ -111,51 +111,36 @@ use buses.Buses_package.all;
 
 entity switches is
     Port ( -- Raw switch inputs: (These can be modified to suit the board being used)
-           SwA_scan : out  STD_LOGIC;
-           SwB_scan : out  STD_LOGIC;
-           SwC_scan : out  STD_LOGIC;
-           SwD_scan : out  STD_LOGIC;
-           SwE_scan : out  STD_LOGIC;
-           SwF_scan : out  STD_LOGIC;
-           SwG_scan : out  STD_LOGIC;
-           SwH_scan : out  STD_LOGIC;
-           SwJ_scan : out  STD_LOGIC;
-           SwAC_scan : out  STD_LOGIC; -- Address Compare
-           Hex_in : in  STD_LOGIC_VECTOR(3 downto 0);
-           SW_E_Inner, SW_E_Outer : in STD_LOGIC;
-           RawSw_Proc_Inh_CF_Stop, RawSw_Proc_Scan : in STD_LOGIC; -- ROS Control
-           RawSw_Rate_Single_Cycle, RawSw_Rate_Instruction_Step : in STD_LOGIC; -- Rate
-           RawSw_Chk_Chk_Restart, RawSw_Chk_Diagnostic, RawSw_Chk_Stop, RawSw_Chk_Disable : in STD_LOGIC; -- Check Control
-           pb : in std_logic_vector(3 downto 0); -- On-board pushbuttons
-           sw : in std_logic_vector(7 downto 0); -- On-board slide switches
+           pb : in std_logic_vector(5 downto 0); -- On-board pushbuttons
+           sw : in std_logic_vector(3 downto 0); -- On-board slide switches
 			  
-			  -- Scanned switch inputs - MAX7318 connections
-			  SCL : out STD_LOGIC;
-			  SDA : inout STD_LOGIC;
+		  -- Scanned switch inputs - MAX7318 connections
+		  SCL : out STD_LOGIC;
+		  SDA : inout STD_LOGIC;
 
            -- Other inputs
-           clk : in STD_LOGIC; -- 50MHz
-			  status_lamps : in STD_LOGIC_VECTOR(4 downto 0);
+          clk : in STD_LOGIC; -- 50MHz
+		  status_lamps : in STD_LOGIC_VECTOR(4 downto 0);
 
-           -- Conditioned switch outputs:
-           SwA,SwB,SwC,SwD,SwF,SwG,SwH,SwJ : out STD_LOGIC_VECTOR(3 downto 0);
-           SwAP,SwBP,SwCP,SwDP,SwFP,SwGP,SwHP,SwJP : out STD_LOGIC;
-           SwE : out E_SW_BUS_Type;
-           Sw_PowerOff, Sw_Interrupt, Sw_Load : out STD_LOGIC; -- Right-hand pushbuttons
-           Sw_SystemReset, Sw_RoarReset, Sw_Start, Sw_SetIC, Sw_CheckReset,
-           Sw_Stop, Sw_IntTmr, Sw_Store, Sw_LampTest, Sw_Display : out STD_LOGIC; -- Left-hand pushbuttons
-           Sw_Proc_Inh_CF_Stop, Sw_Proc_Proc, Sw_Proc_Scan : out STD_LOGIC; -- ROS Control
-           Sw_Rate_Single_Cycle, Sw_Rate_Instruction_Step, Sw_Rate_Process : out STD_LOGIC; -- Rate
-           Sw_Chk_Chk_Restart, Sw_Chk_Diagnostic, Sw_Chk_Stop, Sw_Chk_Process, Sw_Chk_Disable : out STD_LOGIC; -- Check Control
-           Sw_ROAR_RESTT,Sw_ROAR_RESTT_WITHOUT_RST,Sw_EARLY_ROAR_STOP,Sw_ROAR_STOP, Sw_ROAR_RESTT_STOR_BYPASS,
-           Sw_ROAR_SYNC,Sw_ADDR_COMP_PROC,Sw_SAR_DLYD_STOP,Sw_SAR_STOP,Sw_SAR_RESTART : out STD_LOGIC; -- Address Compare
+          -- Conditioned switch outputs:
+          SwA,SwB,SwC,SwD,SwF,SwG,SwH,SwJ : out STD_LOGIC_VECTOR(3 downto 0);
+          SwAP,SwBP,SwCP,SwDP,SwFP,SwGP,SwHP,SwJP : out STD_LOGIC;
+          SwE : out E_SW_BUS_Type;
+          Sw_PowerOff, Sw_Interrupt, Sw_Load : out STD_LOGIC; -- Right-hand pushbuttons
+          Sw_SystemReset, Sw_RoarReset, Sw_Start, Sw_SetIC, Sw_CheckReset,
+          Sw_Stop, Sw_IntTmr, Sw_Store, Sw_LampTest, Sw_Display : out STD_LOGIC; -- Left-hand pushbuttons
+          Sw_Proc_Inh_CF_Stop, Sw_Proc_Proc, Sw_Proc_Scan : out STD_LOGIC; -- ROS Control
+          Sw_Rate_Single_Cycle, Sw_Rate_Instruction_Step, Sw_Rate_Process : out STD_LOGIC; -- Rate
+          Sw_Chk_Chk_Restart, Sw_Chk_Diagnostic, Sw_Chk_Stop, Sw_Chk_Process, Sw_Chk_Disable : out STD_LOGIC; -- Check Control
+          Sw_ROAR_RESTT,Sw_ROAR_RESTT_WITHOUT_RST,Sw_EARLY_ROAR_STOP,Sw_ROAR_STOP, Sw_ROAR_RESTT_STOR_BYPASS,
+          Sw_ROAR_SYNC,Sw_ADDR_COMP_PROC,Sw_SAR_DLYD_STOP,Sw_SAR_STOP,Sw_SAR_RESTART : out STD_LOGIC; -- Address Compare
 
-				-- 1kHz clock signal
-				Clock1ms : out STD_LOGIC;
+		  -- 1kHz clock signal
+	      Clock1ms : out STD_LOGIC;
 				
-           -- 50Hz Timer signal
-           Timer : out STD_LOGIC
-           );
+          -- 50Hz Timer signal
+          Timer : out STD_LOGIC
+          );
 end switches;
 
 architecture Behavioral of switches is
@@ -168,9 +153,10 @@ signal SwE_raw,SwE_combined : std_logic_vector(3 downto 0) := "0000";
 signal UseInner,UseMid,UseOuter : Boolean;
 signal SwAC,SwAC_combined : std_logic_vector(3 downto 0) := "0000"; -- Address Compare switch
 signal Parity_in : std_logic;
-signal RawSw_PowerOff, RawSw_Interrupt, RawSw_Load, RawSw_SystemReset, RawSw_RoarReset, RawSw_Start,
-		RawSw_SetIC, RawSw_CheckReset, RawSw_Stop, RawSw_IntTmr, RawSw_Store, RawSw_LampTest,
-		RawSw_Display : STD_LOGIC; -- Right-hand pushbuttons
+signal RawSw_powerOff, RawSw_SystemReset, RawSw_Start, RawSw_Load, RawSw_Stop : std_logic;
+-- signal RawSw_Interrupt, RawSw_Load, RawSw_SystemReset, RawSw_RoarReset, RawSw_Start,
+-- 		RawSw_SetIC, RawSw_CheckReset, RawSw_Stop, RawSw_IntTmr, RawSw_Store, RawSw_LampTest,
+-- 		RawSw_Display : STD_LOGIC; -- Right-hand pushbuttons
 
 signal debouncePowerOff, debounceInterrupt, debounceLoad,
 		debounceSystemReset, debounceRoarReset, debounceStart, debounceSetIC, debounceCheckReset,
@@ -194,22 +180,22 @@ max7318 : entity work.panel_switches port map (
 	Switches => max7318_switches	-- If the MAX7318 is not present, this vector should be all zero
 	);
 
-Parity_in <= EvenParity(Hex_in);
+-- Parity_in <= EvenParity(Hex_in);
 
 scan_counter: process(clk)
 	begin
 	if (rising_edge(clk)) then
 		if counter=sample then
-			if scan="0000" then SwA <= Hex_in or max7318_switches(12 to 15); SwAP <= Parity_in; end if;
-			if scan="0001" then SwB <= Hex_in or max7318_switches(16 to 19); SwBP <= Parity_in; end if;
-			if scan="0010" then SwC <= Hex_in or max7318_switches(20 to 23); SwCP <= Parity_in; end if;
-			if scan="0011" then SwD <= Hex_in or max7318_switches(24 to 27); SwDP <= Parity_in; end if;
-			if scan="0100" then SwE_raw <= Hex_in or max7318_switches(36 to 39); end if;
-			if scan="0101" then SwF <= Hex_in or max7318_switches(28 to 31); SwFP <= Parity_in; end if;
-			if scan="0110" then SwG <= Hex_in or max7318_switches(40 to 43); SwGP <= Parity_in; end if;
-			if scan="0111" then SwH <= Hex_in or max7318_switches(44 to 47); SwHP <= Parity_in; end if;
-			if scan="1000" then SwJ <= Hex_in or max7318_switches(48 to 51); SwJP <= Parity_in; end if;
-			if scan="1001" then SwAC <= Hex_in or max7318_switches(4 to 7); end if;
+			if scan="0000" then SwA <= max7318_switches(12 to 15); SwAP <= EvenParity(max7318_switches(12 to 15)); end if;
+			if scan="0001" then SwB <= max7318_switches(16 to 19); SwBP <= EvenParity(max7318_switches(16 to 19)); end if;
+			if scan="0010" then SwC <= max7318_switches(20 to 23); SwCP <= EvenParity(max7318_switches(20 to 23)); end if;
+			if scan="0011" then SwD <= max7318_switches(24 to 27); SwDP <= EvenParity(max7318_switches(24 to 27)); end if;
+			if scan="0100" then SwE_raw <= max7318_switches(36 to 39); end if;
+			if scan="0101" then SwF <= max7318_switches(28 to 31); SwFP <= EvenParity(max7318_switches(28 to 31)); end if;
+			if scan="0110" then SwG <= max7318_switches(40 to 43); SwGP <= EvenParity(max7318_switches(40 to 43)); end if;
+			if scan="0111" then SwH <= max7318_switches(44 to 47); SwHP <= EvenParity(max7318_switches(44 to 47)); end if;
+			if scan="1000" then SwJ <= max7318_switches(48 to 51); SwJP <= EvenParity(max7318_switches(48 to 51)); end if;
+			if scan="1001" then SwAC <= max7318_switches(4 to 7); end if;
 		end if;
 		if counter=divider then
 			counter<=(others=>'0');
@@ -219,18 +205,18 @@ scan_counter: process(clk)
 				scan <= scan + 1;
 			end if;
 			debouncePowerOff <= debouncePowerOff(1 to 3) & rawSw_PowerOff;
-			debounceInterrupt <= debounceInterrupt(1 to 3) & (rawSw_Interrupt or max7318_switches(53));
-			debounceLoad <= debounceLoad(1 to 3) & (rawSw_Load or max7318_switches(52));
-			debounceSystemReset <= debounceSystemReset(1 to 3) & (rawSw_SystemReset or max7318_switches(63));
-			debounceRoarReset <= debounceRoarReset(1 to 3) & (rawSw_RoarReset or max7318_switches(61));
-			debounceStart <= debounceStart(1 to 3) & (rawSw_Start or max7318_switches(56));
-			debounceSetIC <= debounceSetIC(1 to 3) & (rawSw_SetIC or max7318_switches(60));
-			debounceCheckReset <= debounceCheckReset(1 to 3) & (rawSw_CheckReset or max7318_switches(58));
-			debounceStop <= debounceStop(1 to 3) & (rawSw_Stop or max7318_switches(55));
-			debounceIntTmr <= debounceIntTmr(1 to 3) & (rawSw_IntTmr or max7318_switches(62));
-			debounceStore <= debounceStore(1 to 3) & (rawSw_Store or max7318_switches(59));
-			debounceLampTest <= debounceLampTest(1 to 3) & (rawSw_LampTest or max7318_switches(57));
-			debounceDisplay <= debounceDisplay(1 to 3) & (rawSw_Display or max7318_switches(54));
+			debounceInterrupt <= debounceInterrupt(1 to 3) & (max7318_switches(53));
+			debounceLoad <= debounceLoad(1 to 3) & (max7318_switches(52));
+			debounceSystemReset <= debounceSystemReset(1 to 3) & (max7318_switches(63));
+			debounceRoarReset <= debounceRoarReset(1 to 3) & (max7318_switches(61));
+			debounceStart <= debounceStart(1 to 3) & (max7318_switches(56));
+			debounceSetIC <= debounceSetIC(1 to 3) & (max7318_switches(60));
+			debounceCheckReset <= debounceCheckReset(1 to 3) & (max7318_switches(58));
+			debounceStop <= debounceStop(1 to 3) & (max7318_switches(55));
+			debounceIntTmr <= debounceIntTmr(1 to 3) & (max7318_switches(62));
+			debounceStore <= debounceStore(1 to 3) & (max7318_switches(59));
+			debounceLampTest <= debounceLampTest(1 to 3) & (max7318_switches(57));
+			debounceDisplay <= debounceDisplay(1 to 3) & (max7318_switches(54));
 			if (debouncePowerOff = "0000") then Sw_PowerOff <= '0'; else if (debouncePowerOff = "1111") then Sw_PowerOff <= '1';	end if;	end if;
 			if (debounceInterrupt = "0000") then Sw_Interrupt <= '0'; else if (debounceInterrupt = "1111") then Sw_Interrupt <= '1';	end if;	end if;
 			if (debounceLoad = "0000") then Sw_Load  <= '0'; else if (debounceLoad = "1111") then Sw_Load  <= '1';	end if;	end if;
@@ -270,24 +256,12 @@ Clock1kHz : process(clk)
 		end if;
 	end process;
 Clock1ms <= sClock1ms;
-	
-SwA_scan <= '1' when scan="0000" else '0';
-SwB_scan <= '1' when scan="0001" else '0';
-SwC_scan <= '1' when scan="0010" else '0';
-SwD_scan <= '1' when scan="0011" else '0';
-SwE_scan <= '1' when scan="0100" else '0';
-SwF_scan <= '1' when scan="0101" else '0';
-SwG_scan <= '1' when scan="0110" else '0';
-SwH_scan <= '1' when scan="0111" else '0';
-SwJ_scan <= '1' when scan="1000" else '0';
-SwAC_scan <= '1' when scan="1001" else '0';
-
 
 	-- Inner ring
-UseInner <= (SW_E_INNER='1' or max7318_switches(34)='1');
-UseMid <= SW_E_INNER='0' and max7318_switches(34)='0' and SW_E_OUTER='0' and max7318_switches(35)='0';
-UseOuter <= (SW_E_OUTER='1' or max7318_switches(35)='1');
-SwE_combined <= SwE_raw or max7318_switches(36 to 39);
+UseInner <= max7318_switches(34)='1';
+UseMid <= max7318_switches(34)='0' and max7318_switches(35)='0';
+UseOuter <= max7318_switches(35)='1';
+SwE_combined <= max7318_switches(36 to 39);
 SwE.I_SEL <= '1' when SwE_combined="0000" and UseInner else '0';
 SwE.J_SEL <= '1' when SwE_combined="0001" and UseInner else '0';
 SwE.U_SEL <= '1' when SwE_combined="0010" and UseInner else '0';
@@ -335,21 +309,21 @@ Sw_ROAR_STOP <= '1' when SwAC_combined="1000" else '0';
 Sw_ROAR_SYNC <= '1' when SwAC_combined="1001" else '0';
 
 -- ROS Control
-Sw_Proc_Inh_CF_Stop <= '1' when RawSw_Proc_Inh_CF_Stop='1' or max7318_switches(0)='1' else '0';
-Sw_Proc_Proc <= '1' when RawSw_Proc_Inh_CF_Stop='0' and RawSw_Proc_Scan='0' and max7318_switches(0 to 1)="00" else '0';
-Sw_Proc_Scan <= '1' when RawSw_Proc_Scan='1' or max7318_switches(1)='1' else '0';
+Sw_Proc_Inh_CF_Stop <= '1' when max7318_switches(0)='1' else '0';
+Sw_Proc_Proc <= '1' when max7318_switches(0 to 1)="00" else '0';
+Sw_Proc_Scan <= '1' when max7318_switches(1)='1' else '0';
 
 -- Rate
-Sw_Rate_Single_Cycle <= '1' when RawSw_Rate_Single_Cycle='1' or max7318_switches(3)='1' else '0';
-Sw_Rate_Process <= '1' when RawSw_Rate_Single_Cycle='0' and RawSw_Rate_Instruction_Step='0' and max7318_switches(2 to 3)="00" else '0';
-Sw_Rate_Instruction_Step <= '1' when RawSw_Rate_Instruction_Step='1' or max7318_switches(2)='1' else '0';
+Sw_Rate_Single_Cycle <= '1' when max7318_switches(3)='1' else '0';
+Sw_Rate_Process <= '1' when max7318_switches(2 to 3)="00" else '0';
+Sw_Rate_Instruction_Step <= '1' when max7318_switches(2)='1' else '0';
 
 -- Check Control
-Sw_Chk_Chk_Restart <= '1' when RawSw_Chk_Chk_Restart='1' or max7318_switches(11)='1' else '0';
-Sw_Chk_Diagnostic <= '1' when RawSw_Chk_Diagnostic='1' or max7318_switches(8)='1' else '0';
-Sw_Chk_Stop <= '1' when RawSw_Chk_Stop='1' or max7318_switches(10)='1' else '0';
-Sw_Chk_Process <= '1' when RawSw_Chk_Chk_Restart='0' and RawSw_Chk_Diagnostic='0' and RawSw_Chk_Stop='0' and RawSw_Chk_Disable='0'  and max7318_switches(8 to 11)="0000"else '0';
-Sw_Chk_Disable <= '1' when RawSw_Chk_Disable='1' or max7318_switches(9)='1' else '0';
+Sw_Chk_Chk_Restart <= '1' when max7318_switches(11)='1' else '0';
+Sw_Chk_Diagnostic <= '1' when max7318_switches(8)='1' else '0';
+Sw_Chk_Stop <= '1' when max7318_switches(10)='1' else '0';
+Sw_Chk_Process <= '1' when max7318_switches(8 to 11)="0000"else '0';
+Sw_Chk_Disable <= '1' when max7318_switches(9)='1' else '0';
 
 -- Unimplemented switches
 RawSw_PowerOff <= '0';
@@ -359,16 +333,18 @@ RawSw_SystemReset <= pb(0);
 RawSw_Start <= pb(1);
 RawSw_Load <= pb(2);
 RawSw_Stop <= pb(3);
+-- RawSw_CheckReset <= pb(4);
+-- RawSw_LampTest <= pb(5);
 
 -- Slide switches
-RawSw_IntTmr <= sw(0);
-RawSw_Display <= sw(1);
-RawSw_Store <= sw(2);
-RawSw_Interrupt <= sw(3);
-RawSw_RoarReset <= sw(4);
-RawSw_SetIC <= sw(5);
-RawSw_CheckReset <= sw(6);
-RawSw_LampTest <= sw(7);
+-- RawSw_IntTmr <= sw(0);
+-- RawSw_Display <= sw(1);
+-- RawSw_Store <= sw(2);
+-- RawSw_Interrupt <= sw(3);
+-- RawSw_RoarReset <= sw(4);
+-- RawSw_SetIC <= sw(5);
+-- RawSw_CheckReset <= sw(6);
+-- RawSw_LampTest <= sw(7);
 
 end behavioral;
 

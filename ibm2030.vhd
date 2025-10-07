@@ -50,67 +50,83 @@ use UNISIM.vcomponents.all;
 use work.all;
 
 entity ibm2030 is
-    Port ( -- Physical I/O on Digilent S3 Board
-				-- Seven-segment displays
-	        ssd : out std_logic_vector(7 downto 0); -- 7-segment segment cathodes - active=0, a=bit0, g=bit6, dp=bit7
-           ssdan : out std_logic_vector(3 downto 0); -- 7-segment digit anodes - active=0, RHS=bit0
-
-				-- Discrete LEDs
-           led : out std_logic_vector(7 downto 0); -- 8 LEDs
+    Generic ( ClockFrequency : integer := 125 );
+    Port ( -- Physical I/O on Digilent Zybo z7020 Board
+            -- PMOD JA (XADC) Serial I/O
+            -- PMOD JB (HS) MAX7219 (FS panel)
+            -- PMOD JC (HS) VGA
+            -- PMOD JD (HS) VGA
+            -- PMOD JE (Std) Max6951 (mini panel) MAX7318 (switches)
+            -- PMOD JF (MIO) Unused
+            
+			-- Discrete LEDs
+            rgbled : out std_logic_vector(5 downto 0); -- 2 RGB LEDs LED6 R V16 G F17 B M17  LED5 R Y11 G T5 B Y12
+            led : out std_logic_vector(4 downto 0);      -- 5 LEDs MIO7 D18 G14 M15 M14
 			  
-			  -- Pushbuttons and switches
-           pb : in std_logic_vector(3 downto 0); -- 4 pushbuttons
-           sw : in std_logic_vector(7 downto 0); -- 8 slide switches
+			-- Pushbuttons and switches
+            pb : in std_logic_vector(5 downto 0); -- 6 pushbuttons MIO51,MIO50,Y16,K19,P16,K18
+            sw : in std_logic_vector(3 downto 0); -- 4 slide switches T16 W13 P15 G15
 			  
-			  -- Connections to scanned front panel switches
-			  pa_io1,pa_io2,pa_io3,pa_io4 : in std_logic := '0'; -- 4 digital inputs
-			  pa_io5,pa_io6,pa_io7,pa_io8,pa_io9,
-			  pa_io10,pa_io11,pa_io12,pa_io13,pa_io14 : out std_logic; -- 10 digital switch scanning outputs
-			  pa_io15,pa_io16,pa_io17,pa_io18,ma2_db0,ma2_db1,
-			  ma2_db2,ma2_db3,ma2_db4,ma2_db5: in std_logic := '0'; -- 10 digital switch scan inputs
---			  ma2_db6,ma2_db7,ma2_astb,ma2_dstb,ma2_write, ma2_wait, ma2_reset, ma2_int : in std_logic := '0'; -- 8 digital inputs (not used)
+            -- I2C for switches PMOD JD
+            MAX7318_SCL : out std_logic;    -- PMOD JE 1 V12
+            MAX7318_SDA : inout std_logic;  -- PMOD JE 2 W16
+            -- I2C for lamps
+            -- MAX7219 is standard LED mux (full-size panel)
+            MAX7219_CLK, MAX7219_LOAD, MAX7219_DIN : out std_logic; --  PMOD JB 1,2,3 V8 W8 U7
+			-- MAX6951 is charlieplexed LED mux (miniature panel)
+            MAX6951_CLK,MAX6951_CS0,MAX6951_CS1,MAX6951_CS2,MAX6951_CS3,MAX6951_DIN : out std_logic; -- PMOD JE 3,4,5,6,7,8 J15 H15 V13 U17 T17 Y17
 
-				-- Keyboard connection
+			-- Keyboard connection
 --				ps2_clk : inout std_logic; -- Keyboard/Mouse clock (not used)
 --				ps2_data : inout std_logic; -- Keyboard/Mouse data (not used)
 
-				-- Video output
-				vga_r,vga_g,vga_b,vga_hs,vga_vs : out std_logic; -- VGA output RGB+Sync
-				
-				-- Panel switches input
-				MAX7318_SCL : out std_logic;
-				MAX7318_SDA : inout std_logic;
-				-- Panel lights output
-				MAX7219_CLK,MAX7219_LOAD,MAX7219_DIN : out std_logic;
-				-- MAX6951 is charlieplexed LED mux (miniature panel)
-				MAX6951_CLK,MAX6951_CS0,MAX6951_CS1,MAX6951_CS2,MAX6951_CS3,MAX6951_DIN : out std_logic;
-				
-			  -- Static RAM interface
-			  sramaddr : out std_logic_vector(17 downto 0);
-			  srama : inout std_logic_vector(8 downto 0);
-			  sramace : out std_logic;
-			  sramwe : out std_logic;
-			  sramoe : out std_logic;
-			  sramaub : out std_logic;
-			  sramalb : out std_logic;
+            -- VGA output
+            red0, red1, red2, red3, green0, green1, green2, green3, blue0, blue1, blue2, blue3, vga_hs, vga_vs : out std_logic;   -- PMOD JC (J1),JD (J2) V15 W15 T11 T10 T14 T15 P14 R14 W14 Y14 T12 U12 W14 Y14
+            
+			-- HDMI output
+			d_p : out std_logic_vector(2 downto 0);     -- B19,C20,D19
+			d_n : out std_logic_vector(2 downto 0);     -- A20,B20,D20
+			clk_p : out std_logic;                      -- H16
+			clk_n : out std_logic;                      -- H17
+            				
+			-- Serial I/O PMOD JA
+			serialRx : in std_logic;           -- JA4 K14
+			serialTx : out std_logic := '1';   -- JA3 K16
+			serialRTS : out std_logic := '1';  -- Unused
+			serialDTR : out std_logic := '1';  -- Unused
 			  
-			  -- Serial I/O
-			  serialRx : in std_logic;
-			  serialTx : out std_logic := '1';
+			-- MicroSD
+--            sd_d : inout std_logic_vector(3 downto 0);    -- MIO45,44,43,42
+--            sd_cclk : out std_logic;                      -- MIO40
+--            sd_cmd : inout std_logic;                     -- MIO41
+--            sd_cd : in std_logic;                         -- NIO47  
 			  
-			  -- 50Mhz clock
-			  clk : in std_logic;
-			  
-			  -- Configuration PROM interface
-			  din : in std_logic;
-			  reset_prom : out std_logic;
-			  rclk : out std_logic);
+			-- Configuration PROM interface
+--			din : in std_logic;
+--			reset_prom : out std_logic;
+--			rclk : out std_logic);
+
+            -- AXI interface from PS to storage
+            bram1 : inout BRAM1_PORT;
+            bram2 : inout BRAM2_PORT;
+                        
+			-- 125Mhz clock
+			sysclk : in std_logic);  -- K17
+		  
 			  
 end ibm2030;
 
 architecture FMD of ibm2030 is
 
+-- Temporary HDMI output stub
+component hdmi_panel port (
+    Clock50 : in std_logic;
+    Indicators : in std_logic_vector(0 to 249)
+);
+end component;
+
 -- Indicator outputs from CPU
+signal  Indicators : std_logic_vector(0 to 259);
 signal	WX_IND : std_logic_vector(0 to 12);
 signal	W_IND_P : std_logic;
 signal	X_IND_P : std_logic;
@@ -178,21 +194,24 @@ signal	SW_AP,SW_BP,SW_CP,SW_DP,SW_FP,SW_GP,SW_HP,SW_JP : STD_LOGIC;
 signal	E_SW : E_SW_BUS_Type;
 
 -- Misc stuff
-signal	StorageIn : STORAGE_IN_INTERFACE;  -- CPU interface to storage
-signal	StorageOut : STORAGE_OUT_INTERFACE;  -- CPU interface to storage
-signal	SerialIn : PCH_CONN;
-signal	SerialOut : RDR_CONN;
-signal	SerialControl : CONN_1050;
+-- signal	SerialIn : PCH_CONN;
+-- signal	SerialOut : RDR_CONN;
+-- signal	SerialControl : CONN_1050;
 signal	SerialBusUngated : STD_LOGIC_VECTOR(7 downto 0);
 signal	RxDataAvailable : STD_LOGIC;
 signal	RxAck, PunchGate : STD_LOGIC;
+signal  vga_r, vga_g, vga_b : STD_LOGIC;
 
-signal	SO : Serial_Output_Lines;
+-- signal	SO : Serial_Output_Lines;
+-- signal  SI : Serial_Input_Lines;
+signal  n1050Outputs : PCH_CONN;
+signal  n1050Inputs : RDR_CONN;
 
 signal	SwSlow : STD_LOGIC := '0'; -- Set to '1' to slow clock down to 1Hz, not used
 
 signal	N60_CY_TIMER_PULSE : STD_LOGIC; -- Used for the Interval Timer
 signal	Clock1ms : STD_LOGIC; -- 1kHz clock for single-shots etc.
+signal  Clk50 : STD_LOGIC; -- Basic CPU clock
 
 signal	DEBUG : DEBUG_BUS; -- Passed to all modeles to probe signals
 
@@ -201,52 +220,12 @@ signal Switch_vector : std_logic_vector(0 to 63);
 
 begin
 
-	cpu : entity work.cpu port map (
-			WX_IND => WX_IND,
-			W_IND_P => W_IND_P,
-			X_IND_P => X_IND_P,
-			IND_SALS => IND_SALS,
-			IND_EX => IND_EX,
-			IND_CY_MATCH => IND_CY_MATCH,
-			IND_ALLOW_WR => IND_ALLOW_WR,
-			IND_1050_INTRV => IND_1050_INTRV,
-			IND_1050_REQ => IND_1050_REQ,
-			IND_MPX => IND_MPX,
-			IND_SEL_CHNL => IND_SEL_CHNL,
-			IND_MSDR => IND_MSDR,
-			IND_MSDR_P => IND_MSDR_P,
-			IND_OPNL_IN => IND_OPNL_IN,
-			IND_ADDR_IN => IND_ADDR_IN,
-			IND_STATUS_IN => IND_STATUS_IN,
-			IND_SERV_IN => IND_SERV_IN,
-			IND_SEL_OUT => IND_SEL_OUT,
-			IND_ADDR_OUT => IND_ADDR_OUT,
-			IND_CMMD_OUT => IND_CMMD_OUT,
-			IND_SERV_OUT => IND_SERV_OUT,
-			IND_SUPPR_OUT => IND_SUPPR_OUT,
-			IND_FO => IND_FO,
-			IND_FO_P => IND_FO_P,
-			IND_A => IND_A,
-			IND_B => IND_B,
-			IND_ALU => IND_ALU,
-			IND_M => IND_M,
-			IND_N => IND_N,
-			IND_MAIN_STG => IND_MAIN_STG,
-			IND_LOC_STG => IND_LOC_STG,
-			IND_COMP_MODE => IND_COMP_MODE,
-			IND_CHK_A_REG => IND_CHK_A_REG,
-			IND_CHK_B_REG => IND_CHK_B_REG,
-			IND_CHK_STOR_ADDR => IND_CHK_STOR_ADDR,
-			IND_CHK_CTRL_REG => IND_CHK_CTRL_REG,
-			IND_CHK_ROS_SALS => IND_CHK_ROS_SALS,
-			IND_CHK_ROS_ADDR => IND_CHK_ROS_ADDR,
-			IND_CHK_STOR_DATA => IND_CHK_STOR_DATA,
-			IND_CHK_ALU => IND_CHK_ALU,
-			IND_LOAD => IND_LOAD,
-			IND_WAIT => IND_WAIT,
-			IND_TEST => IND_TEST,
-			IND_MAN => IND_MAN,
-			IND_SYST => IND_SYST,
+	cpu : entity work.wrapped_cpu port map (
+	       Indicators_0 => Indicators(0 to 63),
+	       Indicators_1 => Indicators(64 to 127),
+	       Indicators_2 => Indicators(128 to 191),
+	       Indicators_3 => Indicators(192 to 255),
+	       LEDS => Indicators(256 to 259),
 			
 			SW_START => SW_START,
 			SW_LOAD => SW_LOAD,
@@ -262,9 +241,9 @@ begin
 			SW_LAMP_TEST => SW_LAMP_TEST,
 			SW_DSPLY => SW_DSPLY,
 			SW_STORE => SW_STORE,
-			SW_SYS_RST => SW_SYS_RST,
-			SW_CHK_RST => SW_CHK_RST,
-			SW_ROAR_RST => SW_ROAR_RST,
+			SW_SYS_RST_P => SW_SYS_RST,
+			SW_CHK_RST_P => SW_CHK_RST,
+			SW_ROAR_RST_P => SW_ROAR_RST,
 			SW_CHK_RESTART => SW_CHK_RESTART,
 			SW_DIAGNOSTIC => SW_DIAGNOSTIC,
 			SW_CHK_STOP => SW_CHK_STOP,
@@ -272,7 +251,7 @@ begin
 			SW_CHK_SW_DISABLE => SW_CHK_SW_DISABLE,
 			SW_ROAR_RESTT_STOR_BYPASS => SW_ROAR_RESTT_STOR_BYPASS,
 			SW_ROAR_RESTT => SW_ROAR_RESTT,
-			SW_ROAR_RESTT_WITHOUT_RST => SW_ROAR_RESTT_WITHOUT_RST,
+			SW_ROAR_RESTT_WITHOUT_RST_P => SW_ROAR_RESTT_WITHOUT_RST,
 			SW_EARLY_ROAR_STOP => SW_EARLY_ROAR_STOP,
 			SW_ROAR_STOP => SW_ROAR_STOP,
 			SW_ROAR_SYNC => SW_ROAR_SYNC,
@@ -298,36 +277,62 @@ begin
 			SW_GP => SW_GP,
 			SW_HP => SW_HP,
 			SW_JP => SW_JP,
-			E_SW => E_SW,
-			
-			-- Storage interface
-			StorageIn => StorageIn,
-			StorageOut => StorageOut,
+			SW_EI => E_SW.I_SEL,
+			SW_EJ => E_SW.J_SEL,
+			SW_EU => E_SW.U_SEL,
+			SW_EV => E_SW.V_SEL,
+			SW_EL => E_SW.L_SEL,
+			SW_ET => E_SW.T_SEL,
+			SW_ED => E_SW.D_SEL,
+			SW_ER => E_SW.R_SEL,
+			SW_ES => E_SW.S_SEL,
+			SW_EG => E_SW.G_SEL,
+			SW_EH => E_SW.H_SEL,
+			SW_EFI => E_SW.FI_SEL,
+			SW_EFT => E_SW.FT_SEL,
 			
 			-- Serial interface for 1050
-			serialInput.SerialRx => SerialRx,
-			serialInput.DCD => '1',
-			serialInput.DSR => '1',
-			serialInput.RI => '0',
-			serialInput.CTS => '1',
-			serialOutput => SO,
+			RDR_CONN_EXIT => n1050Inputs,
+			PCH_CONN_ENTRY => n1050Outputs,
+--			SerialInput => SI,
+--			SerialOutput => SO,
 			
 			-- Multiplexor interface not connected to anything yet
 			MPX_BUS_O => open,
 			MPX_BUS_I => (others=>'0'),
-			MPX_TAGS_O => open,
-			MPX_TAGS_I => (others=>'0'),
+			MPX_TAGS_OPL_OUT => open,
+            MPX_TAGS_ADR_OUT => open,
+            MPX_TAGS_ADR_OUT2 => open,
+            MPX_TAGS_CMD_OUT => open,
+            MPX_TAGS_STA_OUT => open,
+            MPX_TAGS_SRV_OUT => open,
+            MPX_TAGS_HLD_OUT => open,
+            MPX_TAGS_SEL_OUT => open,
+            MPX_TAGS_SUP_OUT => open,
+            MPX_TAGS_MTR_OUT => open,
+            MPX_TAGS_CLK_OUT => open,
+            MPX_TAGS_OPL_IN => '0',
+            MPX_TAGS_ADR_IN => '0',
+            MPX_TAGS_STA_IN => '0',
+            MPX_TAGS_SRV_IN => '0',
+            MPX_TAGS_SEL_IN => '0',
+            MPX_TAGS_REQ_IN => '0',
+            MPX_TAGS_MTR_IN => '0',
+            
+            -- Storage interface
+            bram1 => bram1,
+            bram2 => bram2,
 			
 			DEBUG => DEBUG, -- Used to pass debug signals up to the top level for output
 			N60_CY_TIMER_PULSE => N60_CY_TIMER_PULSE, -- Actually 50Hz
 			Clock1ms => Clock1ms,
 			SwSlow => SwSlow,
-			clk => clk -- 50Mhz clock
+			clk => clk50 -- 50Mhz clock
 			);
 
 
 	frontPanel : entity vga_panel port map (
-		Clock50 => clk,
+		Clock50 => clk50,
 		Red => vga_r, Green => vga_g, Blue => vga_b,
 		HS => vga_hs, VS => vga_vs,
 
@@ -418,15 +423,20 @@ begin
 		Indicators(242 to 245) => SW_H(0 to 3),
 		Indicators(246 to 249) => SW_J(0 to 3)
 	);
+	-- For now we only have 1 bit per colour, not 4
+	red0 <= vga_r; red1 <= vga_r; red2 <= vga_r; red3 <= vga_r;
+	green0 <= vga_g; green1 <= vga_g; green2 <= vga_g; green3 <= vga_g;
+	blue0 <= vga_b; blue1 <= vga_b; blue2 <= vga_b; blue3 <= vga_b;
+
    -- LEDs are set here		
 	led(0) <= IND_LOAD;
 	led(1) <= IND_TEST;
 	led(2) <= IND_WAIT;
 	led(3) <= IND_MAN;
 	led(4) <= IND_SYST;
-	led(5) <= '0';
- 	led(6) <= '0';
-	led(7) <= DEBUG.Probe;
+--	led(5) <= '0';
+-- 	led(6) <= '0';
+--	led(7) <= DEBUG.Probe;
 	
 	IND_LP <= SW_LAMP_TEST;
 	
@@ -462,30 +472,30 @@ begin
 				
 	frontPanel_switches: entity switches port map (
 	   -- Hardware switch inputs and scan outputs
-		SwA_scan => pa_io5,
-		SwB_scan => pa_io6,
-		SwC_scan => pa_io7,
-		SwD_scan => pa_io8,
-		SwE_scan => pa_io9,
-		SwF_scan => pa_io10,
-		SwG_scan => pa_io11,
-		SwH_scan => pa_io12,
-		SwJ_scan => pa_io13,
-		SwAC_scan => pa_io14,
-		Hex_in(0) => pa_io1,
-		Hex_in(1) => pa_io2,
-		Hex_in(2) => pa_io3,
-		Hex_in(3) => pa_io4,
-		SW_E_INNER => pa_io15,
-		SW_E_OUTER => pa_io16,
-		RawSw_Proc_Inh_CF_Stop => pa_io17,
-		RawSw_Proc_Scan => pa_io18,
-		RawSw_Rate_Single_Cycle => ma2_db1,
-		RawSw_Rate_Instruction_Step => ma2_db0,
-		RawSw_Chk_Chk_Restart => ma2_db5,
-		RawSw_Chk_Diagnostic => ma2_db2,
-		RawSw_Chk_Stop => ma2_db4,
-		RawSw_Chk_Disable => ma2_db3,
+--		SwA_scan => pa_io5,
+--		SwB_scan => pa_io6,
+--		SwC_scan => pa_io7,
+--		SwD_scan => pa_io8,
+--		SwE_scan => pa_io9,
+--		SwF_scan => pa_io10,
+--		SwG_scan => pa_io11,
+--		SwH_scan => pa_io12,
+--		SwJ_scan => pa_io13,
+--		SwAC_scan => pa_io14,
+--		Hex_in(0) => pa_io1,
+--		Hex_in(1) => pa_io2,
+--		Hex_in(2) => pa_io3,
+--		Hex_in(3) => pa_io4,
+--		SW_E_INNER => pa_io15,
+--		SW_E_OUTER => pa_io16,
+--		RawSw_Proc_Inh_CF_Stop => pa_io17,
+--		RawSw_Proc_Scan => pa_io18,
+--		RawSw_Rate_Single_Cycle => ma2_db1,
+--		RawSw_Rate_Instruction_Step => ma2_db0,
+--		RawSw_Chk_Chk_Restart => ma2_db5,
+--		RawSw_Chk_Diagnostic => ma2_db2,
+--		RawSw_Chk_Stop => ma2_db4,
+--		RawSw_Chk_Disable => ma2_db3,
 		sw => sw,
 		pb => pb,
 
@@ -539,7 +549,7 @@ begin
 		SDA => MAX7318_SDA,
 		
 		-- Clocks etc.
-		clk => clk, -- 50MHz clock
+		clk => clk50, -- 50MHz clock
 		status_lamps(4) => IND_LOAD,
 		status_lamps(3) => IND_TEST,
 		status_lamps(2) => IND_WAIT,
@@ -549,27 +559,6 @@ begin
 		Timer => N60_CY_TIMER_PULSE -- Output from Switches is actually 50Hz
 		);
 
-      core_storage : entity storage (DigilentZybo) port map(
-				phys_address => sramaddr(16 downto 0),
-				phys_data => srama(8 downto 0),
-				phys_CE => sramace,
-				phys_OE => sramoe,
-				phys_WE => sramwe,
-				phys_UB => sramaub,
-				phys_LB => sramalb,
-				-- Interface to config ROM
-				din => din,
-				reset_prom => reset_prom,
-				cclk => rclk,
-				-- Storage interface to CPU
-				StorageIn => StorageIn,
-				StorageOut => StorageOut,
---				Debug => Debug,
-				-- Other inputs
-				clk => clk
-				);
-		sramaddr(17) <= '0';
-		
 		LED_vector <= (
 				0 => IND_SALS.SALS_PA,
 				1 => IND_SALS.SALS_CN(5),
@@ -812,7 +801,7 @@ begin
 			number_LEDs => 256
 			)
 		port map(
-			clk => clk,
+			clk => clk50,
 			LEDs => LED_vector,
 
 			-- MAX7219 is standard LED mux (full-size panel)
@@ -828,20 +817,60 @@ begin
 			MAX6951_DIN => MAX6951_DIN
 			);
 			
-		number_LEDs : entity segment_LEDs
-		port map(
-			clk => clk,
-			number(15 downto 13) => STD_LOGIC_VECTOR'("000"),
-			number(12 downto 0) => WX_IND(0 to 12),
-			anodes => ssdan,
-			cathodes => ssd
-			);
+--		number_LEDs : entity segment_LEDs
+--		port map(
+--			clk => clk,
+--			number(15 downto 13) => STD_LOGIC_VECTOR'("000"),
+--			number(12 downto 0) => WX_IND(0 to 12),
+--			anodes => ssdan,
+--			cathodes => ssd
+--			);
 			
 		DEBUG.Selection <= CONV_INTEGER(unsigned(SW_J));
 		
-		SerialTx <= SO.SerialTx;
-		
--- with DEBUG.Selection select
+    consoleTypewriter : entity ibm1050 port map (
+        SerialIn => n1050Outputs,
+        SerialOut => n1050Inputs,
+        SerialControl => (others => '0'),
+        SerialInput.SerialRx => SerialRx,
+        SerialInput.DCD => '1',
+        SerialInput.DSR => '1',
+        SerialInput.RI => '0',
+        SerialInput.CTS => '1',
+        SerialOutput.SerialTx => SerialTx,
+        SerialOutput.RTS => SerialRTS,
+        SerialOutput.DTR => SerialDTR,
+        clk => clk50
+    );
+    
+    -- Divide 125MHz to 50MHz to 1kHz
+    clockDivider : process (sysclk) is 
+        variable Divider50M : integer range 0 to 5 := 0;
+        variable Divider1K : integer range 0 to 50000 := 0;
+    begin
+        if rising_edge(sysclk) then
+            Divider50M := Divider50M + 1;
+            if (Divider50M >= 5) then
+                Divider50M := 0;
+                Divider1K := Divider1K + 1;
+                if (Divider1K >= 50000) then
+                    Divider1K := 0;
+                end if;
+                if (Divider1K >= 25000) then
+                    Clock1ms <= '1';
+                else
+                    Clock1ms <= '0';
+                end if;
+            end if;
+            if (Divider50M > 1) then
+                Clk50 <= '1';
+            else
+                Clk50 <= '0';
+            end if;
+        end if;
+    end process clockDivider;
+    
+ -- with DEBUG.Selection select
 --	DEBUG.Probe <=
 --		SerialBusUngated(0) when 0, SerialBusUngated(1) when 1, SerialBusUngated(2) when 2, SerialBusUngated(3) when 3,
 --		SerialBusUngated(4) when 4, SerialBusUngated(5) when 5, SerialBusUngated(6) when 6, SerialBusUngated(7) when 7,

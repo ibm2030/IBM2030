@@ -109,26 +109,17 @@ entity cpu is
 			MPX_TAGS_I : IN MPX_TAGS_IN;
 
 			-- Storage (RAM) interface
-			BRAM_MS_WRDATA: out std_logic_vector(8 downto 0);
-            BRAM_MS_RDDATA : in std_logic_vector(8 downto 0);
-            BRAM_MS_ADDR : out std_logic_vector(15 downto 0);
-            BRAM_MS_EN : out std_logic;
-            BRAM_MS_WE : out std_logic;
-            BRAM_MS_CLK : out std_logic;
-            BRAM_LS_WRDATA: out std_logic_vector(8 downto 0);
-            BRAM_LS_RDDATA : in std_logic_vector(8 downto 0);
-            BRAM_LS_ADDR : out std_logic_vector(10 downto 0);
-            BRAM_LS_EN : out std_logic;
-            BRAM_LS_WE : out std_logic;
-            BRAM_LS_CLK : out std_logic;
+			bram1 : inout BRAM1_PORT;
+			bram2 : inout BRAM2_PORT;
 			
---			PCH_CONN_ENTRY : IN PCH_CONN;
-			RDR_1_CONN_EXIT : OUT RDR_CONN;
+			-- 1050 interface
+			PCH_CONN_ENTRY : IN PCH_CONN;
+			RDR_CONN_EXIT : OUT RDR_CONN;
 			n1050_CONTROL : OUT CONN_1050;
 			
 			-- Hardware Serial Port
-			serialInput : in Serial_Input_Lines;
-			serialOutput : out Serial_Output_Lines;
+--			serialInput : in Serial_Input_Lines;
+--			serialOutput : out Serial_Output_Lines;
 			
 			DEBUG : INOUT DEBUG_BUS;
 			USE_MAN_DECODER_PWR : OUT STD_LOGIC;
@@ -142,6 +133,8 @@ end cpu;
 use work.all;
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+library buses;
+use buses.Buses_package.all;
 
 entity wrapped_cpu is
     Port (
@@ -200,48 +193,36 @@ entity wrapped_cpu is
     MPX_TAGS_REQ_IN : IN STD_LOGIC;
     MPX_TAGS_MTR_IN : IN STD_LOGIC;
 
-    -- Storage (RAM) interface
-	BRAM_MS_WRDATA: out std_logic_vector(8 downto 0);
-    BRAM_MS_RDDATA : in std_logic_vector(8 downto 0);
-    BRAM_MS_ADDR : out std_logic_vector(15 downto 0);
-    BRAM_MS_EN : out std_logic;
-    BRAM_MS_WE : out std_logic;
-    BRAM_MS_CLK : out std_logic;
-    BRAM_LS_WRDATA: out std_logic_vector(8 downto 0);
-    BRAM_LS_RDDATA : in std_logic_vector(8 downto 0);
-    BRAM_LS_ADDR : out std_logic_vector(10 downto 0);
-    BRAM_LS_EN : out std_logic;
-    BRAM_LS_WE : out std_logic;
-    BRAM_LS_CLK : out std_logic;
+	-- Storage (RAM) interface
+	bram1 : inout BRAM1_PORT;
+	bram2 : inout BRAM2_PORT;
     
-    -- PCH_CONN_ENTRY : IN PCH_CONN;
-    RDR_1_CONN_RDR_BITS : OUT STD_LOGIC_VECTOR(0 to 6);
-    RDR_1_CONN_RD_STROBE : OUT STD_LOGIC;
-    n1050_CONTROL_n1050_RST_LCH : OUT STD_LOGIC;
-    n1050_CONTROL_n1050_RESET : OUT STD_LOGIC;
-    n1050_CONTROL_HOME_RDR_START : OUT STD_LOGIC;
-    n1050_CONTROL_PROCEED : OUT STD_LOGIC;
-    n1050_CONTROL_RDR_2_HOLD : OUT STD_LOGIC;
-    n1050_CONTROL_CARR_RETURN_AND_LINE_FEED : OUT STD_LOGIC;
-    n1050_CONTROL_RESTORE : OUT STD_LOGIC;
+    -- 1050 interface
+    PCH_CONN_ENTRY : IN PCH_CONN;
+    RDR_CONN_EXIT : OUT RDR_CONN;
+    n1050_CONTROL : OUT CONN_1050;
+--    RDR_1_CONN_RDR_BITS : OUT STD_LOGIC_VECTOR(0 to 6);
+--    RDR_1_CONN_RD_STROBE : OUT STD_LOGIC;
+--    n1050_CONTROL_n1050_RST_LCH : OUT STD_LOGIC;
+--    n1050_CONTROL_n1050_RESET : OUT STD_LOGIC;
+--    n1050_CONTROL_HOME_RDR_START : OUT STD_LOGIC;
+--    n1050_CONTROL_PROCEED : OUT STD_LOGIC;
+--    n1050_CONTROL_RDR_2_HOLD : OUT STD_LOGIC;
+--    n1050_CONTROL_CARR_RETURN_AND_LINE_FEED : OUT STD_LOGIC;
+--    n1050_CONTROL_RESTORE : OUT STD_LOGIC;
     
     -- Hardware Serial Port
-    serialInput_SerialRx : in STD_LOGIC;
-    serialInput_DCD : in STD_LOGIC;
-    serialInput_DSR : in STD_LOGIC;
-    serialInput_RI : in STD_LOGIC;
-    serialInput_CTS : in STD_LOGIC;
-    serialOutput_SerialTx : out STD_LOGIC;
-    serialOutput_RTS : out STD_LOGIC;
-    serialOutput_DTR : out STD_LOGIC;
+--    serialInput : in Serial_Input_Lines;
+--    serialOutput : out Serial_Output_Lines;
     
-    DEBUG : INOUT std_logic_vector(1 to 5); -- DEBUG_BUS
+    DEBUG : INOUT DEBUG_BUS; -- DEBUG_BUS
     USE_MAN_DECODER_PWR : OUT STD_LOGIC;
     Clock1ms : IN STD_LOGIC;
     N60_CY_TIMER_PULSE : IN STD_LOGIC;
     M_CONV_OSC : OUT STD_LOGIC;
     SwSlow : in std_logic;
     clk : in std_logic);
+    
 end wrapped_cpu;
 
 architecture FMD of wrapped_cpu is
@@ -249,7 +230,7 @@ architecture FMD of wrapped_cpu is
 --signal SALS : std_logic_vector(1 to 55);
 
 begin
---SALS(1) <= sSALS.SALS_PN;
+    -- Unused (for now) lamps
     INDICATORS_0(8) <= SW_LAMP_TEST;
     INDICATORS_1(62 downto 7) <= (others => SW_LAMP_TEST);
     INDICATORS_2(37 downto 0) <= (others => SW_LAMP_TEST);
@@ -524,37 +505,25 @@ TheCPU: entity cpu (FMD) port map (
     MPX_TAGS_I.REQ_IN => MPX_TAGS_REQ_IN,
     MPX_TAGS_I.MTR_IN => MPX_TAGS_MTR_IN,
     -- 1050
-    RDR_1_CONN_EXIT.RDR_BITS => RDR_1_CONN_RDR_BITS,
-    RDR_1_CONN_EXIT.RD_STROBE => RDR_1_CONN_RD_STROBE,
-    n1050_CONTROL.n1050_RST_LCH => n1050_CONTROL_n1050_RST_LCH,
-    n1050_CONTROL.n1050_RESET => n1050_CONTROL_n1050_RESET,
-    n1050_CONTROL.HOME_RDR_START => n1050_CONTROL_HOME_RDR_START,
-    n1050_CONTROL.PROCEED => n1050_CONTROL_PROCEED,
-    n1050_CONTROL.RDR_2_HOLD => n1050_CONTROL_RDR_2_HOLD,
-    n1050_CONTROL.CARR_RETURN_AND_LINE_FEED => n1050_CONTROL_CARR_RETURN_AND_LINE_FEED,
-    n1050_CONTROL.RESTORE => n1050_CONTROL_RESTORE,
+--    RDR_1_CONN_EXIT.RDR_BITS => RDR_1_CONN_RDR_BITS,
+--    RDR_1_CONN_EXIT.RD_STROBE => RDR_1_CONN_RD_STROBE,
+    RDR_CONN_EXIT => RDR_CONN_EXIT,
+    PCH_CONN_ENTRY => PCH_CONN_ENTRY,
+--    n1050_CONTROL => n1050_CONTROL,
+--    n1050_CONTROL.n1050_RST_LCH => n1050_CONTROL_n1050_RST_LCH,
+--    n1050_CONTROL.n1050_RESET => n1050_CONTROL_n1050_RESET,
+--    n1050_CONTROL.HOME_RDR_START => n1050_CONTROL_HOME_RDR_START,
+--    n1050_CONTROL.PROCEED => n1050_CONTROL_PROCEED,
+--    n1050_CONTROL.RDR_2_HOLD => n1050_CONTROL_RDR_2_HOLD,
+--    n1050_CONTROL.CARR_RETURN_AND_LINE_FEED => n1050_CONTROL_CARR_RETURN_AND_LINE_FEED,
+--    n1050_CONTROL.RESTORE => n1050_CONTROL_RESTORE,
     -- Storage
-    BRAM_MS_WRDATA => BRAM_MS_WRDATA,
-    BRAM_MS_RDDATA => BRAM_MS_RDDATA,
-    BRAM_MS_ADDR => BRAM_MS_ADDR,
-    BRAM_MS_EN => BRAM_MS_EN,
-    BRAM_MS_WE => BRAM_MS_WE,
-    BRAM_MS_CLK => BRAM_MS_CLK,
-    BRAM_LS_WRDATA => BRAM_LS_WRDATA,
-    BRAM_LS_RDDATA => BRAM_LS_RDDATA,
-    BRAM_LS_ADDR => BRAM_LS_ADDR,
-    BRAM_LS_EN => BRAM_LS_EN,
-    BRAM_LS_WE => BRAM_LS_WE,
-    BRAM_LS_CLK => BRAM_LS_CLK,
+    bram1 => bram1,
+    bram2 => bram2,
+
     -- Serial port
-    serialInput.SerialRx => serialInput_SerialRx,
-    serialInput.DCD => serialInput_DCD,
-    serialInput.DSR => serialInput_DSR,
-    serialInput.RI => serialInput_RI,
-    serialInput.CTS => serialInput_CTS,
-    serialOutput.SerialTx => serialOutput_SerialTx,
-    serialOutput.RTS => serialOutput_RTS,
-    serialOutput.DTR => serialOutput_DTR,
+--    serialInput => serialInput,
+--    serialOutput => serialOutput,
     -- Clocks
     Clock1ms => Clock1ms,
     N60_CY_TIMER_PULSE => N60_CY_TIMER_PULSE,
@@ -1302,7 +1271,7 @@ begin
 		Z_BUS => Z_BUS,
 		GT_1050_TAGS_OUT => GT_1050_TAGS,
 		GT_1050_BUS_OUT => GT_1050_BUS,
---		PCH_CONN_ENTRY => PCH_CONN_ENTRY,
+		PCH_CONN_ENTRY => PCH_CONN_ENTRY,
 		P_1050_SEL_OUT => P_1050_SEL_OUT,
 		P_1050_SEL_IN => P_1050_SEL_IN,
 		n1050_OP_IN => n1050_OP_IN,
@@ -1316,8 +1285,8 @@ begin
 		M_ASSM_BUS => M_ASSM_BUS3,
 		N_ASSM_BUS => N_ASSM_BUS3,
 		T_REQUEST => T_REQUEST,
---		RDR_1_CONN_EXIT => RDR_1_CONN_EXIT,
---		n1050_CONTROL => n1050_CONTROL,
+		RDR_CONN_EXIT => RDR_CONN_EXIT,
+		n1050_CONTROL => n1050_CONTROL,
 		N1050_INTRV_REQ => N1050_INTRV_REQ,
 		TT6_POS_ATTN => TT6_POS_ATTN,
 		n1050_SEL_O => n1050_SEL_O,
@@ -1326,8 +1295,8 @@ begin
         n1050_CE_MODE => n1050_CE_MODE,
 		ADDR_OUT => ADDR_OUT,
 		
-		SerialInput => SerialInput,
-		SerialOutput => SerialOutput,
+--		SerialInput => SerialInput,
+--		SerialOutput => SerialOutput,
 		
 		-- Clocks
 		clk => clk,
@@ -1348,14 +1317,6 @@ begin
 	);
 	
 	storage64 : entity storage (DigilentZybo) port map (
-	-- S3BOARD signals
-        phys_address => open,
-        phys_data => open,
-        phys_CE => open,
-        phys_OE => open,
-        phys_WE => open,
-        phys_UB => open,
-        phys_LB => open,
     -- Interface to config ROM (S3BOARD)
         din => '0',
         reset_prom  => open,
@@ -1364,24 +1325,14 @@ begin
         -- Other inputs
         clk => clk, -- 50MHz
         
-    -- Inteface to AXI (ZYBO)
-        BRAM_MS_WRDATA => BRAM_MS_WRDATA,
-        BRAM_MS_RDDATA => BRAM_MS_RDDATA,
-        BRAM_MS_ADDR => BRAM_MS_ADDR,
-        BRAM_MS_EN => BRAM_MS_EN,
-        BRAM_MS_WE => BRAM_MS_WE,
-        BRAM_MS_CLK => BRAM_MS_CLK,
-        BRAM_LS_WRDATA => BRAM_LS_WRDATA,
-        BRAM_LS_RDDATA => BRAM_LS_RDDATA,
-        BRAM_LS_ADDR => BRAM_LS_ADDR,
-        BRAM_LS_EN => BRAM_LS_EN,
-        BRAM_LS_WE => BRAM_LS_WE,
-        BRAM_LS_CLK => BRAM_LS_CLK,
-        
     -- Storage interface to CPU
         StorageIn => StorageIn,
         StorageOut => StorageOut,
-        debug => open
+        debug => open,
+        
+     -- AXI to PS
+        bram1 => bram1,
+        bram2 => bram2
 	);
 
 	M_CONV_OSC <= sM_CONV_OSC;
@@ -1395,5 +1346,6 @@ begin
   N_ASSM_BUS2 <= N_ASSM_BUS1 or N_ASSM_BUS3;
   A_BUS <= A_BUS1 and A_BUS3;
   
-	
+
 end FMD;
+

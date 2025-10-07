@@ -54,13 +54,11 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity panel_LEDs is
 	Generic (
 --        Device : LED_DEVICE_TYPE := MAX6951;
-        Clock_divider : integer := 25 -- Default for 50MHz clock is 2, for 25MHz = 40ns = 20ns + 20ns. 25 gives 2MHz.
+        Clock_divider : integer := 25; -- Default for 50MHz clock is 2, for 25MHz = 40ns = 20ns + 20ns. 25 gives 2MHz.
+        Number_LEDs : integer := 256
         );
     Port ( -- Lamp input vector
-        LED_0 : in std_logic_vector(0 to 63);
-        LED_1 : in std_logic_vector(0 to 63);
-        LED_2 : in std_logic_vector(0 to 63);
-        LED_3 : in std_logic_vector(0 to 63);
+        LEDs : in std_logic_vector(0 to Number_LEDs - 1);
         -- Other inputs
         clk : in STD_LOGIC; -- 50MHz
         
@@ -267,10 +265,10 @@ max7219gen : process (clk_out) is
 					-- b1 =  F = XX5
 					-- b0 =  G = XX6
 					shift_reg64 <= 
-						max7219_vector(3,reg_counter)(15 downto 8) & LED_3(reg_counter*8+192+7) & LED_3(reg_counter*8+192 to reg_counter*8+192+6) &
-						max7219_vector(2,reg_counter)(15 downto 8) & LED_2(reg_counter*8+128+7) & LED_2(reg_counter*8+128 to reg_counter*8+128+6) &
-						max7219_vector(1,reg_counter)(15 downto 8) & LED_1(reg_counter*8+ 64+7) & LED_1(reg_counter*8+ 64 to reg_counter*8+ 64+6) &
-						max7219_vector(0,reg_counter)(15 downto 8) & LED_0(reg_counter*8+  0+7) & LED_0(reg_counter*8+  0 to reg_counter*8+  0+6);
+						max7219_vector(3,reg_counter)(15 downto 8) & LEDs(reg_counter*8+192+7) & LEDs(reg_counter*8+192 to reg_counter*8+192+6) &
+						max7219_vector(2,reg_counter)(15 downto 8) & LEDs(reg_counter*8+128+7) & LEDs(reg_counter*8+128 to reg_counter*8+128+6) &
+						max7219_vector(1,reg_counter)(15 downto 8) & LEDs(reg_counter*8+ 64+7) & LEDs(reg_counter*8+ 64 to reg_counter*8+ 64+6) &
+						max7219_vector(0,reg_counter)(15 downto 8) & LEDs(reg_counter*8+  0+7) & LEDs(reg_counter*8+  0 to reg_counter*8+  0+6);
 				when others =>
 					shift_reg64 <= 
 						max7219_vector(3,reg_counter) &
@@ -299,12 +297,7 @@ max6951gen : process (clk_out) is
 	variable reg_counter : integer range 0 to 11 := 0;
 	variable bit_counter : integer range 0 to 16 := 16;
 	variable shift_reg : std_logic_vector(16 downto 0);
-	variable LEDs : std_logic_vector(255 downto 0);
 	begin
-	LEDS(63 downto 0) := LED_0;
-	LEDS(127 downto 64) := LED_1;
-	LEDS(191 downto 128) := LED_2;
-	LEDS(255 downto 192) := LED_3;
 	if falling_edge(clk_out) then
 		if bit_counter=0 then
 			bit_counter := 16;

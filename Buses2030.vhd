@@ -235,4 +235,24 @@ type DEBUG_BUS is record
 	Probe : STD_LOGIC;
 end record DEBUG_BUS;
 
+type BRAM1_PORT is record
+	addr : std_logic_vector(13 downto 0);
+	clk : std_logic;
+	wrdata : std_logic_vector(31 downto 0);
+	rddata : std_logic_vector(31 downto 0);
+	en : std_logic;
+	rst : std_logic;
+	we : std_logic_vector(3 downto 0);
+end record BRAM1_PORT;
+
+type BRAM2_PORT is record
+	addr : std_logic_vector(8 downto 0);
+	clk : std_logic;
+	wrdata : std_logic_vector(31 downto 0);
+	rddata : std_logic_vector(31 downto 0);
+	en : std_logic;
+	rst : std_logic;
+	we : std_logic_vector(3 downto 0);
+end record BRAM2_PORT;
+
 end package Buses_package;

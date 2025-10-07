@@ -54,7 +54,7 @@ ENTITY udc3 IS
 		Z_BUS : IN STD_LOGIC_VECTOR(0 to 8);
 		GT_1050_TAGS_OUT : IN STD_LOGIC;
 		GT_1050_BUS_OUT : IN STD_LOGIC;
---		PCH_CONN_ENTRY : IN PCH_CONN;
+		PCH_CONN_ENTRY : IN PCH_CONN;
 		P_1050_SEL_IN : IN STD_LOGIC;
 		P_1050_SEL_OUT : IN STD_LOGIC;
 		SUPPRESS_OUT : IN STD_LOGIC;
@@ -67,18 +67,20 @@ ENTITY udc3 IS
 		A_BUS : OUT STD_LOGIC_VECTOR(0 to 8); -- 111111111 when inactive
 		M_ASSM_BUS,N_ASSM_BUS : OUT STD_LOGIC_VECTOR(0 to 8);
 		T_REQUEST : OUT STD_LOGIC;
+		RDR_CONN_EXIT : OUT RDR_CONN;
+		n1050_CONTROL : OUT CONN_1050;
 		n1050_INTRV_REQ : OUT STD_LOGIC;
 		TT6_POS_ATTN : OUT STD_LOGIC;
 		n1050_INSTALLED : OUT STD_LOGIC;
-      n1050_REQ_IN : OUT STD_LOGIC;
-      n1050_OP_IN : OUT STD_LOGIC;
-      n1050_CE_MODE : OUT STD_LOGIC;
+        n1050_REQ_IN : OUT STD_LOGIC;
+        n1050_OP_IN : OUT STD_LOGIC;
+        n1050_CE_MODE : OUT STD_LOGIC;
 		n1050_SEL_O : OUT STD_LOGIC;
 		DEBUG : INOUT DEBUG_BUS;
         
 		-- Hardware Serial Port
-		serialInput : in Serial_Input_Lines;
-		serialOutput : out Serial_Output_Lines;
+--		serialInput : in Serial_Input_Lines;
+--		serialOutput : out Serial_Output_Lines;
 		
 		-- Clocks
 		clk : IN STD_LOGIC;
@@ -477,8 +479,8 @@ n1050_ATTACH : entity work.n1050_ATTACH port map (
 		TT_BUS => TT_BUS,
 		GTD_TT3 => GTD_TT3,
 		
-		SerialInput => SerialInput,
-		SerialOutput => SerialOutput,
+--		SerialInput => SerialInput,
+--		SerialOutput => SerialOutput,
         
 		-- Clocks
 		P1 => P1,

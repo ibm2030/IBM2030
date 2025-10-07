@@ -110,10 +110,6 @@ ENTITY n1050_ATTACH IS
 		-- In/Out TT bus
 		TT_BUS : INOUT STD_LOGIC_VECTOR(0 to 7);
 		GTD_TT3 : IN STD_LOGIC;
-        
-		-- Hardware Serial Port
-		serialInput : in Serial_Input_Lines;
-		serialOutput : out Serial_Output_Lines;
 		
 		-- Clocks
 		T1,T2,T3,T4 : IN STD_LOGIC;
@@ -219,14 +215,6 @@ sRDR_1_CLUTCH <= PCH_CONN_ENTRY.RDR_1_CLUTCH_1050; -- AC2M4
 RDR_1_CLUTCH <= sRDR_1_CLUTCH;
 n1050_OPER <= PCH_CONN_ENTRY.CPU_CONNECTED; -- FA1D4
 REQUEST_KEY <=PCH_CONN_ENTRY.REQ_KEY; -- FA1D4
-
-		console : entity ibm1050 port map(
-				SerialIn => PCH_CONN_ENTRY,
-				SerialOut => RDR_1_CONN_EXIT,
-				SerialControl => CPU_LINES_EXIT,
-				serialInput => serialInput,
-				serialOutput => serialOutput,
-				clk => clk);
 
 END FMD; 
 
