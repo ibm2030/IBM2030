@@ -66,8 +66,10 @@ entity storage is
 				-- Address bram1 00000-0FFFF are main storage (64k)
 				--               10000-17FFF is extension storage (32k) if used
 				--         bram2 000-7FF is local storage (2k)
-				bram1 : inout BRAM1_PORT;
-				bram2 : inout BRAM2_PORT;
+				bram1 : in BRAM1_PORT;
+				bram1_rddata : out std_logic_vector(31 downto 0);
+				bram2 : in BRAM2_PORT;
+				bram2_rddata : out std_logic_vector(31 downto 0);
 --				bram_addr : in std_logic_vector(17 downto 0);
 --				bram_clk : in std_logic;
 --				bram_wrdata : in std_logic_vector(31 downto 0);
@@ -157,8 +159,8 @@ AXI2_with_Parity <=
     & EvenParity(bram2.wrdata(15 downto  8)) & bram2.wrdata(15 downto  8)
     & EvenParity(bram2.wrdata( 7 downto  0)) & bram2.wrdata( 7 downto  0);
 -- Strip parity during reads
-bram1.rddata <= MS_Data(34 downto 27) & MS_Data(25 downto 18) & MS_Data(16 downto 9) & MS_Data(7 downto 0);
-bram2.rddata <= LS_Data(34 downto 27) & LS_Data(25 downto 18) & LS_Data(16 downto 9) & LS_Data(7 downto 0);
+bram1_rddata <= MS_Data(34 downto 27) & MS_Data(25 downto 18) & MS_Data(16 downto 9) & MS_Data(7 downto 0);
+bram2_rddata <= LS_Data(34 downto 27) & LS_Data(25 downto 18) & LS_Data(16 downto 9) & LS_Data(7 downto 0);
 
 MainStorage: blk_mem_64k_9
     port map(

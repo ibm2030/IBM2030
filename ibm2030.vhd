@@ -81,7 +81,7 @@ entity ibm2030 is
 --				ps2_data : inout std_logic; -- Keyboard/Mouse data (not used)
 
             -- VGA output
-            red0, red1, red2, red3, green0, green1, green2, green3, blue0, blue1, blue2, blue3, vga_hs, vga_vs : out std_logic;   -- PMOD JC (J1),JD (J2) V15 W15 T11 T10 T14 T15 P14 R14 W14 Y14 T12 U12 W14 Y14
+            red0, red1, red2, red3, blue0, blue1, blue2, blue3, green0, green1, green2, green3, vga_hs, vga_vs : out std_logic;   -- PMOD JC (J1),JD (J2) V15 W15 T11 T10 W14 Y14 T12 U12 T14 T15 P14 R14 U14 U15
             
 			-- HDMI output
 			d_p : out std_logic_vector(2 downto 0);     -- B19,C20,D19
@@ -106,9 +106,22 @@ entity ibm2030 is
 --			reset_prom : out std_logic;
 --			rclk : out std_logic);
 
-            -- AXI interface from PS to storage
-            bram1 : inout BRAM1_PORT;
-            bram2 : inout BRAM2_PORT;
+            -- AXI interface from PS to storag
+            bram1_addr : in std_logic_vector(13 downto 0);
+	        bram1_clk : in std_logic;
+        	bram1_wrdata : in std_logic_vector(31 downto 0);
+	        bram1_en : in std_logic;
+	        bram1_rst : in std_logic;
+	        bram1_we : in std_logic_vector(3 downto 0);
+            bram1_rddata : out std_logic_vector(31 downto 0);
+	        
+        	bram2_addr : in std_logic_vector(8 downto 0);
+	        bram2_clk : in std_logic;
+	        bram2_wrdata : in std_logic_vector(31 downto 0);
+	        bram2_en : in std_logic;
+	        bram2_rst : in std_logic;
+	        bram2_we : in std_logic_vector(3 downto 0);
+	        bram2_rddata : out std_logic_vector(31 downto 0);
                         
 			-- 125Mhz clock
 			sysclk : in std_logic);  -- K17
@@ -320,8 +333,21 @@ begin
             MPX_TAGS_MTR_IN => '0',
             
             -- Storage interface
-            bram1 => bram1,
-            bram2 => bram2,
+	        bram1.addr => bram1_addr,
+	        bram1.clk => bram1_clk,
+            bram1.wrdata => bram1_wrdata,
+	        bram1.en => bram1_en,
+	        bram1.rst => bram1_rst,
+	        bram1.we => bram1_we,    
+	        bram1_rddata => bram1_rddata,
+
+	        bram2.addr => bram2_addr,
+	        bram2.clk => bram2_clk,
+            bram2.wrdata => bram2_wrdata,
+	        bram2.en => bram2_en,
+	        bram2.rst => bram2_rst,
+	        bram2.we => bram2_we,            
+	        bram2_rddata => bram2_rddata,
 			
 			DEBUG => DEBUG, -- Used to pass debug signals up to the top level for output
 			N60_CY_TIMER_PULSE => N60_CY_TIMER_PULSE, -- Actually 50Hz

@@ -6,7 +6,6 @@ isim/
 *.hw/
 *.runs/
 *.sdk/
-*.srcs/
 *.tmp/
 import_ise_summary.txt
 *.gise

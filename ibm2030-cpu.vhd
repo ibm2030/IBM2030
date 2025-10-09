@@ -109,8 +109,10 @@ entity cpu is
 			MPX_TAGS_I : IN MPX_TAGS_IN;
 
 			-- Storage (RAM) interface
-			bram1 : inout BRAM1_PORT;
-			bram2 : inout BRAM2_PORT;
+			bram1 : in BRAM1_PORT;
+			bram1_rddata : out std_logic_vector(31 downto 0);
+			bram2 : in BRAM2_PORT;
+			bram2_rddata : out std_logic_vector(31 downto 0);
 			
 			-- 1050 interface
 			PCH_CONN_ENTRY : IN PCH_CONN;
@@ -194,8 +196,10 @@ entity wrapped_cpu is
     MPX_TAGS_MTR_IN : IN STD_LOGIC;
 
 	-- Storage (RAM) interface
-	bram1 : inout BRAM1_PORT;
-	bram2 : inout BRAM2_PORT;
+	bram1 : in BRAM1_PORT;
+	bram1_rddata : out std_logic_vector(31 downto 0);
+	bram2 : in BRAM2_PORT;
+	bram2_rddata : out std_logic_vector(31 downto 0);
     
     -- 1050 interface
     PCH_CONN_ENTRY : IN PCH_CONN;
@@ -519,7 +523,9 @@ TheCPU: entity cpu (FMD) port map (
 --    n1050_CONTROL.RESTORE => n1050_CONTROL_RESTORE,
     -- Storage
     bram1 => bram1,
+    bram1_rddata => bram1_rddata,
     bram2 => bram2,
+    bram2_rddata => bram2_rddata,
 
     -- Serial port
 --    serialInput => serialInput,
@@ -1332,7 +1338,9 @@ begin
         
      -- AXI to PS
         bram1 => bram1,
-        bram2 => bram2
+        bram1_rddata => bram1_rddata,
+        bram2 => bram2,
+        bram2_rddata => bram2_rddata
 	);
 
 	M_CONV_OSC <= sM_CONV_OSC;
