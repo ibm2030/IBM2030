@@ -2,11 +2,11 @@
 -- Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
--- Date        : Tue Oct  7 15:13:06 2025
+-- Date        : Fri Oct 10 16:36:11 2025
 -- Host        : lznb204 running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim -rename_top zybo2030_axi_bram_ctrl_0_1 -prefix
---               zybo2030_axi_bram_ctrl_0_1_ zybo2030_axi_bram_ctrl_0_0_sim_netlist.vhdl
--- Design      : zybo2030_axi_bram_ctrl_0_0
+--               zybo2030_axi_bram_ctrl_0_1_ zybo2030_axi_bram_ctrl_2_0_sim_netlist.vhdl
+-- Design      : zybo2030_axi_bram_ctrl_2_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
 -- Device      : xc7z020clg400-1
@@ -21,7 +21,7 @@ entity zybo2030_axi_bram_ctrl_0_1_axi_lite is
     bram_en_a : out STD_LOGIC;
     bram_we_a : out STD_LOGIC_VECTOR ( 3 downto 0 );
     s_axi_bvalid : out STD_LOGIC;
-    bram_addr_a : out STD_LOGIC_VECTOR ( 10 downto 0 );
+    bram_addr_a : out STD_LOGIC_VECTOR ( 8 downto 0 );
     s_axi_rvalid : out STD_LOGIC;
     s_axi_arready : out STD_LOGIC;
     s_axi_wready : out STD_LOGIC;
@@ -32,8 +32,8 @@ entity zybo2030_axi_bram_ctrl_0_1_axi_lite is
     s_axi_awvalid : in STD_LOGIC;
     s_axi_wvalid : in STD_LOGIC;
     s_axi_bready : in STD_LOGIC;
-    s_axi_araddr : in STD_LOGIC_VECTOR ( 10 downto 0 );
-    s_axi_awaddr : in STD_LOGIC_VECTOR ( 10 downto 0 );
+    s_axi_araddr : in STD_LOGIC_VECTOR ( 8 downto 0 );
+    s_axi_awaddr : in STD_LOGIC_VECTOR ( 8 downto 0 );
     s_axi_rready : in STD_LOGIC
   );
 end zybo2030_axi_bram_ctrl_0_1_axi_lite;
@@ -370,32 +370,6 @@ begin
       I5 => s_axi_awaddr(8),
       O => bram_addr_a(8)
     );
-\bram_addr_a[11]_INST_0\: unisim.vcomponents.LUT6
-    generic map(
-      INIT => X"AAAABBBFAAAA8880"
-    )
-        port map (
-      I0 => s_axi_araddr(9),
-      I1 => s_axi_arvalid,
-      I2 => \FSM_onehot_GEN_NO_RD_CMD_OPT.lite_sm_cs_reg_n_0_[5]\,
-      I3 => \FSM_onehot_GEN_NO_RD_CMD_OPT.lite_sm_cs_reg_n_0_[0]\,
-      I4 => p_0_in,
-      I5 => s_axi_awaddr(9),
-      O => bram_addr_a(9)
-    );
-\bram_addr_a[12]_INST_0\: unisim.vcomponents.LUT6
-    generic map(
-      INIT => X"AAAABBBFAAAA8880"
-    )
-        port map (
-      I0 => s_axi_araddr(10),
-      I1 => s_axi_arvalid,
-      I2 => \FSM_onehot_GEN_NO_RD_CMD_OPT.lite_sm_cs_reg_n_0_[5]\,
-      I3 => \FSM_onehot_GEN_NO_RD_CMD_OPT.lite_sm_cs_reg_n_0_[0]\,
-      I4 => p_0_in,
-      I5 => s_axi_awaddr(10),
-      O => bram_addr_a(10)
-    );
 \bram_addr_a[2]_INST_0\: unisim.vcomponents.LUT6
     generic map(
       INIT => X"AAAABBBFAAAA8880"
@@ -584,7 +558,7 @@ entity zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl_top is
     bram_en_a : out STD_LOGIC;
     bram_we_a : out STD_LOGIC_VECTOR ( 3 downto 0 );
     s_axi_bvalid : out STD_LOGIC;
-    bram_addr_a : out STD_LOGIC_VECTOR ( 10 downto 0 );
+    bram_addr_a : out STD_LOGIC_VECTOR ( 8 downto 0 );
     s_axi_rvalid : out STD_LOGIC;
     s_axi_arready : out STD_LOGIC;
     s_axi_wready : out STD_LOGIC;
@@ -595,8 +569,8 @@ entity zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl_top is
     s_axi_awvalid : in STD_LOGIC;
     s_axi_wvalid : in STD_LOGIC;
     s_axi_bready : in STD_LOGIC;
-    s_axi_araddr : in STD_LOGIC_VECTOR ( 10 downto 0 );
-    s_axi_awaddr : in STD_LOGIC_VECTOR ( 10 downto 0 );
+    s_axi_araddr : in STD_LOGIC_VECTOR ( 8 downto 0 );
+    s_axi_awaddr : in STD_LOGIC_VECTOR ( 8 downto 0 );
     s_axi_rready : in STD_LOGIC
   );
 end zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl_top;
@@ -605,16 +579,16 @@ architecture STRUCTURE of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl_top is
 begin
 \GEN_AXI4LITE.I_AXI_LITE\: entity work.zybo2030_axi_bram_ctrl_0_1_axi_lite
      port map (
-      bram_addr_a(10 downto 0) => bram_addr_a(10 downto 0),
+      bram_addr_a(8 downto 0) => bram_addr_a(8 downto 0),
       bram_en_a => bram_en_a,
       bram_we_a(3 downto 0) => bram_we_a(3 downto 0),
       s_axi_aclk => s_axi_aclk,
-      s_axi_araddr(10 downto 0) => s_axi_araddr(10 downto 0),
+      s_axi_araddr(8 downto 0) => s_axi_araddr(8 downto 0),
       s_axi_aresetn => s_axi_aresetn,
       s_axi_aresetn_0 => s_axi_aresetn_0,
       s_axi_arready => s_axi_arready,
       s_axi_arvalid => s_axi_arvalid,
-      s_axi_awaddr(10 downto 0) => s_axi_awaddr(10 downto 0),
+      s_axi_awaddr(8 downto 0) => s_axi_awaddr(8 downto 0),
       s_axi_awvalid => s_axi_awvalid,
       s_axi_bready => s_axi_bready,
       s_axi_bvalid => s_axi_bvalid,
@@ -636,7 +610,7 @@ entity zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl is
     ecc_interrupt : out STD_LOGIC;
     ecc_ue : out STD_LOGIC;
     s_axi_awid : in STD_LOGIC_VECTOR ( 0 to 0 );
-    s_axi_awaddr : in STD_LOGIC_VECTOR ( 12 downto 0 );
+    s_axi_awaddr : in STD_LOGIC_VECTOR ( 10 downto 0 );
     s_axi_awlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
     s_axi_awsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
     s_axi_awburst : in STD_LOGIC_VECTOR ( 1 downto 0 );
@@ -655,7 +629,7 @@ entity zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl is
     s_axi_bvalid : out STD_LOGIC;
     s_axi_bready : in STD_LOGIC;
     s_axi_arid : in STD_LOGIC_VECTOR ( 0 to 0 );
-    s_axi_araddr : in STD_LOGIC_VECTOR ( 12 downto 0 );
+    s_axi_araddr : in STD_LOGIC_VECTOR ( 10 downto 0 );
     s_axi_arlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
     s_axi_arsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
     s_axi_arburst : in STD_LOGIC_VECTOR ( 1 downto 0 );
@@ -690,19 +664,19 @@ entity zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl is
     bram_clk_a : out STD_LOGIC;
     bram_en_a : out STD_LOGIC;
     bram_we_a : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    bram_addr_a : out STD_LOGIC_VECTOR ( 12 downto 0 );
+    bram_addr_a : out STD_LOGIC_VECTOR ( 10 downto 0 );
     bram_wrdata_a : out STD_LOGIC_VECTOR ( 31 downto 0 );
     bram_rddata_a : in STD_LOGIC_VECTOR ( 31 downto 0 );
     bram_rst_b : out STD_LOGIC;
     bram_clk_b : out STD_LOGIC;
     bram_en_b : out STD_LOGIC;
     bram_we_b : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    bram_addr_b : out STD_LOGIC_VECTOR ( 12 downto 0 );
+    bram_addr_b : out STD_LOGIC_VECTOR ( 10 downto 0 );
     bram_wrdata_b : out STD_LOGIC_VECTOR ( 31 downto 0 );
     bram_rddata_b : in STD_LOGIC_VECTOR ( 31 downto 0 )
   );
   attribute C_BRAM_ADDR_WIDTH : integer;
-  attribute C_BRAM_ADDR_WIDTH of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl : entity is 11;
+  attribute C_BRAM_ADDR_WIDTH of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl : entity is 9;
   attribute C_BRAM_INST_MODE : string;
   attribute C_BRAM_INST_MODE of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl : entity is "EXTERNAL";
   attribute C_ECC : integer;
@@ -716,7 +690,7 @@ entity zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl is
   attribute C_FAULT_INJECT : integer;
   attribute C_FAULT_INJECT of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl : entity is 0;
   attribute C_MEMORY_DEPTH : integer;
-  attribute C_MEMORY_DEPTH of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl : entity is 2048;
+  attribute C_MEMORY_DEPTH of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl : entity is 512;
   attribute C_RD_CMD_OPTIMIZATION : integer;
   attribute C_RD_CMD_OPTIMIZATION of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl : entity is 0;
   attribute C_READ_LATENCY : integer;
@@ -724,7 +698,7 @@ entity zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl is
   attribute C_SINGLE_PORT_BRAM : integer;
   attribute C_SINGLE_PORT_BRAM of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl : entity is 1;
   attribute C_S_AXI_ADDR_WIDTH : integer;
-  attribute C_S_AXI_ADDR_WIDTH of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl : entity is 13;
+  attribute C_S_AXI_ADDR_WIDTH of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl : entity is 11;
   attribute C_S_AXI_CTRL_ADDR_WIDTH : integer;
   attribute C_S_AXI_CTRL_ADDR_WIDTH of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl : entity is 32;
   attribute C_S_AXI_CTRL_DATA_WIDTH : integer;
@@ -743,7 +717,7 @@ end zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl;
 
 architecture STRUCTURE of zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl is
   signal \<const0>\ : STD_LOGIC;
-  signal \^bram_addr_a\ : STD_LOGIC_VECTOR ( 12 downto 2 );
+  signal \^bram_addr_a\ : STD_LOGIC_VECTOR ( 10 downto 2 );
   signal \^bram_rddata_a\ : STD_LOGIC_VECTOR ( 31 downto 0 );
   signal \^s_axi_aclk\ : STD_LOGIC;
   signal \^s_axi_wdata\ : STD_LOGIC_VECTOR ( 31 downto 0 );
@@ -752,11 +726,9 @@ begin
   \^bram_rddata_a\(31 downto 0) <= bram_rddata_a(31 downto 0);
   \^s_axi_aclk\ <= s_axi_aclk;
   \^s_axi_wdata\(31 downto 0) <= s_axi_wdata(31 downto 0);
-  bram_addr_a(12 downto 2) <= \^bram_addr_a\(12 downto 2);
+  bram_addr_a(10 downto 2) <= \^bram_addr_a\(10 downto 2);
   bram_addr_a(1) <= \<const0>\;
   bram_addr_a(0) <= \<const0>\;
-  bram_addr_b(12) <= \<const0>\;
-  bram_addr_b(11) <= \<const0>\;
   bram_addr_b(10) <= \<const0>\;
   bram_addr_b(9) <= \<const0>\;
   bram_addr_b(8) <= \<const0>\;
@@ -868,16 +840,16 @@ GND: unisim.vcomponents.GND
     );
 \gext_inst.abcv4_0_ext_inst\: entity work.zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl_top
      port map (
-      bram_addr_a(10 downto 0) => \^bram_addr_a\(12 downto 2),
+      bram_addr_a(8 downto 0) => \^bram_addr_a\(10 downto 2),
       bram_en_a => bram_en_a,
       bram_we_a(3 downto 0) => bram_we_a(3 downto 0),
       s_axi_aclk => \^s_axi_aclk\,
-      s_axi_araddr(10 downto 0) => s_axi_araddr(12 downto 2),
+      s_axi_araddr(8 downto 0) => s_axi_araddr(10 downto 2),
       s_axi_aresetn => s_axi_aresetn,
       s_axi_aresetn_0 => bram_rst_a,
       s_axi_arready => s_axi_arready,
       s_axi_arvalid => s_axi_arvalid,
-      s_axi_awaddr(10 downto 0) => s_axi_awaddr(12 downto 2),
+      s_axi_awaddr(8 downto 0) => s_axi_awaddr(10 downto 2),
       s_axi_awvalid => s_axi_awvalid,
       s_axi_bready => s_axi_bready,
       s_axi_bvalid => s_axi_bvalid,
@@ -896,7 +868,7 @@ entity zybo2030_axi_bram_ctrl_0_1 is
   port (
     s_axi_aclk : in STD_LOGIC;
     s_axi_aresetn : in STD_LOGIC;
-    s_axi_awaddr : in STD_LOGIC_VECTOR ( 12 downto 0 );
+    s_axi_awaddr : in STD_LOGIC_VECTOR ( 10 downto 0 );
     s_axi_awprot : in STD_LOGIC_VECTOR ( 2 downto 0 );
     s_axi_awvalid : in STD_LOGIC;
     s_axi_awready : out STD_LOGIC;
@@ -907,7 +879,7 @@ entity zybo2030_axi_bram_ctrl_0_1 is
     s_axi_bresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
     s_axi_bvalid : out STD_LOGIC;
     s_axi_bready : in STD_LOGIC;
-    s_axi_araddr : in STD_LOGIC_VECTOR ( 12 downto 0 );
+    s_axi_araddr : in STD_LOGIC_VECTOR ( 10 downto 0 );
     s_axi_arprot : in STD_LOGIC_VECTOR ( 2 downto 0 );
     s_axi_arvalid : in STD_LOGIC;
     s_axi_arready : out STD_LOGIC;
@@ -919,14 +891,14 @@ entity zybo2030_axi_bram_ctrl_0_1 is
     bram_clk_a : out STD_LOGIC;
     bram_en_a : out STD_LOGIC;
     bram_we_a : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    bram_addr_a : out STD_LOGIC_VECTOR ( 12 downto 0 );
+    bram_addr_a : out STD_LOGIC_VECTOR ( 10 downto 0 );
     bram_wrdata_a : out STD_LOGIC_VECTOR ( 31 downto 0 );
     bram_rddata_a : in STD_LOGIC_VECTOR ( 31 downto 0 )
   );
   attribute NotValidForBitStream : boolean;
   attribute NotValidForBitStream of zybo2030_axi_bram_ctrl_0_1 : entity is true;
   attribute CHECK_LICENSE_TYPE : string;
-  attribute CHECK_LICENSE_TYPE of zybo2030_axi_bram_ctrl_0_1 : entity is "zybo2030_axi_bram_ctrl_0_0,axi_bram_ctrl,{}";
+  attribute CHECK_LICENSE_TYPE of zybo2030_axi_bram_ctrl_0_1 : entity is "zybo2030_axi_bram_ctrl_2_0,axi_bram_ctrl,{}";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of zybo2030_axi_bram_ctrl_0_1 : entity is "yes";
   attribute x_core_info : string;
@@ -935,7 +907,7 @@ end zybo2030_axi_bram_ctrl_0_1;
 
 architecture STRUCTURE of zybo2030_axi_bram_ctrl_0_1 is
   signal \<const0>\ : STD_LOGIC;
-  signal \^bram_addr_a\ : STD_LOGIC_VECTOR ( 12 downto 2 );
+  signal \^bram_addr_a\ : STD_LOGIC_VECTOR ( 10 downto 2 );
   signal NLW_U0_bram_clk_b_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_bram_en_b_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_bram_rst_b_UNCONNECTED : STD_LOGIC;
@@ -948,7 +920,7 @@ architecture STRUCTURE of zybo2030_axi_bram_ctrl_0_1 is
   signal NLW_U0_s_axi_ctrl_wready_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_s_axi_rlast_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_bram_addr_a_UNCONNECTED : STD_LOGIC_VECTOR ( 1 downto 0 );
-  signal NLW_U0_bram_addr_b_UNCONNECTED : STD_LOGIC_VECTOR ( 12 downto 0 );
+  signal NLW_U0_bram_addr_b_UNCONNECTED : STD_LOGIC_VECTOR ( 10 downto 0 );
   signal NLW_U0_bram_we_b_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal NLW_U0_bram_wrdata_b_UNCONNECTED : STD_LOGIC_VECTOR ( 31 downto 0 );
   signal NLW_U0_s_axi_bid_UNCONNECTED : STD_LOGIC_VECTOR ( 0 to 0 );
@@ -959,7 +931,7 @@ architecture STRUCTURE of zybo2030_axi_bram_ctrl_0_1 is
   signal NLW_U0_s_axi_rid_UNCONNECTED : STD_LOGIC_VECTOR ( 0 to 0 );
   signal NLW_U0_s_axi_rresp_UNCONNECTED : STD_LOGIC_VECTOR ( 1 downto 0 );
   attribute C_BRAM_ADDR_WIDTH : integer;
-  attribute C_BRAM_ADDR_WIDTH of U0 : label is 11;
+  attribute C_BRAM_ADDR_WIDTH of U0 : label is 9;
   attribute C_BRAM_INST_MODE : string;
   attribute C_BRAM_INST_MODE of U0 : label is "EXTERNAL";
   attribute C_ECC : integer;
@@ -973,7 +945,7 @@ architecture STRUCTURE of zybo2030_axi_bram_ctrl_0_1 is
   attribute C_FAULT_INJECT : integer;
   attribute C_FAULT_INJECT of U0 : label is 0;
   attribute C_MEMORY_DEPTH : integer;
-  attribute C_MEMORY_DEPTH of U0 : label is 2048;
+  attribute C_MEMORY_DEPTH of U0 : label is 512;
   attribute C_RD_CMD_OPTIMIZATION : integer;
   attribute C_RD_CMD_OPTIMIZATION of U0 : label is 0;
   attribute C_READ_LATENCY : integer;
@@ -981,7 +953,7 @@ architecture STRUCTURE of zybo2030_axi_bram_ctrl_0_1 is
   attribute C_SINGLE_PORT_BRAM : integer;
   attribute C_SINGLE_PORT_BRAM of U0 : label is 1;
   attribute C_S_AXI_ADDR_WIDTH : integer;
-  attribute C_S_AXI_ADDR_WIDTH of U0 : label is 13;
+  attribute C_S_AXI_ADDR_WIDTH of U0 : label is 11;
   attribute C_S_AXI_CTRL_ADDR_WIDTH : integer;
   attribute C_S_AXI_CTRL_ADDR_WIDTH of U0 : label is 32;
   attribute C_S_AXI_CTRL_DATA_WIDTH : integer;
@@ -1002,7 +974,7 @@ architecture STRUCTURE of zybo2030_axi_bram_ctrl_0_1 is
   attribute x_interface_mode : string;
   attribute x_interface_mode of bram_rst_a : signal is "master BRAM_PORTA";
   attribute x_interface_parameter : string;
-  attribute x_interface_parameter of bram_rst_a : signal is "XIL_INTERFACENAME BRAM_PORTA, MASTER_TYPE BRAM_CTRL, MEM_SIZE 8192, MEM_WIDTH 32, MEM_ECC NONE, READ_WRITE_MODE READ_WRITE, READ_LATENCY 1";
+  attribute x_interface_parameter of bram_rst_a : signal is "XIL_INTERFACENAME BRAM_PORTA, MASTER_TYPE BRAM_CTRL, MEM_SIZE 2048, MEM_WIDTH 32, MEM_ECC NONE, READ_WRITE_MODE READ_WRITE, READ_LATENCY 1";
   attribute x_interface_info of s_axi_aclk : signal is "xilinx.com:signal:clock:1.0 CLKIF CLK";
   attribute x_interface_mode of s_axi_aclk : signal is "slave CLKIF";
   attribute x_interface_parameter of s_axi_aclk : signal is "XIL_INTERFACENAME CLKIF, ASSOCIATED_BUSIF S_AXI:S_AXI_CTRL, ASSOCIATED_RESET s_axi_aresetn, FREQ_HZ 50000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, CLK_DOMAIN zybo2030_processing_system7_0_0_FCLK_CLK0, INSERT_VIP 0";
@@ -1027,7 +999,7 @@ architecture STRUCTURE of zybo2030_axi_bram_ctrl_0_1 is
   attribute x_interface_info of s_axi_arprot : signal is "xilinx.com:interface:aximm:1.0 S_AXI ARPROT";
   attribute x_interface_info of s_axi_awaddr : signal is "xilinx.com:interface:aximm:1.0 S_AXI AWADDR";
   attribute x_interface_mode of s_axi_awaddr : signal is "slave S_AXI";
-  attribute x_interface_parameter of s_axi_awaddr : signal is "XIL_INTERFACENAME S_AXI, DATA_WIDTH 32, PROTOCOL AXI4LITE, FREQ_HZ 50000000, ID_WIDTH 0, ADDR_WIDTH 13, AWUSER_WIDTH 0, ARUSER_WIDTH 0, WUSER_WIDTH 0, RUSER_WIDTH 0, BUSER_WIDTH 0, READ_WRITE_MODE READ_WRITE, HAS_BURST 0, HAS_LOCK 0, HAS_PROT 1, HAS_CACHE 0, HAS_QOS 0, HAS_REGION 0, HAS_WSTRB 1, HAS_BRESP 1, HAS_RRESP 1, SUPPORTS_NARROW_BURST 0, NUM_READ_OUTSTANDING 1, NUM_WRITE_OUTSTANDING 1, MAX_BURST_LENGTH 1, PHASE 0.0, CLK_DOMAIN zybo2030_processing_system7_0_0_FCLK_CLK0, NUM_READ_THREADS 1, NUM_WRITE_THREADS 1, RUSER_BITS_PER_BYTE 0, WUSER_BITS_PER_BYTE 0, INSERT_VIP 0";
+  attribute x_interface_parameter of s_axi_awaddr : signal is "XIL_INTERFACENAME S_AXI, DATA_WIDTH 32, PROTOCOL AXI4LITE, FREQ_HZ 50000000, ID_WIDTH 0, ADDR_WIDTH 11, AWUSER_WIDTH 0, ARUSER_WIDTH 0, WUSER_WIDTH 0, RUSER_WIDTH 0, BUSER_WIDTH 0, READ_WRITE_MODE READ_WRITE, HAS_BURST 0, HAS_LOCK 0, HAS_PROT 1, HAS_CACHE 0, HAS_QOS 0, HAS_REGION 0, HAS_WSTRB 1, HAS_BRESP 1, HAS_RRESP 1, SUPPORTS_NARROW_BURST 0, NUM_READ_OUTSTANDING 8, NUM_WRITE_OUTSTANDING 8, MAX_BURST_LENGTH 1, PHASE 0.0, CLK_DOMAIN zybo2030_processing_system7_0_0_FCLK_CLK0, NUM_READ_THREADS 1, NUM_WRITE_THREADS 1, RUSER_BITS_PER_BYTE 0, WUSER_BITS_PER_BYTE 0, INSERT_VIP 0";
   attribute x_interface_info of s_axi_awprot : signal is "xilinx.com:interface:aximm:1.0 S_AXI AWPROT";
   attribute x_interface_info of s_axi_bresp : signal is "xilinx.com:interface:aximm:1.0 S_AXI BRESP";
   attribute x_interface_info of s_axi_rdata : signal is "xilinx.com:interface:aximm:1.0 S_AXI RDATA";
@@ -1035,7 +1007,7 @@ architecture STRUCTURE of zybo2030_axi_bram_ctrl_0_1 is
   attribute x_interface_info of s_axi_wdata : signal is "xilinx.com:interface:aximm:1.0 S_AXI WDATA";
   attribute x_interface_info of s_axi_wstrb : signal is "xilinx.com:interface:aximm:1.0 S_AXI WSTRB";
 begin
-  bram_addr_a(12 downto 2) <= \^bram_addr_a\(12 downto 2);
+  bram_addr_a(10 downto 2) <= \^bram_addr_a\(10 downto 2);
   bram_addr_a(1) <= \<const0>\;
   bram_addr_a(0) <= \<const0>\;
   s_axi_bresp(1) <= \<const0>\;
@@ -1048,9 +1020,9 @@ GND: unisim.vcomponents.GND
     );
 U0: entity work.zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl
      port map (
-      bram_addr_a(12 downto 2) => \^bram_addr_a\(12 downto 2),
+      bram_addr_a(10 downto 2) => \^bram_addr_a\(10 downto 2),
       bram_addr_a(1 downto 0) => NLW_U0_bram_addr_a_UNCONNECTED(1 downto 0),
-      bram_addr_b(12 downto 0) => NLW_U0_bram_addr_b_UNCONNECTED(12 downto 0),
+      bram_addr_b(10 downto 0) => NLW_U0_bram_addr_b_UNCONNECTED(10 downto 0),
       bram_clk_a => bram_clk_a,
       bram_clk_b => NLW_U0_bram_clk_b_UNCONNECTED,
       bram_en_a => bram_en_a,
@@ -1066,7 +1038,7 @@ U0: entity work.zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl
       ecc_interrupt => NLW_U0_ecc_interrupt_UNCONNECTED,
       ecc_ue => NLW_U0_ecc_ue_UNCONNECTED,
       s_axi_aclk => s_axi_aclk,
-      s_axi_araddr(12 downto 2) => s_axi_araddr(12 downto 2),
+      s_axi_araddr(10 downto 2) => s_axi_araddr(10 downto 2),
       s_axi_araddr(1 downto 0) => B"00",
       s_axi_arburst(1 downto 0) => B"00",
       s_axi_arcache(3 downto 0) => B"0000",
@@ -1078,7 +1050,7 @@ U0: entity work.zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl
       s_axi_arready => s_axi_arready,
       s_axi_arsize(2 downto 0) => B"000",
       s_axi_arvalid => s_axi_arvalid,
-      s_axi_awaddr(12 downto 2) => s_axi_awaddr(12 downto 2),
+      s_axi_awaddr(10 downto 2) => s_axi_awaddr(10 downto 2),
       s_axi_awaddr(1 downto 0) => B"00",
       s_axi_awburst(1 downto 0) => B"00",
       s_axi_awcache(3 downto 0) => B"0000",

@@ -119,7 +119,7 @@ entity switches is
 		  SDA : inout STD_LOGIC;
 
            -- Other inputs
-          clk : in STD_LOGIC; -- 50MHz
+          clk50M : in STD_LOGIC; -- 50MHz
 		  status_lamps : in STD_LOGIC_VECTOR(4 downto 0);
 
           -- Conditioned switch outputs:
@@ -136,7 +136,7 @@ entity switches is
           Sw_ROAR_SYNC,Sw_ADDR_COMP_PROC,Sw_SAR_DLYD_STOP,Sw_SAR_STOP,Sw_SAR_RESTART : out STD_LOGIC; -- Address Compare
 
 		  -- 1kHz clock signal
-	      Clock1ms : out STD_LOGIC;
+	      Clock1ms : in STD_LOGIC;
 				
           -- 50Hz Timer signal
           Timer : out STD_LOGIC
@@ -147,33 +147,47 @@ architecture Behavioral of switches is
 subtype debounce is std_logic_vector(0 to 3);
 signal scan : std_logic_vector(3 downto 0) := "0000";
 signal counter : std_logic_vector(14 downto 0) := (others=>'0');
-signal counter1k : std_logic_vector(15 downto 0) := (others=>'0');
+-- signal counter1k : std_logic_vector(15 downto 0) := (others=>'0');
 signal timerCounter : std_logic_vector(5 downto 0) := (others=>'0');
 signal SwE_raw,SwE_combined : std_logic_vector(3 downto 0) := "0000";
 signal UseInner,UseMid,UseOuter : Boolean;
 signal SwAC,SwAC_combined : std_logic_vector(3 downto 0) := "0000"; -- Address Compare switch
 signal Parity_in : std_logic;
-signal RawSw_powerOff, RawSw_SystemReset, RawSw_Start, RawSw_Load, RawSw_Stop : std_logic;
+signal RawSw_powerOff, RawSw_SystemReset, RawSw_Start, RawSw_Load, RawSw_Stop, RawSw_LampTest : std_logic;
 -- signal RawSw_Interrupt, RawSw_Load, RawSw_SystemReset, RawSw_RoarReset, RawSw_Start,
--- 		RawSw_SetIC, RawSw_CheckReset, RawSw_Stop, RawSw_IntTmr, RawSw_Store, RawSw_LampTest,
+-- 		RawSw_SetIC, RawSw_CheckReset, RawSw_Stop, RawSw_IntTmr, RawSw_Store, 
 -- 		RawSw_Display : STD_LOGIC; -- Right-hand pushbuttons
 
 signal debouncePowerOff, debounceInterrupt, debounceLoad,
 		debounceSystemReset, debounceRoarReset, debounceStart, debounceSetIC, debounceCheckReset,
 		debounceStop, debounceIntTmr, debounceStore, debounceLampTest, debounceDisplay : debounce;
 signal timerOut : std_logic := '0';
-signal sClock1ms : std_logic := '0';
+-- signal sClock1ms : std_logic := '0';
 
 signal max7318_switches : std_logic_vector(0 to 63);
+
+attribute mark_debug : string;
+attribute mark_debug of RawSw_LampTest : signal is "true";
+attribute mark_debug of Sw_LampTest : signal is "true";
+attribute mark_debug of Sw_Start : signal is "true";
+attribute mark_debug of Sw_Load : signal is "true";
+attribute mark_debug of Sw_Interrupt : signal is "true";
+attribute mark_debug of Sw_Stop : signal is "true";
+attribute mark_debug of Sw_CheckReset : signal is "true";
+attribute mark_debug of Sw_Store : signal is "true";
+attribute mark_debug of Sw_Display : signal is "true";
+attribute mark_debug of SwA,SwB,SwC,SwD : signal is "true";
+attribute mark_debug of SwF,SwG,SwH,SwJ : signal is "true";
+attribute mark_debug of SwE,SwE_combined : signal is "true";
 
 constant divider : std_logic_vector(14 downto 0) := "100111000100000"; -- 20,000 gives 2.5kHz
 constant divider2000 : std_logic_vector(14 downto 0) := "110000110101000"; -- 25,000 gives 2kHz
 constant sample  : std_logic_vector(14 downto 0) := "100111000011110"; -- 19,999
-constant divider100 : std_logic_vector(4 downto 0) := "11001"; --- 25 converts 2.5kHz to 100Hz for timer
+constant divider100 : std_logic_vector(4 downto 0) := "01010"; --- 10 converts 1kHz to 100Hz for timer
 begin
 
 max7318 : entity work.panel_switches port map (
-	clk => clk,
+	clk => clk50M,
 	SCL => SCL,
 	SDA => SDA,
 	LEDs => status_lamps,
@@ -182,9 +196,9 @@ max7318 : entity work.panel_switches port map (
 
 -- Parity_in <= EvenParity(Hex_in);
 
-scan_counter: process(clk)
+scan_counter: process(clk50M)
 	begin
-	if (rising_edge(clk)) then
+	if (rising_edge(clk50M)) then
 		if counter=sample then
 			if scan="0000" then SwA <= max7318_switches(12 to 15); SwAP <= EvenParity(max7318_switches(12 to 15)); end if;
 			if scan="0001" then SwB <= max7318_switches(16 to 19); SwBP <= EvenParity(max7318_switches(16 to 19)); end if;
@@ -206,16 +220,16 @@ scan_counter: process(clk)
 			end if;
 			debouncePowerOff <= debouncePowerOff(1 to 3) & rawSw_PowerOff;
 			debounceInterrupt <= debounceInterrupt(1 to 3) & (max7318_switches(53));
-			debounceLoad <= debounceLoad(1 to 3) & (max7318_switches(52));
-			debounceSystemReset <= debounceSystemReset(1 to 3) & (max7318_switches(63));
+			debounceLoad <= debounceLoad(1 to 3) & (max7318_switches(52) or rawSw_Load);
+			debounceSystemReset <= debounceSystemReset(1 to 3) & (max7318_switches(63) or rawSw_SystemReset);
 			debounceRoarReset <= debounceRoarReset(1 to 3) & (max7318_switches(61));
-			debounceStart <= debounceStart(1 to 3) & (max7318_switches(56));
+			debounceStart <= debounceStart(1 to 3) & (max7318_switches(56) or rawSw_Start);
 			debounceSetIC <= debounceSetIC(1 to 3) & (max7318_switches(60));
 			debounceCheckReset <= debounceCheckReset(1 to 3) & (max7318_switches(58));
-			debounceStop <= debounceStop(1 to 3) & (max7318_switches(55));
+			debounceStop <= debounceStop(1 to 3) & (max7318_switches(55) or rawSw_Stop);
 			debounceIntTmr <= debounceIntTmr(1 to 3) & (max7318_switches(62));
 			debounceStore <= debounceStore(1 to 3) & (max7318_switches(59));
-			debounceLampTest <= debounceLampTest(1 to 3) & (max7318_switches(57));
+			debounceLampTest <= debounceLampTest(1 to 3) & (max7318_switches(57) or RawSw_LampTest);
 			debounceDisplay <= debounceDisplay(1 to 3) & (max7318_switches(54));
 			if (debouncePowerOff = "0000") then Sw_PowerOff <= '0'; else if (debouncePowerOff = "1111") then Sw_PowerOff <= '1';	end if;	end if;
 			if (debounceInterrupt = "0000") then Sw_Interrupt <= '0'; else if (debounceInterrupt = "1111") then Sw_Interrupt <= '1';	end if;	end if;
@@ -244,18 +258,18 @@ scan_counter: process(clk)
 	end if;
 	end process;
 
-Clock1kHz : process(clk)
-	begin
-		if (rising_edge(clk)) then
-			if counter1k = divider2000 then
-				counter1k <= (others => '0');
-				sClock1ms <= not sClock1ms;
-			else
-				counter1k <= counter1k + 1;
-			end if;
-		end if;
-	end process;
-Clock1ms <= sClock1ms;
+--Clock1kHz : process(clk50)
+--	begin
+--		if (rising_edge(clk50)) then
+--			if counter1k = divider2000 then
+--				counter1k <= (others => '0');
+--				sClock1ms <= not sClock1ms;
+--			else
+--				counter1k <= counter1k + 1;
+--			end if;
+--		end if;
+--	end process;
+--Clock1ms <= sClock1ms;
 
 	-- Inner ring
 UseInner <= max7318_switches(34)='1';
@@ -334,7 +348,6 @@ RawSw_Start <= pb(1);
 RawSw_Load <= pb(2);
 RawSw_Stop <= pb(3);
 -- RawSw_CheckReset <= pb(4);
--- RawSw_LampTest <= pb(5);
 
 -- Slide switches
 -- RawSw_IntTmr <= sw(0);
@@ -344,7 +357,7 @@ RawSw_Stop <= pb(3);
 -- RawSw_RoarReset <= sw(4);
 -- RawSw_SetIC <= sw(5);
 -- RawSw_CheckReset <= sw(6);
--- RawSw_LampTest <= sw(7);
+RawSw_LampTest <= sw(0);
 
 end behavioral;
 

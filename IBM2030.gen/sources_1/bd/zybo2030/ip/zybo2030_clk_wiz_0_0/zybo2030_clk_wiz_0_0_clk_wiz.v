@@ -53,13 +53,13 @@
 //  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 //   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 //----------------------------------------------------------------------------
-// clk_out1__125.00000______0.000______50.0______154.207____164.985
-// clk_out2__50.00000______0.000______50.0______192.113____164.985
+// clk_out1__125.00000______0.000______50.0______119.348_____96.948
+// clk_out2__50.00000______0.000______50.0______143.688_____96.948
 //
 //----------------------------------------------------------------------------
 // Input Clock   Freq (MHz)    Input Jitter (UI)
 //----------------------------------------------------------------------------
-// __primary__________50.000____________0.010
+// __primary_________125.000____________0.010
 
 `timescale 1ps/1ps
 
@@ -71,7 +71,6 @@ module zybo2030_clk_wiz_0_0_clk_wiz
   output        clk_out2,
   // Status and control signals
   input         reset,
-  output        locked,
   input         clk_in1
  );
   // Input buffering
@@ -105,7 +104,6 @@ wire clk_in2_zybo2030_clk_wiz_0_0;
   wire        psdone_unused;
   wire        locked_int;
   wire        clkfbout_zybo2030_clk_wiz_0_0;
-  wire        clkfbout_buf_zybo2030_clk_wiz_0_0;
   wire        clkfboutb_unused;
     wire clkout0b_unused;
    wire clkout1b_unused;
@@ -126,7 +124,7 @@ wire clk_in2_zybo2030_clk_wiz_0_0;
     .COMPENSATION         ("ZHOLD"),
     .STARTUP_WAIT         ("FALSE"),
     .DIVCLK_DIVIDE        (1),
-    .CLKFBOUT_MULT_F      (20.000),
+    .CLKFBOUT_MULT_F      (8.000),
     .CLKFBOUT_PHASE       (0.000),
     .CLKFBOUT_USE_FINE_PS ("FALSE"),
     .CLKOUT0_DIVIDE_F     (8.000),
@@ -137,7 +135,7 @@ wire clk_in2_zybo2030_clk_wiz_0_0;
     .CLKOUT1_PHASE        (0.000),
     .CLKOUT1_DUTY_CYCLE   (0.500),
     .CLKOUT1_USE_FINE_PS  ("FALSE"),
-    .CLKIN1_PERIOD        (20.000))
+    .CLKIN1_PERIOD        (8.000))
   mmcm_adv_inst
     // Output clocks
    (
@@ -155,7 +153,7 @@ wire clk_in2_zybo2030_clk_wiz_0_0;
     .CLKOUT5             (clkout5_unused),
     .CLKOUT6             (clkout6_unused),
      // Input clock control
-    .CLKFBIN             (clkfbout_buf_zybo2030_clk_wiz_0_0),
+    .CLKFBIN             (clkfbout_zybo2030_clk_wiz_0_0),
     .CLKIN1              (clk_in1_zybo2030_clk_wiz_0_0),
     .CLKIN2              (1'b0),
      // Tied to always select the primary input clock
@@ -181,15 +179,10 @@ wire clk_in2_zybo2030_clk_wiz_0_0;
     .RST                 (reset_high));
   assign reset_high = reset; 
 
-  assign locked = locked_int;
 // Clock Monitor clock assigning
 //--------------------------------------
  // Output buffering
   //-----------------------------------
-
-  BUFG clkf_buf
-   (.O (clkfbout_buf_zybo2030_clk_wiz_0_0),
-    .I (clkfbout_zybo2030_clk_wiz_0_0));
 
 
 

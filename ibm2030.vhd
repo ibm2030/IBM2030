@@ -90,10 +90,10 @@ entity ibm2030 is
 			clk_n : out std_logic;                      -- H17
             				
 			-- Serial I/O PMOD JA
-			serialRx : in std_logic;           -- JA4 K14
-			serialTx : out std_logic := '1';   -- JA3 K16
-			serialRTS : out std_logic := '1';  -- Unused
-			serialDTR : out std_logic := '1';  -- Unused
+			SerialRx : in std_logic;           -- JA4 K14
+			SerialTx : out std_logic := '1';   -- JA3 K16
+			SerialRTS : out std_logic := '1';  -- Unused
+			SerialDTR : out std_logic := '1';  -- Unused
 			  
 			-- MicroSD
 --            sd_d : inout std_logic_vector(3 downto 0);    -- MIO45,44,43,42
@@ -107,7 +107,7 @@ entity ibm2030 is
 --			rclk : out std_logic);
 
             -- AXI interface from PS to storag
-            bram1_addr : in std_logic_vector(13 downto 0);
+            bram1_addr : in std_logic_vector(15 downto 2);
 	        bram1_clk : in std_logic;
         	bram1_wrdata : in std_logic_vector(31 downto 0);
 	        bram1_en : in std_logic;
@@ -115,7 +115,7 @@ entity ibm2030 is
 	        bram1_we : in std_logic_vector(3 downto 0);
             bram1_rddata : out std_logic_vector(31 downto 0);
 	        
-        	bram2_addr : in std_logic_vector(8 downto 0);
+        	bram2_addr : in std_logic_vector(10 downto 2);
 	        bram2_clk : in std_logic;
 	        bram2_wrdata : in std_logic_vector(31 downto 0);
 	        bram2_en : in std_logic;
@@ -123,8 +123,10 @@ entity ibm2030 is
 	        bram2_we : in std_logic_vector(3 downto 0);
 	        bram2_rddata : out std_logic_vector(31 downto 0);
                         
-			-- 125Mhz clock
-			sysclk : in std_logic);  -- K17
+			-- 125Mhz, fastest clock
+			sysclk : in std_logic;  -- K17
+			-- 50MHz clock
+			clk50M : in std_logic);
 		  
 			  
 end ibm2030;
@@ -133,20 +135,22 @@ architecture FMD of ibm2030 is
 
 -- Temporary HDMI output stub
 component hdmi_panel port (
-    Clock50 : in std_logic;
+    Clock125 : in std_logic;
     Indicators : in std_logic_vector(0 to 249)
 );
 end component;
 
 -- Indicator outputs from CPU
-signal  Indicators : std_logic_vector(0 to 259);
-signal	WX_IND : std_logic_vector(0 to 12);
+-- signal  Indicators : std_logic_vector(0 to 259);
+signal	W_IND : std_logic_vector(3 to 7);
+signal	X_IND : std_logic_vector(0 to 7);
 signal	W_IND_P : std_logic;
 signal	X_IND_P : std_logic;
 signal	IND_SALS : SALS_BUS;
 signal	IND_EX,IND_CY_MATCH,IND_ALLOW_WR,IND_1050_INTRV,IND_1050_REQ,IND_MPX,IND_SEL_CHNL : STD_LOGIC;
 signal	IND_MSDR : STD_LOGIC_VECTOR(0 to 7);
 signal	IND_MSDR_P : STD_LOGIC;
+signal	IND_SEL_IN : STD_LOGIC;
 signal	IND_OPNL_IN : STD_LOGIC;
 signal	IND_ADDR_IN : STD_LOGIC;
 signal	IND_STATUS_IN : STD_LOGIC;
@@ -181,7 +185,7 @@ signal	IND_TEST : STD_LOGIC;
 signal	IND_LOAD : STD_LOGIC;
 signal	IND_LP : STD_LOGIC;
 -- SX
-signal   IND_COUNT : STD_LOGIC_VECTOR(0 to 15) := "0000000000000000";
+signal  IND_COUNT : STD_LOGIC_VECTOR(0 to 15) := "0000000000000000";
 signal	IND_COUNT_LP, IND_COUNT_HP : STD_LOGIC := '1';
 signal	IND_SX1_DATA : STD_LOGIC_VECTOR(0 to 7) := "00000000";
 signal	IND_SX1_DATAP : STD_LOGIC := '1';
@@ -224,22 +228,64 @@ signal	SwSlow : STD_LOGIC := '0'; -- Set to '1' to slow clock down to 1Hz, not u
 
 signal	N60_CY_TIMER_PULSE : STD_LOGIC; -- Used for the Interval Timer
 signal	Clock1ms : STD_LOGIC; -- 1kHz clock for single-shots etc.
-signal  Clk50 : STD_LOGIC; -- Basic CPU clock
 
 signal	DEBUG : DEBUG_BUS; -- Passed to all modeles to probe signals
 
-signal LED_vector : std_logic_vector(0 to 255);
 signal Switch_vector : std_logic_vector(0 to 63);
+
+attribute mark_debug : string;
+-- attribute mark_debug of Indicators : signal is "true";
 
 begin
 
-	cpu : entity work.wrapped_cpu port map (
-	       Indicators_0 => Indicators(0 to 63),
-	       Indicators_1 => Indicators(64 to 127),
-	       Indicators_2 => Indicators(128 to 191),
-	       Indicators_3 => Indicators(192 to 255),
-	       LEDS => Indicators(256 to 259),
-			
+	cpu : entity work.cpu port map (
+	
+--	       Indicator Lamps
+            W_IND => W_IND,
+            X_IND => X_IND,
+            W_IND_P => W_IND_P,
+            X_IND_P => X_IND_P,
+            IND_SALS => IND_SALS,
+            IND_EX => IND_EX,
+            IND_CY_MATCH => IND_CY_MATCH,
+            IND_ALLOW_WR => IND_ALLOW_WR,
+            IND_1050_INTRV => IND_1050_INTRV,
+            IND_1050_REQ => IND_1050_REQ,
+            IND_MPX => IND_MPX,
+            IND_SEL_CHNL => IND_SEL_CHNL,
+            IND_MSDR => IND_MSDR,
+            IND_MSDR_P => IND_MSDR_P,
+            IND_OPNL_IN => IND_OPNL_IN,
+            IND_ADDR_IN => IND_ADDR_IN,
+            IND_STATUS_IN => IND_STATUS_IN,
+            IND_SERV_IN => IND_SERV_IN,
+            IND_SEL_OUT => IND_SEL_OUT,
+            IND_CMMD_OUT => IND_CMMD_OUT,
+            IND_SUPPR_OUT => IND_SUPPR_OUT,
+            IND_FO => IND_FO,
+            IND_FO_P => IND_FO_P,
+            IND_A => IND_A,
+            IND_B => IND_B,
+            IND_ALU => IND_ALU,
+            IND_M => IND_M,
+            IND_N => IND_N,
+            IND_MAIN_STG => IND_MAIN_STG,
+            IND_LOC_STG => IND_LOC_STG,
+            IND_COMP_MODE => IND_COMP_MODE,
+            IND_CHK_A_REG => IND_CHK_A_REG,
+            IND_CHK_B_REG => IND_CHK_B_REG,
+            IND_CHK_STOR_ADDR => IND_CHK_STOR_ADDR,
+            IND_CHK_CTRL_REG => IND_CHK_CTRL_REG,
+            IND_CHK_ROS_SALS => IND_CHK_ROS_SALS,
+            IND_CHK_ROS_ADDR => IND_CHK_ROS_ADDR,
+            IND_CHK_STOR_DATA => IND_CHK_STOR_DATA,
+            IND_CHK_ALU => IND_CHK_ALU,
+            IND_SYST => IND_SYST,
+            IND_MAN => IND_MAN,
+            IND_WAIT =>IND_WAIT,
+            IND_TEST => IND_TEST,
+            IND_LOAD => IND_LOAD,
+                        
 			SW_START => SW_START,
 			SW_LOAD => SW_LOAD,
 			SW_SET_IC => SW_SET_IC,
@@ -290,19 +336,7 @@ begin
 			SW_GP => SW_GP,
 			SW_HP => SW_HP,
 			SW_JP => SW_JP,
-			SW_EI => E_SW.I_SEL,
-			SW_EJ => E_SW.J_SEL,
-			SW_EU => E_SW.U_SEL,
-			SW_EV => E_SW.V_SEL,
-			SW_EL => E_SW.L_SEL,
-			SW_ET => E_SW.T_SEL,
-			SW_ED => E_SW.D_SEL,
-			SW_ER => E_SW.R_SEL,
-			SW_ES => E_SW.S_SEL,
-			SW_EG => E_SW.G_SEL,
-			SW_EH => E_SW.H_SEL,
-			SW_EFI => E_SW.FI_SEL,
-			SW_EFT => E_SW.FT_SEL,
+			E_SW => E_SW,
 			
 			-- Serial interface for 1050
 			RDR_CONN_EXIT => n1050Inputs,
@@ -313,24 +347,24 @@ begin
 			-- Multiplexor interface not connected to anything yet
 			MPX_BUS_O => open,
 			MPX_BUS_I => (others=>'0'),
-			MPX_TAGS_OPL_OUT => open,
-            MPX_TAGS_ADR_OUT => open,
-            MPX_TAGS_ADR_OUT2 => open,
-            MPX_TAGS_CMD_OUT => open,
-            MPX_TAGS_STA_OUT => open,
-            MPX_TAGS_SRV_OUT => open,
-            MPX_TAGS_HLD_OUT => open,
-            MPX_TAGS_SEL_OUT => open,
-            MPX_TAGS_SUP_OUT => open,
-            MPX_TAGS_MTR_OUT => open,
-            MPX_TAGS_CLK_OUT => open,
-            MPX_TAGS_OPL_IN => '0',
-            MPX_TAGS_ADR_IN => '0',
-            MPX_TAGS_STA_IN => '0',
-            MPX_TAGS_SRV_IN => '0',
-            MPX_TAGS_SEL_IN => '0',
-            MPX_TAGS_REQ_IN => '0',
-            MPX_TAGS_MTR_IN => '0',
+			MPX_TAGS_O.OPL_OUT => open,
+            MPX_TAGS_O.ADR_OUT => open,
+            MPX_TAGS_O.ADR_OUT2 => open,
+            MPX_TAGS_O.CMD_OUT => open,
+            MPX_TAGS_O.STA_OUT => open,
+            MPX_TAGS_O.SRV_OUT => open,
+            MPX_TAGS_O.HLD_OUT => open,
+            MPX_TAGS_O.SEL_OUT => open,
+            MPX_TAGS_O.SUP_OUT => open,
+            MPX_TAGS_O.MTR_OUT => open,
+            MPX_TAGS_O.CLK_OUT => open,
+            MPX_TAGS_I.OPL_IN => '0',
+            MPX_TAGS_I.ADR_IN => '0',
+            MPX_TAGS_I.STA_IN => '0',
+            MPX_TAGS_I.SRV_IN => '0',
+            MPX_TAGS_I.SEL_IN => '0',
+            MPX_TAGS_I.REQ_IN => '0',
+            MPX_TAGS_I.MTR_IN => '0',
             
             -- Storage interface
 	        bram1.addr => bram1_addr,
@@ -353,101 +387,103 @@ begin
 			N60_CY_TIMER_PULSE => N60_CY_TIMER_PULSE, -- Actually 50Hz
 			Clock1ms => Clock1ms,
 			SwSlow => SwSlow,
-			clk => clk50 -- 50Mhz clock
+			clk => sysclk,
+			clk50M => clk50M -- 50Mhz clock
 			);
 
 
-	frontPanel : entity vga_panel port map (
-		Clock50 => clk50,
+	frontPanel : entity lamp_panel port map (
+	   IND_LP => IND_LP,
+        W_IND => W_IND,
+        X_IND => X_IND,
+        W_IND_P => W_IND_P,
+        X_IND_P => X_IND_P,
+        IND_SALS => IND_SALS,
+        IND_EX => IND_EX,
+        IND_CY_MATCH => IND_CY_MATCH,
+        IND_ALLOW_WR => IND_ALLOW_WR,
+        IND_1050_INTRV => IND_1050_INTRV,
+        IND_1050_REQ => IND_1050_REQ,
+        IND_MPX => IND_MPX,
+        IND_SEL_CHNL => IND_SEL_CHNL,
+        IND_MSDR => IND_MSDR,
+        IND_MSDR_P => IND_MSDR_P,
+        
+        IND_OPNL_IN => IND_OPNL_IN,
+        IND_ADDR_IN => IND_ADDR_IN,
+        IND_SEL_IN => IND_SEL_IN,
+        IND_STATUS_IN => IND_STATUS_IN,
+        IND_SERV_IN => IND_SERV_IN,
+        IND_SEL_OUT => IND_SEL_OUT,
+        IND_ADDR_OUT => IND_ADDR_OUT,
+        IND_CMMD_OUT => IND_CMMD_OUT,
+        IND_SERV_OUT => IND_SERV_OUT,
+        IND_SUPPR_OUT => IND_SUPPR_OUT,
+        IND_FO => IND_FO,
+        IND_FO_P => IND_FO_P,
+        
+        IND_COUNT => IND_COUNT,
+        IND_COUNT_LP => IND_COUNT_LP,
+        IND_COUNT_HP => IND_COUNT_HP,
+        IND_SX1_DATA => IND_SX1_DATA,
+		IND_SX1_DATAP => IND_SX1_DATAP,
+        IND_SX1_COMMAND => IND_SX1_COMMAND,
+	    IND_SX1_KEY => IND_SX1_KEY,
+		IND_SX1_KEYP => IND_SX1_KEYP,
+		IND_SX1_PCI => IND_SX1_PCI,
+		IND_SX1_SKIP => IND_SX1_SKIP,
+		IND_SX1_SLI => IND_SX1_SLI,
+		IND_SX1_CD => IND_SX1_CD,
+		IND_SX1_CC => IND_SX1_CC,
+		IND_SX1_DA_CHK => IND_SX1_DA_CHK,
+		IND_SX1_PROT_CHK => IND_SX1_PROT_CHK,
+		IND_SX1_PROG_CHK => IND_SX1_PROG_CHK,
+		IND_SX1_IL_CHK => IND_SX1_IL_CHK,
+		IND_SX1_CHNLDATA_CHK => IND_SX1_CHNLDATA_CHK,
+		IND_SX1_STATIN_TAG => IND_SX1_STATIN_TAG,
+		IND_SX1_ADRIN_TAG => IND_SX1_ADRIN_TAG,
+		IND_SX1_OPIN_TAG => IND_SX1_OPIN_TAG,
+		IND_SX1_SUPOUT_TAG => IND_SX1_SUPOUT_TAG,
+		IND_SX1_SERVOUT_TAG => IND_SX1_SERVOUT_TAG,
+		IND_SX1_CMMDOUT_TAG => IND_SX1_CMMDOUT_TAG,
+		IND_SX1_ADROUT_TAG => IND_SX1_ADROUT_TAG,
+		IND_SX1_SELOUT_TAG => IND_SX1_SELOUT_TAG,
+		IND_SX1_IF_CHK => IND_SX1_IF_CHK,
+		IND_SX1_CHNLCTRL_CHK => IND_SX1_CHNLCTRL_CHK,
+		 
+        IND_A => IND_A,
+        IND_B => IND_B,
+        IND_ALU => IND_ALU,
+        IND_M => IND_M,
+        IND_N => IND_N,
+        IND_MAIN_STG => IND_MAIN_STG,
+        IND_LOC_STG => IND_LOC_STG,
+        IND_COMP_MODE => IND_COMP_MODE,
+        IND_CHK_A_REG => IND_CHK_A_REG,
+        IND_CHK_B_REG => IND_CHK_B_REG,
+        IND_CHK_STOR_ADDR => IND_CHK_STOR_ADDR,
+        IND_CHK_CTRL_REG => IND_CHK_CTRL_REG,
+        IND_CHK_ROS_SALS => IND_CHK_ROS_SALS,
+        IND_CHK_ROS_ADDR => IND_CHK_ROS_ADDR,
+        IND_CHK_STOR_DATA => IND_CHK_STOR_DATA,
+        IND_CHK_ALU => IND_CHK_ALU,
+        IND_SYST => IND_SYST,
+        IND_MAN => IND_MAN,
+        IND_WAIT =>IND_WAIT,
+        IND_TEST => IND_TEST,
+        IND_LOAD => IND_LOAD,	
+	
+		Clock50 => clk50M,
+		
+		-- VGA out
 		Red => vga_r, Green => vga_g, Blue => vga_b,
 		HS => vga_hs, VS => vga_vs,
-
-		Indicators(			  0) => '0', -- Constant
-		Indicators(  		  1) => IND_SALS.SALS_PN,
-		Indicators(  2 to	  7) => IND_SALS.SALS_CN,
-		Indicators(  		  8) => IND_SALS.SALS_PA,
-		Indicators(			  9) => IND_LP,
-		Indicators(			 10) => W_IND_P,
-		Indicators( 11 to	 15) => WX_IND(0 to 4),
-		Indicators(			 16) => X_IND_P,
-		Indicators( 17 to	 24) => WX_IND(5 to 12),
-		Indicators(			 25) => IND_SALS.SALS_PS,
-		Indicators( 26 to	 29) => IND_SALS.SALS_CH,
-		Indicators( 30 to	 33) => IND_SALS.SALS_CL,
-		Indicators(			 34) => IND_SALS.SALS_AA,
-		Indicators( 35 to	 38) => IND_SALS.SALS_CA,
-		Indicators( 39 to	 40) => IND_SALS.SALS_CB,
-		Indicators( 41 to	 43) => IND_SALS.SALS_CM,
-		Indicators( 44 to	 45) => IND_SALS.SALS_CU,
-		Indicators(			 46) => IND_SALS.SALS_AK,
-		Indicators(			 47) => IND_SALS.SALS_PK,
-		Indicators( 48 to	 51) => IND_SALS.SALS_CK,
-		Indicators(			 52) => IND_SALS.SALS_PC,
-		Indicators( 53 to	 56) => IND_SALS.SALS_CD,
-		Indicators( 57 to	 59) => IND_SALS.SALS_CF,
-		Indicators( 60 to	 61) => IND_SALS.SALS_CG,
-		Indicators( 62 to	 63) => IND_SALS.SALS_CV,
-		Indicators( 64 to	 66) => IND_SALS.SALS_CC,
-		Indicators(			 67) => IND_SALS.SALS_SA,
-		Indicators( 68 to	 71) => IND_SALS.SALS_CS,
-		-- Skip 18 + 9 + 9 + 5 + 9 + 6 = 56 for SX1 (72 to 127)
-		Indicators( 72	to	127) => "00000000000000000000000000000000000000000000000000000000",
-		-- If we had SX2 there would be another 56 here
-		-- MPX
-		Indicators(			128) => IND_OPNL_IN,
-		Indicators(			129) => IND_ADDR_IN,
-		Indicators(			130) => IND_STATUS_IN,
-		Indicators(			131) => IND_SERV_IN,
-		Indicators(			132) => IND_SEL_OUT,
-		Indicators(			133) => IND_ADDR_OUT,
-		Indicators(			134) => IND_CMMD_OUT,
-		Indicators(			135) => IND_SERV_OUT,
-		Indicators(			136) => IND_SUPPR_OUT,
-		Indicators(			137) => IND_FO_P,
-		Indicators(138	to	145) => IND_FO,
-		-- MSAR
-		Indicators(			146) => IND_MAIN_STG,
-		Indicators(       147) => IND_M(8),
-		Indicators(148 to 155) => IND_M(0 to 7),
-		Indicators(       156) => IND_N(8),
-		Indicators(157 to 164) => IND_N(0 to 7),
-		Indicators(			165) => IND_LOC_STG,
-		-- MSDR
-		Indicators(			166) => IND_MSDR_P,
-		Indicators(167 to 174) => IND_MSDR,
-		-- ALU
-		Indicators(			175) => IND_ALU(8),
-		Indicators(176	to	183) => IND_ALU(0 to 7),
-		Indicators(			184) => IND_EX,
-		Indicators(			185) => IND_CY_MATCH,
-		Indicators(			186) => IND_ALLOW_WR,
-		Indicators(			187) => IND_CHK_STOR_ADDR,
-		Indicators(			188) => IND_CHK_STOR_DATA,
-		Indicators(			189) => IND_1050_INTRV,
-		Indicators(			190) => IND_1050_REQ,
-		Indicators(			191) => IND_CHK_B_REG,
-		Indicators(			192) => IND_CHK_A_REG,
-		Indicators(			193) => IND_CHK_ALU,
-		-- A,B
-		Indicators(			194) => IND_A(8),
-		Indicators(195	to	202) => IND_A(0 to 7),
-		Indicators(			203) => IND_B(8),
-		Indicators(204 to 211) => IND_B(0 to 7),
-		Indicators(			212) => IND_MPX,
-		Indicators(			213) => IND_SEL_CHNL,
-		Indicators(			214) => IND_COMP_MODE,
-		Indicators(			215) => IND_CHK_ROS_ADDR,
-		Indicators(			216) => IND_CHK_ROS_SALS,
-		Indicators(			217) => IND_CHK_CTRL_REG,
-		-- The following indicators mimic the 8 Hex rotary switches to make it easier to set them
-		Indicators(218 to 221) => SW_A(0 to 3),
-		Indicators(222 to 225) => SW_B(0 to 3),
-		Indicators(226 to 229) => SW_C(0 to 3),
-		Indicators(230 to 233) => SW_D(0 to 3),
-		Indicators(234 to 237) => SW_F(0 to 3),
-		Indicators(238 to 241) => SW_G(0 to 3),
-		Indicators(242 to 245) => SW_H(0 to 3),
-		Indicators(246 to 249) => SW_J(0 to 3)
+		
+		-- HDMI out
+		
+		-- LEDs out
+		LEDS => led
+		
 	);
 	-- For now we only have 1 bit per colour, not 4
 	red0 <= vga_r; red1 <= vga_r; red2 <= vga_r; red3 <= vga_r;
@@ -575,261 +611,103 @@ begin
 		SDA => MAX7318_SDA,
 		
 		-- Clocks etc.
-		clk => clk50, -- 50MHz clock
+		clk50M => clk50M, -- 50MHz clock
 		status_lamps(4) => IND_LOAD,
 		status_lamps(3) => IND_TEST,
 		status_lamps(2) => IND_WAIT,
 		status_lamps(1) => IND_MAN,
 		status_lamps(0) => IND_SYST,
---		Clock1ms => Clock1ms,
+		Clock1ms => Clock1ms,
 		Timer => N60_CY_TIMER_PULSE -- Output from Switches is actually 50Hz
 		);
 
-		LED_vector <= (
-				0 => IND_SALS.SALS_PA,
-				1 => IND_SALS.SALS_CN(5),
-				2 => IND_SALS.SALS_CN(4),
-				3 => IND_SALS.SALS_CN(3),
-				4 => IND_SALS.SALS_CN(2),
-				5 => IND_SALS.SALS_CN(1),
-				6 => IND_SALS.SALS_CN(0),
-				7 => IND_SALS.SALS_PN,
-				8 => X_IND_P,
-				9 => WX_IND(4),
-				10 => WX_IND(3),
-				11 => WX_IND(2),
-				12 => WX_IND(1),
-				13 => WX_IND(0),
-				14 => W_IND_P,
-				15 => IND_LP,
-				16 => WX_IND(12),
-				17 => WX_IND(11),
-				18 => WX_IND(10),
-				19 => WX_IND(9),
-				20 => WX_IND(8),
-				21 => WX_IND(7),
-				22 => WX_IND(6),
-				23 => WX_IND(5),
-				24 => IND_SALS.SALS_CL(2),
-				25 => IND_SALS.SALS_CL(1),
-				26 => IND_SALS.SALS_CL(0),
-				27 => IND_SALS.SALS_CH(3),
-				28 => IND_SALS.SALS_CH(2),
-				29 => IND_SALS.SALS_CH(1),
-				30 => IND_SALS.SALS_CH(0),
-				31 => IND_SALS.SALS_PS,
-				32 => IND_SALS.SALS_CB(1),
-				33 => IND_SALS.SALS_CB(0),
-				34 => IND_SALS.SALS_CA(3),
-				35 => IND_SALS.SALS_CA(2),
-				36 => IND_SALS.SALS_CA(1),
-				37 => IND_SALS.SALS_CA(0),
-				38 => IND_SALS.SALS_AA,
-				39 => IND_SALS.SALS_CL(3),
-				40 => IND_SALS.SALS_CK(0),
-				41 => IND_SALS.SALS_PK,
-				42 => IND_SALS.SALS_AK,
-				43 => IND_SALS.SALS_CU(1),
-				44 => IND_SALS.SALS_CU(0),
-				45 => IND_SALS.SALS_CM(2),
-				46 => IND_SALS.SALS_CM(1),
-				47 => IND_SALS.SALS_CM(0),
-				48 => IND_SALS.SALS_CD(3),
-				49 => IND_SALS.SALS_CD(2),
-				50 => IND_SALS.SALS_CD(1),
-				51 => IND_SALS.SALS_CD(0),
-				52 => IND_SALS.SALS_PC,
-				53 => IND_SALS.SALS_CK(3),
-				54 => IND_SALS.SALS_CK(2),
-				55 => IND_SALS.SALS_CK(1),
-				56 => IND_SALS.SALS_CC(0),
-				57 => IND_SALS.SALS_CV(1),
-				58 => IND_SALS.SALS_CV(0),
-				59 => IND_SALS.SALS_CG(1),
-				60 => IND_SALS.SALS_CG(0),
-				61 => IND_SALS.SALS_CF(2),
-				62 => IND_SALS.SALS_CF(1),
-				63 => IND_SALS.SALS_CF(0),
-				64 => IND_COUNT_HP, -- Count-P
-				65 => IND_SALS.SALS_CS(3),
-				66 => IND_SALS.SALS_CS(2),
-				67 => IND_SALS.SALS_CS(1),
-				68 => IND_SALS.SALS_CS(0),
-				69 => IND_SALS.SALS_SA,
-				70 => IND_SALS.SALS_CC(2),
-				71 => IND_SALS.SALS_CC(1),
-				-- Count 72-87,95
-				72 => IND_COUNT(8),
-				73 => IND_COUNT(6),
-				74 => IND_COUNT(5),
-				75 => IND_COUNT(4),
-				76 => IND_COUNT(3),
-				77 => IND_COUNT(2),
-				78 => IND_COUNT(1),
-				79 => IND_COUNT(0),
-				80 => IND_COUNT(15),
-				81 => IND_COUNT(14),
-				82 => IND_COUNT(13),
-				83 => IND_COUNT(12),
-				84 => IND_COUNT(11),
-				85 => IND_COUNT(10),
-				86 => IND_COUNT(9),
-				87 => IND_COUNT_LP,
-				95 => IND_COUNT(0),
-				-- SX1
-				88 => IND_SX1_DATA(5),
-				89 => IND_SX1_DATA(4),
-				90 => IND_SX1_DATA(3),
-				91 => IND_SX1_DATA(2),
-			   92 => IND_SX1_DATA(1),
-				93 => IND_SX1_DATA(0),
-				94 => IND_SX1_DATAP,
-				96 => IND_SX1_COMMAND(4),
-				97 => IND_SX1_KEY(3),
-				98 => IND_SX1_KEY(2),
-				99 => IND_SX1_KEY(1),
-				100 => IND_SX1_KEY(0),
-				101 => IND_SX1_KEYP,
-				102 => IND_SX1_DATA(7),
-				103 => IND_SX1_DATA(6),
-				104 => IND_SX1_PCI,
-				105 => IND_SX1_SKIP,
-				106 => IND_SX1_SLI,
-				107 => IND_SX1_CD,
-				108 => IND_SX1_CC,
-				109 => IND_SX1_COMMAND(7),
-				110 => IND_SX1_COMMAND(6),
-				111 => IND_SX1_COMMAND(5),
-				112 => IND_SX1_DA_CHK,
-				113 => IND_SX1_PROT_CHK,
-				114 => IND_SX1_PROG_CHK,
-				115 => IND_SX1_IL_CHK,
-				116 => IND_SX1_CHNLDATA_CHK,
-				117 => IND_SX1_STATIN_TAG,
-				118 => IND_SX1_ADRIN_TAG,
-				119 => IND_SX1_OPIN_TAG,
-				120 => '0', -- LED5
-				121 => IND_SX1_SUPOUT_TAG,
-				122 => IND_SX1_SERVOUT_TAG,
-				123 => IND_SX1_CMMDOUT_TAG,
-				124 => IND_SX1_ADROUT_TAG,
-				125 => IND_SX1_SELOUT_TAG,
-				126 => IND_SX1_IF_CHK,
-				127 => IND_SX1_CHNLCTRL_CHK,
-				-- SX2 128-150. 162-167
-				
-				-- Temporary indicators 152-159
-				152 => IND_LOAD,
-				153 => IND_TEST,
-				154 => IND_WAIT,
-				155 => IND_MAN,
-				156 => IND_SYST,
-				157 => '1', -- Power
-				158 => '1',
-				159 => '1',
 
-				160 => IND_ADDR_IN,
-				161 => IND_OPNL_IN,
-				-- 162-167 in SX2
-				168 => IND_FO_P,
-				169 => IND_SUPPR_OUT,
-				170 => IND_SERV_OUT,
-				171 => IND_CMMD_OUT,
-				172 => IND_ADDR_OUT,
-				173 => IND_SEL_OUT,
-				174 => IND_SERV_IN,
-				175 => IND_STATUS_IN,
-				176 => IND_FO(7),
-				177 => IND_FO(6),
-				178 => IND_FO(5),
-				179 => IND_FO(4),
-				180 => IND_FO(3),
-				181 => IND_FO(2),
-				182 => IND_FO(1),
-				183 => IND_FO(0),
-				184 => IND_M(6),
-				185 => IND_M(5),
-				186 => IND_M(4),
-				187 => IND_M(3),
-				188 => IND_M(2),
-				189 => IND_M(1),
-				190 => IND_M(0),
-				191 => IND_M(8),
-				192 => IND_N(5),
-				193 => IND_N(4),
-				194 => IND_N(3),
-				195 => IND_N(2),
-				196 => IND_N(1),
-				197 => IND_N(0),
-				198 => IND_N(8),
-				199 => IND_M(7),
-				200 => IND_MSDR(2),
-				201 => IND_MSDR(1),
-				202 => IND_MSDR(0),
-				203 => IND_MSDR_P,
-				204 => IND_LOC_STG,
-				205 => IND_MAIN_STG,
-				206 => IND_N(7),
-				207 => IND_N(6),
-				208 => IND_ALU(1),
-				209 => IND_ALU(0),
-				210 => IND_ALU(8),
-				211 => IND_MSDR(7),
-				212 => IND_MSDR(6),
-				213 => IND_MSDR(5),
-				214 => IND_MSDR(4),
-				215 => IND_MSDR(3),
-				216 => IND_B(0),
-				217 => IND_B(8),
-				218 => IND_ALU(7),
-				219 => IND_ALU(6),
-				220 => IND_ALU(5),
-				221 => IND_ALU(4),
-				222 => IND_ALU(3),
-				223 => IND_ALU(2),
-				224 => IND_A(8),
-				225 => IND_B(7),
-				226 => IND_B(6),
-				227 => IND_B(5),
-				228 => IND_B(4),
-				229 => IND_B(3),
-				230 => IND_B(2),
-				231 => IND_B(1),
-				232 => IND_A(7),
-				233 => IND_A(6),
-				234 => IND_A(5),
-				235 => IND_A(4),
-				236 => IND_A(3),
-				237 => IND_A(2),
-				238 => IND_A(1),
-				239 => IND_A(0),
-				240 => IND_CHK_B_REG,
-				241 => IND_1050_REQ,
-				242 => IND_1050_INTRV,
-				243 => IND_CHK_STOR_DATA,
-				244 => IND_CHK_STOR_ADDR,
-				245 => IND_ALLOW_WR,
-				246 => IND_CY_MATCH,
-				247 => IND_EX,
-				248 => IND_CHK_CTRL_REG,
-				249 => IND_CHK_ROS_SALS,
-				250 => IND_CHK_ROS_ADDR,
-				251 => IND_COMP_MODE,
-				252 => IND_SEL_CHNL,
-				253 => IND_MPX,
-				254 => IND_CHK_ALU,
-				255 => IND_CHK_A_REG,
-				others => '0');
 		
 		front_panel_LEDs : entity panel_LEDs 
 		generic map(
-			clock_divider => 2,
-			number_LEDs => 256
+			clock_divider => 2
 			)
 		port map(
-			clk => clk50,
-			LEDs => LED_vector,
-
+			clk50M => clk50M,
+			
+    	    IND_LP => IND_LP,
+            W_IND => W_IND,
+            X_IND => X_IND,
+            W_IND_P => W_IND_P,
+            X_IND_P => X_IND_P,
+            IND_SALS => IND_SALS,
+            IND_EX => IND_EX,
+            IND_CY_MATCH => IND_CY_MATCH,
+            IND_ALLOW_WR => IND_ALLOW_WR,
+            IND_1050_INTRV => IND_1050_INTRV,
+            IND_1050_REQ => IND_1050_REQ,
+            IND_MPX => IND_MPX,
+            IND_SEL_CHNL => IND_SEL_CHNL,
+            IND_MSDR => IND_MSDR,
+            IND_MSDR_P => IND_MSDR_P,
+            
+            IND_OPNL_IN => IND_OPNL_IN,
+            IND_ADDR_IN => IND_ADDR_IN,
+            IND_SEL_IN => IND_SEL_IN,
+            IND_STATUS_IN => IND_STATUS_IN,
+            IND_SERV_IN => IND_SERV_IN,
+            IND_SEL_OUT => IND_SEL_OUT,
+            IND_ADDR_OUT => IND_ADDR_OUT,
+            IND_CMMD_OUT => IND_CMMD_OUT,
+            IND_SERV_OUT => IND_SERV_OUT,
+            IND_SUPPR_OUT => IND_SUPPR_OUT,
+            IND_FO => IND_FO,
+            IND_COUNT => IND_COUNT,
+            IND_COUNT_LP => IND_COUNT_LP,
+            IND_COUNT_HP => IND_COUNT_HP,
+            IND_SX1_DATA => IND_SX1_DATA,
+            IND_SX1_DATAP => IND_SX1_DATAP,
+            IND_SX1_COMMAND => IND_SX1_COMMAND,
+            IND_SX1_KEY => IND_SX1_KEY,
+            IND_SX1_KEYP => IND_SX1_KEYP,
+            IND_SX1_PCI => IND_SX1_PCI,
+            IND_SX1_SKIP => IND_SX1_SKIP,
+            IND_SX1_SLI => IND_SX1_SLI,
+            IND_SX1_CD => IND_SX1_CD,
+            IND_SX1_CC => IND_SX1_CC,
+            IND_SX1_DA_CHK => IND_SX1_DA_CHK,
+            IND_SX1_PROT_CHK => IND_SX1_PROT_CHK,
+            IND_SX1_PROG_CHK => IND_SX1_PROG_CHK,
+            IND_SX1_IL_CHK => IND_SX1_IL_CHK,
+            IND_SX1_CHNLDATA_CHK => IND_SX1_CHNLDATA_CHK,
+            IND_SX1_STATIN_TAG => IND_SX1_STATIN_TAG,
+            IND_SX1_ADRIN_TAG => IND_SX1_ADRIN_TAG,
+            IND_SX1_OPIN_TAG => IND_SX1_OPIN_TAG,
+            IND_SX1_SUPOUT_TAG => IND_SX1_SUPOUT_TAG,
+            IND_SX1_SERVOUT_TAG => IND_SX1_SERVOUT_TAG,
+            IND_SX1_CMMDOUT_TAG => IND_SX1_CMMDOUT_TAG,
+            IND_SX1_ADROUT_TAG => IND_SX1_ADROUT_TAG,
+            IND_SX1_SELOUT_TAG => IND_SX1_SELOUT_TAG,
+            IND_SX1_IF_CHK => IND_SX1_IF_CHK,
+            IND_SX1_CHNLCTRL_CHK => IND_SX1_CHNLCTRL_CHK,
+            IND_FO_P => IND_FO_P,
+            IND_A => IND_A,
+            IND_B => IND_B,
+            IND_ALU => IND_ALU,
+            IND_M => IND_M,
+            IND_N => IND_N,
+            IND_MAIN_STG => IND_MAIN_STG,
+            IND_LOC_STG => IND_LOC_STG,
+            IND_COMP_MODE => IND_COMP_MODE,
+            IND_CHK_A_REG => IND_CHK_A_REG,
+            IND_CHK_B_REG => IND_CHK_B_REG,
+            IND_CHK_STOR_ADDR => IND_CHK_STOR_ADDR,
+            IND_CHK_CTRL_REG => IND_CHK_CTRL_REG,
+            IND_CHK_ROS_SALS => IND_CHK_ROS_SALS,
+            IND_CHK_ROS_ADDR => IND_CHK_ROS_ADDR,
+            IND_CHK_STOR_DATA => IND_CHK_STOR_DATA,
+            IND_CHK_ALU => IND_CHK_ALU,
+            IND_SYST => IND_SYST,
+            IND_MAN => IND_MAN,
+            IND_WAIT =>IND_WAIT,
+            IND_TEST => IND_TEST,
+            IND_LOAD => IND_LOAD,	
+            
 			-- MAX7219 is standard LED mux (full-size panel)
 			MAX7219_CLK => MAX7219_CLK,
 			MAX7219_LOAD => MAX7219_LOAD,
@@ -866,32 +744,21 @@ begin
         SerialOutput.SerialTx => SerialTx,
         SerialOutput.RTS => SerialRTS,
         SerialOutput.DTR => SerialDTR,
-        clk => clk50
+        clk => clk50M
     );
     
-    -- Divide 125MHz to 50MHz to 1kHz
-    clockDivider : process (sysclk) is 
-        variable Divider50M : integer range 0 to 5 := 0;
+    -- Divide 50MHz to 1kHz
+    clockDivider : process (clk50M) is 
         variable Divider1K : integer range 0 to 50000 := 0;
     begin
-        if rising_edge(sysclk) then
-            Divider50M := Divider50M + 1;
-            if (Divider50M >= 5) then
-                Divider50M := 0;
-                Divider1K := Divider1K + 1;
-                if (Divider1K >= 50000) then
-                    Divider1K := 0;
-                end if;
-                if (Divider1K >= 25000) then
-                    Clock1ms <= '1';
-                else
-                    Clock1ms <= '0';
-                end if;
+        if rising_edge(clk50M) then
+            if (Divider1K >= 50000) then
+                Divider1K := 0;
             end if;
-            if (Divider50M > 1) then
-                Clk50 <= '1';
+            if (Divider1K >= 25000) then
+                Clock1ms <= '1';
             else
-                Clk50 <= '0';
+                Clock1ms <= '0';
             end if;
         end if;
     end process clockDivider;

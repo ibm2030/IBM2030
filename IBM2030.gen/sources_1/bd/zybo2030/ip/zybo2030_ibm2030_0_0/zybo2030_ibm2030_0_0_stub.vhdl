@@ -2,7 +2,7 @@
 -- Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
--- Date        : Tue Oct  7 16:56:18 2025
+-- Date        : Tue Oct 14 14:13:23 2025
 -- Host        : lznb204 running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode synth_stub
 --               c:/Users/lwilkinson/Xilinx/IBM2030/IBM2030.gen/sources_1/bd/zybo2030/ip/zybo2030_ibm2030_0_0/zybo2030_ibm2030_0_0_stub.vhdl
@@ -48,25 +48,26 @@ entity zybo2030_ibm2030_0_0 is
     d_n : out STD_LOGIC_VECTOR ( 2 downto 0 );
     clk_p : out STD_LOGIC;
     clk_n : out STD_LOGIC;
-    serialRx : in STD_LOGIC;
-    serialTx : out STD_LOGIC;
-    serialRTS : out STD_LOGIC;
-    serialDTR : out STD_LOGIC;
-    bram1_addr : in STD_LOGIC_VECTOR ( 13 downto 0 );
+    SerialRx : in STD_LOGIC;
+    SerialTx : out STD_LOGIC;
+    SerialRTS : out STD_LOGIC;
+    SerialDTR : out STD_LOGIC;
+    bram1_addr : in STD_LOGIC_VECTOR ( 15 downto 2 );
     bram1_clk : in STD_LOGIC;
     bram1_wrdata : in STD_LOGIC_VECTOR ( 31 downto 0 );
     bram1_en : in STD_LOGIC;
     bram1_rst : in STD_LOGIC;
     bram1_we : in STD_LOGIC_VECTOR ( 3 downto 0 );
     bram1_rddata : out STD_LOGIC_VECTOR ( 31 downto 0 );
-    bram2_addr : in STD_LOGIC_VECTOR ( 8 downto 0 );
+    bram2_addr : in STD_LOGIC_VECTOR ( 10 downto 2 );
     bram2_clk : in STD_LOGIC;
     bram2_wrdata : in STD_LOGIC_VECTOR ( 31 downto 0 );
     bram2_en : in STD_LOGIC;
     bram2_rst : in STD_LOGIC;
     bram2_we : in STD_LOGIC_VECTOR ( 3 downto 0 );
     bram2_rddata : out STD_LOGIC_VECTOR ( 31 downto 0 );
-    sysclk : in STD_LOGIC
+    sysclk : in STD_LOGIC;
+    clk50M : in STD_LOGIC
   );
 
   attribute CHECK_LICENSE_TYPE : string;
@@ -83,7 +84,7 @@ architecture stub of zybo2030_ibm2030_0_0 is
   attribute syn_black_box : boolean;
   attribute black_box_pad_pin : string;
   attribute syn_black_box of stub : architecture is true;
-  attribute black_box_pad_pin of stub : architecture is "rgbled[5:0],led[4:0],pb[5:0],sw[3:0],MAX7318_SCL,MAX7318_SDA,MAX7219_CLK,MAX7219_LOAD,MAX7219_DIN,MAX6951_CLK,MAX6951_CS0,MAX6951_CS1,MAX6951_CS2,MAX6951_CS3,MAX6951_DIN,red0,red1,red2,red3,blue0,blue1,blue2,blue3,green0,green1,green2,green3,vga_hs,vga_vs,d_p[2:0],d_n[2:0],clk_p,clk_n,serialRx,serialTx,serialRTS,serialDTR,bram1_addr[13:0],bram1_clk,bram1_wrdata[31:0],bram1_en,bram1_rst,bram1_we[3:0],bram1_rddata[31:0],bram2_addr[8:0],bram2_clk,bram2_wrdata[31:0],bram2_en,bram2_rst,bram2_we[3:0],bram2_rddata[31:0],sysclk";
+  attribute black_box_pad_pin of stub : architecture is "rgbled[5:0],led[4:0],pb[5:0],sw[3:0],MAX7318_SCL,MAX7318_SDA,MAX7219_CLK,MAX7219_LOAD,MAX7219_DIN,MAX6951_CLK,MAX6951_CS0,MAX6951_CS1,MAX6951_CS2,MAX6951_CS3,MAX6951_DIN,red0,red1,red2,red3,blue0,blue1,blue2,blue3,green0,green1,green2,green3,vga_hs,vga_vs,d_p[2:0],d_n[2:0],clk_p,clk_n,SerialRx,SerialTx,SerialRTS,SerialDTR,bram1_addr[15:2],bram1_clk,bram1_wrdata[31:0],bram1_en,bram1_rst,bram1_we[3:0],bram1_rddata[31:0],bram2_addr[10:2],bram2_clk,bram2_wrdata[31:0],bram2_en,bram2_rst,bram2_we[3:0],bram2_rddata[31:0],sysclk,clk50M";
   attribute x_interface_info : string;
   attribute x_interface_info of MAX7219_CLK : signal is "xilinx.com:signal:clock:1.0 MAX7219_CLK CLK";
   attribute x_interface_mode : string;
@@ -93,12 +94,9 @@ architecture stub of zybo2030_ibm2030_0_0 is
   attribute x_interface_info of MAX6951_CLK : signal is "xilinx.com:signal:clock:1.0 MAX6951_CLK CLK";
   attribute x_interface_mode of MAX6951_CLK : signal is "master MAX6951_CLK";
   attribute x_interface_parameter of MAX6951_CLK : signal is "XIL_INTERFACENAME MAX6951_CLK, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, CLK_DOMAIN zybo2030_ibm2030_0_0_MAX6951_CLK, INSERT_VIP 0";
-  attribute x_interface_info of clk_p : signal is "xilinx.com:signal:clock:1.0 clk_p CLK";
-  attribute x_interface_mode of clk_p : signal is "master clk_p";
-  attribute x_interface_parameter of clk_p : signal is "XIL_INTERFACENAME clk_p, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, CLK_DOMAIN zybo2030_ibm2030_0_0_clk_p, INSERT_VIP 0";
-  attribute x_interface_info of clk_n : signal is "xilinx.com:signal:clock:1.0 clk_n CLK";
-  attribute x_interface_mode of clk_n : signal is "master clk_n";
-  attribute x_interface_parameter of clk_n : signal is "XIL_INTERFACENAME clk_n, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, CLK_DOMAIN zybo2030_ibm2030_0_0_clk_n, INSERT_VIP 0";
+  attribute x_interface_info of clk_p : signal is "digilentinc.com:interface:tmds:1.0 interface_tmds CLK_P";
+  attribute x_interface_mode of clk_p : signal is "slave interface_tmds";
+  attribute x_interface_info of clk_n : signal is "digilentinc.com:interface:tmds:1.0 interface_tmds CLK_N";
   attribute x_interface_info of bram1_clk : signal is "xilinx.com:signal:clock:1.0 bram1_clk CLK";
   attribute x_interface_mode of bram1_clk : signal is "slave bram1_clk";
   attribute x_interface_parameter of bram1_clk : signal is "XIL_INTERFACENAME bram1_clk, ASSOCIATED_RESET bram1_rst, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, INSERT_VIP 0";

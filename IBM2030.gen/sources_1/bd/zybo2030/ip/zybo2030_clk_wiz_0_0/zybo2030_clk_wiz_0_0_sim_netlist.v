@@ -2,7 +2,7 @@
 // Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
-// Date        : Tue Oct  7 15:13:02 2025
+// Date        : Mon Oct 13 14:17:48 2025
 // Host        : lznb204 running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               c:/Users/lwilkinson/Xilinx/IBM2030/IBM2030.gen/sources_1/bd/zybo2030/ip/zybo2030_clk_wiz_0_0/zybo2030_clk_wiz_0_0_sim_netlist.v
@@ -18,25 +18,21 @@ module zybo2030_clk_wiz_0_0
    (clk_out1,
     clk_out2,
     reset,
-    locked,
     clk_in1);
   output clk_out1;
   output clk_out2;
   input reset;
-  output locked;
   input clk_in1;
 
   (* IBUF_LOW_PWR *) wire clk_in1;
   wire clk_out1;
   wire clk_out2;
-  wire locked;
   wire reset;
 
   zybo2030_clk_wiz_0_0_clk_wiz inst
        (.clk_in1(clk_in1),
         .clk_out1(clk_out1),
         .clk_out2(clk_out2),
-        .locked(locked),
         .reset(reset));
 endmodule
 
@@ -44,12 +40,10 @@ module zybo2030_clk_wiz_0_0_clk_wiz
    (clk_out1,
     clk_out2,
     reset,
-    locked,
     clk_in1);
   output clk_out1;
   output clk_out2;
   input reset;
-  output locked;
   input clk_in1;
 
   wire clk_in1;
@@ -58,9 +52,7 @@ module zybo2030_clk_wiz_0_0_clk_wiz
   wire clk_out1_zybo2030_clk_wiz_0_0;
   wire clk_out2;
   wire clk_out2_zybo2030_clk_wiz_0_0;
-  wire clkfbout_buf_zybo2030_clk_wiz_0_0;
   wire clkfbout_zybo2030_clk_wiz_0_0;
-  wire locked;
   wire reset;
   wire NLW_mmcm_adv_inst_CLKFBOUTB_UNCONNECTED;
   wire NLW_mmcm_adv_inst_CLKFBSTOPPED_UNCONNECTED;
@@ -75,13 +67,10 @@ module zybo2030_clk_wiz_0_0_clk_wiz
   wire NLW_mmcm_adv_inst_CLKOUT5_UNCONNECTED;
   wire NLW_mmcm_adv_inst_CLKOUT6_UNCONNECTED;
   wire NLW_mmcm_adv_inst_DRDY_UNCONNECTED;
+  wire NLW_mmcm_adv_inst_LOCKED_UNCONNECTED;
   wire NLW_mmcm_adv_inst_PSDONE_UNCONNECTED;
   wire [15:0]NLW_mmcm_adv_inst_DO_UNCONNECTED;
 
-  (* BOX_TYPE = "PRIMITIVE" *) 
-  BUFG clkf_buf
-       (.I(clkfbout_zybo2030_clk_wiz_0_0),
-        .O(clkfbout_buf_zybo2030_clk_wiz_0_0));
   (* BOX_TYPE = "PRIMITIVE" *) 
   (* CAPACITANCE = "DONT_CARE" *) 
   (* IBUF_DELAY_VALUE = "0" *) 
@@ -102,10 +91,10 @@ module zybo2030_clk_wiz_0_0_clk_wiz
   (* BOX_TYPE = "PRIMITIVE" *) 
   MMCME2_ADV #(
     .BANDWIDTH("OPTIMIZED"),
-    .CLKFBOUT_MULT_F(20.000000),
+    .CLKFBOUT_MULT_F(8.000000),
     .CLKFBOUT_PHASE(0.000000),
     .CLKFBOUT_USE_FINE_PS("FALSE"),
-    .CLKIN1_PERIOD(20.000000),
+    .CLKIN1_PERIOD(8.000000),
     .CLKIN2_PERIOD(0.000000),
     .CLKOUT0_DIVIDE_F(8.000000),
     .CLKOUT0_DUTY_CYCLE(0.500000),
@@ -136,7 +125,7 @@ module zybo2030_clk_wiz_0_0_clk_wiz
     .CLKOUT6_DUTY_CYCLE(0.500000),
     .CLKOUT6_PHASE(0.000000),
     .CLKOUT6_USE_FINE_PS("FALSE"),
-    .COMPENSATION("ZHOLD"),
+    .COMPENSATION("INTERNAL"),
     .DIVCLK_DIVIDE(1),
     .IS_CLKINSEL_INVERTED(1'b0),
     .IS_PSEN_INVERTED(1'b0),
@@ -150,7 +139,7 @@ module zybo2030_clk_wiz_0_0_clk_wiz
     .SS_MOD_PERIOD(10000),
     .STARTUP_WAIT("FALSE")) 
     mmcm_adv_inst
-       (.CLKFBIN(clkfbout_buf_zybo2030_clk_wiz_0_0),
+       (.CLKFBIN(clkfbout_zybo2030_clk_wiz_0_0),
         .CLKFBOUT(clkfbout_zybo2030_clk_wiz_0_0),
         .CLKFBOUTB(NLW_mmcm_adv_inst_CLKFBOUTB_UNCONNECTED),
         .CLKFBSTOPPED(NLW_mmcm_adv_inst_CLKFBSTOPPED_UNCONNECTED),
@@ -176,7 +165,7 @@ module zybo2030_clk_wiz_0_0_clk_wiz
         .DO(NLW_mmcm_adv_inst_DO_UNCONNECTED[15:0]),
         .DRDY(NLW_mmcm_adv_inst_DRDY_UNCONNECTED),
         .DWE(1'b0),
-        .LOCKED(locked),
+        .LOCKED(NLW_mmcm_adv_inst_LOCKED_UNCONNECTED),
         .PSCLK(1'b0),
         .PSDONE(NLW_mmcm_adv_inst_PSDONE_UNCONNECTED),
         .PSEN(1'b0),

@@ -46,21 +46,97 @@ use logic.Gates_package.all;
 use buses.Buses_package.all;
 use work.all;
 
-entity vga_panel IS
+entity lamp_panel IS
 	port
 	(
 		-- Inputs        
-		Indicators : in std_logic_vector(IndicatorRange);
+		IND_LP : IN std_logic;       
+        W_IND : IN std_logic_vector(3 to 7);
+        X_IND : IN std_logic_vector(0 to 7);
+        W_IND_P : IN std_logic;
+        X_IND_P : IN std_logic;
+        IND_SALS : IN SALS_Bus;
+        IND_EX,IND_CY_MATCH,IND_ALLOW_WR,IND_1050_INTRV,IND_1050_REQ,IND_MPX,IND_SEL_CHNL : IN STD_LOGIC;
+        IND_MSDR : IN STD_LOGIC_VECTOR(0 to 7);
+        IND_MSDR_P : IN STD_LOGIC;
+        -- MPX
+        IND_OPNL_IN : IN STD_LOGIC;
+        IND_ADDR_IN : IN STD_LOGIC;
+        IND_STATUS_IN : IN STD_LOGIC;
+        IND_SERV_IN : IN STD_LOGIC;
+        IND_SEL_IN : IN STD_LOGIC;
+        IND_SEL_OUT : IN STD_LOGIC;
+        IND_ADDR_OUT : IN STD_LOGIC;
+        IND_CMMD_OUT : IN STD_LOGIC;
+        IND_SERV_OUT : IN STD_LOGIC;
+        IND_SUPPR_OUT : IN STD_LOGIC;
+        IND_FO : IN STD_LOGIC_VECTOR(0 to 7);
+        IND_FO_P: IN STD_LOGIC;
+        -- SX1
+        IND_COUNT : IN STD_LOGIC_VECTOR(0 to 15);
+        IND_COUNT_LP, IND_COUNT_HP : IN STD_LOGIC;
+        IND_SX1_DATA : IN STD_LOGIC_VECTOR(0 to 7);
+		IND_SX1_DATAP : IN STD_LOGIC;
+        IND_SX1_COMMAND : STD_LOGIC_VECTOR(0 to 7);
+	    IND_SX1_KEY : STD_LOGIC_VECTOR(0 to 3);
+		IND_SX1_KEYP : IN STD_LOGIC;
+		IND_SX1_PCI : IN STD_LOGIC;
+		IND_SX1_SKIP : IN STD_LOGIC;
+		IND_SX1_SLI : IN STD_LOGIC;
+		IND_SX1_CD : IN STD_LOGIC;
+		IND_SX1_CC : IN STD_LOGIC;
+		IND_SX1_DA_CHK : IN STD_LOGIC;
+		IND_SX1_PROT_CHK : IN STD_LOGIC;
+		IND_SX1_PROG_CHK : IN STD_LOGIC;
+		IND_SX1_IL_CHK : IN STD_LOGIC;
+		IND_SX1_CHNLDATA_CHK : IN STD_LOGIC;
+		IND_SX1_STATIN_TAG : IN STD_LOGIC;
+		IND_SX1_ADRIN_TAG : IN STD_LOGIC;
+		IND_SX1_OPIN_TAG : IN STD_LOGIC;
+		IND_SX1_SUPOUT_TAG : IN STD_LOGIC;
+		IND_SX1_SERVOUT_TAG : IN STD_LOGIC;
+		IND_SX1_CMMDOUT_TAG : IN STD_LOGIC;
+		IND_SX1_ADROUT_TAG : IN STD_LOGIC;
+		IND_SX1_SELOUT_TAG : IN STD_LOGIC;
+		IND_SX1_IF_CHK : IN STD_LOGIC;
+		IND_SX1_CHNLCTRL_CHK : IN STD_LOGIC;
+		-- CPU
+        IND_A : IN STD_LOGIC_VECTOR(0 to 8);
+        IND_B : IN STD_LOGIC_VECTOR(0 to 8);
+        IND_ALU : IN STD_LOGIC_VECTOR(0 to 8);
+        IND_M : IN STD_LOGIC_VECTOR(0 to 8);
+        IND_N : IN STD_LOGIC_VECTOR(0 to 8);
+        IND_MAIN_STG : IN STD_LOGIC;
+        IND_LOC_STG : IN STD_LOGIC;
+        IND_COMP_MODE : IN STD_LOGIC;
+        IND_CHK_A_REG : IN STD_LOGIC;
+        IND_CHK_B_REG : IN STD_LOGIC;
+        IND_CHK_STOR_ADDR : IN STD_LOGIC;
+        IND_CHK_CTRL_REG : IN STD_LOGIC;
+        IND_CHK_ROS_SALS : IN STD_LOGIC;
+        IND_CHK_ROS_ADDR : IN STD_LOGIC;
+        IND_CHK_STOR_DATA : IN STD_LOGIC;
+        IND_CHK_ALU : IN STD_LOGIC;
+        IND_SYST : IN STD_LOGIC;
+        IND_MAN : IN STD_LOGIC;
+        IND_WAIT : IN STD_LOGIC;
+        IND_TEST : IN STD_LOGIC;
+        IND_LOAD : IN STD_LOGIC;		
 
-		-- Outputs
+		-- VGA Outputs
 		Red,Green,Blue,HS,VS : out std_logic;
+		
+		-- HDMI Outputs
+		
+		-- LED outputs
+		LEDS : out std_logic_vector(0 to 4);
 
 		-- Clocks
 		Clock50 : in std_logic -- 50MHz clock
 	);
-end entity vga_panel;
+end entity lamp_panel;
 
-architecture behavioural of vga_panel is
+architecture behavioural of lamp_panel is
 
 -- Layout is 640x480 pixels, divided into 32 columns and 24 rows of 20x20 pixel 'characters'
 constant totalLines : integer := 24;
@@ -69,6 +145,11 @@ subtype lines is integer range 0 to (totalLines-1);
 subtype columns is integer range 0 to (totalColumns-1);
 constant totalCharacters : integer := (lines'right+1)*(columns'right+1);
 subtype screenCharacterOffset is integer range 0 to totalCharacters-1;
+
+signal Indicators : std_logic_vector(IndicatorRange);
+
+attribute mark_debug : string;
+attribute mark_debug of Indicators : signal is "true";
 
 -- Basic screen layout as characters, should correspond to indLayout
 type screenType is array(lines,columns) of character;
@@ -1538,6 +1619,86 @@ constant charLayout : screenCharacters := initScreen(screen);
 
 
 begin
+    -- Map signals to Indicators vectors used to generate VGA lamps
+    INDICATORS(9) <= W_IND_P; 
+    INDICATORS(10 to 14) <= W_IND(3 to 7);
+    INDICATORS(15) <= X_IND_P;
+    INDICATORS(16 to 23) <= X_IND(0 to 7);
+    INDICATORS(0) <= IND_SALS.SALS_PN;
+    INDICATORS(1 to 6) <= IND_SALS.SALS_CN(0 to 5);
+    INDICATORS(24) <= IND_SALS.SALS_PS;
+    INDICATORS(7) <= IND_SALS.SALS_PA;
+    INDICATORS(25 to 28) <= IND_SALS.SALS_CH(0 to 3);
+    INDICATORS(29 to 32) <= IND_SALS.SALS_CL(0 to 3);
+    INDICATORS(40 to 42) <= IND_SALS.SALS_CM(0 to 2);
+    INDICATORS(43) <= IND_SALS.SALS_CU(0);
+    INDICATORS(44) <= IND_SALS.SALS_CU(1);
+    INDICATORS(34 to 37) <= IND_SALS.SALS_CA(0 to 3);
+    INDICATORS(38 to 39) <= IND_SALS.SALS_CB(0 to 1);
+    INDICATORS(47 to 50) <= IND_SALS.SALS_CK(0 to 3);
+    INDICATORS(46) <= IND_SALS.SALS_PK;
+    INDICATORS(51) <= IND_SALS.SALS_PC;
+    INDICATORS(52 to 55) <= IND_SALS.SALS_CD(0 to 3);
+    INDICATORS(56 to 58) <= IND_SALS.SALS_CF(0 to 2);
+    INDICATORS(59 to 60) <= IND_SALS.SALS_CG(0 to 1);
+    INDICATORS(61 to 62) <= IND_SALS.SALS_CV(0 to 1);
+    INDICATORS(63) <= IND_SALS.SALS_CC(0);
+    INDICATORS(64+0) <= IND_SALS.SALS_CC(1);
+    INDICATORS(64+1) <= IND_SALS.SALS_CC(2);
+    INDICATORS(64+3) <= IND_SALS.SALS_CS(0);
+    INDICATORS(64+4) <= IND_SALS.SALS_CS(1);
+    INDICATORS(64+5) <= IND_SALS.SALS_CS(2);
+    INDICATORS(64+6) <= IND_SALS.SALS_CS(3);
+    INDICATORS(33) <= IND_SALS.SALS_AA;
+    INDICATORS(64+2) <= IND_SALS.SALS_SA;
+    INDICATORS(45) <= IND_SALS.SALS_AK;
+    INDICATORS(192+48) <= IND_EX;
+    INDICATORS(192+49) <= IND_CY_MATCH;
+    INDICATORS(192+50) <= IND_ALLOW_WR;
+    INDICATORS(192+53) <= IND_1050_INTRV;
+    INDICATORS(192+54) <= IND_1050_REQ;
+    INDICATORS(192+58) <= IND_MPX;
+    INDICATORS(192+59) <= IND_SEL_CHNL;
+    INDICATORS(192+13 to 192+20) <= IND_MSDR(0 to 7);
+    INDICATORS(192+12) <= IND_MSDR_P;
+    INDICATORS(128+38) <= IND_OPNL_IN;
+    INDICATORS(128+39) <= IND_ADDR_IN;
+    INDICATORS(128+40) <= IND_STATUS_IN;
+    INDICATORS(128+41) <= IND_SERV_IN;
+    INDICATORS(128+42) <= IND_SEL_OUT;
+    INDICATORS(128+43) <= IND_ADDR_OUT;
+    INDICATORS(128+44) <= IND_CMMD_OUT;
+    INDICATORS(128+45) <= IND_SERV_OUT;
+    INDICATORS(128+46) <= IND_SUPPR_OUT;
+    INDICATORS(128+48 to 128+55) <= IND_FO(0 to 7);
+    INDICATORS(128+47) <= IND_FO_P;
+    INDICATORS(192+40 to 47) <= IND_A(0 to 7);
+    INDICATORS(192+39) <= IND_A(8);
+    INDICATORS(192+31 to 192+38) <= IND_B(0 to 7);
+    INDICATORS(192+30) <= IND_B(8);
+    INDICATORS(192+22 to 192+29) <= IND_ALU(0 to 7);
+    INDICATORS(192+21) <= IND_ALU(8);
+    INDICATORS(128+57 to 192+0) <= IND_M(0 to 7);
+    INDICATORS(128+56) <= IND_M(8);
+    INDICATORS(192+2 to 192+9) <= IND_N(0 to 7);
+    INDICATORS(192+1) <= IND_N(8);
+    INDICATORS(192+10) <= IND_MAIN_STG;
+    INDICATORS(192+11) <= IND_LOC_STG;
+    INDICATORS(192+60) <= IND_COMP_MODE;
+    INDICATORS(192+56) <= IND_CHK_A_REG;
+    INDICATORS(192+55) <= IND_CHK_B_REG;
+    INDICATORS(192+51) <= IND_CHK_STOR_ADDR;
+    INDICATORS(192+63) <= IND_CHK_CTRL_REG;
+    INDICATORS(192+62) <= IND_CHK_ROS_SALS;
+    INDICATORS(192+61) <= IND_CHK_ROS_ADDR;
+    INDICATORS(192+52) <= IND_CHK_STOR_DATA;
+    INDICATORS(192+57) <= IND_CHK_ALU;
+    INDICATORS(64+63) <= IND_SYST;
+    LEDS(1) <= IND_MAN;
+    LEDS(2) <= IND_WAIT;
+    LEDS(3) <= IND_TEST;
+    LEDS(4) <= IND_LOAD;
+    
 vgaController : entity vga_controller_640_60 port map (
 	rst => STD_LOGIC'('0'),
 	pixel_clk => clkdiv,

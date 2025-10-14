@@ -2,7 +2,7 @@
 // Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
-// Date        : Tue Oct  7 15:13:06 2025
+// Date        : Mon Oct 13 14:17:48 2025
 // Host        : lznb204 running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               c:/Users/lwilkinson/Xilinx/IBM2030/IBM2030.gen/sources_1/bd/zybo2030/ip/zybo2030_rst_ps7_0_50M_0/zybo2030_rst_ps7_0_50M_0_sim_netlist.v
@@ -49,9 +49,9 @@ module zybo2030_rst_ps7_0_50M_0
   wire slowest_sync_clk;
 
   (* C_AUX_RESET_HIGH = "1'b0" *) 
-  (* C_AUX_RST_WIDTH = "4" *) 
+  (* C_AUX_RST_WIDTH = "1" *) 
   (* C_EXT_RESET_HIGH = "1'b0" *) 
-  (* C_EXT_RST_WIDTH = "4" *) 
+  (* C_EXT_RST_WIDTH = "1" *) 
   (* C_FAMILY = "zynq" *) 
   (* C_NUM_BUS_RST = "1" *) 
   (* C_NUM_INTERCONNECT_ARESETN = "1" *) 
@@ -85,27 +85,19 @@ module zybo2030_rst_ps7_0_50M_0_lpf
   input ext_reset_in;
   input aux_reset_in;
 
-  wire \AUX_LPF[3].asr_lpf_reg_n_0_[3] ;
-  wire \EXT_LPF[3].exr_lpf_reg_n_0_[3] ;
   wire Q;
   wire asr_d1;
+  wire asr_lpf_0;
   wire aux_reset_in;
   wire dcm_locked;
-  wire dest_out;
   wire exr_d1;
+  wire exr_lpf_0;
   wire ext_reset_in;
   wire lpf_asr;
-  wire lpf_asr_i_1_n_0;
   wire lpf_exr;
-  wire lpf_exr_i_1_n_0;
   wire lpf_int;
   wire lpf_int0__0;
   wire mb_debug_sys_rst;
-  wire p_1_in;
-  wire p_1_in4_in;
-  wire p_2_in;
-  wire p_2_in3_in;
-  wire p_3_in1_in;
   wire slowest_sync_clk;
 
   (* DEST_SYNC_FF = "4" *) 
@@ -117,7 +109,7 @@ module zybo2030_rst_ps7_0_50M_0_lpf
   (* XPM_MODULE = "TRUE" *) 
   zybo2030_rst_ps7_0_50M_0_xpm_cdc_single \ACTIVE_LOW_AUX.ACT_LO_AUX 
        (.dest_clk(slowest_sync_clk),
-        .dest_out(p_3_in1_in),
+        .dest_out(asr_lpf_0),
         .src_clk(1'b1),
         .src_in(asr_d1));
   LUT1 #(
@@ -134,7 +126,7 @@ module zybo2030_rst_ps7_0_50M_0_lpf
   (* XPM_MODULE = "TRUE" *) 
   zybo2030_rst_ps7_0_50M_0_xpm_cdc_single__1 \ACTIVE_LOW_EXT.ACT_LO_EXT 
        (.dest_clk(slowest_sync_clk),
-        .dest_out(dest_out),
+        .dest_out(exr_lpf_0),
         .src_clk(1'b1),
         .src_in(exr_d1));
   LUT2 #(
@@ -143,54 +135,6 @@ module zybo2030_rst_ps7_0_50M_0_lpf
        (.I0(mb_debug_sys_rst),
         .I1(ext_reset_in),
         .O(exr_d1));
-  FDRE #(
-    .INIT(1'b0)) 
-    \AUX_LPF[1].asr_lpf_reg[1] 
-       (.C(slowest_sync_clk),
-        .CE(1'b1),
-        .D(p_3_in1_in),
-        .Q(p_2_in),
-        .R(1'b0));
-  FDRE #(
-    .INIT(1'b0)) 
-    \AUX_LPF[2].asr_lpf_reg[2] 
-       (.C(slowest_sync_clk),
-        .CE(1'b1),
-        .D(p_2_in),
-        .Q(p_1_in),
-        .R(1'b0));
-  FDRE #(
-    .INIT(1'b0)) 
-    \AUX_LPF[3].asr_lpf_reg[3] 
-       (.C(slowest_sync_clk),
-        .CE(1'b1),
-        .D(p_1_in),
-        .Q(\AUX_LPF[3].asr_lpf_reg_n_0_[3] ),
-        .R(1'b0));
-  FDRE #(
-    .INIT(1'b0)) 
-    \EXT_LPF[1].exr_lpf_reg[1] 
-       (.C(slowest_sync_clk),
-        .CE(1'b1),
-        .D(dest_out),
-        .Q(p_2_in3_in),
-        .R(1'b0));
-  FDRE #(
-    .INIT(1'b0)) 
-    \EXT_LPF[2].exr_lpf_reg[2] 
-       (.C(slowest_sync_clk),
-        .CE(1'b1),
-        .D(p_2_in3_in),
-        .Q(p_1_in4_in),
-        .R(1'b0));
-  FDRE #(
-    .INIT(1'b0)) 
-    \EXT_LPF[3].exr_lpf_reg[3] 
-       (.C(slowest_sync_clk),
-        .CE(1'b1),
-        .D(p_1_in4_in),
-        .Q(\EXT_LPF[3].exr_lpf_reg_n_0_[3] ),
-        .R(1'b0));
   (* BOX_TYPE = "PRIMITIVE" *) 
   (* XILINX_LEGACY_PRIM = "SRL16" *) 
   (* XILINX_TRANSFORM_PINMAP = "VCC:CE" *) 
@@ -206,38 +150,20 @@ module zybo2030_rst_ps7_0_50M_0_lpf
         .CLK(slowest_sync_clk),
         .D(1'b0),
         .Q(Q));
-  LUT5 #(
-    .INIT(32'hEAAAAAA8)) 
-    lpf_asr_i_1
-       (.I0(lpf_asr),
-        .I1(p_1_in),
-        .I2(p_2_in),
-        .I3(p_3_in1_in),
-        .I4(\AUX_LPF[3].asr_lpf_reg_n_0_[3] ),
-        .O(lpf_asr_i_1_n_0));
   FDRE #(
     .INIT(1'b0)) 
     lpf_asr_reg
        (.C(slowest_sync_clk),
         .CE(1'b1),
-        .D(lpf_asr_i_1_n_0),
+        .D(asr_lpf_0),
         .Q(lpf_asr),
         .R(1'b0));
-  LUT5 #(
-    .INIT(32'hEAAAAAA8)) 
-    lpf_exr_i_1
-       (.I0(lpf_exr),
-        .I1(p_1_in4_in),
-        .I2(p_2_in3_in),
-        .I3(dest_out),
-        .I4(\EXT_LPF[3].exr_lpf_reg_n_0_[3] ),
-        .O(lpf_exr_i_1_n_0));
   FDRE #(
     .INIT(1'b0)) 
     lpf_exr_reg
        (.C(slowest_sync_clk),
         .CE(1'b1),
-        .D(lpf_exr_i_1_n_0),
+        .D(exr_lpf_0),
         .Q(lpf_exr),
         .R(1'b0));
   LUT4 #(
@@ -258,8 +184,8 @@ module zybo2030_rst_ps7_0_50M_0_lpf
         .R(1'b0));
 endmodule
 
-(* C_AUX_RESET_HIGH = "1'b0" *) (* C_AUX_RST_WIDTH = "4" *) (* C_EXT_RESET_HIGH = "1'b0" *) 
-(* C_EXT_RST_WIDTH = "4" *) (* C_FAMILY = "zynq" *) (* C_NUM_BUS_RST = "1" *) 
+(* C_AUX_RESET_HIGH = "1'b0" *) (* C_AUX_RST_WIDTH = "1" *) (* C_EXT_RESET_HIGH = "1'b0" *) 
+(* C_EXT_RST_WIDTH = "1" *) (* C_FAMILY = "zynq" *) (* C_NUM_BUS_RST = "1" *) 
 (* C_NUM_INTERCONNECT_ARESETN = "1" *) (* C_NUM_PERP_ARESETN = "1" *) (* C_NUM_PERP_RST = "1" *) 
 (* ORIG_REF_NAME = "proc_sys_reset" *) 
 module zybo2030_rst_ps7_0_50M_0_proc_sys_reset
@@ -407,9 +333,9 @@ module zybo2030_rst_ps7_0_50M_0_sequence_psr
   wire \core_dec[2]_i_1_n_0 ;
   wire \core_dec_reg_n_0_[0] ;
   wire \core_dec_reg_n_0_[1] ;
-  wire \core_dec_reg_n_0_[2] ;
   wire from_sys_i_1_n_0;
   wire lpf_int;
+  wire p_0_in;
   wire [2:0]p_3_out;
   wire [2:0]p_5_out;
   wire pr_dec0__0;
@@ -439,7 +365,7 @@ module zybo2030_rst_ps7_0_50M_0_sequence_psr
     .INIT(4'h2)) 
     Core_i_1
        (.I0(MB_out),
-        .I1(\core_dec_reg_n_0_[2] ),
+        .I1(p_0_in),
         .O(Core_i_1_n_0));
   FDSE #(
     .INIT(1'b1)) 
@@ -539,7 +465,7 @@ module zybo2030_rst_ps7_0_50M_0_sequence_psr
        (.C(slowest_sync_clk),
         .CE(1'b1),
         .D(\core_dec[2]_i_1_n_0 ),
-        .Q(\core_dec_reg_n_0_[2] ),
+        .Q(p_0_in),
         .R(1'b0));
   (* SOFT_HLUTNM = "soft_lutpair3" *) 
   LUT2 #(

@@ -2,21 +2,21 @@
 // Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
-// Date        : Tue Oct  7 15:13:06 2025
+// Date        : Fri Oct 10 16:36:11 2025
 // Host        : lznb204 running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim -rename_top zybo2030_axi_bram_ctrl_0_1 -prefix
-//               zybo2030_axi_bram_ctrl_0_1_ zybo2030_axi_bram_ctrl_0_0_sim_netlist.v
-// Design      : zybo2030_axi_bram_ctrl_0_0
+//               zybo2030_axi_bram_ctrl_0_1_ zybo2030_axi_bram_ctrl_2_0_sim_netlist.v
+// Design      : zybo2030_axi_bram_ctrl_2_0
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
 // Device      : xc7z020clg400-1
 // --------------------------------------------------------------------------------
 `timescale 1 ps / 1 ps
 
-(* C_BRAM_ADDR_WIDTH = "11" *) (* C_BRAM_INST_MODE = "EXTERNAL" *) (* C_ECC = "0" *) 
+(* C_BRAM_ADDR_WIDTH = "9" *) (* C_BRAM_INST_MODE = "EXTERNAL" *) (* C_ECC = "0" *) 
 (* C_ECC_ONOFF_RESET_VALUE = "0" *) (* C_ECC_TYPE = "0" *) (* C_FAMILY = "zynq" *) 
-(* C_FAULT_INJECT = "0" *) (* C_MEMORY_DEPTH = "2048" *) (* C_RD_CMD_OPTIMIZATION = "0" *) 
-(* C_READ_LATENCY = "1" *) (* C_SINGLE_PORT_BRAM = "1" *) (* C_S_AXI_ADDR_WIDTH = "13" *) 
+(* C_FAULT_INJECT = "0" *) (* C_MEMORY_DEPTH = "512" *) (* C_RD_CMD_OPTIMIZATION = "0" *) 
+(* C_READ_LATENCY = "1" *) (* C_SINGLE_PORT_BRAM = "1" *) (* C_S_AXI_ADDR_WIDTH = "11" *) 
 (* C_S_AXI_CTRL_ADDR_WIDTH = "32" *) (* C_S_AXI_CTRL_DATA_WIDTH = "32" *) (* C_S_AXI_DATA_WIDTH = "32" *) 
 (* C_S_AXI_ID_WIDTH = "1" *) (* C_S_AXI_PROTOCOL = "AXI4LITE" *) (* C_S_AXI_SUPPORTS_NARROW_BURST = "0" *) 
 (* downgradeipidentifiedwarnings = "yes" *) 
@@ -95,7 +95,7 @@ module zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl
   output ecc_interrupt;
   output ecc_ue;
   input [0:0]s_axi_awid;
-  input [12:0]s_axi_awaddr;
+  input [10:0]s_axi_awaddr;
   input [7:0]s_axi_awlen;
   input [2:0]s_axi_awsize;
   input [1:0]s_axi_awburst;
@@ -114,7 +114,7 @@ module zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl
   output s_axi_bvalid;
   input s_axi_bready;
   input [0:0]s_axi_arid;
-  input [12:0]s_axi_araddr;
+  input [10:0]s_axi_araddr;
   input [7:0]s_axi_arlen;
   input [2:0]s_axi_arsize;
   input [1:0]s_axi_arburst;
@@ -149,29 +149,29 @@ module zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl
   output bram_clk_a;
   output bram_en_a;
   output [3:0]bram_we_a;
-  output [12:0]bram_addr_a;
+  output [10:0]bram_addr_a;
   output [31:0]bram_wrdata_a;
   input [31:0]bram_rddata_a;
   output bram_rst_b;
   output bram_clk_b;
   output bram_en_b;
   output [3:0]bram_we_b;
-  output [12:0]bram_addr_b;
+  output [10:0]bram_addr_b;
   output [31:0]bram_wrdata_b;
   input [31:0]bram_rddata_b;
 
   wire \<const0> ;
-  wire [12:2]\^bram_addr_a ;
+  wire [10:2]\^bram_addr_a ;
   wire bram_en_a;
   wire [31:0]bram_rddata_a;
   wire bram_rst_a;
   wire [3:0]bram_we_a;
   wire s_axi_aclk;
-  wire [12:0]s_axi_araddr;
+  wire [10:0]s_axi_araddr;
   wire s_axi_aresetn;
   wire s_axi_arready;
   wire s_axi_arvalid;
-  wire [12:0]s_axi_awaddr;
+  wire [10:0]s_axi_awaddr;
   wire s_axi_awvalid;
   wire s_axi_bready;
   wire s_axi_bvalid;
@@ -182,11 +182,9 @@ module zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl
   wire [3:0]s_axi_wstrb;
   wire s_axi_wvalid;
 
-  assign bram_addr_a[12:2] = \^bram_addr_a [12:2];
+  assign bram_addr_a[10:2] = \^bram_addr_a [10:2];
   assign bram_addr_a[1] = \<const0> ;
   assign bram_addr_a[0] = \<const0> ;
-  assign bram_addr_b[12] = \<const0> ;
-  assign bram_addr_b[11] = \<const0> ;
   assign bram_addr_b[10] = \<const0> ;
   assign bram_addr_b[9] = \<const0> ;
   assign bram_addr_b[8] = \<const0> ;
@@ -298,12 +296,12 @@ module zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl
         .bram_en_a(bram_en_a),
         .bram_we_a(bram_we_a),
         .s_axi_aclk(s_axi_aclk),
-        .s_axi_araddr(s_axi_araddr[12:2]),
+        .s_axi_araddr(s_axi_araddr[10:2]),
         .s_axi_aresetn(s_axi_aresetn),
         .s_axi_aresetn_0(bram_rst_a),
         .s_axi_arready(s_axi_arready),
         .s_axi_arvalid(s_axi_arvalid),
-        .s_axi_awaddr(s_axi_awaddr[12:2]),
+        .s_axi_awaddr(s_axi_awaddr[10:2]),
         .s_axi_awvalid(s_axi_awvalid),
         .s_axi_bready(s_axi_bready),
         .s_axi_bvalid(s_axi_bvalid),
@@ -337,7 +335,7 @@ module zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl_top
   output bram_en_a;
   output [3:0]bram_we_a;
   output s_axi_bvalid;
-  output [10:0]bram_addr_a;
+  output [8:0]bram_addr_a;
   output s_axi_rvalid;
   output s_axi_arready;
   output s_axi_wready;
@@ -348,20 +346,20 @@ module zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl_top
   input s_axi_awvalid;
   input s_axi_wvalid;
   input s_axi_bready;
-  input [10:0]s_axi_araddr;
-  input [10:0]s_axi_awaddr;
+  input [8:0]s_axi_araddr;
+  input [8:0]s_axi_awaddr;
   input s_axi_rready;
 
-  wire [10:0]bram_addr_a;
+  wire [8:0]bram_addr_a;
   wire bram_en_a;
   wire [3:0]bram_we_a;
   wire s_axi_aclk;
-  wire [10:0]s_axi_araddr;
+  wire [8:0]s_axi_araddr;
   wire s_axi_aresetn;
   wire s_axi_aresetn_0;
   wire s_axi_arready;
   wire s_axi_arvalid;
-  wire [10:0]s_axi_awaddr;
+  wire [8:0]s_axi_awaddr;
   wire s_axi_awvalid;
   wire s_axi_bready;
   wire s_axi_bvalid;
@@ -415,7 +413,7 @@ module zybo2030_axi_bram_ctrl_0_1_axi_lite
   output bram_en_a;
   output [3:0]bram_we_a;
   output s_axi_bvalid;
-  output [10:0]bram_addr_a;
+  output [8:0]bram_addr_a;
   output s_axi_rvalid;
   output s_axi_arready;
   output s_axi_wready;
@@ -426,8 +424,8 @@ module zybo2030_axi_bram_ctrl_0_1_axi_lite
   input s_axi_awvalid;
   input s_axi_wvalid;
   input s_axi_bready;
-  input [10:0]s_axi_araddr;
-  input [10:0]s_axi_awaddr;
+  input [8:0]s_axi_araddr;
+  input [8:0]s_axi_awaddr;
   input s_axi_rready;
 
   wire \FSM_onehot_GEN_NO_RD_CMD_OPT.lite_sm_cs[0]_i_1_n_0 ;
@@ -445,7 +443,7 @@ module zybo2030_axi_bram_ctrl_0_1_axi_lite
   wire \GEN_NO_RD_CMD_OPT.bvalid_cnt[2]_i_1_n_0 ;
   wire axi_aresetn_d1;
   wire axi_aresetn_d2;
-  wire [10:0]bram_addr_a;
+  wire [8:0]bram_addr_a;
   wire bram_en_a;
   wire bram_en_a_INST_0_i_1_n_0;
   wire [3:0]bram_we_a;
@@ -453,12 +451,12 @@ module zybo2030_axi_bram_ctrl_0_1_axi_lite
   wire bvalid_cnt_dec2_out;
   wire p_0_in;
   wire s_axi_aclk;
-  wire [10:0]s_axi_araddr;
+  wire [8:0]s_axi_araddr;
   wire s_axi_aresetn;
   wire s_axi_aresetn_0;
   wire s_axi_arready;
   wire s_axi_arvalid;
-  wire [10:0]s_axi_awaddr;
+  wire [8:0]s_axi_awaddr;
   wire s_axi_awvalid;
   wire s_axi_bready;
   wire s_axi_bvalid;
@@ -691,26 +689,6 @@ module zybo2030_axi_bram_ctrl_0_1_axi_lite
         .O(bram_addr_a[8]));
   LUT6 #(
     .INIT(64'hAAAABBBFAAAA8880)) 
-    \bram_addr_a[11]_INST_0 
-       (.I0(s_axi_araddr[9]),
-        .I1(s_axi_arvalid),
-        .I2(\FSM_onehot_GEN_NO_RD_CMD_OPT.lite_sm_cs_reg_n_0_[5] ),
-        .I3(\FSM_onehot_GEN_NO_RD_CMD_OPT.lite_sm_cs_reg_n_0_[0] ),
-        .I4(p_0_in),
-        .I5(s_axi_awaddr[9]),
-        .O(bram_addr_a[9]));
-  LUT6 #(
-    .INIT(64'hAAAABBBFAAAA8880)) 
-    \bram_addr_a[12]_INST_0 
-       (.I0(s_axi_araddr[10]),
-        .I1(s_axi_arvalid),
-        .I2(\FSM_onehot_GEN_NO_RD_CMD_OPT.lite_sm_cs_reg_n_0_[5] ),
-        .I3(\FSM_onehot_GEN_NO_RD_CMD_OPT.lite_sm_cs_reg_n_0_[0] ),
-        .I4(p_0_in),
-        .I5(s_axi_awaddr[10]),
-        .O(bram_addr_a[10]));
-  LUT6 #(
-    .INIT(64'hAAAABBBFAAAA8880)) 
     \bram_addr_a[2]_INST_0 
        (.I0(s_axi_araddr[0]),
         .I1(s_axi_arvalid),
@@ -848,7 +826,7 @@ module zybo2030_axi_bram_ctrl_0_1_axi_lite
         .O(bram_we_a[3]));
 endmodule
 
-(* CHECK_LICENSE_TYPE = "zybo2030_axi_bram_ctrl_0_0,axi_bram_ctrl,{}" *) (* downgradeipidentifiedwarnings = "yes" *) (* x_core_info = "axi_bram_ctrl,Vivado 2025.1" *) 
+(* CHECK_LICENSE_TYPE = "zybo2030_axi_bram_ctrl_2_0,axi_bram_ctrl,{}" *) (* downgradeipidentifiedwarnings = "yes" *) (* x_core_info = "axi_bram_ctrl,Vivado 2025.1" *) 
 (* NotValidForBitStream *)
 module zybo2030_axi_bram_ctrl_0_1
    (s_axi_aclk,
@@ -881,7 +859,7 @@ module zybo2030_axi_bram_ctrl_0_1
     bram_rddata_a);
   (* x_interface_info = "xilinx.com:signal:clock:1.0 CLKIF CLK" *) (* x_interface_mode = "slave CLKIF" *) (* x_interface_parameter = "XIL_INTERFACENAME CLKIF, ASSOCIATED_BUSIF S_AXI:S_AXI_CTRL, ASSOCIATED_RESET s_axi_aresetn, FREQ_HZ 50000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, CLK_DOMAIN zybo2030_processing_system7_0_0_FCLK_CLK0, INSERT_VIP 0" *) input s_axi_aclk;
   (* x_interface_info = "xilinx.com:signal:reset:1.0 RSTIF RST" *) (* x_interface_mode = "slave RSTIF" *) (* x_interface_parameter = "XIL_INTERFACENAME RSTIF, POLARITY ACTIVE_LOW, INSERT_VIP 0" *) input s_axi_aresetn;
-  (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI AWADDR" *) (* x_interface_mode = "slave S_AXI" *) (* x_interface_parameter = "XIL_INTERFACENAME S_AXI, DATA_WIDTH 32, PROTOCOL AXI4LITE, FREQ_HZ 50000000, ID_WIDTH 0, ADDR_WIDTH 13, AWUSER_WIDTH 0, ARUSER_WIDTH 0, WUSER_WIDTH 0, RUSER_WIDTH 0, BUSER_WIDTH 0, READ_WRITE_MODE READ_WRITE, HAS_BURST 0, HAS_LOCK 0, HAS_PROT 1, HAS_CACHE 0, HAS_QOS 0, HAS_REGION 0, HAS_WSTRB 1, HAS_BRESP 1, HAS_RRESP 1, SUPPORTS_NARROW_BURST 0, NUM_READ_OUTSTANDING 1, NUM_WRITE_OUTSTANDING 1, MAX_BURST_LENGTH 1, PHASE 0.0, CLK_DOMAIN zybo2030_processing_system7_0_0_FCLK_CLK0, NUM_READ_THREADS 1, NUM_WRITE_THREADS 1, RUSER_BITS_PER_BYTE 0, WUSER_BITS_PER_BYTE 0, INSERT_VIP 0" *) input [12:0]s_axi_awaddr;
+  (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI AWADDR" *) (* x_interface_mode = "slave S_AXI" *) (* x_interface_parameter = "XIL_INTERFACENAME S_AXI, DATA_WIDTH 32, PROTOCOL AXI4LITE, FREQ_HZ 50000000, ID_WIDTH 0, ADDR_WIDTH 11, AWUSER_WIDTH 0, ARUSER_WIDTH 0, WUSER_WIDTH 0, RUSER_WIDTH 0, BUSER_WIDTH 0, READ_WRITE_MODE READ_WRITE, HAS_BURST 0, HAS_LOCK 0, HAS_PROT 1, HAS_CACHE 0, HAS_QOS 0, HAS_REGION 0, HAS_WSTRB 1, HAS_BRESP 1, HAS_RRESP 1, SUPPORTS_NARROW_BURST 0, NUM_READ_OUTSTANDING 8, NUM_WRITE_OUTSTANDING 8, MAX_BURST_LENGTH 1, PHASE 0.0, CLK_DOMAIN zybo2030_processing_system7_0_0_FCLK_CLK0, NUM_READ_THREADS 1, NUM_WRITE_THREADS 1, RUSER_BITS_PER_BYTE 0, WUSER_BITS_PER_BYTE 0, INSERT_VIP 0" *) input [10:0]s_axi_awaddr;
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI AWPROT" *) input [2:0]s_axi_awprot;
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI AWVALID" *) input s_axi_awvalid;
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI AWREADY" *) output s_axi_awready;
@@ -892,7 +870,7 @@ module zybo2030_axi_bram_ctrl_0_1
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI BRESP" *) output [1:0]s_axi_bresp;
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI BVALID" *) output s_axi_bvalid;
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI BREADY" *) input s_axi_bready;
-  (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI ARADDR" *) input [12:0]s_axi_araddr;
+  (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI ARADDR" *) input [10:0]s_axi_araddr;
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI ARPROT" *) input [2:0]s_axi_arprot;
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI ARVALID" *) input s_axi_arvalid;
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI ARREADY" *) output s_axi_arready;
@@ -900,16 +878,16 @@ module zybo2030_axi_bram_ctrl_0_1
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI RRESP" *) output [1:0]s_axi_rresp;
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI RVALID" *) output s_axi_rvalid;
   (* x_interface_info = "xilinx.com:interface:aximm:1.0 S_AXI RREADY" *) input s_axi_rready;
-  (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA RST" *) (* x_interface_mode = "master BRAM_PORTA" *) (* x_interface_parameter = "XIL_INTERFACENAME BRAM_PORTA, MASTER_TYPE BRAM_CTRL, MEM_SIZE 8192, MEM_WIDTH 32, MEM_ECC NONE, READ_WRITE_MODE READ_WRITE, READ_LATENCY 1" *) output bram_rst_a;
+  (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA RST" *) (* x_interface_mode = "master BRAM_PORTA" *) (* x_interface_parameter = "XIL_INTERFACENAME BRAM_PORTA, MASTER_TYPE BRAM_CTRL, MEM_SIZE 2048, MEM_WIDTH 32, MEM_ECC NONE, READ_WRITE_MODE READ_WRITE, READ_LATENCY 1" *) output bram_rst_a;
   (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA CLK" *) output bram_clk_a;
   (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA EN" *) output bram_en_a;
   (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA WE" *) output [3:0]bram_we_a;
-  (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA ADDR" *) output [12:0]bram_addr_a;
+  (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA ADDR" *) output [10:0]bram_addr_a;
   (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA DIN" *) output [31:0]bram_wrdata_a;
   (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA DOUT" *) input [31:0]bram_rddata_a;
 
   wire \<const0> ;
-  wire [12:2]\^bram_addr_a ;
+  wire [10:2]\^bram_addr_a ;
   wire bram_clk_a;
   wire bram_en_a;
   wire [31:0]bram_rddata_a;
@@ -917,11 +895,11 @@ module zybo2030_axi_bram_ctrl_0_1
   wire [3:0]bram_we_a;
   wire [31:0]bram_wrdata_a;
   wire s_axi_aclk;
-  wire [12:0]s_axi_araddr;
+  wire [10:0]s_axi_araddr;
   wire s_axi_aresetn;
   wire s_axi_arready;
   wire s_axi_arvalid;
-  wire [12:0]s_axi_awaddr;
+  wire [10:0]s_axi_awaddr;
   wire s_axi_awready;
   wire s_axi_awvalid;
   wire s_axi_bready;
@@ -945,7 +923,7 @@ module zybo2030_axi_bram_ctrl_0_1
   wire NLW_U0_s_axi_ctrl_wready_UNCONNECTED;
   wire NLW_U0_s_axi_rlast_UNCONNECTED;
   wire [1:0]NLW_U0_bram_addr_a_UNCONNECTED;
-  wire [12:0]NLW_U0_bram_addr_b_UNCONNECTED;
+  wire [10:0]NLW_U0_bram_addr_b_UNCONNECTED;
   wire [3:0]NLW_U0_bram_we_b_UNCONNECTED;
   wire [31:0]NLW_U0_bram_wrdata_b_UNCONNECTED;
   wire [0:0]NLW_U0_s_axi_bid_UNCONNECTED;
@@ -956,7 +934,7 @@ module zybo2030_axi_bram_ctrl_0_1
   wire [0:0]NLW_U0_s_axi_rid_UNCONNECTED;
   wire [1:0]NLW_U0_s_axi_rresp_UNCONNECTED;
 
-  assign bram_addr_a[12:2] = \^bram_addr_a [12:2];
+  assign bram_addr_a[10:2] = \^bram_addr_a [10:2];
   assign bram_addr_a[1] = \<const0> ;
   assign bram_addr_a[0] = \<const0> ;
   assign s_axi_bresp[1] = \<const0> ;
@@ -965,18 +943,18 @@ module zybo2030_axi_bram_ctrl_0_1
   assign s_axi_rresp[0] = \<const0> ;
   GND GND
        (.G(\<const0> ));
-  (* C_BRAM_ADDR_WIDTH = "11" *) 
+  (* C_BRAM_ADDR_WIDTH = "9" *) 
   (* C_BRAM_INST_MODE = "EXTERNAL" *) 
   (* C_ECC = "0" *) 
   (* C_ECC_ONOFF_RESET_VALUE = "0" *) 
   (* C_ECC_TYPE = "0" *) 
   (* C_FAMILY = "zynq" *) 
   (* C_FAULT_INJECT = "0" *) 
-  (* C_MEMORY_DEPTH = "2048" *) 
+  (* C_MEMORY_DEPTH = "512" *) 
   (* C_RD_CMD_OPTIMIZATION = "0" *) 
   (* C_READ_LATENCY = "1" *) 
   (* C_SINGLE_PORT_BRAM = "1" *) 
-  (* C_S_AXI_ADDR_WIDTH = "13" *) 
+  (* C_S_AXI_ADDR_WIDTH = "11" *) 
   (* C_S_AXI_CTRL_ADDR_WIDTH = "32" *) 
   (* C_S_AXI_CTRL_DATA_WIDTH = "32" *) 
   (* C_S_AXI_DATA_WIDTH = "32" *) 
@@ -986,7 +964,7 @@ module zybo2030_axi_bram_ctrl_0_1
   (* downgradeipidentifiedwarnings = "yes" *) 
   zybo2030_axi_bram_ctrl_0_1_axi_bram_ctrl U0
        (.bram_addr_a({\^bram_addr_a ,NLW_U0_bram_addr_a_UNCONNECTED[1:0]}),
-        .bram_addr_b(NLW_U0_bram_addr_b_UNCONNECTED[12:0]),
+        .bram_addr_b(NLW_U0_bram_addr_b_UNCONNECTED[10:0]),
         .bram_clk_a(bram_clk_a),
         .bram_clk_b(NLW_U0_bram_clk_b_UNCONNECTED),
         .bram_en_a(bram_en_a),
@@ -1002,7 +980,7 @@ module zybo2030_axi_bram_ctrl_0_1
         .ecc_interrupt(NLW_U0_ecc_interrupt_UNCONNECTED),
         .ecc_ue(NLW_U0_ecc_ue_UNCONNECTED),
         .s_axi_aclk(s_axi_aclk),
-        .s_axi_araddr({s_axi_araddr[12:2],1'b0,1'b0}),
+        .s_axi_araddr({s_axi_araddr[10:2],1'b0,1'b0}),
         .s_axi_arburst({1'b0,1'b0}),
         .s_axi_arcache({1'b0,1'b0,1'b0,1'b0}),
         .s_axi_aresetn(s_axi_aresetn),
@@ -1013,7 +991,7 @@ module zybo2030_axi_bram_ctrl_0_1
         .s_axi_arready(s_axi_arready),
         .s_axi_arsize({1'b0,1'b0,1'b0}),
         .s_axi_arvalid(s_axi_arvalid),
-        .s_axi_awaddr({s_axi_awaddr[12:2],1'b0,1'b0}),
+        .s_axi_awaddr({s_axi_awaddr[10:2],1'b0,1'b0}),
         .s_axi_awburst({1'b0,1'b0}),
         .s_axi_awcache({1'b0,1'b0,1'b0,1'b0}),
         .s_axi_awid(1'b0),

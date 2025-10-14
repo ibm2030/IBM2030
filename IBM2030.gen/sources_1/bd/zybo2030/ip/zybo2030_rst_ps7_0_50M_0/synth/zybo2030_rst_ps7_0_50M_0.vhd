@@ -104,7 +104,7 @@ ARCHITECTURE zybo2030_rst_ps7_0_50M_0_arch OF zybo2030_rst_ps7_0_50M_0 IS
   ATTRIBUTE CHECK_LICENSE_TYPE : STRING;
   ATTRIBUTE CHECK_LICENSE_TYPE OF zybo2030_rst_ps7_0_50M_0_arch : ARCHITECTURE IS "zybo2030_rst_ps7_0_50M_0,proc_sys_reset,{}";
   ATTRIBUTE CORE_GENERATION_INFO : STRING;
-  ATTRIBUTE CORE_GENERATION_INFO OF zybo2030_rst_ps7_0_50M_0_arch: ARCHITECTURE IS "zybo2030_rst_ps7_0_50M_0,proc_sys_reset,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=proc_sys_reset,x_ipVersion=5.0,x_ipCoreRevision=17,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED,C_FAMILY=zynq,C_EXT_RST_WIDTH=4,C_AUX_RST_WIDTH=4,C_EXT_RESET_HIGH=0,C_AUX_RESET_HIGH=0,C_NUM_BUS_RST=1,C_NUM_PERP_RST=1,C_NUM_INTERCONNECT_ARESETN=1,C_NUM_PERP_ARESETN=1}";
+  ATTRIBUTE CORE_GENERATION_INFO OF zybo2030_rst_ps7_0_50M_0_arch: ARCHITECTURE IS "zybo2030_rst_ps7_0_50M_0,proc_sys_reset,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=proc_sys_reset,x_ipVersion=5.0,x_ipCoreRevision=17,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED,C_FAMILY=zynq,C_EXT_RST_WIDTH=1,C_AUX_RST_WIDTH=1,C_EXT_RESET_HIGH=0,C_AUX_RESET_HIGH=0,C_NUM_BUS_RST=1,C_NUM_PERP_RST=1,C_NUM_INTERCONNECT_ARESETN=1,C_NUM_PERP_ARESETN=1}";
   ATTRIBUTE X_INTERFACE_INFO : STRING;
   ATTRIBUTE X_INTERFACE_MODE : STRING;
   ATTRIBUTE X_INTERFACE_PARAMETER : STRING;
@@ -139,8 +139,8 @@ BEGIN
   U0 : proc_sys_reset
     GENERIC MAP (
       C_FAMILY => "zynq",
-      C_EXT_RST_WIDTH => 4,
-      C_AUX_RST_WIDTH => 4,
+      C_EXT_RST_WIDTH => 1,
+      C_AUX_RST_WIDTH => 1,
       C_EXT_RESET_HIGH => '0',
       C_AUX_RESET_HIGH => '0',
       C_NUM_BUS_RST => 1,

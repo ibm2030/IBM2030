@@ -68,7 +68,7 @@ typedef bit bit_as_bool;
 module zybo2030_axi_bram_ctrl_0_1 (
   input bit_as_bool s_axi_aclk,
   input bit_as_bool s_axi_aresetn,
-  input bit [12 : 0] s_axi_awaddr,
+  input bit [10 : 0] s_axi_awaddr,
   input bit [2 : 0] s_axi_awprot,
   input bit_as_bool s_axi_awvalid,
   output bit_as_bool s_axi_awready,
@@ -79,7 +79,7 @@ module zybo2030_axi_bram_ctrl_0_1 (
   output bit [1 : 0] s_axi_bresp,
   output bit_as_bool s_axi_bvalid,
   input bit_as_bool s_axi_bready,
-  input bit [12 : 0] s_axi_araddr,
+  input bit [10 : 0] s_axi_araddr,
   input bit [2 : 0] s_axi_arprot,
   input bit_as_bool s_axi_arvalid,
   output bit_as_bool s_axi_arready,
@@ -91,7 +91,7 @@ module zybo2030_axi_bram_ctrl_0_1 (
   output bit_as_bool bram_clk_a,
   output bit_as_bool bram_en_a,
   output bit [3 : 0] bram_we_a,
-  output bit [12 : 0] bram_addr_a,
+  output bit [10 : 0] bram_addr_a,
   output bit [31 : 0] bram_wrdata_a,
   input bit [31 : 0] bram_rddata_a
 );
@@ -105,7 +105,7 @@ module zybo2030_axi_bram_ctrl_0_1 (s_axi_aclk,s_axi_aresetn,s_axi_awaddr,s_axi_a
 *);
   input bit s_axi_aclk;
   input bit s_axi_aresetn;
-  input bit [12 : 0] s_axi_awaddr;
+  input bit [10 : 0] s_axi_awaddr;
   input bit [2 : 0] s_axi_awprot;
   input bit s_axi_awvalid;
   output wire s_axi_awready;
@@ -116,7 +116,7 @@ module zybo2030_axi_bram_ctrl_0_1 (s_axi_aclk,s_axi_aresetn,s_axi_awaddr,s_axi_a
   output wire [1 : 0] s_axi_bresp;
   output wire s_axi_bvalid;
   input bit s_axi_bready;
-  input bit [12 : 0] s_axi_araddr;
+  input bit [10 : 0] s_axi_araddr;
   input bit [2 : 0] s_axi_arprot;
   input bit s_axi_arvalid;
   output wire s_axi_arready;
@@ -128,7 +128,7 @@ module zybo2030_axi_bram_ctrl_0_1 (s_axi_aclk,s_axi_aresetn,s_axi_awaddr,s_axi_a
   output wire bram_clk_a;
   output wire bram_en_a;
   output wire [3 : 0] bram_we_a;
-  output wire [12 : 0] bram_addr_a;
+  output wire [10 : 0] bram_addr_a;
   output wire [31 : 0] bram_wrdata_a;
   input bit [31 : 0] bram_rddata_a;
 endmodule

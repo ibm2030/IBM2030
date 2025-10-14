@@ -95,7 +95,7 @@ void zybo2030_axi_bram_ctrl_0_1::before_end_of_elaboration()
     S_AXI_transactor_param_props.addLong("DATA_WIDTH", "32");
     S_AXI_transactor_param_props.addLong("FREQ_HZ", "50000000");
     S_AXI_transactor_param_props.addLong("ID_WIDTH", "0");
-    S_AXI_transactor_param_props.addLong("ADDR_WIDTH", "13");
+    S_AXI_transactor_param_props.addLong("ADDR_WIDTH", "11");
     S_AXI_transactor_param_props.addLong("AWUSER_WIDTH", "0");
     S_AXI_transactor_param_props.addLong("ARUSER_WIDTH", "0");
     S_AXI_transactor_param_props.addLong("WUSER_WIDTH", "0");
@@ -111,8 +111,8 @@ void zybo2030_axi_bram_ctrl_0_1::before_end_of_elaboration()
     S_AXI_transactor_param_props.addLong("HAS_BRESP", "1");
     S_AXI_transactor_param_props.addLong("HAS_RRESP", "1");
     S_AXI_transactor_param_props.addLong("SUPPORTS_NARROW_BURST", "0");
-    S_AXI_transactor_param_props.addLong("NUM_READ_OUTSTANDING", "1");
-    S_AXI_transactor_param_props.addLong("NUM_WRITE_OUTSTANDING", "1");
+    S_AXI_transactor_param_props.addLong("NUM_READ_OUTSTANDING", "8");
+    S_AXI_transactor_param_props.addLong("NUM_WRITE_OUTSTANDING", "8");
     S_AXI_transactor_param_props.addLong("MAX_BURST_LENGTH", "1");
     S_AXI_transactor_param_props.addLong("NUM_READ_THREADS", "1");
     S_AXI_transactor_param_props.addLong("NUM_WRITE_THREADS", "1");
@@ -125,7 +125,7 @@ void zybo2030_axi_bram_ctrl_0_1::before_end_of_elaboration()
     S_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     S_AXI_transactor_param_props.addString("CLK_DOMAIN", "zybo2030_processing_system7_0_0_FCLK_CLK0");
 
-    mp_S_AXI_transactor = new xtlm::xaximm_pin2xtlm_t<32,13,1,1,1,1,1,1>("S_AXI_transactor", S_AXI_transactor_param_props);
+    mp_S_AXI_transactor = new xtlm::xaximm_pin2xtlm_t<32,11,1,1,1,1,1,1>("S_AXI_transactor", S_AXI_transactor_param_props);
 
     // S_AXI' transactor ports
 
@@ -202,7 +202,7 @@ void zybo2030_axi_bram_ctrl_0_1::before_end_of_elaboration()
     S_AXI_transactor_param_props.addLong("DATA_WIDTH", "32");
     S_AXI_transactor_param_props.addLong("FREQ_HZ", "50000000");
     S_AXI_transactor_param_props.addLong("ID_WIDTH", "0");
-    S_AXI_transactor_param_props.addLong("ADDR_WIDTH", "13");
+    S_AXI_transactor_param_props.addLong("ADDR_WIDTH", "11");
     S_AXI_transactor_param_props.addLong("AWUSER_WIDTH", "0");
     S_AXI_transactor_param_props.addLong("ARUSER_WIDTH", "0");
     S_AXI_transactor_param_props.addLong("WUSER_WIDTH", "0");
@@ -218,8 +218,8 @@ void zybo2030_axi_bram_ctrl_0_1::before_end_of_elaboration()
     S_AXI_transactor_param_props.addLong("HAS_BRESP", "1");
     S_AXI_transactor_param_props.addLong("HAS_RRESP", "1");
     S_AXI_transactor_param_props.addLong("SUPPORTS_NARROW_BURST", "0");
-    S_AXI_transactor_param_props.addLong("NUM_READ_OUTSTANDING", "1");
-    S_AXI_transactor_param_props.addLong("NUM_WRITE_OUTSTANDING", "1");
+    S_AXI_transactor_param_props.addLong("NUM_READ_OUTSTANDING", "8");
+    S_AXI_transactor_param_props.addLong("NUM_WRITE_OUTSTANDING", "8");
     S_AXI_transactor_param_props.addLong("MAX_BURST_LENGTH", "1");
     S_AXI_transactor_param_props.addLong("NUM_READ_THREADS", "1");
     S_AXI_transactor_param_props.addLong("NUM_WRITE_THREADS", "1");
@@ -232,7 +232,7 @@ void zybo2030_axi_bram_ctrl_0_1::before_end_of_elaboration()
     S_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     S_AXI_transactor_param_props.addString("CLK_DOMAIN", "zybo2030_processing_system7_0_0_FCLK_CLK0");
 
-    mp_S_AXI_transactor = new xtlm::xaximm_pin2xtlm_t<32,13,1,1,1,1,1,1>("S_AXI_transactor", S_AXI_transactor_param_props);
+    mp_S_AXI_transactor = new xtlm::xaximm_pin2xtlm_t<32,11,1,1,1,1,1,1>("S_AXI_transactor", S_AXI_transactor_param_props);
 
     // S_AXI' transactor ports
 
@@ -309,7 +309,7 @@ void zybo2030_axi_bram_ctrl_0_1::before_end_of_elaboration()
     S_AXI_transactor_param_props.addLong("DATA_WIDTH", "32");
     S_AXI_transactor_param_props.addLong("FREQ_HZ", "50000000");
     S_AXI_transactor_param_props.addLong("ID_WIDTH", "0");
-    S_AXI_transactor_param_props.addLong("ADDR_WIDTH", "13");
+    S_AXI_transactor_param_props.addLong("ADDR_WIDTH", "11");
     S_AXI_transactor_param_props.addLong("AWUSER_WIDTH", "0");
     S_AXI_transactor_param_props.addLong("ARUSER_WIDTH", "0");
     S_AXI_transactor_param_props.addLong("WUSER_WIDTH", "0");
@@ -325,8 +325,8 @@ void zybo2030_axi_bram_ctrl_0_1::before_end_of_elaboration()
     S_AXI_transactor_param_props.addLong("HAS_BRESP", "1");
     S_AXI_transactor_param_props.addLong("HAS_RRESP", "1");
     S_AXI_transactor_param_props.addLong("SUPPORTS_NARROW_BURST", "0");
-    S_AXI_transactor_param_props.addLong("NUM_READ_OUTSTANDING", "1");
-    S_AXI_transactor_param_props.addLong("NUM_WRITE_OUTSTANDING", "1");
+    S_AXI_transactor_param_props.addLong("NUM_READ_OUTSTANDING", "8");
+    S_AXI_transactor_param_props.addLong("NUM_WRITE_OUTSTANDING", "8");
     S_AXI_transactor_param_props.addLong("MAX_BURST_LENGTH", "1");
     S_AXI_transactor_param_props.addLong("NUM_READ_THREADS", "1");
     S_AXI_transactor_param_props.addLong("NUM_WRITE_THREADS", "1");
@@ -339,7 +339,7 @@ void zybo2030_axi_bram_ctrl_0_1::before_end_of_elaboration()
     S_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     S_AXI_transactor_param_props.addString("CLK_DOMAIN", "zybo2030_processing_system7_0_0_FCLK_CLK0");
 
-    mp_S_AXI_transactor = new xtlm::xaximm_pin2xtlm_t<32,13,1,1,1,1,1,1>("S_AXI_transactor", S_AXI_transactor_param_props);
+    mp_S_AXI_transactor = new xtlm::xaximm_pin2xtlm_t<32,11,1,1,1,1,1,1>("S_AXI_transactor", S_AXI_transactor_param_props);
 
     // S_AXI' transactor ports
 
@@ -405,7 +405,7 @@ zybo2030_axi_bram_ctrl_0_1::zybo2030_axi_bram_ctrl_0_1(const sc_core::sc_module_
     S_AXI_transactor_param_props.addLong("DATA_WIDTH", "32");
     S_AXI_transactor_param_props.addLong("FREQ_HZ", "50000000");
     S_AXI_transactor_param_props.addLong("ID_WIDTH", "0");
-    S_AXI_transactor_param_props.addLong("ADDR_WIDTH", "13");
+    S_AXI_transactor_param_props.addLong("ADDR_WIDTH", "11");
     S_AXI_transactor_param_props.addLong("AWUSER_WIDTH", "0");
     S_AXI_transactor_param_props.addLong("ARUSER_WIDTH", "0");
     S_AXI_transactor_param_props.addLong("WUSER_WIDTH", "0");
@@ -421,8 +421,8 @@ zybo2030_axi_bram_ctrl_0_1::zybo2030_axi_bram_ctrl_0_1(const sc_core::sc_module_
     S_AXI_transactor_param_props.addLong("HAS_BRESP", "1");
     S_AXI_transactor_param_props.addLong("HAS_RRESP", "1");
     S_AXI_transactor_param_props.addLong("SUPPORTS_NARROW_BURST", "0");
-    S_AXI_transactor_param_props.addLong("NUM_READ_OUTSTANDING", "1");
-    S_AXI_transactor_param_props.addLong("NUM_WRITE_OUTSTANDING", "1");
+    S_AXI_transactor_param_props.addLong("NUM_READ_OUTSTANDING", "8");
+    S_AXI_transactor_param_props.addLong("NUM_WRITE_OUTSTANDING", "8");
     S_AXI_transactor_param_props.addLong("MAX_BURST_LENGTH", "1");
     S_AXI_transactor_param_props.addLong("NUM_READ_THREADS", "1");
     S_AXI_transactor_param_props.addLong("NUM_WRITE_THREADS", "1");
@@ -435,7 +435,7 @@ zybo2030_axi_bram_ctrl_0_1::zybo2030_axi_bram_ctrl_0_1(const sc_core::sc_module_
     S_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     S_AXI_transactor_param_props.addString("CLK_DOMAIN", "zybo2030_processing_system7_0_0_FCLK_CLK0");
 
-    mp_S_AXI_transactor = new xtlm::xaximm_pin2xtlm_t<32,13,1,1,1,1,1,1>("S_AXI_transactor", S_AXI_transactor_param_props);
+    mp_S_AXI_transactor = new xtlm::xaximm_pin2xtlm_t<32,11,1,1,1,1,1,1>("S_AXI_transactor", S_AXI_transactor_param_props);
   mp_S_AXI_transactor->ARADDR(s_axi_araddr);
   mp_S_AXI_transactor->ARPROT(s_axi_arprot);
   mp_S_AXI_transactor->ARREADY(s_axi_arready);
@@ -513,7 +513,7 @@ zybo2030_axi_bram_ctrl_0_1::zybo2030_axi_bram_ctrl_0_1(const sc_core::sc_module_
     S_AXI_transactor_param_props.addLong("DATA_WIDTH", "32");
     S_AXI_transactor_param_props.addLong("FREQ_HZ", "50000000");
     S_AXI_transactor_param_props.addLong("ID_WIDTH", "0");
-    S_AXI_transactor_param_props.addLong("ADDR_WIDTH", "13");
+    S_AXI_transactor_param_props.addLong("ADDR_WIDTH", "11");
     S_AXI_transactor_param_props.addLong("AWUSER_WIDTH", "0");
     S_AXI_transactor_param_props.addLong("ARUSER_WIDTH", "0");
     S_AXI_transactor_param_props.addLong("WUSER_WIDTH", "0");
@@ -529,8 +529,8 @@ zybo2030_axi_bram_ctrl_0_1::zybo2030_axi_bram_ctrl_0_1(const sc_core::sc_module_
     S_AXI_transactor_param_props.addLong("HAS_BRESP", "1");
     S_AXI_transactor_param_props.addLong("HAS_RRESP", "1");
     S_AXI_transactor_param_props.addLong("SUPPORTS_NARROW_BURST", "0");
-    S_AXI_transactor_param_props.addLong("NUM_READ_OUTSTANDING", "1");
-    S_AXI_transactor_param_props.addLong("NUM_WRITE_OUTSTANDING", "1");
+    S_AXI_transactor_param_props.addLong("NUM_READ_OUTSTANDING", "8");
+    S_AXI_transactor_param_props.addLong("NUM_WRITE_OUTSTANDING", "8");
     S_AXI_transactor_param_props.addLong("MAX_BURST_LENGTH", "1");
     S_AXI_transactor_param_props.addLong("NUM_READ_THREADS", "1");
     S_AXI_transactor_param_props.addLong("NUM_WRITE_THREADS", "1");
@@ -543,7 +543,7 @@ zybo2030_axi_bram_ctrl_0_1::zybo2030_axi_bram_ctrl_0_1(const sc_core::sc_module_
     S_AXI_transactor_param_props.addString("READ_WRITE_MODE", "READ_WRITE");
     S_AXI_transactor_param_props.addString("CLK_DOMAIN", "zybo2030_processing_system7_0_0_FCLK_CLK0");
 
-    mp_S_AXI_transactor = new xtlm::xaximm_pin2xtlm_t<32,13,1,1,1,1,1,1>("S_AXI_transactor", S_AXI_transactor_param_props);
+    mp_S_AXI_transactor = new xtlm::xaximm_pin2xtlm_t<32,11,1,1,1,1,1,1>("S_AXI_transactor", S_AXI_transactor_param_props);
   mp_S_AXI_transactor->ARADDR(s_axi_araddr);
   mp_S_AXI_transactor->ARPROT(s_axi_arprot);
   mp_S_AXI_transactor->ARREADY(s_axi_arready);

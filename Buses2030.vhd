@@ -135,7 +135,7 @@ type MPX_TAGS_IN is record
 end record MPX_TAGS_IN;
 
 -- List of front panel indicators
-subtype IndicatorRange is integer range 0 to 249; -- 218 through 249 are temp debug items
+subtype IndicatorRange is integer range 0 to 255; -- 218 through 249 are temp debug items
 
 type STORAGE_IN_INTERFACE is record
 				ReadData : std_logic_vector(0 to 8);
@@ -236,20 +236,20 @@ type DEBUG_BUS is record
 end record DEBUG_BUS;
 
 type BRAM1_PORT is record
-	addr : std_logic_vector(13 downto 0);
+	addr : std_logic_vector(15 downto 2);
 	clk : std_logic;
 	wrdata : std_logic_vector(31 downto 0);
-	rddata : std_logic_vector(31 downto 0);
+--	rddata : std_logic_vector(31 downto 0);
 	en : std_logic;
 	rst : std_logic;
 	we : std_logic_vector(3 downto 0);
 end record BRAM1_PORT;
 
 type BRAM2_PORT is record
-	addr : std_logic_vector(8 downto 0);
+	addr : std_logic_vector(10 downto 2);
 	clk : std_logic;
 	wrdata : std_logic_vector(31 downto 0);
-	rddata : std_logic_vector(31 downto 0);
+--	rddata : std_logic_vector(31 downto 0);
 	en : std_logic;
 	rst : std_logic;
 	we : std_logic_vector(3 downto 0);

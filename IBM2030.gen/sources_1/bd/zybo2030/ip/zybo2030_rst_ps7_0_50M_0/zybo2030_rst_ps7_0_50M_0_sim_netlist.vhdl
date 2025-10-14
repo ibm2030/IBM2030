@@ -2,7 +2,7 @@
 -- Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
--- Date        : Tue Oct  7 15:13:06 2025
+-- Date        : Mon Oct 13 14:17:48 2025
 -- Host        : lznb204 running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim
 --               c:/Users/lwilkinson/Xilinx/IBM2030/IBM2030.gen/sources_1/bd/zybo2030/ip/zybo2030_rst_ps7_0_50M_0/zybo2030_rst_ps7_0_50M_0_sim_netlist.vhdl
@@ -367,22 +367,14 @@ entity zybo2030_rst_ps7_0_50M_0_lpf is
 end zybo2030_rst_ps7_0_50M_0_lpf;
 
 architecture STRUCTURE of zybo2030_rst_ps7_0_50M_0_lpf is
-  signal \AUX_LPF[3].asr_lpf_reg_n_0_[3]\ : STD_LOGIC;
-  signal \EXT_LPF[3].exr_lpf_reg_n_0_[3]\ : STD_LOGIC;
   signal Q : STD_LOGIC;
   signal asr_d1 : STD_LOGIC;
-  signal dest_out : STD_LOGIC;
+  signal asr_lpf_0 : STD_LOGIC;
   signal exr_d1 : STD_LOGIC;
+  signal exr_lpf_0 : STD_LOGIC;
   signal lpf_asr : STD_LOGIC;
-  signal lpf_asr_i_1_n_0 : STD_LOGIC;
   signal lpf_exr : STD_LOGIC;
-  signal lpf_exr_i_1_n_0 : STD_LOGIC;
   signal \lpf_int0__0\ : STD_LOGIC;
-  signal p_1_in : STD_LOGIC;
-  signal p_1_in4_in : STD_LOGIC;
-  signal p_2_in : STD_LOGIC;
-  signal p_2_in3_in : STD_LOGIC;
-  signal p_3_in1_in : STD_LOGIC;
   attribute DEST_SYNC_FF : integer;
   attribute DEST_SYNC_FF of \ACTIVE_LOW_AUX.ACT_LO_AUX\ : label is 4;
   attribute INIT_SYNC_FF : integer;
@@ -416,7 +408,7 @@ begin
 \ACTIVE_LOW_AUX.ACT_LO_AUX\: entity work.zybo2030_rst_ps7_0_50M_0_xpm_cdc_single
      port map (
       dest_clk => slowest_sync_clk,
-      dest_out => p_3_in1_in,
+      dest_out => asr_lpf_0,
       src_clk => '1',
       src_in => asr_d1
     );
@@ -431,7 +423,7 @@ begin
 \ACTIVE_LOW_EXT.ACT_LO_EXT\: entity work.\zybo2030_rst_ps7_0_50M_0_xpm_cdc_single__1\
      port map (
       dest_clk => slowest_sync_clk,
-      dest_out => dest_out,
+      dest_out => exr_lpf_0,
       src_clk => '1',
       src_in => exr_d1
     );
@@ -443,72 +435,6 @@ begin
       I0 => mb_debug_sys_rst,
       I1 => ext_reset_in,
       O => exr_d1
-    );
-\AUX_LPF[1].asr_lpf_reg[1]\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => slowest_sync_clk,
-      CE => '1',
-      D => p_3_in1_in,
-      Q => p_2_in,
-      R => '0'
-    );
-\AUX_LPF[2].asr_lpf_reg[2]\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => slowest_sync_clk,
-      CE => '1',
-      D => p_2_in,
-      Q => p_1_in,
-      R => '0'
-    );
-\AUX_LPF[3].asr_lpf_reg[3]\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => slowest_sync_clk,
-      CE => '1',
-      D => p_1_in,
-      Q => \AUX_LPF[3].asr_lpf_reg_n_0_[3]\,
-      R => '0'
-    );
-\EXT_LPF[1].exr_lpf_reg[1]\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => slowest_sync_clk,
-      CE => '1',
-      D => dest_out,
-      Q => p_2_in3_in,
-      R => '0'
-    );
-\EXT_LPF[2].exr_lpf_reg[2]\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => slowest_sync_clk,
-      CE => '1',
-      D => p_2_in3_in,
-      Q => p_1_in4_in,
-      R => '0'
-    );
-\EXT_LPF[3].exr_lpf_reg[3]\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => slowest_sync_clk,
-      CE => '1',
-      D => p_1_in4_in,
-      Q => \EXT_LPF[3].exr_lpf_reg_n_0_[3]\,
-      R => '0'
     );
 POR_SRL_I: unisim.vcomponents.SRL16E
     generic map(
@@ -524,18 +450,6 @@ POR_SRL_I: unisim.vcomponents.SRL16E
       D => '0',
       Q => Q
     );
-lpf_asr_i_1: unisim.vcomponents.LUT5
-    generic map(
-      INIT => X"EAAAAAA8"
-    )
-        port map (
-      I0 => lpf_asr,
-      I1 => p_1_in,
-      I2 => p_2_in,
-      I3 => p_3_in1_in,
-      I4 => \AUX_LPF[3].asr_lpf_reg_n_0_[3]\,
-      O => lpf_asr_i_1_n_0
-    );
 lpf_asr_reg: unisim.vcomponents.FDRE
     generic map(
       INIT => '0'
@@ -543,21 +457,9 @@ lpf_asr_reg: unisim.vcomponents.FDRE
         port map (
       C => slowest_sync_clk,
       CE => '1',
-      D => lpf_asr_i_1_n_0,
+      D => asr_lpf_0,
       Q => lpf_asr,
       R => '0'
-    );
-lpf_exr_i_1: unisim.vcomponents.LUT5
-    generic map(
-      INIT => X"EAAAAAA8"
-    )
-        port map (
-      I0 => lpf_exr,
-      I1 => p_1_in4_in,
-      I2 => p_2_in3_in,
-      I3 => dest_out,
-      I4 => \EXT_LPF[3].exr_lpf_reg_n_0_[3]\,
-      O => lpf_exr_i_1_n_0
     );
 lpf_exr_reg: unisim.vcomponents.FDRE
     generic map(
@@ -566,7 +468,7 @@ lpf_exr_reg: unisim.vcomponents.FDRE
         port map (
       C => slowest_sync_clk,
       CE => '1',
-      D => lpf_exr_i_1_n_0,
+      D => exr_lpf_0,
       Q => lpf_exr,
       R => '0'
     );
@@ -623,8 +525,8 @@ architecture STRUCTURE of zybo2030_rst_ps7_0_50M_0_sequence_psr is
   signal \core_dec[2]_i_1_n_0\ : STD_LOGIC;
   signal \core_dec_reg_n_0_[0]\ : STD_LOGIC;
   signal \core_dec_reg_n_0_[1]\ : STD_LOGIC;
-  signal \core_dec_reg_n_0_[2]\ : STD_LOGIC;
   signal from_sys_i_1_n_0 : STD_LOGIC;
+  signal p_0_in : STD_LOGIC;
   signal p_3_out : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal p_5_out : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal \pr_dec0__0\ : STD_LOGIC;
@@ -671,7 +573,7 @@ Core_i_1: unisim.vcomponents.LUT2
     )
         port map (
       I0 => \^mb_out\,
-      I1 => \core_dec_reg_n_0_[2]\,
+      I1 => p_0_in,
       O => Core_i_1_n_0
     );
 Core_reg: unisim.vcomponents.FDSE
@@ -804,7 +706,7 @@ bsr_reg: unisim.vcomponents.FDSE
       C => slowest_sync_clk,
       CE => '1',
       D => \core_dec[2]_i_1_n_0\,
-      Q => \core_dec_reg_n_0_[2]\,
+      Q => p_0_in,
       R => '0'
     );
 from_sys_i_1: unisim.vcomponents.LUT2
@@ -932,11 +834,11 @@ entity zybo2030_rst_ps7_0_50M_0_proc_sys_reset is
   attribute C_AUX_RESET_HIGH : string;
   attribute C_AUX_RESET_HIGH of zybo2030_rst_ps7_0_50M_0_proc_sys_reset : entity is "1'b0";
   attribute C_AUX_RST_WIDTH : integer;
-  attribute C_AUX_RST_WIDTH of zybo2030_rst_ps7_0_50M_0_proc_sys_reset : entity is 4;
+  attribute C_AUX_RST_WIDTH of zybo2030_rst_ps7_0_50M_0_proc_sys_reset : entity is 1;
   attribute C_EXT_RESET_HIGH : string;
   attribute C_EXT_RESET_HIGH of zybo2030_rst_ps7_0_50M_0_proc_sys_reset : entity is "1'b0";
   attribute C_EXT_RST_WIDTH : integer;
-  attribute C_EXT_RST_WIDTH of zybo2030_rst_ps7_0_50M_0_proc_sys_reset : entity is 4;
+  attribute C_EXT_RST_WIDTH of zybo2030_rst_ps7_0_50M_0_proc_sys_reset : entity is 1;
   attribute C_FAMILY : string;
   attribute C_FAMILY of zybo2030_rst_ps7_0_50M_0_proc_sys_reset : entity is "zynq";
   attribute C_NUM_BUS_RST : integer;
@@ -1086,11 +988,11 @@ architecture STRUCTURE of zybo2030_rst_ps7_0_50M_0 is
   attribute C_AUX_RESET_HIGH : string;
   attribute C_AUX_RESET_HIGH of U0 : label is "1'b0";
   attribute C_AUX_RST_WIDTH : integer;
-  attribute C_AUX_RST_WIDTH of U0 : label is 4;
+  attribute C_AUX_RST_WIDTH of U0 : label is 1;
   attribute C_EXT_RESET_HIGH : string;
   attribute C_EXT_RESET_HIGH of U0 : label is "1'b0";
   attribute C_EXT_RST_WIDTH : integer;
-  attribute C_EXT_RST_WIDTH of U0 : label is 4;
+  attribute C_EXT_RST_WIDTH of U0 : label is 1;
   attribute C_FAMILY : string;
   attribute C_FAMILY of U0 : label is "zynq";
   attribute C_NUM_BUS_RST : integer;

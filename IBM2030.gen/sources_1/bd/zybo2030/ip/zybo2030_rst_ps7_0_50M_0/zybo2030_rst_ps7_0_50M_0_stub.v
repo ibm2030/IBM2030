@@ -2,7 +2,7 @@
 // Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
-// Date        : Tue Oct  7 15:13:06 2025
+// Date        : Mon Oct 13 14:17:48 2025
 // Host        : lznb204 running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode synth_stub
 //               c:/Users/lwilkinson/Xilinx/IBM2030/IBM2030.gen/sources_1/bd/zybo2030/ip/zybo2030_rst_ps7_0_50M_0/zybo2030_rst_ps7_0_50M_0_stub.v
@@ -14,7 +14,7 @@
 // This empty module with port declaration file causes synthesis tools to infer a black box for IP.
 // The synthesis directives are for Synopsys Synplify support to prevent IO buffer insertion.
 // Please paste the declaration into a Verilog source file or add the file as an additional source.
-(* CHECK_LICENSE_TYPE = "zybo2030_rst_ps7_0_50M_0,proc_sys_reset,{}" *) (* core_generation_info = "zybo2030_rst_ps7_0_50M_0,proc_sys_reset,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=proc_sys_reset,x_ipVersion=5.0,x_ipCoreRevision=17,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED,C_FAMILY=zynq,C_EXT_RST_WIDTH=4,C_AUX_RST_WIDTH=4,C_EXT_RESET_HIGH=0,C_AUX_RESET_HIGH=0,C_NUM_BUS_RST=1,C_NUM_PERP_RST=1,C_NUM_INTERCONNECT_ARESETN=1,C_NUM_PERP_ARESETN=1}" *) (* downgradeipidentifiedwarnings = "yes" *) 
+(* CHECK_LICENSE_TYPE = "zybo2030_rst_ps7_0_50M_0,proc_sys_reset,{}" *) (* core_generation_info = "zybo2030_rst_ps7_0_50M_0,proc_sys_reset,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=proc_sys_reset,x_ipVersion=5.0,x_ipCoreRevision=17,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED,C_FAMILY=zynq,C_EXT_RST_WIDTH=1,C_AUX_RST_WIDTH=1,C_EXT_RESET_HIGH=0,C_AUX_RESET_HIGH=0,C_NUM_BUS_RST=1,C_NUM_PERP_RST=1,C_NUM_INTERCONNECT_ARESETN=1,C_NUM_PERP_ARESETN=1}" *) (* downgradeipidentifiedwarnings = "yes" *) 
 (* x_core_info = "proc_sys_reset,Vivado 2025.1" *) 
 module zybo2030_rst_ps7_0_50M_0(slowest_sync_clk, ext_reset_in, aux_reset_in, 
   mb_debug_sys_rst, dcm_locked, mb_reset, bus_struct_reset, peripheral_reset, 

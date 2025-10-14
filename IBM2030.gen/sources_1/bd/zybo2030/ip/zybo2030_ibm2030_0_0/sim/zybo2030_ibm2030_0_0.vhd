@@ -88,25 +88,26 @@ ENTITY zybo2030_ibm2030_0_0 IS
     d_n : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
     clk_p : OUT STD_LOGIC;
     clk_n : OUT STD_LOGIC;
-    serialRx : IN STD_LOGIC;
-    serialTx : OUT STD_LOGIC;
-    serialRTS : OUT STD_LOGIC;
-    serialDTR : OUT STD_LOGIC;
-    bram1_addr : IN STD_LOGIC_VECTOR(13 DOWNTO 0);
+    SerialRx : IN STD_LOGIC;
+    SerialTx : OUT STD_LOGIC;
+    SerialRTS : OUT STD_LOGIC;
+    SerialDTR : OUT STD_LOGIC;
+    bram1_addr : IN STD_LOGIC_VECTOR(15 DOWNTO 2);
     bram1_clk : IN STD_LOGIC;
     bram1_wrdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     bram1_en : IN STD_LOGIC;
     bram1_rst : IN STD_LOGIC;
     bram1_we : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
     bram1_rddata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-    bram2_addr : IN STD_LOGIC_VECTOR(8 DOWNTO 0);
+    bram2_addr : IN STD_LOGIC_VECTOR(10 DOWNTO 2);
     bram2_clk : IN STD_LOGIC;
     bram2_wrdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     bram2_en : IN STD_LOGIC;
     bram2_rst : IN STD_LOGIC;
     bram2_we : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
     bram2_rddata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-    sysclk : IN STD_LOGIC
+    sysclk : IN STD_LOGIC;
+    clk50M : IN STD_LOGIC
   );
 END zybo2030_ibm2030_0_0;
 
@@ -151,25 +152,26 @@ ARCHITECTURE zybo2030_ibm2030_0_0_arch OF zybo2030_ibm2030_0_0 IS
       d_n : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
       clk_p : OUT STD_LOGIC;
       clk_n : OUT STD_LOGIC;
-      serialRx : IN STD_LOGIC;
-      serialTx : OUT STD_LOGIC;
-      serialRTS : OUT STD_LOGIC;
-      serialDTR : OUT STD_LOGIC;
-      bram1_addr : IN STD_LOGIC_VECTOR(13 DOWNTO 0);
+      SerialRx : IN STD_LOGIC;
+      SerialTx : OUT STD_LOGIC;
+      SerialRTS : OUT STD_LOGIC;
+      SerialDTR : OUT STD_LOGIC;
+      bram1_addr : IN STD_LOGIC_VECTOR(15 DOWNTO 2);
       bram1_clk : IN STD_LOGIC;
       bram1_wrdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
       bram1_en : IN STD_LOGIC;
       bram1_rst : IN STD_LOGIC;
       bram1_we : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
       bram1_rddata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-      bram2_addr : IN STD_LOGIC_VECTOR(8 DOWNTO 0);
+      bram2_addr : IN STD_LOGIC_VECTOR(10 DOWNTO 2);
       bram2_clk : IN STD_LOGIC;
       bram2_wrdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
       bram2_en : IN STD_LOGIC;
       bram2_rst : IN STD_LOGIC;
       bram2_we : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
       bram2_rddata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-      sysclk : IN STD_LOGIC
+      sysclk : IN STD_LOGIC;
+      clk50M : IN STD_LOGIC
     );
   END COMPONENT ibm2030;
   ATTRIBUTE X_INTERFACE_INFO : STRING;
@@ -193,12 +195,9 @@ ARCHITECTURE zybo2030_ibm2030_0_0_arch OF zybo2030_ibm2030_0_0 IS
   ATTRIBUTE X_INTERFACE_INFO OF bram2_rst: SIGNAL IS "xilinx.com:signal:reset:1.0 bram2_rst RST";
   ATTRIBUTE X_INTERFACE_MODE OF bram2_rst: SIGNAL IS "slave bram2_rst";
   ATTRIBUTE X_INTERFACE_PARAMETER OF bram2_rst: SIGNAL IS "XIL_INTERFACENAME bram2_rst, POLARITY ACTIVE_LOW, INSERT_VIP 0";
-  ATTRIBUTE X_INTERFACE_INFO OF clk_n: SIGNAL IS "xilinx.com:signal:clock:1.0 clk_n CLK";
-  ATTRIBUTE X_INTERFACE_MODE OF clk_n: SIGNAL IS "master clk_n";
-  ATTRIBUTE X_INTERFACE_PARAMETER OF clk_n: SIGNAL IS "XIL_INTERFACENAME clk_n, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, CLK_DOMAIN zybo2030_ibm2030_0_0_clk_n, INSERT_VIP 0";
-  ATTRIBUTE X_INTERFACE_INFO OF clk_p: SIGNAL IS "xilinx.com:signal:clock:1.0 clk_p CLK";
-  ATTRIBUTE X_INTERFACE_MODE OF clk_p: SIGNAL IS "master clk_p";
-  ATTRIBUTE X_INTERFACE_PARAMETER OF clk_p: SIGNAL IS "XIL_INTERFACENAME clk_p, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, CLK_DOMAIN zybo2030_ibm2030_0_0_clk_p, INSERT_VIP 0";
+  ATTRIBUTE X_INTERFACE_INFO OF clk_n: SIGNAL IS "digilentinc.com:interface:tmds:1.0 interface_tmds CLK_N";
+  ATTRIBUTE X_INTERFACE_INFO OF clk_p: SIGNAL IS "digilentinc.com:interface:tmds:1.0 interface_tmds CLK_P";
+  ATTRIBUTE X_INTERFACE_MODE OF clk_p: SIGNAL IS "slave interface_tmds";
 BEGIN
   U0 : ibm2030
     GENERIC MAP (
@@ -238,10 +237,10 @@ BEGIN
       d_n => d_n,
       clk_p => clk_p,
       clk_n => clk_n,
-      serialRx => serialRx,
-      serialTx => serialTx,
-      serialRTS => serialRTS,
-      serialDTR => serialDTR,
+      SerialRx => SerialRx,
+      SerialTx => SerialTx,
+      SerialRTS => SerialRTS,
+      SerialDTR => SerialDTR,
       bram1_addr => bram1_addr,
       bram1_clk => bram1_clk,
       bram1_wrdata => bram1_wrdata,
@@ -256,6 +255,7 @@ BEGIN
       bram2_rst => bram2_rst,
       bram2_we => bram2_we,
       bram2_rddata => bram2_rddata,
-      sysclk => sysclk
+      sysclk => sysclk,
+      clk50M => clk50M
     );
 END zybo2030_ibm2030_0_0_arch;

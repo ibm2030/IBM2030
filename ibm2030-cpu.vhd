@@ -57,6 +57,7 @@ entity cpu is
 			IND_EX,IND_CY_MATCH,IND_ALLOW_WR,IND_1050_INTRV,IND_1050_REQ,IND_MPX,IND_SEL_CHNL : OUT STD_LOGIC;
 			IND_MSDR : OUT STD_LOGIC_VECTOR(0 to 7);
 			IND_MSDR_P : OUT STD_LOGIC;
+			-- MPX
 			IND_OPNL_IN : OUT STD_LOGIC;
 			IND_ADDR_IN : OUT STD_LOGIC;
 			IND_STATUS_IN : OUT STD_LOGIC;
@@ -68,6 +69,9 @@ entity cpu is
 			IND_SUPPR_OUT : OUT STD_LOGIC;
 			IND_FO : OUT STD_LOGIC_VECTOR(0 to 7);
 			IND_FO_P: OUT STD_LOGIC;
+			-- SX1
+			
+			-- CPU
 			IND_A : OUT STD_LOGIC_VECTOR(0 to 8);
 			IND_B : OUT STD_LOGIC_VECTOR(0 to 8);
 			IND_ALU : OUT STD_LOGIC_VECTOR(0 to 8);
@@ -84,11 +88,15 @@ entity cpu is
 			IND_CHK_ROS_ADDR : OUT STD_LOGIC;
 			IND_CHK_STOR_DATA : OUT STD_LOGIC;
 			IND_CHK_ALU : OUT STD_LOGIC;
+			
+			-- Panel
 			IND_SYST : OUT STD_LOGIC;
 			IND_MAN : OUT STD_LOGIC;
 			IND_WAIT : OUT STD_LOGIC;
 			IND_TEST : OUT STD_LOGIC;
 			IND_LOAD : OUT STD_LOGIC;
+			
+			-- Switches
 			SW_START,SW_LOAD,SW_SET_IC,SW_STOP,SW_POWER_OFF : IN std_logic;
 			SW_INH_CF_STOP,SW_PROC,SW_SCAN : IN std_logic;
 			SW_SINGLE_CYCLE,SW_INSTRUCTION_STEP,SW_RATE_SW_PROCESS : IN std_logic;
@@ -129,7 +137,8 @@ entity cpu is
 			N60_CY_TIMER_PULSE : IN STD_LOGIC;
 			M_CONV_OSC : OUT STD_LOGIC;
 			SwSlow : in std_logic;
-			clk : in std_logic);
+			clk : in std_logic;
+			clk50M : in std_logic);
 end cpu;
 
 use work.all;
@@ -138,7 +147,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 library buses;
 use buses.Buses_package.all;
 
-entity wrapped_cpu is
+entity wrapped_cpu_X is
     Port (
     -- LEDs
     INDICATORS_0 : out std_logic_vector(63 downto 0);
@@ -225,13 +234,20 @@ entity wrapped_cpu is
     N60_CY_TIMER_PULSE : IN STD_LOGIC;
     M_CONV_OSC : OUT STD_LOGIC;
     SwSlow : in std_logic;
-    clk : in std_logic);
+    clk : in std_logic;
+    clk50M : in std_logic);
     
-end wrapped_cpu;
+end wrapped_cpu_X;
 
-architecture FMD of wrapped_cpu is
+architecture FMD of wrapped_cpu_X is
 --signal sSALS : SALS_Bus;
 --signal SALS : std_logic_vector(1 to 55);
+
+attribute mark_debug : string;
+attribute mark_debug of INDICATORS_0 : signal is "true";
+attribute mark_debug of INDICATORS_1 : signal is "true";
+attribute mark_debug of INDICATORS_2 : signal is "true";
+attribute mark_debug of INDICATORS_3 : signal is "true";
 
 begin
     -- Unused (for now) lamps
@@ -535,7 +551,8 @@ TheCPU: entity cpu (FMD) port map (
     N60_CY_TIMER_PULSE => N60_CY_TIMER_PULSE,
     M_CONV_OSC => M_CONV_OSC,
     SwSlow => SwSlow,
-    clk => clk
+    clk => clk,
+    clk50M => clk50M
     );
 end FMD;
 
@@ -1329,7 +1346,7 @@ begin
         cclk => open,
 
         -- Other inputs
-        clk => clk, -- 50MHz
+        clk => clk, -- 125MHz
         
     -- Storage interface to CPU
         StorageIn => StorageIn,

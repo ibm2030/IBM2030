@@ -60,8 +60,4 @@ create_clock -period 10 -name bram1_clk [get_ports bram1_clk]
 
 create_clock -period 10 -name bram2_clk [get_ports bram2_clk]
 
-create_clock -period 10 -name clk_n [get_ports clk_n]
-
-create_clock -period 10 -name clk_p [get_ports clk_p]
-
 

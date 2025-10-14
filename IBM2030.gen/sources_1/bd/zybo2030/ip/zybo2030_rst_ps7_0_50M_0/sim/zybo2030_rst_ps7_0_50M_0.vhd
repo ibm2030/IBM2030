@@ -133,8 +133,8 @@ BEGIN
   U0 : proc_sys_reset
     GENERIC MAP (
       C_FAMILY => "zynq",
-      C_EXT_RST_WIDTH => 4,
-      C_AUX_RST_WIDTH => 4,
+      C_EXT_RST_WIDTH => 1,
+      C_AUX_RST_WIDTH => 1,
       C_EXT_RESET_HIGH => '0',
       C_AUX_RESET_HIGH => '0',
       C_NUM_BUS_RST => 1,
