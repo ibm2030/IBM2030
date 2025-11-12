@@ -186,7 +186,7 @@ constant indLayout : screenIndicators :=
 (
   -- CN,ADRP,W,X
   1=>(1=>1,2=>2,3=>3,4=>4,5=>5,6=>6,7=>7, -- CN
-      10=>8, -- PA
+        10=>8, -- PA
 		12=>9, -- LP
 		14=>10,15=>11,16=>12,17=>13,18=>14,19=>15, -- W
 		22=>16,23=>17,24=>18,25=>19,26=>20,27=>21,28=>22,29=>23,30=>24, -- X
@@ -1620,80 +1620,92 @@ constant charLayout : screenCharacters := initScreen(screen);
 
 begin
     -- Map signals to Indicators vectors used to generate VGA lamps
-    INDICATORS(9) <= W_IND_P; 
-    INDICATORS(10 to 14) <= W_IND(3 to 7);
-    INDICATORS(15) <= X_IND_P;
-    INDICATORS(16 to 23) <= X_IND(0 to 7);
-    INDICATORS(0) <= IND_SALS.SALS_PN;
-    INDICATORS(1 to 6) <= IND_SALS.SALS_CN(0 to 5);
-    INDICATORS(24) <= IND_SALS.SALS_PS;
-    INDICATORS(7) <= IND_SALS.SALS_PA;
-    INDICATORS(25 to 28) <= IND_SALS.SALS_CH(0 to 3);
-    INDICATORS(29 to 32) <= IND_SALS.SALS_CL(0 to 3);
-    INDICATORS(40 to 42) <= IND_SALS.SALS_CM(0 to 2);
-    INDICATORS(43) <= IND_SALS.SALS_CU(0);
-    INDICATORS(44) <= IND_SALS.SALS_CU(1);
-    INDICATORS(34 to 37) <= IND_SALS.SALS_CA(0 to 3);
-    INDICATORS(38 to 39) <= IND_SALS.SALS_CB(0 to 1);
-    INDICATORS(47 to 50) <= IND_SALS.SALS_CK(0 to 3);
-    INDICATORS(46) <= IND_SALS.SALS_PK;
-    INDICATORS(51) <= IND_SALS.SALS_PC;
-    INDICATORS(52 to 55) <= IND_SALS.SALS_CD(0 to 3);
-    INDICATORS(56 to 58) <= IND_SALS.SALS_CF(0 to 2);
-    INDICATORS(59 to 60) <= IND_SALS.SALS_CG(0 to 1);
-    INDICATORS(61 to 62) <= IND_SALS.SALS_CV(0 to 1);
-    INDICATORS(63) <= IND_SALS.SALS_CC(0);
-    INDICATORS(64+0) <= IND_SALS.SALS_CC(1);
-    INDICATORS(64+1) <= IND_SALS.SALS_CC(2);
-    INDICATORS(64+3) <= IND_SALS.SALS_CS(0);
-    INDICATORS(64+4) <= IND_SALS.SALS_CS(1);
-    INDICATORS(64+5) <= IND_SALS.SALS_CS(2);
-    INDICATORS(64+6) <= IND_SALS.SALS_CS(3);
-    INDICATORS(33) <= IND_SALS.SALS_AA;
-    INDICATORS(64+2) <= IND_SALS.SALS_SA;
-    INDICATORS(45) <= IND_SALS.SALS_AK;
-    INDICATORS(192+48) <= IND_EX;
-    INDICATORS(192+49) <= IND_CY_MATCH;
-    INDICATORS(192+50) <= IND_ALLOW_WR;
-    INDICATORS(192+53) <= IND_1050_INTRV;
-    INDICATORS(192+54) <= IND_1050_REQ;
-    INDICATORS(192+58) <= IND_MPX;
-    INDICATORS(192+59) <= IND_SEL_CHNL;
-    INDICATORS(192+13 to 192+20) <= IND_MSDR(0 to 7);
-    INDICATORS(192+12) <= IND_MSDR_P;
-    INDICATORS(128+38) <= IND_OPNL_IN;
-    INDICATORS(128+39) <= IND_ADDR_IN;
-    INDICATORS(128+40) <= IND_STATUS_IN;
-    INDICATORS(128+41) <= IND_SERV_IN;
-    INDICATORS(128+42) <= IND_SEL_OUT;
-    INDICATORS(128+43) <= IND_ADDR_OUT;
-    INDICATORS(128+44) <= IND_CMMD_OUT;
-    INDICATORS(128+45) <= IND_SERV_OUT;
-    INDICATORS(128+46) <= IND_SUPPR_OUT;
-    INDICATORS(128+48 to 128+55) <= IND_FO(0 to 7);
-    INDICATORS(128+47) <= IND_FO_P;
-    INDICATORS(192+40 to 47) <= IND_A(0 to 7);
-    INDICATORS(192+39) <= IND_A(8);
-    INDICATORS(192+31 to 192+38) <= IND_B(0 to 7);
-    INDICATORS(192+30) <= IND_B(8);
-    INDICATORS(192+22 to 192+29) <= IND_ALU(0 to 7);
-    INDICATORS(192+21) <= IND_ALU(8);
-    INDICATORS(128+57 to 192+0) <= IND_M(0 to 7);
-    INDICATORS(128+56) <= IND_M(8);
-    INDICATORS(192+2 to 192+9) <= IND_N(0 to 7);
-    INDICATORS(192+1) <= IND_N(8);
-    INDICATORS(192+10) <= IND_MAIN_STG;
-    INDICATORS(192+11) <= IND_LOC_STG;
-    INDICATORS(192+60) <= IND_COMP_MODE;
-    INDICATORS(192+56) <= IND_CHK_A_REG;
-    INDICATORS(192+55) <= IND_CHK_B_REG;
-    INDICATORS(192+51) <= IND_CHK_STOR_ADDR;
-    INDICATORS(192+63) <= IND_CHK_CTRL_REG;
-    INDICATORS(192+62) <= IND_CHK_ROS_SALS;
-    INDICATORS(192+61) <= IND_CHK_ROS_ADDR;
-    INDICATORS(192+52) <= IND_CHK_STOR_DATA;
-    INDICATORS(192+57) <= IND_CHK_ALU;
-    INDICATORS(64+63) <= IND_SYST;
+    INDICATORS(0) <= '0'; -- Unused
+    INDICATORS(1) <= IND_SALS.SALS_PN;
+    INDICATORS(2 to 7) <= IND_SALS.SALS_CN(0 to 5);
+    INDICATORS(8) <= IND_SALS.SALS_PA;
+    INDICATORS(9) <= IND_LP; 
+    INDICATORS(10) <= W_IND_P; 
+    INDICATORS(11 to 15) <= W_IND(3 to 7);
+    INDICATORS(16) <= X_IND_P;
+    INDICATORS(17 to 24) <= X_IND(0 to 7);
+    INDICATORS(25) <= IND_SALS.SALS_PS;
+    INDICATORS(26 to 29) <= IND_SALS.SALS_CH(0 to 3);
+    INDICATORS(30 to 33) <= IND_SALS.SALS_CL(0 to 3);
+    INDICATORS(34) <= IND_SALS.SALS_AA;
+    INDICATORS(35 to 38) <= IND_SALS.SALS_CA(0 to 3);
+    INDICATORS(39 to 40) <= IND_SALS.SALS_CB(0 to 1);
+    INDICATORS(41 to 43) <= IND_SALS.SALS_CM(0 to 2);
+    INDICATORS(44) <= IND_SALS.SALS_CU(0);
+    INDICATORS(45) <= IND_SALS.SALS_CU(1);
+    INDICATORS(46) <= IND_SALS.SALS_AK;
+    INDICATORS(47) <= IND_SALS.SALS_PK;
+    INDICATORS(48 to 51) <= IND_SALS.SALS_CK(0 to 3);
+    INDICATORS(52) <= IND_SALS.SALS_PC;
+    INDICATORS(53 to 56) <= IND_SALS.SALS_CD(0 to 3);
+    INDICATORS(57 to 59) <= IND_SALS.SALS_CF(0 to 2);
+    INDICATORS(60 to 61) <= IND_SALS.SALS_CG(0 to 1);
+    INDICATORS(62 to 63) <= IND_SALS.SALS_CV(0 to 1);
+    INDICATORS(64) <= IND_SALS.SALS_CC(0);
+    INDICATORS(64+1) <= IND_SALS.SALS_CC(1);
+    INDICATORS(64+2) <= IND_SALS.SALS_CC(2);
+    INDICATORS(64+3) <= IND_SALS.SALS_SA;
+    INDICATORS(64+4 to 64+7) <= IND_SALS.SALS_CS(0 to 3);
+    -- SX1
+    -- SX2
+    -- MPX 
+    INDICATORS(128) <= IND_OPNL_IN;
+    INDICATORS(129) <= IND_ADDR_IN;
+    INDICATORS(130) <= IND_STATUS_IN;
+    INDICATORS(131) <= IND_SERV_IN;
+    INDICATORS(132) <= IND_SEL_OUT;
+    INDICATORS(133) <= IND_ADDR_OUT;
+    INDICATORS(134) <= IND_CMMD_OUT;
+    INDICATORS(135) <= IND_SERV_OUT;
+    INDICATORS(136) <= IND_SUPPR_OUT;
+    INDICATORS(137) <= IND_FO_P;
+    INDICATORS(138 to 145) <= IND_FO(0 to 7);
+
+    INDICATORS(146) <= IND_MAIN_STG;
+    INDICATORS(147) <= IND_M(8);
+    INDICATORS(148 to 155) <= IND_M(0 to 7);
+    INDICATORS(156) <= IND_N(8);
+    INDICATORS(157 to 164) <= IND_N(0 to 7);
+    INDICATORS(165) <= IND_LOC_STG;
+
+    INDICATORS(166) <= IND_MSDR_P;
+    INDICATORS(167 to 174) <= IND_MSDR(0 to 7);
+    INDICATORS(175) <= IND_ALU(8);
+    INDICATORS(176 to 183) <= IND_ALU(0 to 7);
+    INDICATORS(184) <= IND_EX;
+    INDICATORS(185) <= IND_CY_MATCH;
+    INDICATORS(186) <= IND_ALLOW_WR;
+    INDICATORS(187) <= IND_CHK_STOR_ADDR;
+    INDICATORS(188) <= IND_CHK_STOR_DATA;
+    
+    INDICATORS(189) <= IND_1050_INTRV;
+    INDICATORS(190) <= IND_1050_REQ;
+    INDICATORS(191) <= IND_CHK_B_REG;
+    INDICATORS(192) <= IND_CHK_A_REG;
+    INDICATORS(193) <= IND_CHK_ALU;
+
+    INDICATORS(194) <= IND_A(8);
+    INDICATORS(195 to 202) <= IND_A(0 to 7);
+    INDICATORS(203) <= IND_B(8);
+    INDICATORS(204 to 211) <= IND_B(0 to 7);
+    INDICATORS(212) <= IND_MPX;
+    INDICATORS(213) <= IND_SEL_CHNL;
+    INDICATORS(214) <= IND_COMP_MODE;
+    INDICATORS(215) <= IND_CHK_ROS_ADDR;
+    INDICATORS(216) <= IND_CHK_ROS_SALS;
+    INDICATORS(217) <= IND_CHK_CTRL_REG;
+    
+    INDICATORS(250) <= IND_SYST;
+    INDICATORS(251) <= IND_MAN;
+    INDICATORS(252) <= IND_WAIT;
+    INDICATORS(253) <= IND_TEST;
+    INDICATORS(254) <= IND_LOAD;
+    
     LEDS(1) <= IND_MAN;
     LEDS(2) <= IND_WAIT;
     LEDS(3) <= IND_TEST;
@@ -1726,8 +1738,13 @@ vgaController : entity vga_controller_640_60 port map (
 		begin
 			if(Clock50 = '1' and Clock50'EVENT) then
 				clkdiv <= not clkdiv;
-				currentInd := indLayout(lines(CONV_INTEGER(currentLine)),columns(CONV_INTEGER(currentColumn)));
-				currentChar := charLayout(lines(CONV_INTEGER(currentLine)),columns(CONV_INTEGER(currentColumn)));
+				if (currentColumn < totalColumns) and (currentLine < totalLines) then
+                    currentInd := indLayout(lines(CONV_INTEGER(currentLine)),columns(CONV_INTEGER(currentColumn)));
+                    currentChar := charLayout(lines(CONV_INTEGER(currentLine)),columns(CONV_INTEGER(currentColumn)));
+				else
+                    currentInd := 0;
+                    currentChar := charTranslate(32);    -- blank
+				end if;
 				if Indicators(currentInd)='1' then ind := 1; else ind := 0; end if;
 				pixRow := characterGenerator(characterRange(CONV_INTEGER(currentChar)),pixLinesRange(CONV_INTEGER(currentLP)));
 				if pixRow(pixColsRange(CONV_INTEGER(currentCP)))='1' then fgbg := 1; else fgbg := 0; end if;

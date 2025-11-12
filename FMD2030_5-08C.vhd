@@ -75,41 +75,41 @@ entity MpxFOFB is
            FAK : out  STD_LOGIC;
            SET_BUS_O_CTRL_LCH : out  STD_LOGIC;
            MPX_BUS_O_REG : out  STD_LOGIC_VECTOR (0 to 8);
-			  clk : in STD_LOGIC);
+		  sysclk : in STD_LOGIC);
 end MpxFOFB;
 
 architecture FMD of MpxFOFB is
 signal	sXXH,sXH,sXL,T3SET,X_SET : STD_LOGIC;
 signal	XXH_IN,XH_IN,XL_IN : STD_LOGIC;
-signal	XXHBU,XHBU,XLBU : STD_LOGIC;
+signal	XXHBU,XHBU,XLBU : STD_LOGIC := '0';
 signal	sMACH_RST_MPX : STD_LOGIC;
 signal	CK11XX, CKX11X,CKX1X1,CK1X1X,CKXX11 : STD_LOGIC;
 signal	CHNL_L,OPN_L,SUPPR_L,OUT_L : STD_LOGIC;
-signal	notOP_OUT_SIG,MpxMask : STD_LOGIC;
+signal	notOP_OUT_SIG,MpxMask : STD_LOGIC := '0';
 alias		KP is PK_SALS;
 signal	sFAK,sSET_BUS_O_CTRL : STD_LOGIC;
 signal	BusO_Set,BusO_Reset : STD_LOGIC_VECTOR (0 to 8);
-signal	sFT_7_BIT_MPX_CHNL_INTRP,sFT_2_BIT_MPX_OPN_LCH,sSUPPR_CTRL_LCH : STD_LOGIC;
+signal	sFT_7_BIT_MPX_CHNL_INTRP,sFT_2_BIT_MPX_OPN_LCH,sSUPPR_CTRL_LCH : STD_LOGIC := '0';
 begin
 
 -- XL, XH and XXL bits and backup
 
-XXH_BU: PH port map (D=>sXXH, L=>SET_FW, Q=> XXHBU);
+XXH_BU: PH port map (clk=>sysclk, D=>sXXH, L=>SET_FW, Q=> XXHBU);
 XXH_IN <= (XXHBU and MPX_ROS_LCH) or (S_REG_0 and not MPX_ROS_LCH);
 X_SET <= T3SET or sMACH_RST_MPX;
-XXH_PH: PH port map (D=>XXH_IN, L=>X_SET, Q=> sXXH);
+XXH_PH: PH port map (clk=>sysclk, D=>XXH_IN, L=>X_SET, Q=> sXXH);
 XXH <= sXXH;
 
-XH_BU: PH port map (D=>sXH, L=>SET_FW, Q=> XHBU);
+XH_BU: PH port map (clk=>sysclk, D=>sXH, L=>SET_FW, Q=> XHBU);
 -- XH_IN <= (XHBU and MPX_ROS_LCH) or (not S_REG_1 and not MPX_ROS_LCH);
 XH_IN <= (XHBU and MPX_ROS_LCH) or (S_REG_1 and not MPX_ROS_LCH);
-XH_PH: PH port map (D=>XH_IN, L=>X_SET, Q=>sXH);
+XH_PH: PH port map (clk=>sysclk, D=>XH_IN, L=>X_SET, Q=>sXH);
 XH <= sXH;
 
-XL_BU: PH port map (D=>sXL, L=>SET_FW, Q=> XLBU);
+XL_BU: PH port map (clk=>sysclk, D=>sXL, L=>SET_FW, Q=> XLBU);
 -- XL_IN <= (XLBU and MPX_ROS_LCH) or (not S_REG_2 and not MPX_ROS_LCH);
 XL_IN <= (XLBU and MPX_ROS_LCH) or (S_REG_2 and not MPX_ROS_LCH);
-XL_PH: PH port map (D=>XL_IN, L=>X_SET, Q=>sXL);
+XL_PH: PH port map (clk=>sysclk, D=>XL_IN, L=>X_SET, Q=>sXL);
 XL <= sXL;
 
 -- MPX Flags
@@ -120,22 +120,22 @@ MACH_RST_MPX <= sMACH_RST_MPX;
 
 CK11XX <= CK_SALS(0) and CK_SALS(1) and FBK_T2;
 CHNL_L <= sMACH_RST_MPX or CK11XX;
-MPX_CHNL: PH port map (D=>KP,L=>CHNL_L, Q=>sFT_7_BIT_MPX_CHNL_INTRP);
+MPX_CHNL: PH port map (clk=>sysclk, D=>KP,L=>CHNL_L, Q=>sFT_7_BIT_MPX_CHNL_INTRP);
 FT_7_BIT_MPX_CHNL_INTRP <= sFT_7_BIT_MPX_CHNL_INTRP;
 
 CKX11X <= CK_SALS(1) and CK_SALS(2) and FBK_T2;
 OPN_L <= sMACH_RST_MPX or CKX11X;
-MPX_OPN: PH port map (D=>KP,L=>OPN_L, Q=>sFT_2_BIT_MPX_OPN_LCH);
+MPX_OPN: PH port map (clk=>sysclk, D=>KP,L=>OPN_L, Q=>sFT_2_BIT_MPX_OPN_LCH);
 FT_2_BIT_MPX_OPN_LCH <= sFT_2_BIT_MPX_OPN_LCH;
 
 CK1X1X <= CK_SALS(0) and CK_SALS(2) and FBK_T2;
 SUPPR_L <= sMACH_RST_MPX or CK1X1X;
-SUPPR_CTRL: PH port map (D=>KP,L=>SUPPR_L, Q=>sSUPPR_CTRL_LCH);
+SUPPR_CTRL: PH port map (clk=>sysclk, D=>KP,L=>SUPPR_L, Q=>sSUPPR_CTRL_LCH);
 SUPPR_CTRL_LCH <= sSUPPR_CTRL_LCH;
 
 CKX1X1 <= CK_SALS(1) and CK_SALS(3) and FBK_T2;
 OUT_L <= sMACH_RST_MPX or CKX1X1;
-OP_OUT_CTRL: PH port map (D=>KP,L=>OUT_L, Q=>notOP_OUT_SIG);
+OP_OUT_CTRL: PH port map (clk=>sysclk, D=>KP,L=>OUT_L, Q=>notOP_OUT_SIG);
 OP_OUT_SIG <= not notOP_OUT_SIG;
 
 MPX_OPN_LT_GATE <= CKX11X;
@@ -143,11 +143,11 @@ MPX_OPN_LT_GATE <= CKX11X;
 -- External Interrupt Masks
 -- ?? Should the R_REG bits be inverted before use?
 CKXX11 <= CK_SALS(2) and CK_SALS(3) and FBK_T2;
-MPX_MASK: PH port map (D=>R_REG(0),L=>CKXX11, Q=>MPXMask);
+MPX_MASK: PH port map (clk=>sysclk, D=>R_REG(0),L=>CKXX11, Q=>MPXMask);
 MPX_INTRPT <= sFT_7_BIT_MPX_CHNL_INTRP and MPXMask;
-SX1MASK: PH port map (D=>R_REG(1),L=>CKXX11, Q=>SX1_MASK);
-EXT_MASK: PH port map (D=>R_REG(7),L=>CKXX11, Q=>EXT_TRAP_MASK_ON);
-SX2MASK: PH port map (D=>R_REG(2),L=>CKXX11, Q=>SX2_MASK);
+SX1MASK: PH port map (clk=>sysclk, D=>R_REG(1),L=>CKXX11, Q=>SX1_MASK);
+EXT_MASK: PH port map (clk=>sysclk, D=>R_REG(7),L=>CKXX11, Q=>EXT_TRAP_MASK_ON);
+SX2MASK: PH port map (clk=>sysclk, D=>R_REG(2),L=>CKXX11, Q=>SX2_MASK);
 
 -- MPX BUS OUT REGISTER
 
@@ -159,7 +159,7 @@ SET_BUS_O_CTRL_LCH <= sSET_BUS_O_CTRL;
 
 BusO_Set <= R_REG and (0 to 8=>(sSET_BUS_O_CTRL and T2)); -- ??? "and T2" added to prevent incorrect setting of BUS_O
 BusO_Reset <= (0 to 8=>sSET_BUS_O_CTRL and T1);
-MPX_BUSO: FLVL port map (S=>BusO_Set,R=>BusO_Reset,Q=>MPX_BUS_O_REG);
+MPX_BUSO: FLV port map (clk=>sysclk, S=>BusO_Set,R=>BusO_Reset,Q=>MPX_BUS_O_REG);
 
 end FMD;
 

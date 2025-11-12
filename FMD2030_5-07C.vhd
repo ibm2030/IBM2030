@@ -47,9 +47,9 @@ use buses.Buses_package.all;
 ENTITY ARegAssm IS
 	port
 	(
-		-- Inputs        
-		USE_MANUAL_DECODER : IN STD_LOGIC; -- 03D
-		USE_ALT_CA_DECODER : IN STD_LOGIC; -- 02B
+		-- Inputs
+        USE_MANUAL_DECODER : IN STD_LOGIC; -- 03D
+        USE_ALT_CA_DECODER : IN STD_LOGIC; -- 02B
 		USE_BASIC_CA_DECO : IN STD_LOGIC; -- 02A
 		E_SEL_SW_BUS : IN E_SW_BUS_Type; -- 04C
 		GTD_CA_BITS : IN STD_LOGIC_VECTOR(0 to 3); -- 05C
@@ -59,10 +59,12 @@ ENTITY ARegAssm IS
 		Q_REG : IN STD_LOGIC_VECTOR(0 to 8); -- 08B
 		SEL_CHNL_GJ_BUS : IN STD_LOGIC_VECTOR(0 to 8) := "000000000"; -- 11B
 		GT_GJ_TO_A_REG : IN STD_LOGIC := '0'; -- 12C
+		sysclk : IN STD_LOGIC;
 		-- Outputs
 --		GT_DDC_TO_A_BUS : OUT STD_LOGIC; -- 07A
 		GT_Q_REG_TO_A_BUS : OUT STD_LOGIC; -- 07A
-		A_BUS : INOUT STD_LOGIC_VECTOR(0 to 8)
+		A_BUS : INOUT STD_LOGIC_VECTOR(0 to 8);
+		FT1_BIT_HOLD_IN : OUT STD_LOGIC
 	);
 END ARegAssm;
 
@@ -73,6 +75,7 @@ signal	sGT_Q_REG_TO_A_BUS : STD_LOGIC;
 signal	sGT_DDC_TO_A_BUS : STD_LOGIC;
 signal	GT_S_REG_TO_A : STD_LOGIC;
 signal	JI_REG : STD_LOGIC_VECTOR(0 to 8) := "000000000"; -- BE3D5
+signal  FT1set : STD_LOGIC;
 
 BEGIN
 -- Fig 5-07C
@@ -91,6 +94,12 @@ A_BUS <= not(S & '0') when GT_S_REG_TO_A='1' else
 	"111111111";
 -- A_REG_BUS_2 <= ((S & '0') and (A_REG_BUS_2'range => GT_S_REG_TO_A)) or ((MC_CTRL_REG & '0') and (A_REG_BUS_2'range => (GT_MC_REG_TO_A_BUS and not CHK_SW_DISABLE))); -- ABJK6 AB3L6
 -- A_REG_BUS_3 <= (JI_REG and (A_REG_BUS_3'range => sGT_DDC_TO_A_BUS)) or (SEL_CHNL_GJ_BUS and (A_REG_BUS_3'range => GT_GJ_TO_A_REG)) or (Q_REG and (A_REG_BUS_3'range => GT_Q_REG_TO_A_BUS)); -- AC2D2
+
+-- Direct Control stuff, incomplete
+-- RD_OUT <= not (G_REG(7) and GT_TIMING);
+-- FT1set <= SW_DIAG or (not RD_OUT and not HOLD_IN);
+-- FT1Lch: FL(clk=>sysclk, S=> , R=>RD_OUT , Q=>FT1_BIT_HOLD_IN);
+FT1_BIT_HOLD_IN <= '0';
 
 END FMD; 
 

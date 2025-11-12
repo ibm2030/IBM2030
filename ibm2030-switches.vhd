@@ -144,6 +144,10 @@ entity switches is
 end switches;
 
 architecture Behavioral of switches is
+
+attribute PULLTYPE: string;
+attribute PULLTYPE of SDA : signal is "PULLDOWN";
+
 subtype debounce is std_logic_vector(0 to 3);
 signal scan : std_logic_vector(3 downto 0) := "0000";
 signal counter : std_logic_vector(14 downto 0) := (others=>'0');
@@ -153,7 +157,7 @@ signal SwE_raw,SwE_combined : std_logic_vector(3 downto 0) := "0000";
 signal UseInner,UseMid,UseOuter : Boolean;
 signal SwAC,SwAC_combined : std_logic_vector(3 downto 0) := "0000"; -- Address Compare switch
 signal Parity_in : std_logic;
-signal RawSw_powerOff, RawSw_SystemReset, RawSw_Start, RawSw_Load, RawSw_Stop, RawSw_LampTest : std_logic;
+signal RawSw_powerOff, RawSw_SystemReset, RawSw_Start, RawSw_Load, RawSw_Stop, RawSw_LampTest, RawSw_SingleCycle, RawSw_SingleInstr : std_logic;
 -- signal RawSw_Interrupt, RawSw_Load, RawSw_SystemReset, RawSw_RoarReset, RawSw_Start,
 -- 		RawSw_SetIC, RawSw_CheckReset, RawSw_Stop, RawSw_IntTmr, RawSw_Store, 
 -- 		RawSw_Display : STD_LOGIC; -- Right-hand pushbuttons
@@ -164,7 +168,7 @@ signal debouncePowerOff, debounceInterrupt, debounceLoad,
 signal timerOut : std_logic := '0';
 -- signal sClock1ms : std_logic := '0';
 
-signal max7318_switches : std_logic_vector(0 to 63);
+signal max7318_switches : std_logic_vector(0 to 63) := (others => '0');
 
 attribute mark_debug : string;
 attribute mark_debug of RawSw_LampTest : signal is "true";
@@ -328,9 +332,11 @@ Sw_Proc_Proc <= '1' when max7318_switches(0 to 1)="00" else '0';
 Sw_Proc_Scan <= '1' when max7318_switches(1)='1' else '0';
 
 -- Rate
-Sw_Rate_Single_Cycle <= '1' when max7318_switches(3)='1' else '0';
-Sw_Rate_Process <= '1' when max7318_switches(2 to 3)="00" else '0';
-Sw_Rate_Instruction_Step <= '1' when max7318_switches(2)='1' else '0';
+-- RawSw_SingleCycle overrides to Single_Cycle
+-- RawSw_SingleInstr overrides to Instruction_Step (unless Single_Cycle)
+Sw_Rate_Single_Cycle <= '1' when max7318_switches(3)='1' or RawSw_SingleCycle='1' else '0';
+Sw_Rate_Process <= '1' when max7318_switches(2 to 3)="00" and RawSw_SingleCycle='0' and RawSw_SingleInstr='0' else '0';
+Sw_Rate_Instruction_Step <= '1' when (max7318_switches(2)='1' or RawSw_SingleInstr='1') and RawSw_SingleCycle='0' else '0';
 
 -- Check Control
 Sw_Chk_Chk_Restart <= '1' when max7318_switches(11)='1' else '0';
@@ -358,6 +364,8 @@ RawSw_Stop <= pb(3);
 -- RawSw_SetIC <= sw(5);
 -- RawSw_CheckReset <= sw(6);
 RawSw_LampTest <= sw(0);
+RawSw_SingleCycle <= sw(1); -- 1 is override
+RawSw_SingleInstr <= sw(2); -- 1 is override
 
 end behavioral;
 

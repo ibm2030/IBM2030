@@ -114,7 +114,7 @@ ENTITY n1050_ATTACH IS
 		-- Clocks
 		T1,T2,T3,T4 : IN STD_LOGIC;
 		P1,P2,P3,P4 : IN STD_LOGIC;
-		clk : IN STD_LOGIC		
+		sysclk : IN STD_LOGIC
 	);
 END n1050_ATTACH;
 

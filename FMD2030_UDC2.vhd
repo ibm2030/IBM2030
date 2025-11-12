@@ -210,10 +210,11 @@ port(
 		ADDR_IN_LCHD : OUT STD_LOGIC;
 		OPNL_IN_LCHD : OUT STD_LOGIC;
 		SERV_IN_LCHD : OUT STD_LOGIC;
+		FT1 : OUT STD_LOGIC;
 
 		-- Inputs from UDC3
 		T_REQUEST : IN STD_LOGIC; -- 10B
-		STORE_HR, STORE_GR : IN STD_LOGIC; -- 14D, 12D
+		STORE_HR, STORE_GR : IN STD_LOGIC := '0'; -- 14D, 12D
 		SEL_SHARE_CYCLE : IN STD_LOGIC; -- 12D
 		SEL_R_W_CTRL : IN STD_LOGIC; -- 12C
 		SEL_CHNL_CHK : IN STD_LOGIC; -- 11A
@@ -255,12 +256,15 @@ port(
 	 	  P1,P2,P3,P4 : OUT STD_LOGIC;
 		  SEL_T1, SEL_T3 : IN STD_LOGIC;
 		  M_CONV_OSC,P_CONV_OSC,M_CONV_OSC_2 : OUT STD_LOGIC;
-		  Clk : IN STD_LOGIC
+		  clk50, sysclk : IN STD_LOGIC
 		          
         );
 end entity UDC2;
 
 architecture FMD of UDC2 is
+attribute mark_debug : string;
+attribute keep : string;
+
 signal	sFO : STD_LOGIC_VECTOR(0 to 7);
 signal	sFO_P : STD_LOGIC;
 signal	OPNL_IN : STD_LOGIC;
@@ -318,19 +322,25 @@ signal  SUPPR_CTRL_LCH,OP_OUT_SIG,SX1_MASK,SX2_MASK,FAK,SET_BUS_O_CTRL_LCH : STD
 -- signal	sMPX_BUS_O_REG : STD_LOGIC_VECTOR(0 to 8);
 signal	sFT2, sFT7 : STD_LOGIC;
 
+attribute mark_debug of CLOCK_START : signal is "true";
+attribute keep of CLOCK_START : signal is "true";
+attribute mark_debug of Z_BUS : signal is "true";
+attribute keep of Z_BUS : signal is "true";
+
+
 begin
     -- Clock
 clock_section: entity Clock_Sect port map (
-	CLOCK_IN => CLOCK_IN,
-   T1 => sT1,
-   T2 => sT2,
-   T3 => sT3,
-   T4 => sT4,
-   P1 => sP1,
-   P2 => sP2,
-   P3 => sP3,
-   P4 => sP4,
-   CLOCK_START => CLOCK_START,
+    sysclk => sysclk,
+    T1 => sT1,
+    T2 => sT2,
+    T3 => sT3,
+    T4 => sT4,
+    P1 => sP1,
+    P2 => sP2,
+    P3 => sP3,
+    P4 => sP4,
+    CLOCK_START => CLOCK_START,
 	CLOCK_ON => sCLOCK_ON,
 	CLOCK_OFF => sCLOCK_OFF,
 	MACH_RST_3 => MACH_RST_3,
@@ -452,7 +462,7 @@ ALU: entity ABALU port map(
 		T3 => sT3,
 		T4 => sT4,
 		P1 => sP1,
-		Clk => Clk
+		sysclk => sysclk
 		
 	);
 A_REG_PC <= sA_REG_PC;
@@ -542,7 +552,7 @@ r_reg: entity work.RREG_STG port map (
 		T2 => sT2,
 		T3 => sT3, -- not really needed
 		T4 => sT4,
-		clk => clk
+		sysclk => sysclk
 		);
 		R <= sR;
 		
@@ -570,7 +580,7 @@ SAR_SA : entity work.SARSA port map (
 		SA_REG => SA,
 		SEL_T1 => SEL_T1,
 		T1 => sT1,
-		CLK => clk
+		sysclk => sysclk
 		);
 		
 S_Reg : entity SReg port map (
@@ -599,8 +609,8 @@ S_Reg : entity SReg port map (
 		T2 => sT2,
 		T3 => sT3,
 		T4 => sT4,
-     S => sS,
-	  clk => clk
+        S => sS,
+        sysclk => sysclk
 	  );
 S <= sS;
 
@@ -685,7 +695,7 @@ ChkReg_Ind : entity ChkRegInd port map (
 		T3 => sT3,
 		T4 => sT4,
 		P1 => sP1,
-		clk => clk
+		sysclk => sysclk
 		
 	);
 
@@ -715,7 +725,8 @@ STP : entity QReg_STP port map (
 		N_MEM_SELECT => N_STACK_MEM_SELECT,
 		GK => GK,
 		HK => HK,
-		CLK => CLOCK_IN,
+		sysclk => sysclk,
+		clk50 => clk50,
 		-- Outputs
 		Q_REG_BUS => Q_REG_BUS,
 		SEL_CPU_BUMP => SEL_CPU_BUMP,
@@ -738,9 +749,11 @@ ARegA : entity ARegAssm port map (
 		S => sS,
 		MC_CTRL_REG => MC,
 		Q_REG => Q_REG_BUS,
+		sysclk => sysclk,
 		-- Outputs
 		A_BUS => A_BUS2,
-		GT_Q_REG_TO_A_BUS => GT_Q_REG_TO_A_BUS
+		GT_Q_REG_TO_A_BUS => GT_Q_REG_TO_A_BUS,
+		FT1_BIT_HOLD_IN => FT1
 	);
 
 MpxReg1 : entity MpxFOFB port map (
@@ -779,9 +792,9 @@ MpxReg1 : entity MpxFOFB port map (
 		SET_BUS_O_CTRL_LCH => SET_BUS_O_CTRL_LCH, -- 08D
 		MPX_BUS_O_REG(0 to 7) => sFO,-- 08A 08D 05C 11D 13D
 		MPX_BUS_O_REG(8) => sFO_P,
-		
-		clk => clk
+		sysclk => sysclk
 		);
+
 		XL <= sXL;
 		XH <= sXH;
 		XXH <= sXXH;
@@ -843,7 +856,7 @@ MpxChnlCtrls: entity MpxFA port map (	-- 5-08D
 --           OP_OUT => OP_OUT,
            METERING_OUT => METERING_OUT,
            CLOCK_OUT => CLOCK_OUT,
-			  CLK => CLK,
+			  sysclk => sysclk,
 			  DEBUG => DEBUG,
 			  -- Mpx Indicators
 				OPNL_IN => OPNL_IN,

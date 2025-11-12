@@ -73,15 +73,20 @@ ENTITY RWStgClk1st32k IS
 		-- Debug
 		DEBUG1,DEBUG2,DEBUG3,DEBUG4 : OUT STD_LOGIC;
 		DEBUG : OUT STD_LOGIC;
-		DBG_TD1_1, DBG_TD1_2 : OUT STD_LOGIC_VECTOR(1 to 38);
+		DBG_TD1_1, DBG_TD1_2 : OUT STD_LOGIC_VECTOR(0 to 48);
 		DBG_RD_OR_WR_SET1,DBG_RD_OR_WR_RST1 : OUT STD_LOGIC;
 		-- Clocks
 		T1,T2,T3,T4 : IN STD_LOGIC;
-		CLK : IN STD_LOGIC -- 50MHz / 20ns
+		clk40M : IN STD_LOGIC; -- 40MHz / 25ns
+		clk50M : IN STD_LOGIC; -- 50MHz / 20ns
+		sysclk : IN STD_LOGIC -- Fast
 	);
 END RWStgClk1st32k;
 
 ARCHITECTURE FMD OF RWStgClk1st32k IS 
+
+attribute mark_debug : string;
+attribute keep : string;
 
 signal START_RD,START_WR : STD_LOGIC;
 signal START_1ST_32K, START_2ND_32K : STD_LOGIC;
@@ -89,24 +94,46 @@ signal READ_CALL_TO_MEM,WRITE_CALL_TO_MEM : STD_LOGIC;
 signal sREAD_CALL : STD_LOGIC;
 signal sUSE_LOCAL_MAIN_MEM : STD_LOGIC;
 signal USE_LOCAL_Set,USE_LOCAL_Reset : STD_LOGIC;
-signal TD1 : STD_LOGIC_VECTOR(1 to 38) := (others=>'0'); -- 20ns steps 20 to 740ns
-signal RD_OR_WR_RST1, RD_OR_WR_SET1, nRD_OR_WR_SET1, CTRL_R_WIDTH1, TD1IN : STD_LOGIC;
-signal TD1_80, TD1_150, TD1_200, TD1_500, TD1_560, TD1_660, TD1_680, TD1_700 : STD_LOGIC;
-signal RD_OR_WR_SET1_RESET, dRD_OR_WR_SET1_RESET, CTRL_R_WIDTH1_RESET : STD_LOGIC;
+signal TD1 : STD_LOGIC_VECTOR(0 to 48) := (others=>'0'); -- 25ns steps 25 to 1200ns
+signal RD_OR_WR_SET1, RD_OR_WR_RST1, TD1IN : STD_LOGIC := '0';
+signal RD_OR_WR_SET1_RESET, RD_OR_WR_SET1_SET, RD_OR_WR_RST1_SET, nRD_OR_WR_SET1 : STD_LOGIC; 
+signal CTRL_R_WIDTH1, nTD1_125 : STD_LOGIC;
+-- signal TD1_80, TD1_150, TD1_200, TD1_500, TD1_560, TD1_660, TD1_680, TD1_700 : STD_LOGIC;
+signal TD1_25, TD1_75, TD1_125, TD1_150, TD1_400, TD1_500, TD1_525, TD1_725, TD1_750, TD1_775, TD1_800, TD1_875, TD1_925, TD1_950, TD1_1050, TD1_1200 : STD_LOGIC;
+signal dRD_OR_WR_SET1_RESET, CTRL_R_WIDTH1_RESET : STD_LOGIC;
 signal READ_ECHO_1_SET, READ_ECHO_1_RESET, READ_ECHO_2_RESET : STD_LOGIC;
 signal WRITE_ECHO_1_SET : STD_LOGIC;
 signal WRITE_ECHO_1_RESET : STD_LOGIC;
 signal READ_RST_SET1, READ_RST_SET2 : STD_LOGIC;
 signal READ_RST_RESET1, READ_RST_RESET2 : STD_LOGIC;
-signal RD_RST_CTRL1 : STD_LOGIC;
+signal RD_RST_CTRL1 : STD_LOGIC := '0';
 signal WRITE_RST_SET1 : STD_LOGIC;
 signal WRITE_RST_RESET1 : STD_LOGIC;
-signal WR_RST_CTRL1 : STD_LOGIC;
-signal SET_READ_LCHS1 : STD_LOGIC;
+signal WR_RST_CTRL1 : STD_LOGIC := '0';
+signal SET_READ_LCHS1 : STD_LOGIC := '0';
 signal DATA_READY1_SET, DATA_READY1_RESET : STD_LOGIC;
 signal SET_READ_LCHS1_RESET : STD_LOGIC;
 signal dT1 : STD_LOGIC;
-signal sDATA_READY_1 : STD_LOGIC;
+signal sDATA_READY_1 : STD_LOGIC := '0';
+
+attribute mark_debug of READ_CALL_TO_MEM : signal is "true";
+attribute keep of READ_CALL_TO_MEM : signal is "true";
+attribute mark_debug of WRITE_CALL_TO_MEM : signal is "true";
+attribute keep of WRITE_CALL_TO_MEM : signal is "true";
+attribute mark_debug of DATA_READY_1 : signal is "true";
+attribute keep of DATA_READY_1 : signal is "true";
+attribute mark_debug of DATA_READY1_SET : signal is "true";
+attribute keep of DATA_READY1_SET : signal is "true";
+attribute mark_debug of DATA_READY1_RESET : signal is "true";
+attribute keep of DATA_READY1_RESET : signal is "true";
+attribute mark_debug of SET_READ_LCHS1 : signal is "true";
+attribute keep of SET_READ_LCHS1 : signal is "true";
+attribute mark_debug of RD_RST_CTRL1 : signal is "true";
+attribute keep of RD_RST_CTRL1 : signal is "true";
+attribute mark_debug of WR_RST_CTRL1 : signal is "true";
+attribute keep of WR_RST_CTRL1 : signal is "true";
+attribute mark_debug of TD1IN,TD1_500,TD1_750,TD1_925,TD1_1200 : signal is "true";
+attribute keep of TD1IN,TD1_500,TD1_750,TD1_925,TD1_1200 : signal is "true";
 
 BEGIN
 -- Fig 5-05D
@@ -119,7 +146,7 @@ WRITE_CALL_TO_MEM <= (MAN_WR_CALL or SEL_WR_CALL or START_WR) and not ROAR_RESTT
 
 USE_LOCAL_Set <= EARLY_LOCAL_STG and READ_CALL_TO_MEM;
 USE_LOCAL_Reset <= not EARLY_LOCAL_STG and READ_CALL_TO_MEM;
-USE_LOCAL: FLL port map(USE_LOCAL_Set,USE_LOCAL_Reset,sUSE_LOCAL_MAIN_MEM); -- CB1E2
+USE_LOCAL: FL port map(clk=>sysclk, S=>USE_LOCAL_Set, R=>USE_LOCAL_Reset, Q=>sUSE_LOCAL_MAIN_MEM); -- CB1E2
 USE_LOCAL_MAIN_MEM <= sUSE_LOCAL_MAIN_MEM;
 USE_MAIN_MEMORY <= not sUSE_LOCAL_MAIN_MEM; -- CB1H2
 
@@ -132,49 +159,84 @@ START_1ST_32K <= READ_CALL_TO_MEM or WRITE_CALL_TO_MEM; -- CB1E2 combined 1st & 
 -- WRITE_ECHO_n ON at 150ns OFF at 720ns (or MACH_RST_SW)
 -- DATA_READY_n ON at 640ns OFF at 700ns (or MACH_RST_SW)
 
--- First 32K
-TD1_80 <= TD1(4); -- 80ns
-TD1_150 <= TD1(8); -- 160ns
-TD1_200 <= TD1(10); -- 200ns
-TD1_500 <= TD1(25); -- 500ns
-TD1_560 <= TD1(28); -- 560ns
-TD1_660 <= TD1(33); -- 660ns
-TD1_680 <= TD1(34); -- 680ns
-TD1_700 <= TD1(35); -- 700ns
+-- First 32K 40MHz clk, 1000ns cycle
+--TD1_25 <= TD1(0);   -- 25ns
+--TD1_75 <= TD1(2);   -- 75ns
+--TD1_125 <= TD1(4);  -- 125ns
+--TD1_150 <= TD1(5);  -- 150ns
+--TD1_400 <= TD1(15); -- 400ns
+--TD1_500 <= TD1(19); -- 500ns
+--TD1_525 <= TD1(20); -- 525ns
+--TD1_725 <= TD1(28); -- 725ns
+--TD1_750 <= TD1(29); -- 750ns
+--TD1_775 <= TD1(30); -- 775ns
+--TD1_800 <= TD1(31); -- 800ns
+--TD1_875 <= TD1(34); -- 875ns
+--TD1_925 <= TD1(36); -- 925ns
+--TD1_950 <= TD1(37); -- 950ns
+--TD1_1050 <= TD1(41); -- 1050ns
+--TD1_1200 <= TD1(47); -- 1200ns
 
-nRD_OR_WR_SET1 <= not RD_OR_WR_SET1;
-RD_OR_WR_RST1_FL: FLL port map(TD1_80, nRD_OR_WR_SET1, RD_OR_WR_RST1);
+-- First 32K 50MHz (20ns) clk, 750ns cycle
+TD1_25 <= TD1(0);   -- 25ns
+TD1_75 <= TD1(2);   -- 75ns
+TD1_125 <= TD1(5);  -- 125ns (has to be more than half a phase, 95ns)
+TD1_150 <= TD1(6);  -- 150ns
+TD1_400 <= TD1(15); -- 400ns
+TD1_500 <= TD1(19); -- 500ns
+TD1_525 <= TD1(20); -- 525ns
+TD1_725 <= TD1(28); -- 725ns
+TD1_750 <= TD1(29); -- 750ns
+TD1_775 <= TD1(30); -- 775ns
+TD1_800 <= TD1(31); -- 800ns
+TD1_875 <= TD1(34); -- 875ns
+TD1_925 <= TD1(36); -- 925ns
+TD1_950 <= TD1(37); -- 950ns
+TD1_1050 <= TD1(41); -- 1050ns
+TD1_1200 <= TD1(47); -- 1200ns
+
+RD_OR_WR_RST1_FL: FL port map(clk=>sysclk, S=>TD1_125, R=>nRD_OR_WR_SET1, Q=>RD_OR_WR_RST1);
 RD_OR_WR_SET1_RESET <= RD_OR_WR_RST1 or MACH_RST_SW;
 -- The delay is to prevent a combinatorial loop:
-Delay_RD_OR_WR_SET1_RESET: AR port map (D=>RD_OR_WR_SET1_RESET, clk=>Clk, Q=>dRD_OR_WR_SET1_RESET);
-RD_OR_WR_SET1_FL: FLL port map(START_1ST_32K, dRD_OR_WR_SET1_RESET, RD_OR_WR_SET1);
+-- Delay_RD_OR_WR_SET1_RESET: AR port map (clk=>sysclk, D=>RD_OR_WR_SET1_RESET, Q=>dRD_OR_WR_SET1_RESET);
+RD_OR_WR_SET1_FL: FLF port map(clk=>sysclk, S=>START_1ST_32K, R=>RD_OR_WR_SET1_RESET, Q=>RD_OR_WR_SET1);
+nRD_OR_WR_SET1 <= not RD_OR_WR_SET1;
+nTD1_125 <= not TD1_125;
+-- RD_OR_WR_RST1 <= not nRD_OR_WR_RST1;
 TD1IN <= not RD_OR_WR_RST1 and RD_OR_WR_SET1;
 
--- READ CLOCK 0
-READ_ECHO_1_SET <= TD1_150 and SET_READ_LCHS1;
-READ_ECHO_1_RESET <= MACH_RST_SW or (TD1_680 and RD_RST_CTRL1);
-READ_ECHO_1_FL: FLL port map(READ_ECHO_1_SET, READ_ECHO_1_RESET, READ_ECHO_1); -- 150 to 680ns
--- READ CLOCK 4
-DATA_READY1_SET <= TD1_560 and SET_READ_LCHS1;
-DATA_READY1_RESET <= MACH_RST_SW or (TD1_660 and RD_RST_CTRL1);
-DATA_READY1_FL: FLL port map(DATA_READY1_SET, DATA_READY1_RESET, sDATA_READY_1); -- 560 to 660ns
-DATA_READY_1 <= sDATA_READY_1;
+--RD_OR_WR_RST1_SET <= START_1ST_32K and not RD_OR_WR_SET1;
+--RD_OR_WR_RST1_FL : FLF port map(clk=>sysclk, S=>RD_OR_WR_RST1_SET, R=>TD1_125, Q=>TD1IN);
+--RD_OR_WR_SET1_SET <= TD1_125 and TD1IN;
+--RD_OR_WR_SET1_RESET <= not START_1ST_32K;
+--RD_OR_WR_SET1_FL : FLF port map(clk=>sysclk, S=>RD_OR_WR_SET1_SET, R=>RD_OR_WR_SET1_RESET, Q=>RD_OR_WR_SET1);
 
--- READ CLOCK 5
+-- READ CLOCK 0 READ ECHO 25-1050ns
+READ_ECHO_1_SET <= TD1_25 and SET_READ_LCHS1;
+READ_ECHO_1_RESET <= MACH_RST_SW or (TD1_1050 and RD_RST_CTRL1);
+READ_ECHO_1_FL: FLF port map(clk=>sysclk, S=>READ_ECHO_1_SET, R=>READ_ECHO_1_RESET, Q=>READ_ECHO_1); -- 25 to 1050ns
+-- READ CLOCK 4 DATA READY 750-925ns
+DATA_READY1_SET <= TD1_750 and SET_READ_LCHS1;
+DATA_READY1_RESET <= MACH_RST_SW or (TD1_925 and RD_RST_CTRL1);
+DATA_READY1_FL: FLF port map(clk=>sysclk, S=>DATA_READY1_SET, R=>DATA_READY1_RESET, Q=>sDATA_READY_1); -- 750 to 925ns
+DATA_READY_1 <= sDATA_READY_1;
+-- READ CLOCK 5 RD RST CTRL 500-1200ns
 READ_RST_SET1 <= TD1_500 and SET_READ_LCHS1;
-READ_RST_RESET1 <= MACH_RST_SW or TD1_700;
-READ_RST1_FL: FLL port map(READ_RST_SET1, READ_RST_RESET1, RD_RST_CTRL1); -- 500 to 700ns
--- WRITE CLOCK 0
+READ_RST_RESET1 <= MACH_RST_SW or TD1_1200;
+READ_RST1_FL: FLF port map(clk=>sysclk, S=>READ_RST_SET1, R=>READ_RST_RESET1, Q=>RD_RST_CTRL1); -- 500 to 1200ns
+
+-- WRITE CLOCK 0 WRITE ECHO 150-950ns
 WRITE_ECHO_1_SET <= TD1_150 and not SET_READ_LCHS1;
-WRITE_ECHO_1_RESET <= MACH_RST_SW or (TD1_680 and WR_RST_CTRL1);
-WRITE_ECHO_1_FL: FLL port map(WRITE_ECHO_1_SET, WRITE_ECHO_1_RESET, WRITE_ECHO_1); -- 150 to 680ns
--- WRITE CLOCK 4
-SET_READ_LCHS1_RESET <= MACH_RST_SW or WRITE_CALL_TO_MEM; -- ??
-SET_READ_LCHS1_FL: FLL port map(READ_CALL_TO_MEM, SET_READ_LCHS1_RESET, SET_READ_LCHS1); -- RD CALL to WR CALL
--- WRITE CLOCK 5
+WRITE_ECHO_1_RESET <= MACH_RST_SW or (TD1_950 and WR_RST_CTRL1);
+WRITE_ECHO_1_FL: FLF port map(clk=>sysclk, S=>WRITE_ECHO_1_SET, R=>WRITE_ECHO_1_RESET, Q=>WRITE_ECHO_1); -- 150 to 950ns
+-- WRITE CLOCK 4 SET READ LCHS
+-- SET_READ_LCHS1_RESET <= MACH_RST_SW or (WRITE_CALL_TO_MEM and WR_RST_CTRL1); -- ??
+SET_READ_LCHS1_RESET <= MACH_RST_SW or WRITE_CALL_TO_MEM; -- Remove WR_RST_CTRL
+SET_READ_LCHS1_FL: FLF port map(clk=>sysclk, S=>READ_CALL_TO_MEM, R=>SET_READ_LCHS1_RESET, Q=>SET_READ_LCHS1); -- RD CALL to WR CALL
+-- WRITE CLOCK 5 WR RST CTRL 500-1050ns
 WRITE_RST_SET1 <= TD1_500 and not SET_READ_LCHS1;
 WRITE_RST_RESET1 <= MACH_RST_SW or TD1_150; -- 150ns or 1050ns or 1500ns?
-WRITE_RST1_FL: FLL port map(WRITE_RST_SET1, WRITE_RST_RESET1, WR_RST_CTRL1); -- 500 to 700ns??
+WRITE_RST1_FL: FLF port map(clk=>sysclk, S=>WRITE_RST_SET1, R=>WRITE_RST_RESET1, Q=>WR_RST_CTRL1); -- 500 to 150ns??
 
 -- Second 32K
 READ_ECHO_2 <= '0';
@@ -182,50 +244,50 @@ DATA_READY_2 <= '0';
 WRITE_ECHO_2 <= '0';
 
 -- Debug
-DEBUG <= START_RD;
-DBG_TD1_1 <= TD1;
-DBG_TD1_2 <= TD1;
-DBG_RD_OR_WR_SET1 <= RD_OR_WR_SET1;
-DBG_RD_OR_WR_RST1 <= RD_OR_WR_RST1;
+--DEBUG <= START_RD;
+--DBG_TD1_1 <= TD1;
+--DBG_TD1_2 <= TD1;
+--DBG_RD_OR_WR_SET1 <= RD_OR_WR_SET1;
+--DBG_RD_OR_WR_RST1 <= RD_OR_WR_RST1;
 
-delayLine: process(CLK)
+delayLine: process(clk50M)
 begin
-	if (rising_edge(CLK)) then
-		TD1 <= TD1IN & TD1(1 to TD1'right-1);
+	if (rising_edge(clk50M)) then
+		TD1 <= TD1IN & TD1(0 to TD1'right-1);
 	end if;
 end process;
 -- Debug latch
 
-R_DEBUG: process (clk,T1,TD1IN)
-begin
-	if rising_edge(clk) then
-		if T1='1' and dT1='0' then
-			DEBUG1 <= '0'; -- Reset on rising edge of T1
-		else if (sDATA_READY_1 and T1)='1' then
-			DEBUG1 <= '1'; -- Set on any DATA_READY
-			end if;
-		end if;
-		if T1='1' and dT1='0' then
-			DEBUG2 <= '0'; -- Reset on rising edge of T1
-		else if (sDATA_READY_1 and T2)='1' then
-			DEBUG2 <= '1'; -- Set on any DATA_READY
-			end if;
-		end if;
-		if T1='1' and dT1='0' then
-			DEBUG3 <= '0'; -- Reset on rising edge of T1
-		else if (sDATA_READY_1 and T3)='1' then
-			DEBUG3 <= '1'; -- Set on any DATA_READY
-			end if;
-		end if;
-		if T1='1' and dT1='0' then
-			DEBUG4 <= '0'; -- Reset on rising edge of T1
-		else if (sDATA_READY_1 and T4)='1' then
-			DEBUG4 <= '1'; -- Set on any DATA_READY
-			end if;
-		end if;
-		dT1 <= T1;
-	end if;
-end process;
+--R_DEBUG: process (sysclk,T1,TD1IN)
+--begin
+--	if rising_edge(sysclk) then
+--		if T1='1' and dT1='0' then
+--			DEBUG1 <= '0'; -- Reset on rising edge of T1
+--		else if (sDATA_READY_1 and T1)='1' then
+--			DEBUG1 <= '1'; -- Set on any DATA_READY
+--			end if;
+--		end if;
+--		if T1='1' and dT1='0' then
+--			DEBUG2 <= '0'; -- Reset on rising edge of T1
+--		else if (sDATA_READY_1 and T2)='1' then
+--			DEBUG2 <= '1'; -- Set on any DATA_READY
+--			end if;
+--		end if;
+--		if T1='1' and dT1='0' then
+--			DEBUG3 <= '0'; -- Reset on rising edge of T1
+--		else if (sDATA_READY_1 and T3)='1' then
+--			DEBUG3 <= '1'; -- Set on any DATA_READY
+--			end if;
+--		end if;
+--		if T1='1' and dT1='0' then
+--			DEBUG4 <= '0'; -- Reset on rising edge of T1
+--		else if (sDATA_READY_1 and T4)='1' then
+--			DEBUG4 <= '1'; -- Set on any DATA_READY
+--			end if;
+--		end if;
+--		dT1 <= T1;
+--	end if;
+--end process;
 
 	
 END FMD; 

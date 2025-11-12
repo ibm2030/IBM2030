@@ -68,7 +68,8 @@ entity QReg_STP is
 			CD_REG : in  STD_LOGIC_VECTOR (0 to 3);		-- ALU destination - 0011 specifies Q Reg
 			CLOCK_OFF : in  STD_LOGIC;							-- CPU clock stop
 			GK, HK : in  STD_LOGIC_VECTOR (0 to 3);		-- Storage key from SX1, SX2
-			CLK : in STD_LOGIC;									-- 50MHz FPGA clock
+			sysclk : in STD_LOGIC;									-- Fast FPGA clock
+			clk50 : in STD_LOGIC;									-- 50MHz clock
 			-- Outputs
 			Q_REG_BUS : out  STD_LOGIC_VECTOR (0 to 8);	-- Q Reg output
 			SEL_CPU_BUMP : out  STD_LOGIC;					-- Select usage of Aux Storage
@@ -112,8 +113,8 @@ PROTECT_LOC_CPU_OR_MPX <= (not H_REG_5_PWR) and STP and (sSTACK_PC or not HDWR_S
 PROTECT_LOC_SEL_CHNL <= STP and (sSTACK_PC or not HDWR_STG_KEYS_MAT); -- BE3F2
 
 INH_STG_PROT_PH_D <= GT_T_REG_TO_MN or GT_CK_TO_MN;
-INH_STG_PROT_PH: PH port map(INH_STG_PROT_PH_D,GT_LOCAL_STORAGE,INH_STG_PROT); -- AA1F4
-SEL_CPU_BUMP_PH: PH port map(FORCE_M_REG_123,GT_LOCAL_STORAGE,SEL_CPU_BUMP); -- AA1F4
+INH_STG_PROT_PH: PH port map(clk=>sysclk, D=>INH_STG_PROT_PH_D, L=>GT_LOCAL_STORAGE, Q=>INH_STG_PROT); -- AA1F4
+SEL_CPU_BUMP_PH: PH port map(clk=>sysclk, D=>FORCE_M_REG_123, L=>GT_LOCAL_STORAGE, Q=>SEL_CPU_BUMP); -- AA1F4
 
 STACK_PC <= sSTACK_PC;
 MPX_CP <= not MAIN_STG_CP_1; -- BE3D3 BE3G4
@@ -123,15 +124,15 @@ CD0011 <= '1' when CD_REG="0011" else '0';
 UseQ <= (CD0011 and (N_SEL_SHARE_HOLD or (not CLOCK_OFF))) or (CLOCK_OFF and N_MEM_SELECT and N_SEL_SHARE_HOLD); -- BE3J3 BE3G4 BE3J3
 SET_Q_HI <= MACH_RST_2B or (MAN_STORE_PWR and E_SW_SEL_Q)  or (T4 and UseQ); -- BE3J4
 SET_Q_LO <= MACH_RST_2B or (MAN_STORE_PWR and E_SW_SEL_Q)  or (T4 and UseQ) or (STACK_RD_WR_CONTROL and STACK_DATA_STROBE); -- BE3J4
-Q03: PHV port map(Z_BUS(0 to 3),SET_Q_HI,Q_REG(0 to 3)); -- BE3H2
+Q03: PHV port map(clk => sysclk, D => Z_BUS(0 to 3), L => SET_Q_HI, Q => Q_REG(0 to 3)); -- BE3H2
 Q47P_D <= ((Z_BUS(4 to 7) & Z_BUS_LO_DIG_PARITY) and (4 to 8 => UseQ)) or (STACK_DATA(4 to 8) and not (4 to 8 => UseQ));
-Q47P: PHV port map(Q47P_D, SET_Q_LO, Q_REG(4 to 8));
+Q47P: PHV port map(clk => sysclk, D => Q47P_D, L => SET_Q_LO, Q => Q_REG(4 to 8));
 Q_REG_BUS <= Q_REG;
 sSTACK_PC <= EvenParity(Q_REG(4 to 7));
 
-STP_FL: process(clk)
+STP_FL: process(clk50)
 begin
-	if rising_edge(clk) then
+	if rising_edge(clk50) then
 		setLatch <= not N_STACK_MEMORY_SELECT;
 		delayLine <= setLatch & delayLine(0 to 23);
 		STACK_DATA_STROBE <= delayLine(7); -- 140ns

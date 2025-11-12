@@ -114,12 +114,20 @@ ENTITY RREG_STG IS
 		-- Clocks
 --		P3 : IN STD_LOGIC;
 		T1,T2,T3,T4 : IN STD_LOGIC;
-		clk : IN STD_LOGIC
+		sysclk : IN STD_LOGIC
 	
 	);
 END RREG_STG;
 
 ARCHITECTURE FMD OF RREG_STG IS 
+attribute mark_debug : string;
+attribute keep : string;
+attribute mark_debug of R_REG_BUS : signal is "true";
+attribute keep of R_REG_BUS : signal is "true";
+attribute mark_debug of PHASE_RD_1 : signal is "true";
+attribute keep of PHASE_RD_1 : signal is "true";
+attribute mark_debug of DATA_READY : signal is "true";
+attribute keep of DATA_READY : signal is "true";
 
 TYPE MAIN_STG_TYPE is ARRAY(0 to 1023) of STD_LOGIC_VECTOR(0 to 8);
 -- TYPE MAIN_STG_TYPE is ARRAY(0 to 8191) of STD_LOGIC_VECTOR(0 to 8);
@@ -142,6 +150,18 @@ SIGNAL sALLOW_PROTECT : STD_LOGIC;
 signal sSTORE_BITS : STD_LOGIC_VECTOR(0 to 8);
 signal SX1_STOR_INPUT_DATA_Set,SX1_STOR_INPUT_DATA_Reset,SX2_STOR_INPUT_DATA_Set,SX2_STOR_INPUT_DATA_Reset,
 	PROT_MEM_Set,PROT_MEM_Reset,P_8F_DETECT_Set,P_8F_DETECT_Reset : STD_LOGIC;
+	
+attribute mark_debug of R_MUX : signal is "true";
+attribute keep of R_MUX : signal is "true";
+attribute mark_debug of GT_R_1 : signal is "true";
+attribute keep of GT_R_1 : signal is "true";
+attribute mark_debug of GT_R : signal is "true";
+attribute keep of GT_R : signal is "true";
+attribute mark_debug of MEM_SET_R : signal is "true";
+attribute keep of MEM_SET_R : signal is "true";
+attribute mark_debug of MEM_SET_R2 : signal is "true";
+attribute keep of MEM_SET_R2 : signal is "true";
+
 SIGNAL LOCAL_STG_ARRAY : LOCAL_STG_TYPE;
 SIGNAL MAIN_STG_ARRAY : MAIN_STG_TYPE := (
 16#000# => "000000001", -- 00
@@ -255,10 +275,10 @@ BEGIN
 -- Fig 5-06C
 SX2_STOR_INPUT_DATA_Set <= SX2_RD_CYCLE and SEL_T3;
 SX2_STOR_INPUT_DATA_Reset <= (GT_DETECTORS_TO_HR and SEL_DATA_READY) or (not SEL_R_W_CTRL and not SX2_WR_CYCLE);
-SX2_STOR_INPUT_DATA: FLL port map(SX2_STOR_INPUT_DATA_Set,SX2_STOR_INPUT_DATA_Reset,SX2_STOR); -- AE1G3,AE1L3
+SX2_STOR_INPUT_DATA: FL port map(clk=>sysclk, S=>SX2_STOR_INPUT_DATA_Set, R=>SX2_STOR_INPUT_DATA_Reset, Q=>SX2_STOR); -- AE1G3,AE1L3
 SX1_STOR_INPUT_DATA_Set <= SX1_RD_CYCLE and SEL_T3;
 SX1_STOR_INPUT_DATA_Reset <= (GT_DETECTORS_TO_GR and SEL_DATA_READY) or (not SEL_R_W_CTRL and not SX1_WR_CYCLE);
-SX1_STOR_INPUT_DATA: FLL port map(SX1_STOR_INPUT_DATA_Set,SX1_STOR_INPUT_DATA_Reset,SX1_STOR); -- AD2E4,AD2G4
+SX1_STOR_INPUT_DATA: FL port map(clk=>sysclk, S=>SX1_STOR_INPUT_DATA_Set, R=>SX1_STOR_INPUT_DATA_Reset, Q=>SX1_STOR); -- AD2E4,AD2G4
 INPUT_CORRECTED_P_BIT <= (SX2_STOR and EVEN_HR_0_7_BITS) or (SX1_STOR and EVEN_GR_0_7_BITS) or DR_CORR_P_BIT; -- AD2G4,AA1E7
 
 HRP <= not SX2_STOR and HR_REG_P_BIT and STORE_HR; -- AA1F7
@@ -276,21 +296,21 @@ R_0 <= R_REG(0); -- AA3K6
 
 INH_Z_BUS_SET_R <= CLOCK_OFF or (ALLOW_WRITE_1 and PROT_LOC_CPU_OR_MPX) or (USE_R and PROTECT_MEMORY); -- AB3D5
 FORCE_Z_SET_R <= STORE_HR or STORE_GR or STORE_MAN or (not T1 and COMPUTE_CY_LCH and not INH_Z_BUS_SET_R) or (SALS.SALS_CM(1) and not INH_Z_BUS_SET_R); -- AA1F7,AA1J5
-Delay_ZSetR: AR port map(FORCE_Z_SET_R,clk,FORCE_Z_SET_R2);
+Delay_ZSetR: AR port map(clk => sysclk, D => FORCE_Z_SET_R, Q => FORCE_Z_SET_R2);
 
 STORE_MAN <= (MEM_SELECT and MAN_STORE_PWR) or (MAN_STORE_PWR and E_SW_SEL_R); -- AA1H6
 GT_R_1 <= '1' when STORE_MAN='1' or (CTRL.CTRL_CD="0111" and not INH_Z_BUS_SET_R='1') else '0'; -- AA1H7,AA1J4
 GT_R <= (GT_R_1 and T4) or (GT_R_1 and MAN_STORE) or (DATA_READY and MEM_SET_R) or MACH_RST_SET_LCH_DLY; -- AA1G4
 -- Temp debug replacing above line - without this the diags stop at B96 because ASCII latch never gets set
 -- GT_R <= (GT_R_1 and T4) or (GT_R_1 and MAN_STORE) or (DATA_READY and MEM_SET_R and MANUAL_DISPLAY) or (DATA_READY and MEM_SET_R and P3) or MACH_RST_SET_LCH_DLY; -- AA1G4
-RREG: PHV port map(R_MUX,GT_R,R_REG); -- AA1H4
+RREG: PHV port map(clk => sysclk, D => R_MUX, L => GT_R, Q => R_REG); -- AA1H4
 
 sALLOW_PROTECT <= '1' when ((SALS.SALS_CM="010") or (SALS.SALS_CD="0111")) else '0'; -- AA2J3,AA2G5,AA2K4 ?? Extra inverter not required ??
 ALLOW_PROTECT <= sALLOW_PROTECT;
 
 PROT_MEM_Set <= MN_REG_CHK_SMPLD or (T2 and MEM_WRAP and MAIN_STG);
 PROT_MEM_Reset <= MACH_RST_6 or (not ALLOW_WRITE and T4);
-PROT_MEM: FLL port map(PROT_MEM_Set,PROT_MEM_Reset,PROTECT_MEMORY); -- AB3F5,AB3H6
+PROT_MEM: FL port map(clk=>sysclk, S=>PROT_MEM_Set, R=>PROT_MEM_Reset, Q=>PROTECT_MEMORY); -- AB3F5,AB3H6
 
 -- If we have a protection violation, we must retain the location's value in R so that it can be written back, even if
 -- R contained a new value destined for that location
@@ -306,7 +326,7 @@ FORCE_MEM_SET_R <= MANUAL_DISPLAY or (PROT_LOC_CPU_OR_MPX and sALLOW_PROTECT) or
 -- (this is what FORCE_MEM_SET_R does)
 -- So MEM_SET_R<='1' when CU=X0|1X (i.e. not 01=GR) and CM/=X1X (i.e. not 010=STORE)
 MEM_SET_R <= (FORCE_MEM_SET_R or SALS.SALS_CU(0) or not SALS.SALS_CU(1)) and (not SALS.SALS_CM(1) or FORCE_MEM_SET_R) and not SEL_SHARE_CYCLE; -- AA1J5
-Delay_MemSetR: AR port map(MEM_SET_R,clk,MEM_SET_R2);
+Delay_MemSetR: AR port map(clk=>sysclk, D=>MEM_SET_R, Q=>MEM_SET_R2);
 
 -- Input data (0 to 7) is inverted
 R_MUX(0 to 7) <= ((0 to 7 => FORCE_Z_SET_R2) and not N_Z_BUS(0 to 7)) or ((0 to 7 => GT_HSMPX_INTO_R_REG) and HSMPX_BUS(0 to 7)) or ((0 to 7 => MEM_SET_R2) and STORAGE_BUS(0 to 7)); -- AA1G2 AA1H4
@@ -315,17 +335,18 @@ R_MUX(8) <= (FORCE_Z_SET_R2 and N_Z_BUS(8)) or (GT_HSMPX_INTO_R_REG and HSMPX_BU
 
 -- Word Mark detection for 1401 usage
 DET0F <= '1' when (STORAGE_BUS(1 to 7) = "0001111") and (DATA_READY='1') else '0'; -- AA1B7
-GMWM: FLL port map(DET0F,CPU_SET_ALLOW_WR_LCH,GMWM_DETECTED); -- AA1F5
+GMWM: FL port map(clk=>sysclk, S=>DET0F, R=>CPU_SET_ALLOW_WR_LCH, Q=>GMWM_DETECTED); -- AA1F5
 P_8F_DETECT_Set <= STORAGE_BUS(0) and MAIN_STG and N1401_MODE and DET0F;
 P_8F_DETECT_Reset <= MACH_RST_SW or GMWM_DETECTED;
-P_8F_DETECT: FLL port map(P_8F_DETECT_Set,P_8F_DETECT_Reset,P_8F_DETECTED); -- AA1F5
+P_8F_DETECT: FL port map(clk=>sysclk, S=>P_8F_DETECT_Set, R=>P_8F_DETECT_Reset, Q=>P_8F_DETECTED); -- AA1F5
 
 StorageOut.WriteData <= sSTORE_BITS;
 StorageOut.MainStorage <= USE_MAIN_MEM;
-StorageOut.ReadPulse <= PHASE_RD_1 and not DATA_READY; -- Drop ReadPulse when Data Ready goes active, this will latch input data
+StorageOut.ReadPulse <= PHASE_RD_1; -- and not DATA_READY; -- Drop ReadPulse when Data Ready goes active, this will latch input data
 StorageOut.WritePulse <= PHASE_WR_1;
 StorageOut.MSAR <= MN;
 STORAGE_BUS <= StorageIn.ReadData when PHASE_RD_1='1' else "000000000"; -- Data is retained a bit after DATA_READY falls
+-- STORAGE_BUS <= StorageIn.ReadData when PHASE_RD_1='1'; -- Data is retained a bit after DATA_READY falls
 
 STG_Wr: process (PHASE_WR_1)
 begin

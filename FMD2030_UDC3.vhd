@@ -83,7 +83,8 @@ ENTITY udc3 IS
 --		serialOutput : out Serial_Output_Lines;
 		
 		-- Clocks
-		clk : IN STD_LOGIC;
+		sysclk : IN STD_LOGIC;
+		clk50M : IN STD_LOGIC; -- 50MHz
 		Clock1ms : IN STD_LOGIC;
 		Clock60Hz : IN STD_LOGIC;
 		T1,T2,T3,T4 : IN STD_LOGIC;
@@ -216,7 +217,7 @@ n1050_TRANSLATE : entity work.n1050_TRANSLATE port map(
 		WRITE_STROBE => WR_STROBE,
 		WRITE_LCH_RST => WRITE_LCH_RST,
 		
-		CLK => clk,
+		sysclk => sysclk,
 		DEBUG => open
 		);
 		
@@ -238,7 +239,8 @@ n1050_CLOCK : entity work.n1050_CLOCK port map (
 		Y_TIME => Y_TIME,
 		Z_TIME => Z_TIME,
 		CLK_STT_RST => CLK_STT_RST, -- 09CE1
-		clk => clk -- 50MHz
+		clk50M => clk50M, -- 50MHz
+		sysclk => sysclk
 		);
 		
 -- Fig 5-10B
@@ -305,9 +307,10 @@ n1050_TAGS : entity work.n1050_TAGS port map (
 		DEBUG => DEBUG,
 		
 		-- Clocks
-		clk => clk,
+		clk50M => clk50M,
 		Clock1ms => Clock1ms,
 		Clock60Hz => Clock60Hz,
+		sysclk => sysclk,
 
 		P1 => P1,
 		P2 => P2,
@@ -405,7 +408,7 @@ n1050_DATA : entity work.n1050_DATA port map (
 		T2 => T2,
 		T3 => T3,
 		T4 => T4,
-		CLK=>CLK
+		sysclk => sysclk
 );
 n1050_INTRV_REQ <= sn1050_INTRV_REQ;
 
@@ -491,7 +494,7 @@ n1050_ATTACH : entity work.n1050_ATTACH port map (
 		T2 => T2,
 		T3 => T3,
 		T4 => T4,
-		clk => clk
+		sysclk => sysclk
 );
 n1050_CE_MODE <= sn1050_CE_MODE;
 -- PCH_1_CLUTCH <= PCH_CONN_ENTRY.PCH_1_CLUTCH_1050;

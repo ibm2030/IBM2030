@@ -126,7 +126,9 @@ entity ibm2030 is
 			-- 125Mhz, fastest clock
 			sysclk : in std_logic;  -- K17
 			-- 50MHz clock
-			clk50M : in std_logic);
+			clk50M : in std_logic;
+			-- 40MHz clock
+			clk40M : in std_logic);
 		  
 			  
 end ibm2030;
@@ -347,17 +349,18 @@ begin
 			-- Multiplexor interface not connected to anything yet
 			MPX_BUS_O => open,
 			MPX_BUS_I => (others=>'0'),
-			MPX_TAGS_O.OPL_OUT => open,
-            MPX_TAGS_O.ADR_OUT => open,
-            MPX_TAGS_O.ADR_OUT2 => open,
-            MPX_TAGS_O.CMD_OUT => open,
-            MPX_TAGS_O.STA_OUT => open,
-            MPX_TAGS_O.SRV_OUT => open,
-            MPX_TAGS_O.HLD_OUT => open,
-            MPX_TAGS_O.SEL_OUT => open,
-            MPX_TAGS_O.SUP_OUT => open,
-            MPX_TAGS_O.MTR_OUT => open,
-            MPX_TAGS_O.CLK_OUT => open,
+			MPX_TAGS_O => open,
+--			MPX_TAGS_O.OPL_OUT => open,
+--            MPX_TAGS_O.ADR_OUT => open,
+--            MPX_TAGS_O.ADR_OUT2 => open,
+--            MPX_TAGS_O.CMD_OUT => open,
+--            MPX_TAGS_O.STA_OUT => open,
+--            MPX_TAGS_O.SRV_OUT => open,
+--            MPX_TAGS_O.HLD_OUT => open,
+--            MPX_TAGS_O.SEL_OUT => open,
+--            MPX_TAGS_O.SUP_OUT => open,
+--            MPX_TAGS_O.MTR_OUT => open,
+--            MPX_TAGS_O.CLK_OUT => open,
             MPX_TAGS_I.OPL_IN => '0',
             MPX_TAGS_I.ADR_IN => '0',
             MPX_TAGS_I.STA_IN => '0',
@@ -383,11 +386,12 @@ begin
 	        bram2.we => bram2_we,            
 	        bram2_rddata => bram2_rddata,
 			
-			DEBUG => DEBUG, -- Used to pass debug signals up to the top level for output
+			DEBUG => open, -- Used to pass debug signals up to the top level for output
 			N60_CY_TIMER_PULSE => N60_CY_TIMER_PULSE, -- Actually 50Hz
 			Clock1ms => Clock1ms,
 			SwSlow => SwSlow,
-			clk => sysclk,
+			sysclk => sysclk,
+			clk40M => clk40M,
 			clk50M => clk50M -- 50Mhz clock
 			);
 

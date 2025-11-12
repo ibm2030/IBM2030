@@ -620,7 +620,7 @@ max6951gen : process (clk_out) is
 			bit_counter := 16;
 			case reg_counter is
 				when 0 to 7 =>
-					shift_reg := '0' & max6951_vector(dev_counter,reg_counter)(15 downto 8) & LEDs((dev_counter*64+reg_counter*8+7) downto (dev_counter*64+reg_counter*8));
+					shift_reg := '0' & max6951_vector(dev_counter,reg_counter)(15 downto 8) & LEDs((dev_counter*64+reg_counter*8) to (dev_counter*64+reg_counter*8+7)); -- Need to reverse 8bit LED vector
 				when others =>
 					shift_reg := '0' & max6951_vector(dev_counter,reg_counter);
 			end case;

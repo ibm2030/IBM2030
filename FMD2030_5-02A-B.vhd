@@ -102,7 +102,7 @@ ENTITY X6X7 IS
 		  
 			-- Clocks
 			T1,T2,T3,T4 : IN STD_LOGIC;
-			clk : IN STD_LOGIC
+			sysclk : IN STD_LOGIC
 	);
 END X6X7;
 
@@ -117,13 +117,13 @@ signal  GT_SX_LCH : STD_LOGIC; -- Output of AA3L6
 signal  X6_MUX,X7_MUX : STD_LOGIC;
 signal  CA_TO_X7_DECO : STD_LOGIC;
 signal  X6_BRANCH,X7_BRANCH : STD_LOGIC;
-signal  SX_CH_ROAR_RESTORE : STD_LOGIC;
-signal  MPX_CH_ROAR_RESTORE : STD_LOGIC;
-signal  RESTORE_0 : STD_LOGIC; -- Output of AA3K5,FL0
+signal  SX_CH_ROAR_RESTORE : STD_LOGIC := '0';
+signal  MPX_CH_ROAR_RESTORE : STD_LOGIC := '0';
+signal  RESTORE_0 : STD_LOGIC := '0'; -- Output of AA3K5,FL0
 
 signal  ASCII_LCH : STD_LOGIC;
-signal  MPX_CH_X6,MPX_CH_X7 : STD_LOGIC;
-signal  SX_CH_X6,SX_CH_X7 : STD_LOGIC;
+signal  MPX_CH_X6,MPX_CH_X7 : STD_LOGIC := '0';
+signal  SX_CH_X6,SX_CH_X7 : STD_LOGIC := '0';
 signal  X6_DATA,X7_DATA : STD_LOGIC;
 signal  STORED_X6,STORED_X7 : STD_LOGIC;
 signal  sXOR_OR_OR : STD_LOGIC;
@@ -131,7 +131,7 @@ signal  sINTERRUPT : STD_LOGIC;
 signal  sGT_GWX_TO_WX_REG : STD_LOGIC;
 signal  sGT_FWX_TO_WX_REG : STD_LOGIC;
 signal  sUSE_CA_BASIC_DECODER : STD_LOGIC;
-signal  sMPX_ROS_LCH : STD_LOGIC;
+signal  sMPX_ROS_LCH : STD_LOGIC := '0';
 
 signal	REST0_LCH_Set,REST0_LCH_Reset,SXREST_LCH_Set,SXREST_LCH_Reset,
 			MPXROS_LCH_Reset,MPXROS_LCH_Set,MPXREST_LCH_Set,MPXREST_LCH_Reset : STD_LOGIC;
@@ -148,8 +148,8 @@ GT_ASCII_LCH <= sXOR_OR_OR and CTRL_N and T2; -- AB3D2
 DEBUG <= ASCII_LCH;
 
 -- ?? Debug remove other interrupt sources
+sINTERRUPT <= EXTERNAL_INT or MPX_INTERRUPT or SX1_INTERRUPT or SX2_INTERRUPT; -- AA3K4
 -- sINTERRUPT <= TIMER_UPDATE or EXTERNAL_INT or MPX_INTERRUPT or SX1_INTERRUPT or SX2_INTERRUPT; -- AA3K4
-sINTERRUPT <= EXTERNAL_INT or MPX_INTERRUPT;
 INTERRUPT <= sINTERRUPT;
 
 
@@ -189,17 +189,25 @@ with (SALS.SALS_CL) select X7_MUX <= -- AA3H5
     sINTERRUPT when "1111",
     '0' when others; -- 0000
 
+X6_BRANCH <= not (ASCII_LCH and TEST_ASCII) and
+            not (EXTERNAL_INT and TEST_INTRP) and -- was TIMER_UPDATE_OR_EXT_INT
+            not ((SX2_INTERRUPT or SX1_INTERRUPT) and TEST_INTRP) and
+            not (I_WRAPPED_CPU and TEST_WRAP) and
+            X6_MUX;
+--X6_BRANCH <= (not ASCII_LCH or not TEST_ASCII) and -- AA3K3
+--    (not TIMER_UPDATE_OR_EXT_INT or not TEST_INTRP) and -- AA3K3
+--    (not SX2_INTERRUPT or SX1_INTERRUPT or not TEST_INTRP) and -- AA3K4
+--    (not I_WRAPPED_CPU or not TEST_WRAP) and -- AA3K3
+--    X6_MUX;
 
-X6_BRANCH <= (not ASCII_LCH or not TEST_ASCII) and -- AA3K3
-    (not TIMER_UPDATE_OR_EXT_INT or not TEST_INTRP) and -- AA3K3
-    (not SX2_INTERRUPT or SX1_INTERRUPT or not TEST_INTRP) and -- AA3K4
-    (not I_WRAPPED_CPU or not TEST_WRAP) and -- AA3K3
-    X6_MUX;
-
-X7_BRANCH <= (not TIMER_UPDATE_OR_EXT_INT or not TEST_INTRP) and -- AA3K3
-    (not SX1_INTERRUPT or not TEST_INTRP) and -- AA3B7
-    (not TEST_WRAP or not U_WRAPPED_MPX or not H_REG_6_BIT) and -- AA3J5
-    X7_MUX ;
+X7_BRANCH <= not (EXTERNAL_INT and TEST_INTRP) and -- was TIMER_UPDATE_OR_EXT_INT
+            not (SX1_INTERRUPT and TEST_INTRP) and
+            not (TEST_WRAP and U_WRAPPED_MPX and H_REG_6_BIT) and
+            X7_MUX;
+--X7_BRANCH <= (not TIMER_UPDATE_OR_EXT_INT or not TEST_INTRP) and -- AA3K3
+--    (not SX1_INTERRUPT or not TEST_INTRP) and -- AA3B7
+--    (not TEST_WRAP or not U_WRAPPED_MPX or not H_REG_6_BIT) and -- AA3J5
+--    X7_MUX ;
 --	 and CA_TO_X7_DECO; ?? Removed as it forced X7 to 0 on CA>W ??
 
 sGT_GWX_TO_WX_REG <= GT_BU_ROSAR_TO_WX_REG and H_REG_5_PWR; -- AA3L5
@@ -212,17 +220,17 @@ USE_CA_BASIC_DECODER <= sUSE_CA_BASIC_DECODER;
 
 REST0_LCH_Set <= T2 and sGT_GWX_TO_WX_REG;
 REST0_LCH_Reset <= MACH_RST_SW or T1;
-REST0_LCH: FLL port map(REST0_LCH_Set,REST0_LCH_Reset,RESTORE_0); -- AA3K5 Bit 0
+REST0_LCH: FL port map(clk=>sysclk, S=>REST0_LCH_Set, R=>REST0_LCH_Reset, Q=>RESTORE_0); -- AA3K5 Bit 0
 SXREST_LCH_Set <= T4 and RESTORE_0;
 SXREST_LCH_Reset <= MACH_RST_SW or T3;
-SXREST_LCH: FLL port map(SXREST_LCH_Set,SXREST_LCH_Reset,SX_CH_ROAR_RESTORE); -- AA3K5 Bit 1
+SXREST_LCH: FL port map(clk=>sysclk, S=>SXREST_LCH_Set, R=>SXREST_LCH_Reset, Q=>SX_CH_ROAR_RESTORE); -- AA3K5 Bit 1
 MPXROS_LCH_Set <= T2 and sGT_FWX_TO_WX_REG;
 MPXROS_LCH_Reset <= MACH_RST_SW or T1;
-MPXROS_LCH: FLL port map(MPXROS_LCH_Set,MPXROS_LCH_Reset,sMPX_ROS_LCH); -- AA3L2 Bit 2
+MPXROS_LCH: FL port map(clk=>sysclk, S=>MPXROS_LCH_Set, R=>MPXROS_LCH_Reset, Q=>sMPX_ROS_LCH); -- AA3L2 Bit 2
 MPX_ROS_LCH <= sMPX_ROS_LCH;
 MPXREST_LCH_Set <= T4 and sMPX_ROS_LCH;
 MPXREST_LCH_Reset <= MACH_RST_SW or T3;
-MPXREST_LCH: FLL port map(MPXREST_LCH_Set,MPXREST_LCH_Reset,MPX_CH_ROAR_RESTORE); -- AA3L2 Bit 3
+MPXREST_LCH: FL port map(clk=>sysclk, S=>MPXREST_LCH_Set, R=>MPXREST_LCH_Reset, Q=>MPX_CH_ROAR_RESTORE); -- AA3L2 Bit 3
 
 X6_DATA <= X6_BRANCH and not SX_CH_ROAR_RESTORE and not MPX_CH_ROAR_RESTORE; -- AA3L6
 X7_DATA <= X7_BRANCH and not SX_CH_ROAR_RESTORE and not MPX_CH_ROAR_RESTORE; -- AA3L6
@@ -231,11 +239,11 @@ GT_MPX_LCH <= (MPX_SHARE_PULSE and T1) or MACH_RST_SW; -- AA3L4,AA3E3
 GT_SX_LCH <= (SX_CHAIN_PULSE and T1) or MACH_RST_SW; -- AA3F3,AA3L6
 
 -- ASCII latch plus X6,X7 storage for 
-ASC_LCH: PH port map(R_REG_4_BIT,GT_ASCII_LCH,ASCII_LCH); -- AA3L3
-M7_LCH: PH port map(X7_DATA,GT_MPX_LCH,MPX_CH_X7); -- AA3L3
-S7_LCH: PH port map(X7_DATA,GT_SX_LCH,SX_CH_X7); -- AA3L3
-M6_LCH: PH port map(X6_DATA,GT_MPX_LCH,MPX_CH_X6); -- AA3L3
-S6_LCH: PH port map(X6_DATA,GT_SX_LCH,SX_CH_X6); -- AA3L3
+ASC_LCH: PH port map(clk=>sysclk, D=>R_REG_4_BIT, L=>GT_ASCII_LCH, Q=>ASCII_LCH); -- AA3L3
+M7_LCH: PH port map(clk=>sysclk, D=>X7_DATA, L=>GT_MPX_LCH, Q=>MPX_CH_X7); -- AA3L3
+S7_LCH: PH port map(clk=>sysclk, D=>X7_DATA, L=>GT_SX_LCH, Q=>SX_CH_X7); -- AA3L3
+M6_LCH: PH port map(clk=>sysclk, D=>X6_DATA, L=>GT_MPX_LCH, Q=>MPX_CH_X6); -- AA3L3
+S6_LCH: PH port map(clk=>sysclk, D=>X6_DATA, L=>GT_SX_LCH, Q=>SX_CH_X6); -- AA3L3
 
 STORED_X6 <= (SX_CH_ROAR_RESTORE and SX_CH_X6) or (MPX_CH_ROAR_RESTORE and MPX_CH_X6); -- AA3K6
 STORED_X7 <= (SX_CH_ROAR_RESTORE and SX_CH_X7) or (MPX_CH_ROAR_RESTORE and MPX_CH_X7); -- AA3K6

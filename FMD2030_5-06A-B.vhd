@@ -98,12 +98,16 @@ ENTITY ABALU IS
 		-- Clocks
 		T1,T2,T3,T4 : IN STD_LOGIC;
 		P1 : IN STD_LOGIC;
-		Clk : IN STD_LOGIC -- 50MHz
+		sysclk : IN STD_LOGIC -- Fast
 		
 	);
 END ABALU;
 
 ARCHITECTURE FMD OF ABALU IS 
+attribute mark_debug : string;
+attribute keep : string;
+attribute mark_debug of P_Z_BUS : signal is "true";
+attribute keep of P_Z_BUS : signal is "true";
 
 alias CC : STD_LOGIC_VECTOR(0 to 2) is CTRL.CTRL_CC;
 alias CV : STD_LOGIC_VECTOR(0 to 1) is CTRL.CTRL_CV;
@@ -114,7 +118,7 @@ alias GT_A_HI : STD_LOGIC is CTRL.GT_A_REG_HI;
 alias GT_B_REG_LO : STD_LOGIC is CTRL.GT_B_REG_LO;
 alias GT_B_REG_HI : STD_LOGIC is CTRL.GT_B_REG_HI;
 
-signal P_CARRY_IN_7,N_CARRY_IN_7 : STD_LOGIC;
+signal P_CARRY_IN_7,N_CARRY_IN_7, N_N_CARRY_IN_7 : STD_LOGIC;
 signal P_Z_ALU_BUS,N_Z_ALU_BUS : STD_LOGIC_VECTOR(0 to 7);
 signal A_REG,B_REG : STD_LOGIC_VECTOR(0 to 8); -- 8 is P
 signal CARRY_S3,INSERT_CARRY,INSERT_0_CARRY : STD_LOGIC;
@@ -138,7 +142,43 @@ signal sMACH_RST_2, sMACH_RST_2A : STD_LOGIC;
 signal sGT_CARRY_TO_S3 : STD_LOGIC;
 signal SI_LCH_Set,STI_LCH_Set,Z0C1C0_LCH,PC7_LCH_Set,PC7_LCH_Reset,
 		NC7_LCH_Set,A_LCH_L,B_LCH_L,NS3_LCH_Set,NS3_LCH_Reset,EVEN_LCH_Set,EVEN_LCH_Reset,AC_LCH_Set,AC_LCH_Reset : STD_LOGIC;
+signal T1d, T1d2 : STD_LOGIC := '0';
 signal sCARRY_0_LATCHED, sALU_CHK : STD_LOGIC; -- Debug
+
+attribute mark_debug of A_REG : signal is "true";
+attribute keep of A_REG : signal is "true";
+attribute mark_debug of B_REG : signal is "true";
+attribute keep of B_REG : signal is "true";
+--attribute mark_debug of P_Z_ALU_BUS : signal is "true";
+--attribute keep of P_Z_ALU_BUS : signal is "true";
+--attribute mark_debug of N_Z_ALU_BUS : signal is "true";
+--attribute keep of N_Z_ALU_BUS : signal is "true";
+--attribute mark_debug of P_SUMS : signal is "true";
+--attribute keep of P_SUMS : signal is "true";
+--attribute mark_debug of N_SUMS : signal is "true";
+--attribute keep of N_SUMS : signal is "true";
+--attribute mark_debug of P_CARRY : signal is "true";
+--attribute keep of P_CARRY : signal is "true";
+--attribute mark_debug of N_CARRY : signal is "true";
+--attribute keep of N_CARRY : signal is "true";
+attribute mark_debug of NC7_LCH_Set : signal is "true";
+attribute keep of NC7_LCH_Set : signal is "true";
+attribute mark_debug of PC7_LCH_Set : signal is "true";
+attribute keep of PC7_LCH_Set : signal is "true";
+attribute mark_debug of NS3_LCH_Set : signal is "true";
+attribute keep of NS3_LCH_Set : signal is "true";
+attribute mark_debug of NS3_LCH_Reset : signal is "true";
+attribute keep of NS3_LCH_Reset : signal is "true";
+attribute mark_debug of NOT_S3 : signal is "true";
+attribute keep of NOT_S3 : signal is "true";
+attribute mark_debug of INSERT_0_CARRY : signal is "true";
+attribute keep of INSERT_0_CARRY : signal is "true";
+attribute mark_debug of CARRY_S3 : signal is "true";
+attribute keep of CARRY_S3 : signal is "true";
+attribute mark_debug of RECYCLE_RST : signal is "true";
+attribute keep of RECYCLE_RST : signal is "true";
+attribute mark_debug of MANUAL_STORE : signal is "true";
+attribute keep of MANUAL_STORE : signal is "true";
 
 BEGIN
 -- Fig 5-06A
@@ -150,16 +190,16 @@ B_REG_PC <= EvenParity(B_REG); -- AB2J2
 
 -- IMMED STAT REG
 SI_LCH_Set <= SERV_IN_SIG and not T_REQUEST;
-SI_LCH: PH port map(D=>SI_LCH_Set,L=>T3,Q=>SERV_IN_LCHD); -- AB2D6
+SI_LCH: PH port map(clk=>sysclk, D=>SI_LCH_Set,L=>T3, Q=>SERV_IN_LCHD); -- AB2D6
 STI_LCH_Set <= STAT_IN_SIG and not T_REQUEST;
-STI_LCH: PH port map(D=>STI_LCH_Set,L=>T3,Q=>STATUS_IN_LCHD); -- AB2D6
-OI_LCH: PH port map(OPNL_IN,T3,OPNL_IN_LCHD); -- AB2D6
-AI_LCH: PH port map(ADDR_IN,T3,ADDR_IN_LCHD); -- AB2D6
+STI_LCH: PH port map(clk=>sysclk, D=>STI_LCH_Set,L=>T3, Q=>STATUS_IN_LCHD); -- AB2D6
+OI_LCH: PH port map(clk=>sysclk, D=>OPNL_IN, L=>T3, Q=>OPNL_IN_LCHD); -- AB2D6
+AI_LCH: PH port map(clk=>sysclk, D=>ADDR_IN, L=>T3, Q=>ADDR_IN_LCHD); -- AB2D6
 
 Z0C1C0_LCH <= T4 or RECYCLE_RST;
-Z0_LCH: PH port map(sZ_0,Z0C1C0_LCH,Z0_BUS_0); -- AB2D6
-C1_LCH: PH port map(P_CARRY(1),Z0C1C0_LCH,CARRY_1_LCHD); -- AB2D6
-C0_LCH: PH port map(P_CARRY(0),Z0C1C0_LCH,sCARRY_0_LATCHED); -- AB2D6
+Z0_LCH: PH port map(clk=>sysclk, D=>sZ_0, L=>Z0C1C0_LCH, Q=>Z0_BUS_0); -- AB2D6
+C1_LCH: PH port map(clk=>sysclk, D=>P_CARRY(1), L=>Z0C1C0_LCH, Q=>CARRY_1_LCHD); -- AB2D6
+C0_LCH: PH port map(clk=>sysclk, D=>P_CARRY(0), L=>Z0C1C0_LCH, Q=>sCARRY_0_LATCHED); -- AB2D6
 CARRY_0_LATCHED <= sCARRY_0_LATCHED;
 
 -- ALU INDICATORS
@@ -172,9 +212,12 @@ INSERT_0_CARRY <= '1' when (CC="000") or (CC="010") or (CC="011") or (CC="100") 
 
 PC7_LCH_Set <= (S_REG_3 and CARRY_S3 and P1) or (P1 and INSERT_CARRY);
 PC7_LCH_Reset <= MANUAL_STORE or T1 or RECYCLE_RST;
-PC7_LCH: FLL port map(PC7_LCH_Set,PC7_LCH_Reset,P_CARRY_IN_7); -- AB2F3,AB2E4
+PC7_LCH: FL port map(clk=>sysclk, S=>PC7_LCH_Set, R=>PC7_LCH_Reset, Q=>P_CARRY_IN_7); -- AB2F3,AB2E4
 NC7_LCH_Set <= (NOT_S3 and CARRY_S3 and P1) or (P1 and INSERT_0_CARRY) or RECYCLE_RST or MANUAL_STORE;
-NC7_LCH: FLL port map(NC7_LCH_Set,T1,N_CARRY_IN_7); -- AB2F3,AB2E4
+T1delay: AR port map(clk=>sysclk, D=>T1, Q=>T1d);
+T1delay2: AR port map(clk=>sysclk, D=>T1d, Q=>T1d2);
+NC7_LCH: FL port map(clk=>sysclk, S=>NC7_LCH_Set, R=>T1d2, Q=>N_N_CARRY_IN_7); -- AB2F3,AB2E4
+N_CARRY_IN_7 <= N_N_CARRY_IN_7; -- TODO
 
 -- ALU CHECK
 sALU_CHK <= '1' when (P_Z_ALU_BUS xor N_Z_ALU_BUS)/="11111111" or (P_SUMS(0) = N_SUMS(0)) or (P_SUMS(4) = N_SUMS(4)) or (P_CARRY(0) = N_CARRY(0)) else '0'; -- AB2D3,AB2D4,AB2E4
@@ -184,9 +227,9 @@ ALU_CHK <= sALU_CHK;
 -- A REG and B REG
 A_LCH_L <= MAN_STOR_OR_DSPLY or MACH_RST_SET_LCH or T1;
 A_BUS_N <= not A_BUS;
-A_LCH: PHV port map(A_BUS_N,A_LCH_L,A_REG); -- AB1J5,AB1K7
+A_LCH: PHV port map(clk=>sysclk, D=>A_BUS_N, L=>A_LCH_L, Q=>A_REG); -- AB1J5,AB1K7
 B_LCH_L <= MACH_RST_SET_LCH or T1 or MANUAL_STORE;
-B_LCH: PHV port map(B_BUS,B_LCH_L,B_REG); -- AB1J5,AB1L5
+B_LCH: PHV port map(clk=>sysclk, D=>B_BUS, L=>B_LCH_L, Q=>B_REG); -- AB1J5,AB1L5
 
 -- ALU B entry
 sNTRUE <= '1' when (CV(0)='1' and S_REG_0='0') or CV="00" else '0'; -- AB2K7
@@ -242,14 +285,14 @@ N_CTRL_LM <= '1' when CC/="010" else '0'; -- AB2G7
 -- P_CTRL_LM <= '1' when CC="010" else '0'; -- AB2H7
 
 -- CC functions
--- 000 Add, Carry in 0, Ignore Carry out
--- 001 Add, Carry in 1, Ignore Carry out
--- 010 And, Ignore Carry out
--- 011 Or,  Ignore Carry out
--- 100 Add, Carry in 0, Set S3 to 1 on Carry out
--- 101 Add, Carry in 1, Set S3 to 1 on Carry out
--- 110 Add, Carry in from S3, Set S3 to 1 on Carry out
--- 111 Xor, Ignore Carry out
+-- 000 Add, Carry in 0, Ignore Carry out A+B>X
+-- 001 Add, Carry in 1, Ignore Carry out A+B+1>X
+-- 010 And, Ignore Carry out A.B>X
+-- 011 Or,  Ignore Carry out A|B>X
+-- 100 Add, Carry in 0, Set S3 to 1 on Carry out A+B>XC
+-- 101 Add, Carry in 1, Set S3 to 1 on Carry out A+B+1>SC
+-- 110 Add, Carry in from S3, Set S3 to 1 on Carry out A+B+C>XC
+-- 111 Xor, Ignore Carry out A^B>C
 
 -- ALU P
 with CC select P_SUMS <= -- AB2J6,AB2H6,AB2G6,AB2F6,AB2J5,AB2H5,AB2G5,AB2F5
@@ -281,22 +324,23 @@ with CC select N_CARRY <=
 	(N_ALU_B_IN and N_CARRY(1 to 7) & N_CARRY_IN_7)) and (0 to 7 => not sINTRODUCE_ALU_CHK) when others;
 
 -- Debug
-DBG_P_ALU_A_IN <= P_ALU_A_IN;
-DBG_P_ALU_B_IN <= P_ALU_B_IN;
-DBG_P_ALU_CARRY <= P_CARRY;
-DBG_P_ALU_SUMS <= P_SUMS;
-DBG_N_ALU_A_IN <= N_ALU_A_IN;
-DBG_N_ALU_B_IN <= N_ALU_B_IN;
-DBG_N_ALU_CARRY <= N_CARRY;
-DBG_N_ALU_SUMS <= N_SUMS;
+--DBG_P_ALU_A_IN <= P_ALU_A_IN;
+--DBG_P_ALU_B_IN <= P_ALU_B_IN;
+--DBG_P_ALU_CARRY <= P_CARRY;
+--DBG_P_ALU_SUMS <= P_SUMS;
+--DBG_N_ALU_A_IN <= N_ALU_A_IN;
+--DBG_N_ALU_B_IN <= N_ALU_B_IN;
+--DBG_N_ALU_CARRY <= N_CARRY;
+--DBG_N_ALU_SUMS <= N_SUMS;
 
 sGT_CARRY_TO_S3 <= '1' when CC="100" or CC="101" or CC="110" else '0'; -- AB2E6
 GT_CARRY_TO_S3 <= sGT_CARRY_TO_S3;
 -- Debug
 NOT_S3 <= not S_REG_3;
+-- -- NS3_LCH_Set <= (N_CARRY(0) and T4 and sGT_CARRY_TO_S3) or (GT_Z_BUS_TO_S_REG and not sP_Z_BUS(3)) or S_REG_RST;
 -- NS3_LCH_Set <= (N_CARRY(0) and T4 and sGT_CARRY_TO_S3) or S_REG_RST;
 -- NS3_LCH_Reset <= (sGT_CARRY_TO_S3 and T4 and P_CARRY(0)) or (GT_Z_BUS_TO_S_REG and sP_Z_BUS(3));
--- NS3_LCH: FLE port map(NS3_LCH_Set,NS3_LCH_Reset,clk,NOT_S3); -- AB2E3
+-- NS3_LCH: FL port map(clk=>sysclk, S=>NS3_LCH_Set, R=>NS3_LCH_Reset, Q=>NOT_S3); -- AB2E3
 
 -- Temp Debug
 P_Z_ALU_BUS(0 to 3) <= ((0 => sODD and HEX, 1 to 3 => HEX) and P_SUMS(0 to 3)) or
@@ -328,7 +372,7 @@ Z_LO_0 <= sZ_LO_0;
 sZ_0 <= sZ_HI_0 and sZ_LO_0; -- AB2D5
 Z_0 <= sZ_0;
 sMACH_RST_2 <= sZ_0 and RECYCLE_RST; -- AB3C5
-MACH_RST_2A_DELAY: AR port map(D=>sMACH_RST_2,Clk=>Clk,Q=>sMACH_RST_2A);
+MACH_RST_2A_DELAY: AR port map(D=>sMACH_RST_2,Clk=>sysclk,Q=>sMACH_RST_2A);
 MACH_RST_2A <= sMACH_RST_2A;
 MACH_RST_2B <= sMACH_RST_2A;
 MACH_RST_2C <= sMACH_RST_2A;
@@ -336,13 +380,13 @@ MACH_RST_2C <= sMACH_RST_2A;
 DIAG_TEST_BIT <= '1' when SALS.SALS_CK="1000" and SALS.SALS_AK='1' else '0'; -- AB3E7
 EVEN_LCH_Set <= T2 and DIAG_TEST_BIT and not sALU_CHK_LCH;
 EVEN_LCH_Reset <= (T2 and sALU_CHK_LCH) or RST_LOAD or SYSTEM_RST_PRIORITY_LCH or RECYCLE_RST; -- ?? *not* SYSTEM_RST_PRIORITY_LCH ??
-EVEN_LCH: FLL port map(EVEN_LCH_Set,EVEN_LCH_Reset,EVEN); -- AB3E5,AB3G2
+EVEN_LCH: FL port map(clk=>sysclk, S=>EVEN_LCH_Set, R=>EVEN_LCH_Reset, Q=>EVEN); -- AB3E5,AB3G2
 sODD <= not EVEN;
 ODD <= sODD;
 
 AC_LCH_Set <= EVEN and DIAG_TEST_BIT and T1;
 AC_LCH_Reset <= RECYCLE_RST or RST_LOAD or (ROS_SCAN and GT_SWS_TO_WX_PWR);
-AC_LCH: FLL port map(AC_LCH_Set,AC_LCH_Reset,sALU_CHK_LCH); -- AG3G7,AB3G2
+AC_LCH: FL port map(clk=>sysclk, S=>AC_LCH_Set, R=>AC_LCH_Reset, Q=>sALU_CHK_LCH); -- AG3G7,AB3G2
 ALU_CHK_LCH <= sALU_CHK_LCH;
 
 -- Debug

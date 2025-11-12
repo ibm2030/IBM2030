@@ -64,7 +64,7 @@ port (
 		-- Clock inputs
 		T1,T2,T3,T4 : IN STD_LOGIC;
 		P1 : IN STD_LOGIC;
-		clk : IN STD_LOGIC;
+		sysclk : IN STD_LOGIC;
 		
 		-- Switch inputs
 		SWS_FGP,SWS_HJP : IN STD_LOGIC; -- 04CA3
@@ -130,6 +130,18 @@ port (
 end WX_Regs;
 
 architecture FMD of WX_Regs is
+attribute mark_debug : string;
+attribute keep : string;
+attribute mark_debug of WX : signal is "true";
+attribute keep of WX : signal is "true";
+attribute mark_debug of WX_CHK : signal is "true";
+attribute keep of WX_CHK : signal is "true";
+attribute mark_debug of SAL_PC : signal is "true";
+attribute keep of SAL_PC : signal is "true";
+attribute mark_debug of W_IND_P : signal is "true";
+attribute keep of W_IND_P : signal is "true";
+attribute mark_debug of X_IND_P : signal is "true";
+attribute keep of X_IND_P : signal is "true";
 
 signal  SET_IND : STD_LOGIC;
 signal  FL_ROSAR_IND : STD_LOGIC;
@@ -170,31 +182,36 @@ signal  SET_G : STD_LOGIC;
 
 signal	ROSAR_IND_LATCH_Set : STD_LOGIC;
 signal	PRIORITY_PARITY : STD_LOGIC;
+
+attribute mark_debug of SET_IND : signal is "true";
+attribute keep of SET_IND : signal is "true";
+
 BEGIN
 -- Fig 5-01A
 -- ROS Indicator register
 ROSAR_IND_LATCH_Set <= (ANY_MACH_CHK and CHK_OR_DIAG_STOP_SW) or EARLY_ROAR_STOP;
-ROSAR_IND_LATCH: FLL port map(S=>ROSAR_IND_LATCH_Set,R=>MACH_START_RST,Q=>FL_ROSAR_IND); -- AA3G4,AA3H4
+ROSAR_IND_LATCH: FL port map(clk=>sysclk, S=>ROSAR_IND_LATCH_Set,R=>MACH_START_RST,Q=>FL_ROSAR_IND); -- AA3G4,AA3H4
 sSET_IND_ROSAR <= (not ALU_CHK or not CHK_OR_DIAG_STOP_SW) and not FL_ROSAR_IND; -- AA3H4
 -- sSET_IND_ROSAR <= '1'; -- Debug
 SET_IND_ROSAR <= sSET_IND_ROSAR;
 SET_IND <= (T4 and sSET_IND_ROSAR) or MACH_RST_SET_LCH; -- AA3J4
 
-WINDP: PH port map(W_P,SET_IND,W_IND_P_X); -- AA3J2
+WINDP: PH port map(clk=>sysclk, D=>W_P, L=>SET_IND, Q=>W_IND_P_X); -- AA3J2
 W_IND_P <= W_IND_P_X or TEST_LAMP;
-XINDP: PH port map(X_P,SET_IND,X_IND_P_X); -- AA3J3
+XINDP: PH port map(clk=>sysclk, D=>X_P, L=>SET_IND, Q=>X_IND_P_X); -- AA3J3
 X_IND_P <= X_IND_P_X or TEST_LAMP;
-WIND: PHV port map(sWX(0 to 4),SET_IND,W_IND_X); -- AA3J2,AA3J3
+WIND: PHV port map(clk=>sysclk, D=>sWX(0 to 4), L=>SET_IND, Q=>W_IND_X); -- AA3J2,AA3J3
 W_IND <= W_IND_X or (W_IND'range=>TEST_LAMP);
-XIND: PHV port map(sWX(5 to 12),SET_IND,X_IND_X); -- AA3J2,AA3J3
+XIND: PHV port map(clk=>sysclk, D=>sWX(5 to 12), L=>SET_IND, Q=>X_IND_X); -- AA3J2,AA3J3
 X_IND <= X_IND_X or (X_IND'range=>TEST_LAMP);
 
 -- SALS parity checking
 -- ?? I have added a latch (FL) on PA to hold it at T4, as are W_IND_P and X_IND_P
 -- This keeps WX_CHK valid during T1, T2 and T3 - it is checked during T2 of the following cycle
 -- Without this, spurious ROS_ADDR checks are generated  because PA is not always valid at the next T2
-PA_PH: PH port map(SALS.SALS_PA,T4,PA_LCH);
-WX_CHK <= not(PA_LCH xor W_IND_P_X xor X_IND_P_X); -- AA2J4 ?? Inverted ??
+-- PA_PH: PH port map(clk=>sysclk, D=>SALS.SALS_PA, L=>T4, Q=>PA_LCH);
+-- WX_CHK <= not(PA_LCH xor W_IND_P_X xor X_IND_P_X); -- AA2J4 ?? Inverted ??
+WX_CHK <= not(SALS.SALS_PA xor W_IND_P_X xor X_IND_P_X); -- AA2J4 ?? Inverted ??
 sSAL_PC <= not EvenParity(USE_BASIC_CA_DECODER & SALS.SALS_AK & SALS.SALS_PK & SALS.SALS_CH & SALS.SALS_CL & 
 		SALS.SALS_CM & SALS.SALS_CU & SALS.SALS_CA & SALS.SALS_CB & SALS.SALS_CK & SALS.SALS_PA & SALS.SALS_PS)
 		or
@@ -245,26 +262,26 @@ SET_W2A <= not ANY_PRIORITY_PULSE_PWR or not ALU_CHK_LCH or not CHK_SW_PROC_SW; 
 SET_W2B <= sGT_BU_ROSAR_TO_WX_REG or not NORMAL_ENTRY; -- AA2F2
 SET_W2 <= SET_W2A and SET_W2B; -- AA2H5,AA2F2 Wired-AND
 SET_W_REG <= ((GT_CA_TO_W_REG or GT_CK_TO_W_REG or SET_W2) and T1) or MACH_RST_SET_LCH_DLY; -- AA2D2 ?? P1 or T1 ??
-REG_W: PHV port map(W_ASSM(3 to 7),SET_W_REG,sWX(0 to 4)); -- AA2D2
-REG_WP: PH port map(W_ASSM(8),SET_W_REG,W_P); -- AA2D2
+REG_W: PHV port map(clk=>sysclk, D=>W_ASSM(3 to 7), L=>SET_W_REG, Q=>sWX(0 to 4)); -- AA2D2
+REG_WP: PH port map(clk=>sysclk, D=>W_ASSM(8), L=>SET_W_REG, Q=>W_P); -- AA2D2
 
 -- X_LATCH: 
 SET_X_REG <= (not INH_ROSAR_SET and T1) or MACH_RST_SET_LCH_DLY; -- AA2D2 ?? P1 or T1 ??
-REG_X: PHV port map(X_ASSM(0 to 7),SET_X_REG,sWX(5 to 12)); -- AA2D3
-REG_XP: PH port map(X_ASSM(8),SET_X_REG,X_P); -- AA2D3
+REG_X: PHV port map(clk=>sysclk, D=>X_ASSM(0 to 7), L=>SET_X_REG, Q=>sWX(5 to 12)); -- AA2D3
+REG_XP: PH port map(clk=>sysclk, D=>X_ASSM(8), L=>SET_X_REG, Q=>X_P); -- AA2D3
 
 WX <= sWX;
 
 -- Backup ROSAR regs
 SET_F <= (MPX_SHARE_PULSE and T4) or MACH_RST_4; -- AA3G3
 SET_FW <= SET_F;
-FWX_LCH: PHV port map(sWX,SET_F,FWX); -- AA3H2,AA3H3
-FWP_LCH: PH port map(W_P,SET_F,FW_P); -- AA3H2
-FXP_LCH: PH port map(X_P,SET_F,FX_P); -- AA3H3
+FWX_LCH: PHV port map(clk=>sysclk, D=>sWX, L=>SET_F, Q=>FWX); -- AA3H2,AA3H3
+FWP_LCH: PH port map(clk=>sysclk, D=>W_P, L=>SET_F, Q=>FW_P); -- AA3H2
+FXP_LCH: PH port map(clk=>sysclk,D=> X_P, L=>SET_F, Q=>FX_P); -- AA3H3
 SET_G <= (SX_CHAIN_PULSE and T4) or MACH_RST_5; -- AA3K2
-GWX_LCH: PHV port map(sWX,SET_G,GWX); -- AA2K5,AA2L2
-GWP_LCH: PH port map(W_P,SET_G,GW_P); -- AA2K5
-GXP_LCH: PH port map(X_P,SET_G,GX_P); -- AA2L2
+GWX_LCH: PHV port map(clk=>sysclk, D=>sWX, L=>SET_G, Q=>GWX); -- AA2K5,AA2L2
+GWP_LCH: PH port map(clk=>sysclk, D=>W_P, L=>SET_G, Q=>GW_P); -- AA2K5
+GXP_LCH: PH port map(clk=>sysclk, D=>X_P, L=>SET_G, Q=>GX_P); -- AA2L2
 
 -- CROS triggering
 

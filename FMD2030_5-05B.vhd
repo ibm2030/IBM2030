@@ -87,6 +87,7 @@ ENTITY MNAssem IS
 END MNAssem;
 
 ARCHITECTURE FMD OF MNAssem IS 
+attribute mark_debug : string;
 
 signal GT_ABCD_SWS_TO_MN : STD_LOGIC;
 signal GT_I_TO_M_REG,GT_U_TO_M_REG : STD_LOGIC;
@@ -100,6 +101,8 @@ signal sGT_T_TO_MN_REG : STD_LOGIC;
 signal sGT_CK_TO_MN_REG : STD_LOGIC;
 signal sGT_V_TO_N_REG : STD_LOGIC;
 signal sGT_J_TO_N_REG : STD_LOGIC;
+
+attribute mark_debug of M_BUS,N_BUS : signal is "true";
 
 BEGIN
 -- Fig 5-05B

@@ -93,11 +93,13 @@ ENTITY ChkRegInd IS
 		-- Clocks
 		T1,T2,T3,T4 : IN STD_LOGIC;
 		P1 : IN STD_LOGIC;
-		clk : IN STD_LOGIC
+		sysclk : IN STD_LOGIC
 	);
 END ChkRegInd;
 
 ARCHITECTURE FMD OF ChkRegInd IS 
+attribute mark_debug : string;
+attribute keep : string;
 
 signal W_REG_CHK : STD_LOGIC;
 signal RST_MACH_CHK : STD_LOGIC;
@@ -116,11 +118,14 @@ signal SUPR_A_REG_CHK_Set,SUPR_A_REG_CHK_Reset,ALLW_A_REG_CHK_Set,ALLW_A_REG_CHK
 signal REG_MC_Set,REG_MC_Reset : STD_LOGIC_VECTOR(0 to 8);
 signal N_T3 : STD_LOGIC;
 
+attribute mark_debug of sMC, REG_MC_Set, REG_MC_Reset: signal is "true";
+attribute keep of sMC, REG_MC_Set, REG_MC_Reset: signal is "true";
+
 BEGIN
 -- Fig 5-07A
 SUPR_A_REG_CHK_Set <= MACH_CHK_PULSE and T2;
 SUPR_A_REG_CHK_Reset <= (GT_D_REG_TO_A_BUS and T1) or MACH_RST_SW;
-SUPR_A_REG_CHK: FLE port map(SUPR_A_REG_CHK_Set,SUPR_A_REG_CHK_Reset,clk,sSUPPR_A_REG_CHK); -- AB3H3,AB3J4,AB3H4
+SUPR_A_REG_CHK: FL port map(clk=>sysclk, S=>SUPR_A_REG_CHK_Set, R=>SUPR_A_REG_CHK_Reset, Q=>sSUPPR_A_REG_CHK); -- AB3H3,AB3J4,AB3H4
 SUPPR_A_REG_CHK <= sSUPPR_A_REG_CHK;
 
 CAX1X1 <= CA_SALS(1) and CA_SALS(3); -- AB3G3
@@ -134,11 +139,11 @@ ALLW_A_REG_CHK_Set <= (P1 and USE_BASIC_CA_DECO and not GT_CA_TO_W_REG and CAX1X
 	(CAX11X and not GT_CA_TO_W_REG and USE_BASIC_CA_DECO and P1) or -- AB3F3
 	(USE_BASIC_CA_DECO and CA1XXX and P1); -- AB3K5
 ALLW_A_REG_CHK_Reset <= T1 or ROS_SCAN or sSUPPR_A_REG_CHK or ANY_PRIORITY_LCH;
-ALLW_A_REG_CHK: FLL port map(ALLW_A_REG_CHK_Set,ALLW_A_REG_CHK_Reset,ALLOW_A_REG_CHK); -- AB3K5,AB3B6,AB3J4
+ALLW_A_REG_CHK: FL port map(clk=>sysclk, S=>ALLW_A_REG_CHK_Set, R=>ALLW_A_REG_CHK_Reset, Q=>ALLOW_A_REG_CHK); -- AB3K5,AB3B6,AB3J4
 
 NOT_ALLOW_PC_SALS_Set <= (SET_IND_ROSAR and T4) or MACH_RST_6;
 N_T3 <= not T3;
-NOT_ALLOW_PC_SALS: FLL port map(NOT_ALLOW_PC_SALS_Set,N_T3,N_ALLOW_PC_SALS); -- AB3F6,AB3D7,AB3E5
+NOT_ALLOW_PC_SALS: FL port map(clk=>sysclk, S=>NOT_ALLOW_PC_SALS_Set, R=>N_T3, Q=>N_ALLOW_PC_SALS); -- AB3F6,AB3D7,AB3E5
 sALLOW_PC_SALS <= not N_ALLOW_PC_SALS;
 ALLOW_PC_SALS <= sALLOW_PC_SALS;
 
@@ -165,7 +170,7 @@ SET1ST <= CHK_SW_PROC_SW and not SUPPR_MACH_CHK_TRAP and sANY_MACH_CHK; -- AB3G6
 
 REG_MC_Set <= SETMC & SET1ST;
 REG_MC_Reset <= (0 to 7 => MACH_CHK_RST or RST_MACH_CHK,8 => (T1 and MACH_CHK_PULSE) or MACH_CHK_RST or RST_MACH_CHK); -- AB3G7,AB3H6-removed??
-REG_MC: FLVL port map(REG_MC_Set,REG_MC_Reset,MC_REG); -- AB3G4,AB3G5,AB3G6
+REG_MC: FLV port map(clk=>sysclk, S=>REG_MC_Set, R=>REG_MC_Reset, Q=>MC_REG); -- AB3G4,AB3G5,AB3G6
 sMC <= MC_REG(0 to 7);
 MC <= sMC;
 FIRST_MACH_CHK <= MC_REG(8);

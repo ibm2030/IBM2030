@@ -67,7 +67,8 @@ ENTITY n1050_CLOCK IS
 --		OSCOut,C1,C2 : OUT STD_LOGIC;
         
 		-- Clocks
-		clk : IN STD_LOGIC -- 50MHz clock
+		sysclk : IN STD_LOGIC; -- Fast clock
+		clk50M : IN STD_LOGIC -- 50MHz clock
 	);
 END n1050_CLOCK;
 
@@ -95,7 +96,7 @@ BEGIN
 	CLK_START_SET <= (PUNCH_1_CLUTCH and not READ_CLK_INTLK_LCH and READ_OR_READ_INQ)
 		or (RDR_1_CLUTCH and WRITE_LCH and not CRLF);
 	CLK_START_RESET <= RST_ATTACH or sCLK_STT_RST;
-	CLK_START_FL : FLL port map(CLK_START_SET,CLK_START_RESET,CLK_START); -- AC2G6 AC2F6
+	CLK_START_FL : FL port map(clk=>sysclk, S=>CLK_START_SET, R=>CLK_START_RESET, Q=>CLK_START); -- AC2G6 AC2F6
 	
 	BIN_CNTR_P: process(OSC,RST_ATTACH) is
 	begin
@@ -107,9 +108,9 @@ BEGIN
 		end if;
 	end process;
 
-	OSC_P : process(CLK_START,clk) is
+	OSC_P : process(clk50M) is
 	begin
-		if falling_edge(clk) then
+		if falling_edge(clk50M) then
 			if (CLK_START='0') then
 				OSC <= '1';
 				Counter <= 0;
@@ -144,20 +145,20 @@ BEGIN
 	Y_RESET <= (sZ_TIME and TRIGER) or RST_ATTACH or (OSC and not CLK_START); -- AC2F7
 	Z_RESET <= (sW_TIME and nTRIG); -- AC2G3
 	
-	W_JK: FDRSE port map(C=>clk,Q=>sW_TIME,R=>W_RESET,S=>W_SET,CE=>'0',D=>'0');
+	W_JK: FDRSE port map(C=>sysclk,Q=>sW_TIME,R=>W_RESET,S=>W_SET,CE=>'0',D=>'0');
 --	W_FL : FLL port map(W_SET,W_RESET,sW_TIME); -- AC2G2
 	W_TIME <= sW_TIME;
-	X_JK: FDRSE port map(C=>clk,Q=>sX_TIME,R=>X_RESET,S=>X_SET,CE=>'0',D=>'0');
+	X_JK: FDRSE port map(C=>sysclk,Q=>sX_TIME,R=>X_RESET,S=>X_SET,CE=>'0',D=>'0');
 --	X_FL : FLL port map(X_SET,X_RESET,sX_TIME); -- AC2G2
 	X_TIME <= sX_TIME;
-	Y_JK: FDRSE port map(C=>clk,Q=>sY_TIME,R=>Y_RESET,S=>Y_SET,CE=>'0',D=>'0');
+	Y_JK: FDRSE port map(C=>sysclk,Q=>sY_TIME,R=>Y_RESET,S=>Y_SET,CE=>'0',D=>'0');
 --	Y_FL : FLL port map(Y_SET,Y_RESET,sY_TIME); -- AC2G2
 	Y_TIME <= sY_TIME;
-	Z_JK: FDRSE port map(C=>clk,Q=>sZ_TIME,R=>Z_RESET,S=>Z_SET,CE=>'0',D=>'0');
+	Z_JK: FDRSE port map(C=>sysclk,Q=>sZ_TIME,R=>Z_RESET,S=>Z_SET,CE=>'0',D=>'0');
 --	Z_FL : FLL port map(Z_SET,Z_RESET,sZ_TIME); -- AC2F5
 	Z_TIME <= sZ_TIME;
 
-	CLOCK1_FL : FLL port map(W_SET,X_RESET,CLOCK_1); -- ?? CLOCK_1 isn't defined in the diagrams
+	CLOCK1_FL : FL port map(clk=>sysclk, S=>W_SET, R=>X_RESET, Q=>CLOCK_1); -- ?? CLOCK_1 isn't defined in the diagrams
 																	 -- This is a guess at CLOCK_1 being W_TIME OR X_TIME, but can't do that directly without possible glitches
 	
 END FMD; 

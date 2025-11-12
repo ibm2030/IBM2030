@@ -248,7 +248,9 @@ port(
 		M_CONV_OSC,P_CONV_OSC,M_CONV_OSC_2 : IN STD_LOGIC;
 		CLOCK_START : OUT STD_LOGIC;
 		USE_MAN_DECODER_PWR : OUT STD_LOGIC;
-		CLK : IN STD_LOGIC -- 50MHz
+		sysclk : IN STD_LOGIC; -- Fast
+		clk40M : IN STD_LOGIC;-- 40MHz
+		clk50M : IN STD_LOGIC -- 50MHz
       );
 end entity UDC1;
 
@@ -395,12 +397,12 @@ wx_sect: entity WX_Regs (FMD) port map (
         CROS_STROBE             => CROS_STROBE,
         CROS_GO_PULSE           => CROS_GO_PULSE,
         SALS                    =>  sSALS,
-		  T1                      =>  T1,
+		T1                      =>  T1,
         T2                      =>  T2,
         T3                      =>  T3,
         T4                      =>  T4,
         P1                      =>  P1,
-		  CLK                     =>  clk,
+		sysclk                  =>  sysclk,
 
         SWS_FGP                 =>  SW_FGP,
         SWS_HJP                 =>  SW_HJP,
@@ -451,7 +453,7 @@ wx_sect: entity WX_Regs (FMD) port map (
         HSMPX_TRAP              =>  HSMPX_TRAP,
         SEL_CC_ROS_REQ          =>  SEL_CC_ROS_REQ,
         ALLOW_PC_SALS           =>  ALLOW_PC_SALS,
-		  TEST_LAMP               =>  LAMP_TEST,
+		TEST_LAMP               =>  LAMP_TEST,
 		  
         -- Outputs
         CTRL_REG_CHK            =>  CTRL_REG_CHK,
@@ -483,7 +485,8 @@ ccros_sect: entity CCROS_STORE port map (
 			-- Clocks
 			T1                  =>  T1,
 			P1                  =>  P1,
-			Clk                 =>	Clk );
+			clk50M              => clk50M,
+			sysclk              =>	sysclk );
 SALS <= sSALS;
 CTRL <= sCTRL;
 
@@ -545,7 +548,7 @@ x6x7_sect: entity X6X7 (FMD) port map (
         T2  =>  T2,
         T3  =>  T3,
         T4  =>  T4,
-		  CLK =>  CLK );
+		sysclk =>  sysclk );
 USE_BASIC_CA_DECODER <= sUSE_BASIC_CA_DECODER;
 USE_ALT_CA_DECODER <= sUSE_ALT_CA_DECODER;
 GT_CA_TO_W_REG <= sGT_CA_TO_W_REG;
@@ -611,7 +614,7 @@ priority_sect: entity Priority port map (
         T3 => T3,
         T4 => T4,
         P4 => P4,
-		  CLK => CLK
+	    sysclk => sysclk
 );
 ANY_PRIORITY_LCH <= sANY_PRIORITY_LCH;
 SUPPR_MACH_CHK_TRAP <= sSUPPR_MACH_CHK_TRAP;
@@ -650,7 +653,7 @@ wrap_sect: entity StorageWrap port map (
 		T2 => T2,
 		T4 => T4,
 		P1 => P1,
-		CLK => CLK
+		sysclk => sysclk
 	);
 
 css_sect: entity ClockStartStop port map (
@@ -747,7 +750,7 @@ css_sect: entity ClockStartStop port map (
 		T3 => T3,
 		T4 => T4,
 		P1 => P1,
-		clk => clk
+		sysclk => sysclk
 
 	);
 LOAD_IND <= sLOAD_IND;
@@ -816,7 +819,7 @@ manctrl : entity ManualControls port map (
 		-- Clocks
 		CONV_OSC => P_CONV_OSC,
 		T1 => T1,T2 => T2,
-		Clk => CLK
+		sysclk => sysclk
 );
 USE_MAN_DECODER_PWR <= sUSE_MAN_DECODER_PWR;
 USE_MANUAL_DECODER <= sUSE_MANUAL_DECODER;
@@ -936,7 +939,7 @@ recycsect: entity RecycleCtrlsMatch port map (
 		        
 		-- Clocks
 		T1 => T1,T2 => T2,T3 => T3,T4 => T4,
-		Clk => CLK
+		sysclk => sysclk
 );
 RECYCLE_RST <= sRECYCLE_RST;
 MACH_RST_SET_LCH <= sMACH_RST_SET_LCH;
@@ -998,7 +1001,7 @@ manual: entity ManualDataCFH port map
 		        
 		-- Clocks
 		T1 => T1,T2 => T2,T3 => T3,T4 => T4,
-		clk => clk
+		sysclk => sysclk
 		);
 H_REG_5_PWR <= sH_REG_5_PWR;
 A_BUS <= A_BUS1 and A_BUS2;
@@ -1049,7 +1052,7 @@ rwstg: entity RWStgCntl port map(
 		-- Clocks
 		T1 => T1,
 		SEL_T1 => SEL_T1,
-		clk => clk
+		sysclk => sysclk
 	);
 MAIN_STORAGE <= sMAIN_STORAGE;
 MAIN_STORAGE_CP <= sMAIN_STORAGE_CP;
@@ -1085,7 +1088,7 @@ rind: entity RIndsChks port map(
         
 		-- Clocks
 		T2 => T2,
-		CLK => CLK
+		sysclk => sysclk
 	);
 N1401_MODE <= sN1401_MODE;
 
@@ -1197,7 +1200,7 @@ Regs: entity RegsABAssm port map(
         
 		-- Clocks
 		T4 => T4,
-		CLK => CLK
+		sysclk => sysclk
 	);
 GTD_CA_BITS <= sGTD_CA_BITS;
 
@@ -1231,7 +1234,9 @@ RW1st32k: entity RWStgClk1st32k port map(
 
 		-- Clocks
 		T1 => T1,T2 => T2,T3 => T3,T4 => T4,
-		CLK => CLK
+		clk40M => clk40M,
+		clk50M => clk50M,
+		sysclk => sysclk
 	);
 
 READ_ECHO_1 <= sREAD_ECHO_1;

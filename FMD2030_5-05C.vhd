@@ -83,12 +83,13 @@ ENTITY RegsABAssm IS
         
 		-- Clocks
 		T4 : IN STD_LOGIC;
-		CLK : IN STD_LOGIC
+		sysclk : IN STD_LOGIC
 		
 	);
 END RegsABAssm;
 
 ARCHITECTURE FMD OF RegsABAssm IS 
+attribute mark_debug : string;
 
 alias CA : STD_LOGIC_VECTOR(0 to 3) is SALS.SALS_CA;
 alias CK : STD_LOGIC_VECTOR(0 to 3) is SALS.SALS_CK;
@@ -102,8 +103,8 @@ signal LCH_I,LCH_J,LCH_U,LCH_V,LCH_T,LCH_G,LCH_L,LCH_D : STD_LOGIC;
 signal sUSE_CPU_DECODER : STD_LOGIC;
 signal sGATED_CA_BITS : STD_LOGIC_VECTOR(0 to 3);
 signal sGT_J_TO_A, sGT_D_TO_A : STD_LOGIC;
-signal sI,sJ,sU,sV,sT,sG,sL,sD : STD_LOGIC_VECTOR(0 to 8);
-
+signal sI,sJ,sU,sV,sT,sG,sL,sD : STD_LOGIC_VECTOR(0 to 8) := (8=>'1',others=>'0');
+attribute mark_debug of I,J : signal is "true";
 
 BEGIN
 -- Fig 5-05C
@@ -175,21 +176,21 @@ LCH_G <= '1' when (CD_CTRL_REG="1010" and T4='1') or (E_SW_SEL_BUS.G_SEL='1' and
 LCH_L <= '1' when (CD_CTRL_REG="1001" and T4='1') or (E_SW_SEL_BUS.L_SEL='1' and MAN_STOR_PWR='1') or MACH_RST_2A_B='1' else '0'; -- AB1J2
 LCH_D <= '1' when (CD_CTRL_REG="1000" and T4='1') or (E_SW_SEL_BUS.D_SEL='1' and MAN_STOR_PWR='1') or MACH_RST_2A_B='1' else '0'; -- AB1J2
 
-I_REG: PHV port map(Z_BUS,LCH_I,sI); -- AB1G3
+I_REG: PHV port map(clk=>sysclk, D=>Z_BUS, L=>LCH_I, Q=>sI); -- AB1G3
 I <= sI;
-J_REG: PHV port map(Z_BUS,LCH_J,sJ); -- AB1G4
+J_REG: PHV port map(clk=>sysclk, D=>Z_BUS, L=>LCH_J, Q=>sJ); -- AB1G4
 J <= sJ;
-U_REG: PHV port map(Z_BUS,LCH_U,sU); -- AB1H3
+U_REG: PHV port map(clk=>sysclk, D=>Z_BUS, L=>LCH_U, Q=>sU); -- AB1H3
 U <= sU;
-V_REG: PHV port map(Z_BUS,LCH_V,sV); -- AB1H4
+V_REG: PHV port map(clk=>sysclk, D=>Z_BUS, L=>LCH_V, Q=>sV); -- AB1H4
 V <= sV;
-T_REG: PHV port map(Z_BUS,LCH_T,sT); -- AB1J4
+T_REG: PHV port map(clk=>sysclk, D=>Z_BUS, L=>LCH_T, Q=>sT); -- AB1J4
 T <= sT;
-G_REG: PHV port map(Z_BUS,LCH_G,sG); -- AB1K4
+G_REG: PHV port map(clk=>sysclk, D=>Z_BUS, L=>LCH_G, Q=>sG); -- AB1K4
 G <= sG;
-L_REG: PHV port map(Z_BUS,LCH_L,sL); -- AB1J2
+L_REG: PHV port map(clk=>sysclk, D=>Z_BUS, L=>LCH_L, Q=>sL); -- AB1J2
 L <= sL;
-D_REG: PHV port map(Z_BUS,LCH_D,sD); -- AB1K3
+D_REG: PHV port map(clk=>sysclk, D=>Z_BUS, L=>LCH_D, Q=>sD); -- AB1K3
 
 END FMD; 
 
