@@ -121,7 +121,7 @@ COMPONENT blk_mem_64k_9
   );
 END COMPONENT;
 
-signal MS_RDDATA, MS_RDDATA_0, MS_RDDATA_1, MS_WRDATA, LS_RDDATA, LS_WRDATA : std_logic_vector(0 to 8);
+signal MS_RDDATA, MS_WRDATA, LS_RDDATA, LS_WRDATA : std_logic_vector(0 to 8);
 signal MS_EN, MS_WE : std_logic;
 signal LS_EN, LS_WE : std_logic;
 signal MS_ADDR : std_logic_vector(1 to 16); -- 64k range
@@ -132,7 +132,6 @@ signal LS_Data : std_logic_vector(35 downto 0);
 
 begin
 
-MS_RDDATA <= MS_RDDATA_0 when StorageOut.MSAR(0)='0' else MS_RDDATA_1;
 StorageIn.ReadData <= MS_RDDATA when StorageOut.MainStorage='1' else LS_RDDATA;
 
 MS_WRDATA <= StorageOut.WriteData;
