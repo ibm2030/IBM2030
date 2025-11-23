@@ -74,8 +74,8 @@ END n1050_CLOCK;
 
 ARCHITECTURE FMD OF n1050_CLOCK IS 
 -- Output rate is 9600bps or 960chars/sec or 1.04ms/char.  We set the clock to run at 1.2ms/4 or 300us (300 * 50 = 15000 cycles)
--- constant ClockDivider : integer := 15000;
-constant	ClockDivider : integer := 250; -- Gives 5us OSC rate
+constant ClockDivider : integer := 15000;
+-- constant	ClockDivider : integer := 250; -- Gives 5us OSC rate
 
 	signal	OSC : STD_LOGIC; -- Inverted signal
 	signal	CLK_START : STD_LOGIC;
@@ -89,9 +89,19 @@ constant	ClockDivider : integer := 250; -- Gives 5us OSC rate
 	signal	W_RESET, X_RESET, Y_RESET, Z_RESET : STD_LOGIC;
 	signal	sW_TIME, sX_TIME, sY_TIME, sZ_TIME : STD_LOGIC;
 
+attribute mark_debug : string;
+attribute keep : string;
+attribute mark_debug of CLK_START : signal is "true";
+attribute keep of CLK_START : signal is "true";
+
+attribute mark_debug of RDR_1_CLUTCH : signal is "true";
+attribute keep of RDR_1_CLUTCH : signal is "true";
+attribute mark_debug of WRITE_LCH : signal is "true";
+attribute keep of WRITE_LCH : signal is "true";
+
 BEGIN
 -- Fig 5-10A
-	sCLK_STT_RST <= OSC and not BIN_CNTR(1) and sZ_TIME and not sW_TIME; -- AC2H4
+	sCLK_STT_RST <= not OSC and not BIN_CNTR(1) and sZ_TIME and not sW_TIME; -- AC2H4
 	CLK_STT_RST <= sCLK_STT_RST;
 	CLK_START_SET <= (PUNCH_1_CLUTCH and not READ_CLK_INTLK_LCH and READ_OR_READ_INQ)
 		or (RDR_1_CLUTCH and WRITE_LCH and not CRLF);

@@ -158,6 +158,15 @@ signal	SET_ATTN,RESET_ATTN : STD_LOGIC;
 signal	sTT6_POS_ATTN : STD_LOGIC := '0';
 signal	sRESTORE : STD_LOGIC;
 
+attribute mark_debug : string;
+attribute keep : string;
+attribute mark_debug of sCPU_REQUEST_IN : signal is "true";
+attribute keep of sCPU_REQUEST_IN : signal is "true";
+attribute mark_debug of n1050_REQ_IN : signal is "true";
+attribute keep of n1050_REQ_IN : signal is "true";
+attribute mark_debug of MICRO_SHARE_REQ : signal is "true";
+attribute keep of MICRO_SHARE_REQ : signal is "true";
+
 BEGIN
 -- Fig 5-10B
 RD_CLK_INLK_SET <= RD_OR_RD_INQ and Y_TIME; -- AC3E3

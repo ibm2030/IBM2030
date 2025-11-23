@@ -225,6 +225,7 @@ signal  vga_r, vga_g, vga_b : STD_LOGIC;
 -- signal  SI : Serial_Input_Lines;
 signal  n1050Outputs : PCH_CONN;
 signal  n1050Inputs : RDR_CONN;
+signal  n1050Control : CONN_1050;
 
 signal	SwSlow : STD_LOGIC := '0'; -- Set to '1' to slow clock down to 1Hz, not used
 
@@ -236,7 +237,14 @@ signal	DEBUG : DEBUG_BUS; -- Passed to all modeles to probe signals
 signal Switch_vector : std_logic_vector(0 to 63);
 
 attribute mark_debug : string;
+attribute keep : string;
 -- attribute mark_debug of Indicators : signal is "true";
+attribute mark_debug of n1050Outputs : signal is "true";
+attribute keep of n1050Outputs : signal is "true";
+attribute mark_debug of n1050Inputs : signal is "true";
+attribute keep of n1050Inputs : signal is "true";
+attribute mark_debug of n1050Control : signal is "true";
+attribute keep of n1050Control : signal is "true";
 
 begin
 
@@ -343,6 +351,7 @@ begin
 			-- Serial interface for 1050
 			RDR_CONN_EXIT => n1050Inputs,
 			PCH_CONN_ENTRY => n1050Outputs,
+			n1050_CONTROL => n1050Control,
 --			SerialInput => SI,
 --			SerialOutput => SO,
 			
@@ -739,7 +748,7 @@ begin
     consoleTypewriter : entity ibm1050 port map (
         SerialIn => n1050Outputs,
         SerialOut => n1050Inputs,
-        SerialControl => (others => '0'),
+        SerialControl => n1050Control,
         SerialInput.SerialRx => SerialRx,
         SerialInput.DCD => '1',
         SerialInput.DSR => '1',
@@ -748,7 +757,7 @@ begin
         SerialOutput.SerialTx => SerialTx,
         SerialOutput.RTS => SerialRTS,
         SerialOutput.DTR => SerialDTR,
-        clk => clk50M
+        clk50 => clk50M
     );
     
     -- Divide 50MHz to 1kHz

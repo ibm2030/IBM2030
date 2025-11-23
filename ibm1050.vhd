@@ -59,7 +59,7 @@ entity ibm1050 is
 			serialOutput : out Serial_Output_Lines;
 			
 			-- 50Mhz clock
-			clk : in std_logic
+			clk50 : in std_logic
 			);			  
 end ibm1050;
 
@@ -76,11 +76,26 @@ type		printerStateType is (waitForEnable,printerReset,printerEnabled,printCharac
 signal	printerState : printerStateType := waitForEnable;
 signal	RDR_1_CLUTCH_timer : STD_LOGIC_VECTOR(15 downto 0);
 
+attribute mark_debug : string;
+attribute keep : string;
+attribute mark_debug of SerialIn : signal is "true";
+attribute keep of SerialIn : signal is "true";
+attribute mark_debug of SerialOut : signal is "true";
+attribute keep of SerialOut : signal is "true";
+attribute mark_debug of SerialControl : signal is "true";
+attribute keep of SerialControl : signal is "true";
+attribute mark_debug of printerState : signal is "true";
+attribute keep of printerState : signal is "true";
+attribute mark_debug of TxBufferEmpty : signal is "true";
+attribute keep of TxBufferEmpty : signal is "true";
+attribute mark_debug of serialOutputByte : signal is "true";
+attribute keep of serialOutputByte : signal is "true";
+
 begin
 
-Printer: process (clk)
+Printer: process (clk50)
 begin
-if rising_edge(clk) then
+if rising_edge(clk50) then
 	case printerState is
 		when waitForEnable =>
 			serialIn.HOME_RDR_STT_LCH <= '0'; -- Not running
@@ -153,7 +168,7 @@ end process Printer;
 
 		serial_port : entity RS232RefComp port map(
 				RST => '0',	--Master Reset
-				CLK => clk,
+				CLK => clk50,
 				-- Rx (PCH)
 		    	RXD => SerialInput.serialRx,
 				RDA => RxDataAvailable,	-- Rx data available
@@ -170,14 +185,13 @@ end process Printer;
 				);
 		-- Make incoming data 0 when nothing is available
 		SerialIn.PCH_BITS <= SerialBusUngated(6 downto 0) when PunchGate='1' else "0000000";
-		PunchStrobeSS : logic.Gates_package.SS port map (clk=>clk, count=>2500, D=>RxDataAvailable, Q=>RxAck); -- 50us or so
-		SerialIn.PCH_1_CLUTCH_1050 <= RxAck;
-		PunchGateSS : logic.Gates_package.SS port map (clk=>clk, count=>3000, D=>RxDataAvailable, Q=>PunchGate); -- A bit more than 50us so Read Interlock is reset after PCH_1_CLUTCH drops
+		PunchStrobeSS : logic.Gates_package.SS port map (clk=>clk50, count=>2500, D=>RxDataAvailable, Q=>RxAck); -- 50us or so
+		SerialIn.PCH_1_CLUTCH_1050 <= RxAck and serialControl.PROCEED;
+		PunchGateSS : logic.Gates_package.SS port map (clk=>clk50, count=>3000, D=>RxDataAvailable, Q=>PunchGate); -- A bit more than 50us so Read Interlock is reset after PCH_1_CLUTCH drops
 
 		SerialIn.CPU_CONNECTED <= '1'; -- 1050 always on-line
 		SerialIn.HOME_OUTPUT_DEV_RDY <= '1'; -- Printer always ready
 		SerialIn.RDR_2_READY <= '0';
---		SerialIn.HOME_RDR_STT_LCH <= SerialControl.HOME_RDR_START;
 		SerialIn.REQ_KEY <= '0';
 		
 		SerialOutput.RTS <= '1';

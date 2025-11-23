@@ -170,6 +170,37 @@ signal	CE_BUS : STD_LOGIC_VECTOR(0 to 7);
 signal	CE_DATA_ENTER_NC : STD_LOGIC;
 signal	GTD_TT3 : STD_LOGIC;
 
+attribute mark_debug : string;
+attribute keep : string;
+attribute mark_debug of WRITE_LCH : signal is "true";
+attribute keep of WRITE_LCH : signal is "true";
+attribute mark_debug of RD_OR_RD_INQ : signal is "true";
+attribute keep of RD_OR_RD_INQ : signal is "true";
+attribute mark_debug of PUNCH_1_CLUTCH : signal is "true";
+attribute keep of PUNCH_1_CLUTCH : signal is "true";
+attribute mark_debug of RDR_ON_LCH : signal is "true";
+attribute keep of RDR_ON_LCH : signal is "true";
+attribute mark_debug of HOME_RDR_START_LCH : signal is "true";
+attribute keep of HOME_RDR_START_LCH : signal is "true";
+attribute mark_debug of CLK_STT_RST : signal is "true";
+attribute keep of CLK_STT_RST : signal is "true";
+attribute mark_debug of RST_ATTACH : signal is "true";
+attribute keep of RST_ATTACH : signal is "true";
+attribute mark_debug of TE_LCH : signal is "true";
+attribute keep of TE_LCH : signal is "true";
+attribute mark_debug of RD_SHARE_REQ : signal is "true";
+attribute keep of RD_SHARE_REQ : signal is "true";
+attribute mark_debug of WR_SHARE_REQ : signal is "true";
+attribute keep of WR_SHARE_REQ : signal is "true";
+attribute mark_debug of W_TIME : signal is "true";
+attribute keep of W_TIME : signal is "true";
+attribute mark_debug of X_TIME : signal is "true";
+attribute keep of X_TIME : signal is "true";
+attribute mark_debug of Y_TIME : signal is "true";
+attribute keep of Y_TIME : signal is "true";
+attribute mark_debug of Z_TIME : signal is "true";
+attribute keep of Z_TIME : signal is "true";
+
 BEGIN
 M_ASSM_BUS <= (others=>'0');
 N_ASSM_BUS <= (others=>'0');
@@ -416,7 +447,7 @@ n1050_INTRV_REQ <= sn1050_INTRV_REQ;
 n1050_ATTACH : entity work.n1050_ATTACH port map (
 		-- Inputs        
 		-- CE Cable
-		CE_CABLE_IN => open,
+		-- CE_CABLE_IN => CE_CABLE_IN,
 		-- CE DATA BUS From 1050 DATA section
 		PTT_BITS => PTT_BITS,
 		DATA_REG => DATA_REG_BUS,
@@ -445,12 +476,12 @@ n1050_ATTACH : entity work.n1050_ATTACH port map (
 		TT5_POS_INTRV_REQ => TT5_POS_INTRV_REQ,
 		TT6_POS_ATTN => sTT6_POS_ATTN,
 		CPU_LINES_ENTRY => CPU_LINES_ENTRY,
---		PCH_CONN_ENTRY => PCH_CONN_ENTRY,
 		RDR_1_CLUTCH => RDR_1_CLUTCH,
+		PCH_CONN_ENTRY => PCH_CONN_ENTRY,
 		
 		-- Outputs
 		-- CE Cable
-		CE_CABLE_OUT => open,
+		-- CE_CABLE_OUT => CE_CABLE_OUT,
 		-- CE DATA BUS to 10C (1050 DATA)
 		CE_GT_TA_OR_TE => CE_GT_TA_OR_TE,
 		CE_DATA_ENTER_GT => CE_DATA_ENTER_GT,
@@ -475,8 +506,8 @@ n1050_ATTACH : entity work.n1050_ATTACH port map (
 --		PCH_1_CLUTCH_1050 => PCH_1_CLUTCH_1050,
 		REQUEST_KEY => REQUEST_KEY,
 		
---		RDR_1_CONN_EXIT => RDR_1_CONN_EXIT,
---		CPU_LINES_EXIT => n1050_CONTROL,
+		RDR_1_CONN_EXIT => RDR_CONN_EXIT,
+		CPU_LINES_EXIT => n1050_CONTROL,
 		
 		-- In/Out TT bus
 		TT_BUS => TT_BUS,
