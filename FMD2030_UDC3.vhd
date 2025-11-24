@@ -154,7 +154,6 @@ signal	GT_WRITE_REG : STD_LOGIC;
 signal	FORCE_SHIFT_CHAR, FORCE_LC_SHIFT : STD_LOGIC;
 signal	SET_LOWER_CASE : STD_LOGIC;
 signal	READY_SHARE : STD_LOGIC;
-signal	TT_BUS : STD_LOGIC_VECTOR(0 to 7);
 signal	WRITE_MODE : STD_LOGIC;
 signal	NPL_BITS : STD_LOGIC_VECTOR(0 to 7);
 signal	PTT_BITS : STD_LOGIC_VECTOR(0 to 6);
@@ -168,7 +167,8 @@ signal	CE_SEL_OUT : STD_LOGIC;
 signal	CE_TI_DECODE : STD_LOGIC;
 signal	CE_BUS : STD_LOGIC_VECTOR(0 to 7);
 signal	CE_DATA_ENTER_NC : STD_LOGIC;
-signal	GTD_TT3 : STD_LOGIC;
+signal	TT0,TT1,TT2,GTD_TT3,TT4,TT5,TT6,TT7 : STD_LOGIC;
+signal  TT3_POS_1050_OPER : STD_LOGIC;
 
 attribute mark_debug : string;
 attribute keep : string;
@@ -291,7 +291,7 @@ n1050_TAGS : entity work.n1050_TAGS port map (
 		RECYCLE_RESET => RECYCLE_RESET, -- 04CA5
 		CE_RESET => CE_RESET, -- 10DC2
 		RUN => RUN, -- 09CE6
-		TT3_POS_1050_OPER => TT_BUS(3), -- 10DD4
+		TT3_POS_1050_OPER => TT3_POS_1050_OPER, -- 10DD4
 		TAGS_OUT_BUS => TAGS_OUT_BUS, -- 10CD1
 		n1050_CE_MODE => sn1050_CE_MODE, -- 10DB3
 		n1050_SEL_O => n1050_SEL_O, -- 08DD6
@@ -396,7 +396,7 @@ n1050_DATA : entity work.n1050_DATA port map (
 		LC_CHARACTER => LC_CHARACTER,
 --		Z_BUS_0 => Z_BUS(0),
 --		Z_BUS_3 => Z_BUS(3),
---		TT3_POS_1050_OPER => TT3_POS_1050_OPER,
+		TT3_POS_1050_OPER => TT3_POS_1050_OPER,
 		TA_REG_POS_6_ATTN_RST => TA_REG_POS_6_ATTENTION_RST,
 		PCH_BITS => PCH_BITS,
 				
@@ -426,8 +426,14 @@ n1050_DATA : entity work.n1050_DATA port map (
 		TT5_POS_INTRV_REQ => TT5_POS_INTRV_REQ,
 		
 		-- Buses
-		TT_BUS => TT_BUS,
+		TT0 => TT0,
+		TT1 => TT1,
+		TT2 => TT2,
 		GTD_TT3 => GTD_TT3,
+		TT4 => TT4,
+		TT5 => TT5,
+		TT6 => TT6,
+		TT7 => TT7,
 		DEBUG => open,
 		
 		-- Clocks
@@ -510,8 +516,15 @@ n1050_ATTACH : entity work.n1050_ATTACH port map (
 		CPU_LINES_EXIT => n1050_CONTROL,
 		
 		-- In/Out TT bus
-		TT_BUS => TT_BUS,
+		TT0 => TT0,
+		TT1 => TT1,
+		TT2 => TT2,
 		GTD_TT3 => GTD_TT3,
+		TT4 => TT4,
+		TT5 => TT5,
+		TT6 => TT6,
+		TT7 => TT7,
+		TT3_POS_1050_OPER => TT3_POS_1050_OPER,
 		
 --		SerialInput => SerialInput,
 --		SerialOutput => SerialOutput,
