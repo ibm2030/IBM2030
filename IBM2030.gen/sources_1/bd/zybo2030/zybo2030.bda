@@ -129,6 +129,12 @@
                 "for": "node"
             },
             {
+                "abrv": "PT",
+                "name": "peripheral_type",
+                "type": "string",
+                "for": "node"
+            },
+            {
                 "abrv": "EH",
                 "name": "edge_hid",
                 "type": "int",

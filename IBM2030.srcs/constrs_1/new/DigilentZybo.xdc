@@ -393,3 +393,30 @@ set_property -dict {PACKAGE_PIN Y17 IOSTANDARD LVCMOS33} [get_ports MAX6951_CS3]
 
 
 
+
+
+connect_debug_port u_ila_0/probe19 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_CLOCK_n_5]]
+connect_debug_port u_ila_0/probe20 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_CLOCK_n_13]]
+connect_debug_port u_ila_0/probe21 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_CLOCK_n_16]]
+connect_debug_port u_ila_0/probe22 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_CLOCK_n_17]]
+connect_debug_port u_ila_0/probe23 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_CLOCK_n_18]]
+connect_debug_port u_ila_0/probe24 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_CLOCK_n_19]]
+connect_debug_port u_ila_0/probe25 [get_nets [list {zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_TRANSLATE/n1050_CONTROL[RDR_2_HOLD]_INST_0_1}]]
+connect_debug_port u_ila_0/probe27 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_DATA_n_14]]
+connect_debug_port u_ila_0/probe31 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_TAGS/n1050_REQ_IN_INST_0]]
+connect_debug_port u_ila_0/probe32 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_TAGS_n_9]]
+connect_debug_port u_ila_0/probe33 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_TAGS_n_11]]
+connect_debug_port u_ila_0/probe34 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_TAGS_n_12]]
+connect_debug_port u_ila_0/probe35 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_TAGS_n_16]]
+connect_debug_port u_ila_0/probe37 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_TAGS_n_18]]
+connect_debug_port u_ila_0/probe38 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_TRANSLATE_n_2]]
+
+connect_debug_port u_ila_0/probe15 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_DATA_n_12]]
+connect_debug_port u_ila_0/probe19 [get_nets [list zybo2030_i/ibm2030_0/U0/cpu/thirdBit/n1050_TAGS_n_17]]
+
+
+
+
+
+
+

@@ -7,7 +7,7 @@
       "name": "zybo2030",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2025.1.1",
+      "tool_version": "2025.2",
       "validated": "true"
     },
     "design_tree": {
@@ -389,6 +389,128 @@
           "boundary_crc": "0x0"
         },
         "interface_ports": {
+          "BRAM1_CTRL": {
+            "mode": "Slave",
+            "vlnv_bus_definition": "xilinx.com:interface:bram:1.0",
+            "vlnv": "xilinx.com:interface:bram_rtl:1.0",
+            "parameters": {
+              "MEM_SIZE": {
+                "value": "65536",
+                "value_src": "ip_prop"
+              },
+              "MEM_WIDTH": {
+                "value": "32",
+                "value_src": "ip_prop"
+              },
+              "MEM_ECC": {
+                "value": "NONE",
+                "value_src": "user_prop"
+              },
+              "READ_LATENCY": {
+                "value": "1",
+                "value_src": "user_prop"
+              }
+            },
+            "port_maps": {
+              "EN": {
+                "physical_name": "bram1_en",
+                "direction": "I"
+              },
+              "DOUT": {
+                "physical_name": "bram1_rddata",
+                "direction": "O",
+                "left": "31",
+                "right": "0"
+              },
+              "DIN": {
+                "physical_name": "bram1_wrdata",
+                "direction": "I",
+                "left": "31",
+                "right": "0"
+              },
+              "WE": {
+                "physical_name": "bram1_we",
+                "direction": "I",
+                "left": "3",
+                "right": "0"
+              },
+              "ADDR": {
+                "physical_name": "bram1_addr",
+                "direction": "I",
+                "left": "15",
+                "right": "2"
+              },
+              "CLK": {
+                "physical_name": "bram1_clk",
+                "direction": "I"
+              },
+              "RST": {
+                "physical_name": "bram1_rst",
+                "direction": "I"
+              }
+            }
+          },
+          "BRAM2_CTRL": {
+            "mode": "Slave",
+            "vlnv_bus_definition": "xilinx.com:interface:bram:1.0",
+            "vlnv": "xilinx.com:interface:bram_rtl:1.0",
+            "parameters": {
+              "MEM_SIZE": {
+                "value": "2048",
+                "value_src": "ip_prop"
+              },
+              "MEM_WIDTH": {
+                "value": "32",
+                "value_src": "ip_prop"
+              },
+              "MEM_ECC": {
+                "value": "NONE",
+                "value_src": "user_prop"
+              },
+              "READ_LATENCY": {
+                "value": "1",
+                "value_src": "user_prop"
+              }
+            },
+            "port_maps": {
+              "EN": {
+                "physical_name": "bram2_en",
+                "direction": "I"
+              },
+              "DOUT": {
+                "physical_name": "bram2_rddata",
+                "direction": "O",
+                "left": "31",
+                "right": "0"
+              },
+              "DIN": {
+                "physical_name": "bram2_wrdata",
+                "direction": "I",
+                "left": "31",
+                "right": "0"
+              },
+              "WE": {
+                "physical_name": "bram2_we",
+                "direction": "I",
+                "left": "3",
+                "right": "0"
+              },
+              "ADDR": {
+                "physical_name": "bram2_addr",
+                "direction": "I",
+                "left": "10",
+                "right": "2"
+              },
+              "CLK": {
+                "physical_name": "bram2_clk",
+                "direction": "I"
+              },
+              "RST": {
+                "physical_name": "bram2_rst",
+                "direction": "I"
+              }
+            }
+          },
           "interface_tmds": {
             "mode": "Slave",
             "vlnv_bus_definition": "digilentinc.com:interface:tmds:1.0",
@@ -525,80 +647,6 @@
           "SerialDTR": {
             "direction": "O"
           },
-          "bram1_addr": {
-            "direction": "I",
-            "left": "15",
-            "right": "2"
-          },
-          "bram1_clk": {
-            "type": "clk",
-            "direction": "I",
-            "parameters": {
-              "ASSOCIATED_RESET": {
-                "value": "bram1_rst",
-                "value_src": "constant"
-              }
-            }
-          },
-          "bram1_wrdata": {
-            "direction": "I",
-            "left": "31",
-            "right": "0"
-          },
-          "bram1_en": {
-            "direction": "I"
-          },
-          "bram1_rst": {
-            "type": "rst",
-            "direction": "I"
-          },
-          "bram1_we": {
-            "direction": "I",
-            "left": "3",
-            "right": "0"
-          },
-          "bram1_rddata": {
-            "direction": "O",
-            "left": "31",
-            "right": "0"
-          },
-          "bram2_addr": {
-            "direction": "I",
-            "left": "10",
-            "right": "2"
-          },
-          "bram2_clk": {
-            "type": "clk",
-            "direction": "I",
-            "parameters": {
-              "ASSOCIATED_RESET": {
-                "value": "bram2_rst",
-                "value_src": "constant"
-              }
-            }
-          },
-          "bram2_wrdata": {
-            "direction": "I",
-            "left": "31",
-            "right": "0"
-          },
-          "bram2_en": {
-            "direction": "I"
-          },
-          "bram2_rst": {
-            "type": "rst",
-            "direction": "I"
-          },
-          "bram2_we": {
-            "direction": "I",
-            "left": "3",
-            "right": "0"
-          },
-          "bram2_rddata": {
-            "direction": "O",
-            "left": "31",
-            "right": "0"
-          },
           "sysclk": {
             "direction": "I",
             "parameters": {
@@ -628,7 +676,7 @@
                 "value_src": "ip_prop"
               },
               "CLK_DOMAIN": {
-                "value": "/clk_wiz_0_clk_out1",
+                "value": "zybo2030_clk_wiz_0_0_clk_out1",
                 "value_src": "ip_prop"
               }
             }
@@ -645,7 +693,7 @@
                 "value_src": "ip_prop"
               },
               "CLK_DOMAIN": {
-                "value": "/clk_wiz_0_clk_out1",
+                "value": "zybo2030_clk_wiz_0_0_clk_out1",
                 "value_src": "ip_prop"
               }
             }
@@ -680,7 +728,7 @@
       },
       "processing_system7_0": {
         "vlnv": "xilinx.com:ip:processing_system7:5.5",
-        "ip_revision": "7",
+        "ip_revision": "8",
         "xci_name": "zybo2030_processing_system7_0_0",
         "xci_path": "ip/zybo2030_processing_system7_0_0/zybo2030_processing_system7_0_0.xci",
         "inst_hier_path": "processing_system7_0",
@@ -829,7 +877,7 @@
       },
       "clk_wiz_0": {
         "vlnv": "xilinx.com:ip:clk_wiz:6.0",
-        "ip_revision": "16",
+        "ip_revision": "17",
         "xci_name": "zybo2030_clk_wiz_0_0",
         "xci_path": "ip/zybo2030_clk_wiz_0_0/zybo2030_clk_wiz_0_0.xci",
         "inst_hier_path": "clk_wiz_0",
@@ -1062,7 +1110,7 @@
       },
       "smartconnect_0": {
         "vlnv": "xilinx.com:ip:smartconnect:1.0",
-        "ip_revision": "27",
+        "ip_revision": "28",
         "xci_name": "zybo2030_smartconnect_0_0",
         "xci_path": "ip/zybo2030_smartconnect_0_0/zybo2030_smartconnect_0_0.xci",
         "inst_hier_path": "smartconnect_0",
@@ -1217,6 +1265,18 @@
       }
     },
     "interface_nets": {
+      "axi_bram_ctrl_0_BRAM_PORTA": {
+        "interface_ports": [
+          "axi_bram_ctrl_0/BRAM_PORTA",
+          "ibm2030_0/BRAM1_CTRL"
+        ]
+      },
+      "axi_bram_ctrl_1_BRAM_PORTA": {
+        "interface_ports": [
+          "axi_bram_ctrl_1/BRAM_PORTA",
+          "ibm2030_0/BRAM2_CTRL"
+        ]
+      },
       "processing_system7_0_DDR": {
         "interface_ports": [
           "DDR",
@@ -1259,78 +1319,6 @@
         "ports": [
           "MAX7318_SDA",
           "ibm2030_0/MAX7318_SDA"
-        ]
-      },
-      "axi_bram_ctrl_1_bram_addr_a": {
-        "ports": [
-          "axi_bram_ctrl_1/bram_addr_a",
-          "ibm2030_0/bram2_addr"
-        ]
-      },
-      "axi_bram_ctrl_1_bram_clk_a": {
-        "ports": [
-          "axi_bram_ctrl_1/bram_clk_a",
-          "ibm2030_0/bram2_clk"
-        ]
-      },
-      "axi_bram_ctrl_1_bram_en_a": {
-        "ports": [
-          "axi_bram_ctrl_1/bram_en_a",
-          "ibm2030_0/bram2_en"
-        ]
-      },
-      "axi_bram_ctrl_1_bram_rst_a": {
-        "ports": [
-          "axi_bram_ctrl_1/bram_rst_a",
-          "ibm2030_0/bram2_rst"
-        ]
-      },
-      "axi_bram_ctrl_1_bram_we_a": {
-        "ports": [
-          "axi_bram_ctrl_1/bram_we_a",
-          "ibm2030_0/bram2_we"
-        ]
-      },
-      "axi_bram_ctrl_1_bram_wrdata_a": {
-        "ports": [
-          "axi_bram_ctrl_1/bram_wrdata_a",
-          "ibm2030_0/bram2_wrdata"
-        ]
-      },
-      "axi_bram_ctrl_2_bram_addr_a": {
-        "ports": [
-          "axi_bram_ctrl_0/bram_addr_a",
-          "ibm2030_0/bram1_addr"
-        ]
-      },
-      "axi_bram_ctrl_2_bram_clk_a": {
-        "ports": [
-          "axi_bram_ctrl_0/bram_clk_a",
-          "ibm2030_0/bram1_clk"
-        ]
-      },
-      "axi_bram_ctrl_2_bram_en_a": {
-        "ports": [
-          "axi_bram_ctrl_0/bram_en_a",
-          "ibm2030_0/bram1_en"
-        ]
-      },
-      "axi_bram_ctrl_2_bram_rst_a": {
-        "ports": [
-          "axi_bram_ctrl_0/bram_rst_a",
-          "ibm2030_0/bram1_rst"
-        ]
-      },
-      "axi_bram_ctrl_2_bram_we_a": {
-        "ports": [
-          "axi_bram_ctrl_0/bram_we_a",
-          "ibm2030_0/bram1_we"
-        ]
-      },
-      "axi_bram_ctrl_2_bram_wrdata_a": {
-        "ports": [
-          "axi_bram_ctrl_0/bram_wrdata_a",
-          "ibm2030_0/bram1_wrdata"
         ]
       },
       "clk_wiz_0_clk_out1": {
@@ -1441,18 +1429,6 @@
           "ilconcat_b/In3"
         ]
       },
-      "ibm2030_0_bram1_rddata": {
-        "ports": [
-          "ibm2030_0/bram1_rddata",
-          "axi_bram_ctrl_0/bram_rddata_a"
-        ]
-      },
-      "ibm2030_0_bram2_rddata": {
-        "ports": [
-          "ibm2030_0/bram2_rddata",
-          "axi_bram_ctrl_1/bram_rddata_a"
-        ]
-      },
       "ibm2030_0_green0": {
         "ports": [
           "ibm2030_0/green0",
@@ -1552,11 +1528,11 @@
       "processing_system7_0_FCLK_CLK0": {
         "ports": [
           "processing_system7_0/FCLK_CLK0",
-          "processing_system7_0/M_AXI_GP0_ACLK",
-          "smartconnect_0/aclk",
           "axi_bram_ctrl_0/s_axi_aclk",
           "axi_bram_ctrl_1/s_axi_aclk",
-          "rst_ps7_0_50M/slowest_sync_clk"
+          "rst_ps7_0_50M/slowest_sync_clk",
+          "processing_system7_0/M_AXI_GP0_ACLK",
+          "smartconnect_0/aclk"
         ]
       },
       "processing_system7_0_FCLK_RESET0_N": {
@@ -1568,16 +1544,16 @@
       "rst_ps7_0_50M_peripheral_aresetn": {
         "ports": [
           "rst_ps7_0_50M/peripheral_aresetn",
-          "smartconnect_0/aresetn",
           "axi_bram_ctrl_0/s_axi_aresetn",
-          "axi_bram_ctrl_1/s_axi_aresetn"
+          "axi_bram_ctrl_1/s_axi_aresetn",
+          "smartconnect_0/aresetn"
         ]
       },
       "rst_ps7_0_50M_peripheral_reset": {
         "ports": [
           "rst_ps7_0_50M/peripheral_reset",
-          "clk_wiz_0/reset",
-          "rgb2dvi_0/aRst"
+          "rgb2dvi_0/aRst",
+          "clk_wiz_0/reset"
         ]
       },
       "serialRx_1": {

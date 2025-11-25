@@ -48,7 +48,7 @@
 
 
 // IP VLNV: xilinx.com:ip:sc_sc2axi:1.0
-// IP Revision: 10
+// IP Revision: 11
 
 `timescale 1ns/1ps
 
@@ -259,7 +259,7 @@ input wire m_axi_rvalid;
 (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 M_AXI RREADY" *)
 output wire m_axi_rready;
 
-  sc_sc2axi_v1_0_10_top #(
+  sc_sc2axi_v1_0_11_top #(
     .C_AXI_ADDR_WIDTH(11),
     .C_AXI_ID_WIDTH(1),
     .C_AXI_RDATA_WIDTH(32),

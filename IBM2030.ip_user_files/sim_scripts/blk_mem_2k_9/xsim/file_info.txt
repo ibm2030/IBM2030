@@ -1,2 +1,0 @@
-blk_mem_2k_9.v,verilog,xil_defaultlib,../../../../IBM2030.gen/sources_1/ip/blk_mem_2k_9/sim/blk_mem_2k_9.v,incdir="../../../../../../../../Xilinx/2025.1/Vivado/data/rsb/busdef"
-glbl.v,Verilog,xil_defaultlib,glbl.v

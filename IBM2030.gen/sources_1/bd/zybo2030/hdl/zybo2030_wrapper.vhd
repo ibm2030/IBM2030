@@ -1,8 +1,8 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 --Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2025.1.1 (lin64) Build 6233196 Thu Sep 11 21:27:11 MDT 2025
---Date        : Thu Oct 23 11:28:46 2025
+--Tool Version: Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
+--Date        : Tue Nov 25 22:13:21 2025
 --Host        : synergy running 64-bit Linux Mint 22.2
 --Command     : generate_target zybo2030_wrapper.bd
 --Design      : zybo2030_wrapper

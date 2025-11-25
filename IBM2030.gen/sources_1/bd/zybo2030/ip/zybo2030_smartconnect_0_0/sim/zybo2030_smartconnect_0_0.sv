@@ -48,7 +48,7 @@
 
 
 // IP VLNV: xilinx.com:ip:smartconnect:1.0
-// IP Revision: 27
+// IP Revision: 28
 
 `timescale 1ns/1ps
 

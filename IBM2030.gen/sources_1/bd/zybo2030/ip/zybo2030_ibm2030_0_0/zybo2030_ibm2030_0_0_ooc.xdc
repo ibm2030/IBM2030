@@ -56,8 +56,4 @@ create_clock -period 10 -name MAX6951_CLK [get_ports MAX6951_CLK]
 
 create_clock -period 10 -name MAX7219_CLK [get_ports MAX7219_CLK]
 
-create_clock -period 10 -name bram1_clk [get_ports bram1_clk]
-
-create_clock -period 10 -name bram2_clk [get_ports bram2_clk]
-
 

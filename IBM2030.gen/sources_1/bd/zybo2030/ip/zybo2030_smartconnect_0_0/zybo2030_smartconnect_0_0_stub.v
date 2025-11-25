@@ -1,9 +1,9 @@
 // Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 // Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
-// Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
-// Date        : Mon Oct 13 16:06:53 2025
-// Host        : lznb204 running 64-bit major release  (build 9200)
+// Tool Version: Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
+// Date        : Tue Nov 25 21:38:03 2025
+// Host        : synergy running 64-bit Linux Mint 22.2
 // Command     : write_verilog -force -mode synth_stub -rename_top zybo2030_smartconnect_0_0 -prefix
 //               zybo2030_smartconnect_0_0_ zybo2030_smartconnect_0_0_stub.v
 // Design      : zybo2030_smartconnect_0_0
@@ -14,8 +14,8 @@
 // This empty module with port declaration file causes synthesis tools to infer a black box for IP.
 // The synthesis directives are for Synopsys Synplify support to prevent IO buffer insertion.
 // Please paste the declaration into a Verilog source file or add the file as an additional source.
-(* CHECK_LICENSE_TYPE = "zybo2030_smartconnect_0_0,bd_c662,{}" *) (* CORE_GENERATION_INFO = "zybo2030_smartconnect_0_0,bd_c662,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=smartconnect,x_ipVersion=1.0,x_ipCoreRevision=27,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) 
-(* X_CORE_INFO = "bd_c662,Vivado 2025.1" *) 
+(* CHECK_LICENSE_TYPE = "zybo2030_smartconnect_0_0,bd_c662,{}" *) (* CORE_GENERATION_INFO = "zybo2030_smartconnect_0_0,bd_c662,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=smartconnect,x_ipVersion=1.0,x_ipCoreRevision=28,x_ipLanguage=VHDL,x_ipSimLanguage=VHDL}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) 
+(* X_CORE_INFO = "bd_c662,Vivado 2025.2" *) 
 module zybo2030_smartconnect_0_0(aclk, aresetn, S00_AXI_awid, S00_AXI_awaddr, 
   S00_AXI_awlen, S00_AXI_awsize, S00_AXI_awburst, S00_AXI_awlock, S00_AXI_awcache, 
   S00_AXI_awprot, S00_AXI_awqos, S00_AXI_awvalid, S00_AXI_awready, S00_AXI_wid, 

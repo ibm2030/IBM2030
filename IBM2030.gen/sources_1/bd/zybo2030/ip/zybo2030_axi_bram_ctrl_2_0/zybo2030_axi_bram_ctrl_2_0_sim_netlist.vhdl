@@ -1,12 +1,12 @@
 -- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 -- Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
--- Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
--- Date        : Fri Oct 10 16:36:10 2025
--- Host        : lznb204 running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode funcsim -rename_top zybo2030_axi_bram_ctrl_2_0 -prefix
---               zybo2030_axi_bram_ctrl_2_0_ zybo2030_axi_bram_ctrl_0_1_sim_netlist.vhdl
--- Design      : zybo2030_axi_bram_ctrl_0_1
+-- Tool Version: Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
+-- Date        : Tue Nov 25 21:37:48 2025
+-- Host        : synergy running 64-bit Linux Mint 22.2
+-- Command     : write_vhdl -force -mode funcsim
+--               /home/ljw/Documents/IBM/IBM2030/IBM2030.gen/sources_1/bd/zybo2030/ip/zybo2030_axi_bram_ctrl_2_0/zybo2030_axi_bram_ctrl_2_0_sim_netlist.vhdl
+-- Design      : zybo2030_axi_bram_ctrl_2_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
 -- Device      : xc7z020clg400-1
@@ -36,6 +36,8 @@ entity zybo2030_axi_bram_ctrl_2_0_axi_lite is
     s_axi_awaddr : in STD_LOGIC_VECTOR ( 13 downto 0 );
     s_axi_rready : in STD_LOGIC
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of zybo2030_axi_bram_ctrl_2_0_axi_lite : entity is "axi_lite";
 end zybo2030_axi_bram_ctrl_2_0_axi_lite;
 
 architecture STRUCTURE of zybo2030_axi_bram_ctrl_2_0_axi_lite is
@@ -638,6 +640,8 @@ entity zybo2030_axi_bram_ctrl_2_0_axi_bram_ctrl_top is
     s_axi_awaddr : in STD_LOGIC_VECTOR ( 13 downto 0 );
     s_axi_rready : in STD_LOGIC
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of zybo2030_axi_bram_ctrl_2_0_axi_bram_ctrl_top : entity is "axi_bram_ctrl_top";
 end zybo2030_axi_bram_ctrl_2_0_axi_bram_ctrl_top;
 
 architecture STRUCTURE of zybo2030_axi_bram_ctrl_2_0_axi_bram_ctrl_top is
@@ -776,6 +780,8 @@ entity zybo2030_axi_bram_ctrl_2_0_axi_bram_ctrl is
   attribute C_S_AXI_PROTOCOL of zybo2030_axi_bram_ctrl_2_0_axi_bram_ctrl : entity is "AXI4LITE";
   attribute C_S_AXI_SUPPORTS_NARROW_BURST : integer;
   attribute C_S_AXI_SUPPORTS_NARROW_BURST of zybo2030_axi_bram_ctrl_2_0_axi_bram_ctrl : entity is 0;
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of zybo2030_axi_bram_ctrl_2_0_axi_bram_ctrl : entity is "axi_bram_ctrl";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of zybo2030_axi_bram_ctrl_2_0_axi_bram_ctrl : entity is "yes";
 end zybo2030_axi_bram_ctrl_2_0_axi_bram_ctrl;
@@ -968,11 +974,11 @@ entity zybo2030_axi_bram_ctrl_2_0 is
   attribute NotValidForBitStream : boolean;
   attribute NotValidForBitStream of zybo2030_axi_bram_ctrl_2_0 : entity is true;
   attribute CHECK_LICENSE_TYPE : string;
-  attribute CHECK_LICENSE_TYPE of zybo2030_axi_bram_ctrl_2_0 : entity is "zybo2030_axi_bram_ctrl_0_1,axi_bram_ctrl,{}";
+  attribute CHECK_LICENSE_TYPE of zybo2030_axi_bram_ctrl_2_0 : entity is "zybo2030_axi_bram_ctrl_2_0,axi_bram_ctrl,{}";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of zybo2030_axi_bram_ctrl_2_0 : entity is "yes";
   attribute x_core_info : string;
-  attribute x_core_info of zybo2030_axi_bram_ctrl_2_0 : entity is "axi_bram_ctrl,Vivado 2025.1";
+  attribute x_core_info of zybo2030_axi_bram_ctrl_2_0 : entity is "axi_bram_ctrl,Vivado 2025.2";
 end zybo2030_axi_bram_ctrl_2_0;
 
 architecture STRUCTURE of zybo2030_axi_bram_ctrl_2_0 is

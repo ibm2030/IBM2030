@@ -48,11 +48,11 @@
 
 
 // IP VLNV: xilinx.com:ip:sc_switchboard:1.0
-// IP Revision: 8
+// IP Revision: 9
 
-(* X_CORE_INFO = "sc_switchboard_v1_0_8_top,Vivado 2025.1" *)
-(* CHECK_LICENSE_TYPE = "bd_c662_woutsw_0,sc_switchboard_v1_0_8_top,{}" *)
-(* CORE_GENERATION_INFO = "bd_c662_woutsw_0,sc_switchboard_v1_0_8_top,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=sc_switchboard,x_ipVersion=1.0,x_ipCoreRevision=8,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED,C_PAYLD_WIDTH=55,K_MAX_INFO_WIDTH=1,C_S_PIPELINES=0,C_M_PIPELINES=0,C_S_LATENCY=0,C_NUM_SI=1,C_NUM_MI=2,C_TESTING_MODE=0,C_CONNECTIVITY=0b11}" *)
+(* X_CORE_INFO = "sc_switchboard_v1_0_9_top,Vivado 2025.2" *)
+(* CHECK_LICENSE_TYPE = "bd_c662_woutsw_0,sc_switchboard_v1_0_9_top,{}" *)
+(* CORE_GENERATION_INFO = "bd_c662_woutsw_0,sc_switchboard_v1_0_9_top,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=sc_switchboard,x_ipVersion=1.0,x_ipCoreRevision=9,x_ipLanguage=VHDL,x_ipSimLanguage=VHDL,C_PAYLD_WIDTH=55,K_MAX_INFO_WIDTH=1,C_S_PIPELINES=0,C_M_PIPELINES=0,C_S_LATENCY=0,C_NUM_SI=1,C_NUM_MI=2,C_TESTING_MODE=0,C_CONNECTIVITY=0b11}" *)
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module bd_c662_woutsw_0 (
   aclk,
@@ -90,8 +90,7 @@ input wire [54 : 0] s_sc_payld;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 S00_SC RECV" *)
 output wire [1 : 0] s_sc_recv;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 M00_SC RECV [0:0] [0:0], xilinx.com:interface:sc:1.0 M01_SC RECV [0:0] [1:1]" *)
-(* X_INTERFACE_MODE = "master M00_SC" *)
-(* X_INTERFACE_MODE = "master M01_SC" *)
+(* X_INTERFACE_MODE = "master M00_SC, master M01_SC" *)
 input wire [1 : 0] m_sc_recv;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 M00_SC SEND [0:0] [0:0], xilinx.com:interface:sc:1.0 M01_SC SEND [0:0] [1:1]" *)
 output wire [1 : 0] m_sc_send;
@@ -102,7 +101,7 @@ output wire [1 : 0] m_sc_info;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 M00_SC PAYLD [54:0] [54:0], xilinx.com:interface:sc:1.0 M01_SC PAYLD [54:0] [109:55]" *)
 output wire [109 : 0] m_sc_payld;
 
-  sc_switchboard_v1_0_8_top #(
+  sc_switchboard_v1_0_9_top #(
     .C_PAYLD_WIDTH(55),
     .K_MAX_INFO_WIDTH(1),
     .C_S_PIPELINES(0),

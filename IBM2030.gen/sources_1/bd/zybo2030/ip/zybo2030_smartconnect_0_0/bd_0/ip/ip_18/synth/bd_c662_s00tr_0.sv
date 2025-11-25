@@ -48,12 +48,12 @@
 
 
 // IP VLNV: xilinx.com:ip:sc_transaction_regulator:1.0
-// IP Revision: 11
+// IP Revision: 12
 
-(* X_CORE_INFO = "sc_transaction_regulator_v1_0_11_top,Vivado 2025.1" *)
-(* CHECK_LICENSE_TYPE = "bd_c662_s00tr_0,sc_transaction_regulator_v1_0_11_top,{}" *)
-(* CORE_GENERATION_INFO = "bd_c662_s00tr_0,sc_transaction_regulator_v1_0_11_top,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=sc_transaction_regulator,x_ipVersion=1.0,x_ipCoreRevision=11,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED,C_FAMILY=zynq,C_IS_CASCADED=0,C_ENABLE_PIPELINING=0x1,C_NUM_READ_THREADS=1,C_NUM_WRITE_THREADS=1,C_MEP_IDENTIFIER_WIDTH=1,C_MEP_IDENTIFIER=1,C_SEP_ROUTE_WIDTH=1,C_RDATA_WIDTH=32,C_WDATA_WIDTH=32,C_S_ID_WIDTH=12,C_M_ID_WIDTH=1,C_ADDR_WIDTH=32,C_SUPPORTS_READ_DEADLOCK=0,C_SU\
-PPORTS_WRITE_DEADLOCK=0,C_READ_ACCEPTANCE=32,C_WRITE_ACCEPTANCE=32,C_NUM_READ_OUTSTANDING=8,C_NUM_WRITE_OUTSTANDING=8,C_SINGLE_ISSUING=1}" *)
+(* X_CORE_INFO = "sc_transaction_regulator_v1_0_12_top,Vivado 2025.2" *)
+(* CHECK_LICENSE_TYPE = "bd_c662_s00tr_0,sc_transaction_regulator_v1_0_12_top,{}" *)
+(* CORE_GENERATION_INFO = "bd_c662_s00tr_0,sc_transaction_regulator_v1_0_12_top,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=sc_transaction_regulator,x_ipVersion=1.0,x_ipCoreRevision=12,x_ipLanguage=VHDL,x_ipSimLanguage=VHDL,C_FAMILY=zynq,C_IS_CASCADED=0,C_ENABLE_PIPELINING=0x1,C_NUM_READ_THREADS=1,C_NUM_WRITE_THREADS=1,C_MEP_IDENTIFIER_WIDTH=1,C_MEP_IDENTIFIER=1,C_SEP_ROUTE_WIDTH=1,C_RDATA_WIDTH=32,C_WDATA_WIDTH=32,C_S_ID_WIDTH=12,C_M_ID_WIDTH=1,C_ADDR_WIDTH=32,C_SUPPORTS_READ_DEADLOCK=0,C_SUP\
+PORTS_WRITE_DEADLOCK=0,C_READ_ACCEPTANCE=32,C_WRITE_ACCEPTANCE=32,C_NUM_READ_OUTSTANDING=8,C_NUM_WRITE_OUTSTANDING=8,C_SINGLE_ISSUING=1}" *)
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module bd_c662_s00tr_0 (
   aclk,
@@ -327,7 +327,7 @@ input wire m_axi_rvalid;
 (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 M_AXI RREADY" *)
 output wire m_axi_rready;
 
-  sc_transaction_regulator_v1_0_11_top #(
+  sc_transaction_regulator_v1_0_12_top #(
     .C_FAMILY("zynq"),
     .C_IS_CASCADED(0),
     .C_ENABLE_PIPELINING(1'H1),

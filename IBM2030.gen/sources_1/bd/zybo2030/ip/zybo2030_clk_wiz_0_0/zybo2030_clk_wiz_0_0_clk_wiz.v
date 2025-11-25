@@ -55,6 +55,7 @@
 //----------------------------------------------------------------------------
 // clk_out1__125.00000______0.000______50.0______119.348_____96.948
 // clk_out2__50.00000______0.000______50.0______143.688_____96.948
+// clk_out3__40.00000______0.000______50.0______150.675_____96.948
 //
 //----------------------------------------------------------------------------
 // Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -69,6 +70,7 @@ module zybo2030_clk_wiz_0_0_clk_wiz
   // Clock out ports
   output        clk_out1,
   output        clk_out2,
+  output        clk_out3,
   // Status and control signals
   input         reset,
   input         clk_in1
@@ -76,6 +78,7 @@ module zybo2030_clk_wiz_0_0_clk_wiz
   // Input buffering
   //------------------------------------
 wire clk_in1_zybo2030_clk_wiz_0_0;
+wire clk_in1_zybo2030_clk_wiz_0_0_buf;
 wire clk_in2_zybo2030_clk_wiz_0_0;
   IBUF clkin1_ibufg
    (.O (clk_in1_zybo2030_clk_wiz_0_0),
@@ -104,10 +107,10 @@ wire clk_in2_zybo2030_clk_wiz_0_0;
   wire        psdone_unused;
   wire        locked_int;
   wire        clkfbout_zybo2030_clk_wiz_0_0;
+  wire        clkfbout_buf_zybo2030_clk_wiz_0_0;
   wire        clkfboutb_unused;
     wire clkout0b_unused;
    wire clkout1b_unused;
-   wire clkout2_unused;
    wire clkout2b_unused;
    wire clkout3_unused;
    wire clkout3b_unused;
@@ -117,6 +120,15 @@ wire clk_in2_zybo2030_clk_wiz_0_0;
   wire        clkfbstopped_unused;
   wire        clkinstopped_unused;
   wire        reset_high;
+  (* KEEP = "TRUE" *) 
+  (* ASYNC_REG = "TRUE" *)
+  reg  [7 :0] seq_reg1 = 0;
+  (* KEEP = "TRUE" *) 
+  (* ASYNC_REG = "TRUE" *)
+  reg  [7 :0] seq_reg2 = 0;
+  (* KEEP = "TRUE" *) 
+  (* ASYNC_REG = "TRUE" *)
+  reg  [7 :0] seq_reg3 = 0;
 
   MMCME2_ADV
   #(.BANDWIDTH            ("OPTIMIZED"),
@@ -135,6 +147,10 @@ wire clk_in2_zybo2030_clk_wiz_0_0;
     .CLKOUT1_PHASE        (0.000),
     .CLKOUT1_DUTY_CYCLE   (0.500),
     .CLKOUT1_USE_FINE_PS  ("FALSE"),
+    .CLKOUT2_DIVIDE       (25),
+    .CLKOUT2_PHASE        (0.000),
+    .CLKOUT2_DUTY_CYCLE   (0.500),
+    .CLKOUT2_USE_FINE_PS  ("FALSE"),
     .CLKIN1_PERIOD        (8.000))
   mmcm_adv_inst
     // Output clocks
@@ -145,7 +161,7 @@ wire clk_in2_zybo2030_clk_wiz_0_0;
     .CLKOUT0B            (clkout0b_unused),
     .CLKOUT1             (clk_out2_zybo2030_clk_wiz_0_0),
     .CLKOUT1B            (clkout1b_unused),
-    .CLKOUT2             (clkout2_unused),
+    .CLKOUT2             (clk_out3_zybo2030_clk_wiz_0_0),
     .CLKOUT2B            (clkout2b_unused),
     .CLKOUT3             (clkout3_unused),
     .CLKOUT3B            (clkout3b_unused),
@@ -184,19 +200,74 @@ wire clk_in2_zybo2030_clk_wiz_0_0;
  // Output buffering
   //-----------------------------------
 
+  BUFG clkf_buf
+   (.O (clkfbout_buf_zybo2030_clk_wiz_0_0),
+    .I (clkfbout_zybo2030_clk_wiz_0_0));
 
 
 
 
 
-  BUFG clkout1_buf
+
+  BUFGCE clkout1_buf
    (.O   (clk_out1),
+    .CE  (seq_reg1[7]),
     .I   (clk_out1_zybo2030_clk_wiz_0_0));
 
+  BUFH clkout1_buf_en
+   (.O   (clk_out1_zybo2030_clk_wiz_0_0_en_clk),
+    .I   (clk_out1_zybo2030_clk_wiz_0_0));
+  always @(posedge clk_out1_zybo2030_clk_wiz_0_0_en_clk or posedge reset_high) begin
+    if(reset_high == 1'b1) begin
+	    seq_reg1 <= 8'h00;
+    end
+    else begin
+        seq_reg1 <= {seq_reg1[6:0],locked_int};
+  
+    end
+  end
 
-  BUFG clkout2_buf
+
+  BUFGCE clkout2_buf
    (.O   (clk_out2),
+    .CE  (seq_reg2[7]),
     .I   (clk_out2_zybo2030_clk_wiz_0_0));
+ 
+  BUFH clkout2_buf_en
+   (.O   (clk_out2_zybo2030_clk_wiz_0_0_en_clk),
+    .I   (clk_out2_zybo2030_clk_wiz_0_0));
+ 
+  always @(posedge clk_out2_zybo2030_clk_wiz_0_0_en_clk or posedge reset_high) begin
+    if(reset_high == 1'b1) begin
+	  seq_reg2 <= 8'h00;
+    end
+    else begin
+        seq_reg2 <= {seq_reg2[6:0],locked_int};
+  
+    end
+  end
+
+
+  BUFGCE clkout3_buf
+   (.O   (clk_out3),
+    .CE  (seq_reg3[7]),
+    .I   (clk_out3_zybo2030_clk_wiz_0_0));
+ 
+  BUFH clkout3_buf_en
+   (.O   (clk_out3_zybo2030_clk_wiz_0_0_en_clk),
+    .I   (clk_out3_zybo2030_clk_wiz_0_0));
+ 
+  always @(posedge clk_out3_zybo2030_clk_wiz_0_0_en_clk or posedge reset_high) begin
+    if(reset_high == 1'b1) begin
+	  seq_reg3 <= 8'h00;
+    end
+    else begin
+        seq_reg3 <= {seq_reg3[6:0],locked_int};
+  
+    end
+  end
+
+
 
 
 

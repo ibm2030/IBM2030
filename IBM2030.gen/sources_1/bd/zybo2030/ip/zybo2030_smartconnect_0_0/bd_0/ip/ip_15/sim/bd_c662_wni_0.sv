@@ -48,7 +48,7 @@
 
 
 // IP VLNV: xilinx.com:ip:sc_node:1.0
-// IP Revision: 18
+// IP Revision: 19
 
 `timescale 1ns/1ps
 
@@ -109,7 +109,7 @@ output wire [1 : 0] m_sc_info;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 M_SC PAYLD" *)
 output wire [54 : 0] m_sc_payld;
 
-  sc_node_v1_0_18_top #(
+  sc_node_v1_0_19_top #(
     .C_FAMILY("zynq"),
     .C_FIFO_IP(0),
     .C_DISABLE_IP(0),

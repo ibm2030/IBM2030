@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="ibm2030_reset_run_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="buses_package" />
+            <top_module name="ccros" />
+            <top_module name="gates_package" />
+            <top_module name="glbl" />
+            <top_module name="ibm2030_reset_run" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="11,007.043625 us"></ZoomStartTime>
+      <ZoomEndTime time="11,033.493626 us"></ZoomEndTime>
+      <Cursor1Time time="11,018.953625 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="210"></NameColumnWidth>
+      <ValueColumnWidth column_width="90"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="92" />
+   <wave_markers>
+      <marker label="" time="10992068000" />
+      <marker label="" time="10813316000" />
+      <marker label="" time="10813988000" />
+      <marker label="" time="10870092000" />
+   </wave_markers>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/WX">
+      <obj_property name="ElementShortName">WX[0:12]</obj_property>
+      <obj_property name="ObjectShortName">WX[0:12]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/run">
+      <obj_property name="ElementShortName">run</obj_property>
+      <obj_property name="ObjectShortName">run</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/sysclk">
+      <obj_property name="ElementShortName">sysclk</obj_property>
+      <obj_property name="ObjectShortName">sysclk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/clk50M">
+      <obj_property name="ElementShortName">clk50M</obj_property>
+      <obj_property name="ObjectShortName">clk50M</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/clk40M">
+      <obj_property name="ElementShortName">clk40M</obj_property>
+      <obj_property name="ObjectShortName">clk40M</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/T1">
+      <obj_property name="ElementShortName">T1</obj_property>
+      <obj_property name="ObjectShortName">T1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/T2">
+      <obj_property name="ElementShortName">T2</obj_property>
+      <obj_property name="ObjectShortName">T2</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/T3">
+      <obj_property name="ElementShortName">T3</obj_property>
+      <obj_property name="ObjectShortName">T3</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/T4">
+      <obj_property name="ElementShortName">T4</obj_property>
+      <obj_property name="ObjectShortName">T4</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/B_BUS">
+      <obj_property name="ElementShortName">B_BUS[0:8]</obj_property>
+      <obj_property name="ObjectShortName">B_BUS[0:8]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/A_BUS">
+      <obj_property name="ElementShortName">A_BUS[0:8]</obj_property>
+      <obj_property name="ObjectShortName">A_BUS[0:8]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/css_sect/ALU_CHK">
+      <obj_property name="ElementShortName">ALU_CHK</obj_property>
+      <obj_property name="ObjectShortName">ALU_CHK</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/css_sect/HS_ALU_CHK">
+      <obj_property name="ElementShortName">HS_ALU_CHK</obj_property>
+      <obj_property name="ObjectShortName">HS_ALU_CHK</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/css_sect/HS_DIAG">
+      <obj_property name="ElementShortName">HS_DIAG</obj_property>
+      <obj_property name="ObjectShortName">HS_DIAG</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/css_sect/HS_INSTR">
+      <obj_property name="ElementShortName">HS_INSTR</obj_property>
+      <obj_property name="ObjectShortName">HS_INSTR</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/css_sect/HS_LCH_Set">
+      <obj_property name="ElementShortName">HS_LCH_Set</obj_property>
+      <obj_property name="ObjectShortName">HS_LCH_Set</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/css_sect/HS_MACH_CHK">
+      <obj_property name="ElementShortName">HS_MACH_CHK</obj_property>
+      <obj_property name="ObjectShortName">HS_MACH_CHK</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/css_sect/HS_MATCH">
+      <obj_property name="ElementShortName">HS_MATCH</obj_property>
+      <obj_property name="ObjectShortName">HS_MATCH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/css_sect/HZ_DEST_RST">
+      <obj_property name="ElementShortName">HZ_DEST_RST</obj_property>
+      <obj_property name="ObjectShortName">HZ_DEST_RST</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/IND_EX">
+      <obj_property name="ElementShortName">IND_EX</obj_property>
+      <obj_property name="ObjectShortName">IND_EX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/N_ALU_A_IN">
+      <obj_property name="ElementShortName">N_ALU_A_IN[0:7]</obj_property>
+      <obj_property name="ObjectShortName">N_ALU_A_IN[0:7]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/N_ALU_B_IN">
+      <obj_property name="ElementShortName">N_ALU_B_IN[0:7]</obj_property>
+      <obj_property name="ObjectShortName">N_ALU_B_IN[0:7]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/N_CARRY">
+      <obj_property name="ElementShortName">N_CARRY[0:7]</obj_property>
+      <obj_property name="ObjectShortName">N_CARRY[0:7]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/N_CARRY_IN_7">
+      <obj_property name="ElementShortName">N_CARRY_IN_7</obj_property>
+      <obj_property name="ObjectShortName">N_CARRY_IN_7</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/N_Z_ALU_BUS">
+      <obj_property name="ElementShortName">N_Z_ALU_BUS[0:7]</obj_property>
+      <obj_property name="ObjectShortName">N_Z_ALU_BUS[0:7]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/P_ALU_A_IN">
+      <obj_property name="ElementShortName">P_ALU_A_IN[0:7]</obj_property>
+      <obj_property name="ObjectShortName">P_ALU_A_IN[0:7]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/P_ALU_B_IN">
+      <obj_property name="ElementShortName">P_ALU_B_IN[0:7]</obj_property>
+      <obj_property name="ObjectShortName">P_ALU_B_IN[0:7]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/P_CARRY">
+      <obj_property name="ElementShortName">P_CARRY[0:7]</obj_property>
+      <obj_property name="ObjectShortName">P_CARRY[0:7]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/P_CARRY_IN_7">
+      <obj_property name="ElementShortName">P_CARRY_IN_7</obj_property>
+      <obj_property name="ObjectShortName">P_CARRY_IN_7</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/P_Z_ALU_BUS">
+      <obj_property name="ElementShortName">P_Z_ALU_BUS[0:7]</obj_property>
+      <obj_property name="ObjectShortName">P_Z_ALU_BUS[0:7]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/S_REG_3">
+      <obj_property name="ElementShortName">S_REG_3</obj_property>
+      <obj_property name="ObjectShortName">S_REG_3</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/NOT_S3">
+      <obj_property name="ElementShortName">NOT_S3</obj_property>
+      <obj_property name="ObjectShortName">NOT_S3</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/sGT_CARRY_TO_S3">
+      <obj_property name="ElementShortName">sGT_CARRY_TO_S3</obj_property>
+      <obj_property name="ObjectShortName">sGT_CARRY_TO_S3</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/sN_Z_BUS">
+      <obj_property name="ElementShortName">sN_Z_BUS[0:8]</obj_property>
+      <obj_property name="ObjectShortName">sN_Z_BUS[0:8]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/sP_Z_BUS">
+      <obj_property name="ElementShortName">sP_Z_BUS[0:8]</obj_property>
+      <obj_property name="ObjectShortName">sP_Z_BUS[0:8]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/CARRY_S3">
+      <obj_property name="ElementShortName">CARRY_S3</obj_property>
+      <obj_property name="ObjectShortName">CARRY_S3</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/INSERT_0_CARRY">
+      <obj_property name="ElementShortName">INSERT_0_CARRY</obj_property>
+      <obj_property name="ObjectShortName">INSERT_0_CARRY</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/P1">
+      <obj_property name="ElementShortName">P1</obj_property>
+      <obj_property name="ObjectShortName">P1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/RECYCLE_RST">
+      <obj_property name="ElementShortName">RECYCLE_RST</obj_property>
+      <obj_property name="ObjectShortName">RECYCLE_RST</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/MANUAL_STORE">
+      <obj_property name="ElementShortName">MANUAL_STORE</obj_property>
+      <obj_property name="ObjectShortName">MANUAL_STORE</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/ALU/NC7_LCH_Set">
+      <obj_property name="ElementShortName">NC7_LCH_Set</obj_property>
+      <obj_property name="ObjectShortName">NC7_LCH_Set</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/MpxChnlCtrls/FT5_BIT_SEL_IN">
+      <obj_property name="ElementShortName">FT5_BIT_SEL_IN</obj_property>
+      <obj_property name="ObjectShortName">FT5_BIT_SEL_IN</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/MpxChnlCtrls/P_1050_SEL_IN">
+      <obj_property name="ElementShortName">P_1050_SEL_IN</obj_property>
+      <obj_property name="ObjectShortName">P_1050_SEL_IN</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/MpxChnlCtrls/N1050_SEL_IN">
+      <obj_property name="ElementShortName">N1050_SEL_IN</obj_property>
+      <obj_property name="ObjectShortName">N1050_SEL_IN</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/css_sect/CLOCK_START">
+      <obj_property name="ElementShortName">CLOCK_START</obj_property>
+      <obj_property name="ObjectShortName">CLOCK_START</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/css_sect/ANY_MACH_CHK">
+      <obj_property name="ElementShortName">ANY_MACH_CHK</obj_property>
+      <obj_property name="ObjectShortName">ANY_MACH_CHK</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/css_sect/CF_STOP">
+      <obj_property name="ElementShortName">CF_STOP</obj_property>
+      <obj_property name="ObjectShortName">CF_STOP</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/ccros_sect/SALS">
+      <obj_property name="ElementShortName">SALS</obj_property>
+      <obj_property name="ObjectShortName">SALS</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/ccros_sect/CTRL">
+      <obj_property name="ElementShortName">CTRL</obj_property>
+      <obj_property name="ObjectShortName">CTRL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/Regs/G">
+      <obj_property name="ElementShortName">G[0:8]</obj_property>
+      <obj_property name="ObjectShortName">G[0:8]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/r_reg/R_REG_BUS">
+      <obj_property name="ElementShortName">R_REG_BUS[0:8]</obj_property>
+      <obj_property name="ObjectShortName">R_REG_BUS[0:8]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/manual/F_REGISTER">
+      <obj_property name="ElementShortName">F_REGISTER[0:7]</obj_property>
+      <obj_property name="ObjectShortName">F_REGISTER[0:7]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/x6x7_sect/TEST_INTRP">
+      <obj_property name="ElementShortName">TEST_INTRP</obj_property>
+      <obj_property name="ObjectShortName">TEST_INTRP</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/x6x7_sect/X6_DATA">
+      <obj_property name="ElementShortName">X6_DATA</obj_property>
+      <obj_property name="ObjectShortName">X6_DATA</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/x6x7_sect/X7_DATA">
+      <obj_property name="ElementShortName">X7_DATA</obj_property>
+      <obj_property name="ObjectShortName">X7_DATA</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/x6x7_sect/TIMER_UPDATE">
+      <obj_property name="ElementShortName">TIMER_UPDATE</obj_property>
+      <obj_property name="ObjectShortName">TIMER_UPDATE</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/x6x7_sect/TIMER_UPDATE_OR_EXT_INT">
+      <obj_property name="ElementShortName">TIMER_UPDATE_OR_EXT_INT</obj_property>
+      <obj_property name="ObjectShortName">TIMER_UPDATE_OR_EXT_INT</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/manual/EXT_INTRP">
+      <obj_property name="ElementShortName">EXT_INTRP</obj_property>
+      <obj_property name="ObjectShortName">EXT_INTRP</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/manual/RESET_F_REG">
+      <obj_property name="ElementShortName">RESET_F_REG</obj_property>
+      <obj_property name="ObjectShortName">RESET_F_REG</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/manual/EI_LCH_Set">
+      <obj_property name="ElementShortName">EI_LCH_Set</obj_property>
+      <obj_property name="ObjectShortName">EI_LCH_Set</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/manual/EI_LCH_Reset">
+      <obj_property name="ElementShortName">EI_LCH_Reset</obj_property>
+      <obj_property name="ObjectShortName">EI_LCH_Reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/x6x7_sect/SX1_INTERRUPT">
+      <obj_property name="ElementShortName">SX1_INTERRUPT</obj_property>
+      <obj_property name="ObjectShortName">SX1_INTERRUPT</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/x6x7_sect/SX2_INTERRUPT">
+      <obj_property name="ElementShortName">SX2_INTERRUPT</obj_property>
+      <obj_property name="ObjectShortName">SX2_INTERRUPT</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/x6x7_sect/MPX_INTERRUPT">
+      <obj_property name="ElementShortName">MPX_INTERRUPT</obj_property>
+      <obj_property name="ObjectShortName">MPX_INTERRUPT</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/x6x7_sect/U_WRAPPED_MPX">
+      <obj_property name="ElementShortName">U_WRAPPED_MPX</obj_property>
+      <obj_property name="ObjectShortName">U_WRAPPED_MPX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/x6x7_sect/I_WRAPPED_CPU">
+      <obj_property name="ElementShortName">I_WRAPPED_CPU</obj_property>
+      <obj_property name="ObjectShortName">I_WRAPPED_CPU</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/MpxReg1/MpxMask">
+      <obj_property name="ElementShortName">MpxMask</obj_property>
+      <obj_property name="ObjectShortName">MpxMask</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/MpxReg1/sFT_7_BIT_MPX_CHNL_INTRP">
+      <obj_property name="ElementShortName">sFT_7_BIT_MPX_CHNL_INTRP</obj_property>
+      <obj_property name="ObjectShortName">sFT_7_BIT_MPX_CHNL_INTRP</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/START_RD">
+      <obj_property name="ElementShortName">START_RD</obj_property>
+      <obj_property name="ObjectShortName">START_RD</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/START_WR">
+      <obj_property name="ElementShortName">START_WR</obj_property>
+      <obj_property name="ObjectShortName">START_WR</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/SET_READ_LCHS1">
+      <obj_property name="ElementShortName">SET_READ_LCHS1</obj_property>
+      <obj_property name="ObjectShortName">SET_READ_LCHS1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/DATA_READY1_SET">
+      <obj_property name="ElementShortName">DATA_READY1_SET</obj_property>
+      <obj_property name="ObjectShortName">DATA_READY1_SET</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/DATA_READY1_RESET">
+      <obj_property name="ElementShortName">DATA_READY1_RESET</obj_property>
+      <obj_property name="ObjectShortName">DATA_READY1_RESET</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/sDATA_READY_1">
+      <obj_property name="ElementShortName">sDATA_READY_1</obj_property>
+      <obj_property name="ObjectShortName">sDATA_READY_1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/READ_RST_SET1">
+      <obj_property name="ElementShortName">READ_RST_SET1</obj_property>
+      <obj_property name="ObjectShortName">READ_RST_SET1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/READ_RST_RESET1">
+      <obj_property name="ElementShortName">READ_RST_RESET1</obj_property>
+      <obj_property name="ObjectShortName">READ_RST_RESET1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/RD_RST_CTRL1">
+      <obj_property name="ElementShortName">RD_RST_CTRL1</obj_property>
+      <obj_property name="ObjectShortName">RD_RST_CTRL1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/WRITE_RST_SET1">
+      <obj_property name="ElementShortName">WRITE_RST_SET1</obj_property>
+      <obj_property name="ObjectShortName">WRITE_RST_SET1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/WRITE_RST_RESET1">
+      <obj_property name="ElementShortName">WRITE_RST_RESET1</obj_property>
+      <obj_property name="ObjectShortName">WRITE_RST_RESET1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/WR_RST_CTRL1">
+      <obj_property name="ElementShortName">WR_RST_CTRL1</obj_property>
+      <obj_property name="ObjectShortName">WR_RST_CTRL1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/r_reg/GT_R">
+      <obj_property name="ElementShortName">GT_R</obj_property>
+      <obj_property name="ObjectShortName">GT_R</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/r_reg/GT_R_1">
+      <obj_property name="ElementShortName">GT_R_1</obj_property>
+      <obj_property name="ObjectShortName">GT_R_1</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/r_reg/R_REG">
+      <obj_property name="ElementShortName">R_REG[0:8]</obj_property>
+      <obj_property name="ObjectShortName">R_REG[0:8]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/RD_OR_WR_RST1">
+      <obj_property name="ElementShortName">RD_OR_WR_RST1</obj_property>
+      <obj_property name="ObjectShortName">RD_OR_WR_RST1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/firstBit/RW1st32k/RD_OR_WR_SET1">
+      <obj_property name="ElementShortName">RD_OR_WR_SET1</obj_property>
+      <obj_property name="ObjectShortName">RD_OR_WR_SET1</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/r_reg/R_MUX">
+      <obj_property name="ElementShortName">R_MUX[0:8]</obj_property>
+      <obj_property name="ObjectShortName">R_MUX[0:8]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/r_reg/PHASE_RD_1">
+      <obj_property name="ElementShortName">PHASE_RD_1</obj_property>
+      <obj_property name="ObjectShortName">PHASE_RD_1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/r_reg/MEM_SET_R">
+      <obj_property name="ElementShortName">MEM_SET_R</obj_property>
+      <obj_property name="ObjectShortName">MEM_SET_R</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/r_reg/MEM_SET_R2">
+      <obj_property name="ElementShortName">MEM_SET_R2</obj_property>
+      <obj_property name="ObjectShortName">MEM_SET_R2</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/r_reg/StorageOut">
+      <obj_property name="ElementShortName">StorageOut</obj_property>
+      <obj_property name="ObjectShortName">StorageOut</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/ibm2030_reset_run/dut/cpu/secondBit/r_reg/StorageIn">
+      <obj_property name="ElementShortName">StorageIn</obj_property>
+      <obj_property name="ObjectShortName">StorageIn</obj_property>
+   </wvobject>
+</wave_config>

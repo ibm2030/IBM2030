@@ -48,7 +48,7 @@
 
 
 // IP VLNV: xilinx.com:ip:sc_exit:1.0
-// IP Revision: 17
+// IP Revision: 18
 
 `timescale 1ns/1ps
 
@@ -244,7 +244,7 @@ input wire m_axi_rvalid;
 (* X_INTERFACE_INFO = "xilinx.com:interface:aximm:1.0 M_AXI RREADY" *)
 output wire m_axi_rready;
 
-  sc_exit_v1_0_17_top #(
+  sc_exit_v1_0_18_top #(
     .C_FAMILY("zynq"),
     .C_ENABLE_PIPELINING(1'D0),
     .C_IS_CASCADED(0),

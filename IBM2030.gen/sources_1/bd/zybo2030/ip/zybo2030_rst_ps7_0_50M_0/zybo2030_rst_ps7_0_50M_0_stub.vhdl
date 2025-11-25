@@ -1,11 +1,11 @@
 -- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 -- Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
--- Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
--- Date        : Mon Oct 13 14:17:48 2025
--- Host        : lznb204 running 64-bit major release  (build 9200)
+-- Tool Version: Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
+-- Date        : Tue Nov 25 21:37:48 2025
+-- Host        : synergy running 64-bit Linux Mint 22.2
 -- Command     : write_vhdl -force -mode synth_stub
---               c:/Users/lwilkinson/Xilinx/IBM2030/IBM2030.gen/sources_1/bd/zybo2030/ip/zybo2030_rst_ps7_0_50M_0/zybo2030_rst_ps7_0_50M_0_stub.vhdl
+--               /home/ljw/Documents/IBM/IBM2030/IBM2030.gen/sources_1/bd/zybo2030/ip/zybo2030_rst_ps7_0_50M_0/zybo2030_rst_ps7_0_50M_0_stub.vhdl
 -- Design      : zybo2030_rst_ps7_0_50M_0
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7z020clg400-1
@@ -30,7 +30,7 @@ entity zybo2030_rst_ps7_0_50M_0 is
   attribute CHECK_LICENSE_TYPE : string;
   attribute CHECK_LICENSE_TYPE of zybo2030_rst_ps7_0_50M_0 : entity is "zybo2030_rst_ps7_0_50M_0,proc_sys_reset,{}";
   attribute core_generation_info : string;
-  attribute core_generation_info of zybo2030_rst_ps7_0_50M_0 : entity is "zybo2030_rst_ps7_0_50M_0,proc_sys_reset,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=proc_sys_reset,x_ipVersion=5.0,x_ipCoreRevision=17,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED,C_FAMILY=zynq,C_EXT_RST_WIDTH=1,C_AUX_RST_WIDTH=1,C_EXT_RESET_HIGH=0,C_AUX_RESET_HIGH=0,C_NUM_BUS_RST=1,C_NUM_PERP_RST=1,C_NUM_INTERCONNECT_ARESETN=1,C_NUM_PERP_ARESETN=1}";
+  attribute core_generation_info of zybo2030_rst_ps7_0_50M_0 : entity is "zybo2030_rst_ps7_0_50M_0,proc_sys_reset,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=proc_sys_reset,x_ipVersion=5.0,x_ipCoreRevision=17,x_ipLanguage=VHDL,x_ipSimLanguage=VHDL,C_FAMILY=zynq,C_EXT_RST_WIDTH=1,C_AUX_RST_WIDTH=1,C_EXT_RESET_HIGH=0,C_AUX_RESET_HIGH=0,C_NUM_BUS_RST=1,C_NUM_PERP_RST=1,C_NUM_INTERCONNECT_ARESETN=1,C_NUM_PERP_ARESETN=1}";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of zybo2030_rst_ps7_0_50M_0 : entity is "yes";
 end zybo2030_rst_ps7_0_50M_0;
@@ -71,6 +71,6 @@ architecture stub of zybo2030_rst_ps7_0_50M_0 is
   attribute x_interface_mode of peripheral_aresetn : signal is "master peripheral_low_rst";
   attribute x_interface_parameter of peripheral_aresetn : signal is "XIL_INTERFACENAME peripheral_low_rst, POLARITY ACTIVE_LOW, TYPE PERIPHERAL, INSERT_VIP 0";
   attribute x_core_info : string;
-  attribute x_core_info of stub : architecture is "proc_sys_reset,Vivado 2025.1";
+  attribute x_core_info of stub : architecture is "proc_sys_reset,Vivado 2025.2";
 begin
 end;

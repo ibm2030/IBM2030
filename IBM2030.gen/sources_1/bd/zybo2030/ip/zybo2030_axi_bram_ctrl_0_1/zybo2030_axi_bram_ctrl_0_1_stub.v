@@ -1,12 +1,12 @@
 // Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 // Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
-// Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
-// Date        : Fri Oct 10 16:36:11 2025
-// Host        : lznb204 running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode synth_stub -rename_top zybo2030_axi_bram_ctrl_0_1 -prefix
-//               zybo2030_axi_bram_ctrl_0_1_ zybo2030_axi_bram_ctrl_2_0_stub.v
-// Design      : zybo2030_axi_bram_ctrl_2_0
+// Tool Version: Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
+// Date        : Tue Nov 25 21:37:48 2025
+// Host        : synergy running 64-bit Linux Mint 22.2
+// Command     : write_verilog -force -mode synth_stub
+//               /home/ljw/Documents/IBM/IBM2030/IBM2030.gen/sources_1/bd/zybo2030/ip/zybo2030_axi_bram_ctrl_0_1/zybo2030_axi_bram_ctrl_0_1_stub.v
+// Design      : zybo2030_axi_bram_ctrl_0_1
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7z020clg400-1
 // --------------------------------------------------------------------------------
@@ -14,8 +14,8 @@
 // This empty module with port declaration file causes synthesis tools to infer a black box for IP.
 // The synthesis directives are for Synopsys Synplify support to prevent IO buffer insertion.
 // Please paste the declaration into a Verilog source file or add the file as an additional source.
-(* CHECK_LICENSE_TYPE = "zybo2030_axi_bram_ctrl_2_0,axi_bram_ctrl,{}" *) (* core_generation_info = "zybo2030_axi_bram_ctrl_2_0,axi_bram_ctrl,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=axi_bram_ctrl,x_ipVersion=4.1,x_ipCoreRevision=13,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED,C_BRAM_INST_MODE=EXTERNAL,C_MEMORY_DEPTH=512,C_BRAM_ADDR_WIDTH=9,C_S_AXI_ADDR_WIDTH=11,C_S_AXI_DATA_WIDTH=32,C_S_AXI_ID_WIDTH=1,C_S_AXI_PROTOCOL=AXI4LITE,C_S_AXI_SUPPORTS_NARROW_BURST=0,C_SINGLE_PORT_BRAM=1,C_FAMILY=zynq,C_READ_LATENCY=1,C_RD_CMD_OPTIMIZATION=0,C_S_AXI_CTRL_ADDR_WIDTH=32,C_S_AXI_CTRL_DATA_WIDTH=32,C_ECC=0,C_ECC_TYPE=0,C_FAULT_INJECT=0,C_ECC_ONOFF_RESET_VALUE=0}" *) (* downgradeipidentifiedwarnings = "yes" *) 
-(* x_core_info = "axi_bram_ctrl,Vivado 2025.1" *) 
+(* CHECK_LICENSE_TYPE = "zybo2030_axi_bram_ctrl_0_1,axi_bram_ctrl,{}" *) (* core_generation_info = "zybo2030_axi_bram_ctrl_0_1,axi_bram_ctrl,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=axi_bram_ctrl,x_ipVersion=4.1,x_ipCoreRevision=13,x_ipLanguage=VHDL,x_ipSimLanguage=VHDL,C_BRAM_INST_MODE=EXTERNAL,C_MEMORY_DEPTH=512,C_BRAM_ADDR_WIDTH=9,C_S_AXI_ADDR_WIDTH=11,C_S_AXI_DATA_WIDTH=32,C_S_AXI_ID_WIDTH=1,C_S_AXI_PROTOCOL=AXI4LITE,C_S_AXI_SUPPORTS_NARROW_BURST=0,C_SINGLE_PORT_BRAM=1,C_FAMILY=zynq,C_READ_LATENCY=1,C_RD_CMD_OPTIMIZATION=0,C_S_AXI_CTRL_ADDR_WIDTH=32,C_S_AXI_CTRL_DATA_WIDTH=32,C_ECC=0,C_ECC_TYPE=0,C_FAULT_INJECT=0,C_ECC_ONOFF_RESET_VALUE=0}" *) (* downgradeipidentifiedwarnings = "yes" *) 
+(* x_core_info = "axi_bram_ctrl,Vivado 2025.2" *) 
 module zybo2030_axi_bram_ctrl_0_1(s_axi_aclk, s_axi_aresetn, s_axi_awaddr, 
   s_axi_awprot, s_axi_awvalid, s_axi_awready, s_axi_wdata, s_axi_wstrb, s_axi_wvalid, 
   s_axi_wready, s_axi_bresp, s_axi_bvalid, s_axi_bready, s_axi_araddr, s_axi_arprot, 

@@ -135,6 +135,25 @@ end ibm2030;
 
 architecture FMD of ibm2030 is
 
+attribute X_INTERFACE_INFO : string;
+
+attribute X_INTERFACE_INFO of bram1_addr : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM1_CTRL ADDR"; 
+attribute X_INTERFACE_INFO of bram1_clk : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM1_CTRL CLK"; 
+attribute X_INTERFACE_INFO of bram1_wrdata : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM1_CTRL DIN"; 
+attribute X_INTERFACE_INFO of bram1_en : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM1_CTRL EN"; 
+attribute X_INTERFACE_INFO of bram1_rst : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM1_CTRL RST"; 
+attribute X_INTERFACE_INFO of bram1_we : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM1_CTRL WE"; 
+attribute X_INTERFACE_INFO of bram1_rddata : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM1_CTRL DOUT"; 
+
+attribute X_INTERFACE_INFO of bram2_addr : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL ADDR"; 
+attribute X_INTERFACE_INFO of bram2_clk : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL CLK"; 
+attribute X_INTERFACE_INFO of bram2_wrdata : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL DIN"; 
+attribute X_INTERFACE_INFO of bram2_en : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL EN"; 
+attribute X_INTERFACE_INFO of bram2_rst : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL RST"; 
+attribute X_INTERFACE_INFO of bram2_we : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL WE"; 
+attribute X_INTERFACE_INFO of bram2_rddata : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL DOUT"; 
+
+
 -- Temporary HDMI output stub
 component hdmi_panel port (
     Clock125 : in std_logic;

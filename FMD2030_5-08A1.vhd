@@ -81,6 +81,12 @@ signal OSC2,OSC,M_DLYD_OSC,DLYN_OSC,T1A,T2A,T3A,T4A,OSC2_DLYD : STD_LOGIC := '0'
 signal CLK : STD_LOGIC_VECTOR(1 to 4) := "0001";
 signal P1D,P2D,P3D,P4D : STD_LOGIC;
 signal OSC_T_LINEA, CLOCK_ONA, CLOCK_OFFA, P_CONV_OSCA,M_CONV_OSC_2A, N_OSC : STD_LOGIC;
+signal OSC2_OUT : STD_LOGIC;
+
+attribute mark_debug : string;
+attribute keep : string;
+attribute mark_debug of OSC2_OUT : signal is "true";
+attribute keep of OSC2_OUT : signal is "true";
 
 begin
 -- Divide the 50MHz FPGA clock down
@@ -88,7 +94,8 @@ begin
 -- The clock to generate the four phases is therefore 2.66MHz
 -- OSC2 is actually double the original oscillator (5.33MHz) as only one edge is used
 DIVIDER_MAX <= RatioSlow when Sw_Slow='1' else RATIOFast;
--- OSC2 <= '1' when DIVIDER > '0' & DIVIDER_MAX(DIVIDER_MAX'left downto 1) else '0';
+OSC2 <= '1' when DIVIDER > '0' & DIVIDER_MAX(DIVIDER_MAX'left downto 1) else '0';
+CLOCK_BUFFER : BUFG port map( I=>OSC2, O=>OSC2_OUT);
 N_OSC <= not OSC;
 
 --process (sysclk)

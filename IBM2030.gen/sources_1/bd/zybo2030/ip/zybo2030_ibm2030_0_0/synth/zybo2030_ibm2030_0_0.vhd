@@ -92,13 +92,13 @@ ENTITY zybo2030_ibm2030_0_0 IS
     SerialTx : OUT STD_LOGIC;
     SerialRTS : OUT STD_LOGIC;
     SerialDTR : OUT STD_LOGIC;
+    bram1_en : IN STD_LOGIC;
+    bram1_rddata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    bram1_wrdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    bram1_we : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
     bram1_addr : IN STD_LOGIC_VECTOR(15 DOWNTO 2);
     bram1_clk : IN STD_LOGIC;
-    bram1_wrdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-    bram1_en : IN STD_LOGIC;
     bram1_rst : IN STD_LOGIC;
-    bram1_we : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-    bram1_rddata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
     bram2_addr : IN STD_LOGIC_VECTOR(10 DOWNTO 2);
     bram2_clk : IN STD_LOGIC;
     bram2_wrdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -107,7 +107,8 @@ ENTITY zybo2030_ibm2030_0_0 IS
     bram2_we : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
     bram2_rddata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
     sysclk : IN STD_LOGIC;
-    clk50M : IN STD_LOGIC
+    clk50M : IN STD_LOGIC;
+    clk40M : IN STD_LOGIC
   );
 END zybo2030_ibm2030_0_0;
 
@@ -156,13 +157,13 @@ ARCHITECTURE zybo2030_ibm2030_0_0_arch OF zybo2030_ibm2030_0_0 IS
       SerialTx : OUT STD_LOGIC;
       SerialRTS : OUT STD_LOGIC;
       SerialDTR : OUT STD_LOGIC;
+      bram1_en : IN STD_LOGIC;
+      bram1_rddata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+      bram1_wrdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+      bram1_we : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
       bram1_addr : IN STD_LOGIC_VECTOR(15 DOWNTO 2);
       bram1_clk : IN STD_LOGIC;
-      bram1_wrdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-      bram1_en : IN STD_LOGIC;
       bram1_rst : IN STD_LOGIC;
-      bram1_we : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-      bram1_rddata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
       bram2_addr : IN STD_LOGIC_VECTOR(10 DOWNTO 2);
       bram2_clk : IN STD_LOGIC;
       bram2_wrdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -171,15 +172,16 @@ ARCHITECTURE zybo2030_ibm2030_0_0_arch OF zybo2030_ibm2030_0_0 IS
       bram2_we : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
       bram2_rddata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
       sysclk : IN STD_LOGIC;
-      clk50M : IN STD_LOGIC
+      clk50M : IN STD_LOGIC;
+      clk40M : IN STD_LOGIC
     );
   END COMPONENT ibm2030;
   ATTRIBUTE X_CORE_INFO : STRING;
-  ATTRIBUTE X_CORE_INFO OF zybo2030_ibm2030_0_0_arch: ARCHITECTURE IS "ibm2030,Vivado 2025.1";
+  ATTRIBUTE X_CORE_INFO OF zybo2030_ibm2030_0_0_arch: ARCHITECTURE IS "ibm2030,Vivado 2025.2";
   ATTRIBUTE CHECK_LICENSE_TYPE : STRING;
   ATTRIBUTE CHECK_LICENSE_TYPE OF zybo2030_ibm2030_0_0_arch : ARCHITECTURE IS "zybo2030_ibm2030_0_0,ibm2030,{}";
   ATTRIBUTE CORE_GENERATION_INFO : STRING;
-  ATTRIBUTE CORE_GENERATION_INFO OF zybo2030_ibm2030_0_0_arch: ARCHITECTURE IS "zybo2030_ibm2030_0_0,ibm2030,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=module_ref,x_ipName=ibm2030,x_ipVersion=1.0,x_ipCoreRevision=1,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED,ClockFrequency=125}";
+  ATTRIBUTE CORE_GENERATION_INFO OF zybo2030_ibm2030_0_0_arch: ARCHITECTURE IS "zybo2030_ibm2030_0_0,ibm2030,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=module_ref,x_ipName=ibm2030,x_ipVersion=1.0,x_ipCoreRevision=1,x_ipLanguage=VHDL,x_ipSimLanguage=VHDL,ClockFrequency=125}";
   ATTRIBUTE IP_DEFINITION_SOURCE : STRING;
   ATTRIBUTE IP_DEFINITION_SOURCE OF zybo2030_ibm2030_0_0_arch: ARCHITECTURE IS "module_ref";
   ATTRIBUTE X_INTERFACE_INFO : STRING;
@@ -191,18 +193,24 @@ ARCHITECTURE zybo2030_ibm2030_0_0_arch OF zybo2030_ibm2030_0_0 IS
   ATTRIBUTE X_INTERFACE_INFO OF MAX7219_CLK: SIGNAL IS "xilinx.com:signal:clock:1.0 MAX7219_CLK CLK";
   ATTRIBUTE X_INTERFACE_MODE OF MAX7219_CLK: SIGNAL IS "master MAX7219_CLK";
   ATTRIBUTE X_INTERFACE_PARAMETER OF MAX7219_CLK: SIGNAL IS "XIL_INTERFACENAME MAX7219_CLK, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, CLK_DOMAIN zybo2030_ibm2030_0_0_MAX7219_CLK, INSERT_VIP 0";
-  ATTRIBUTE X_INTERFACE_INFO OF bram1_clk: SIGNAL IS "xilinx.com:signal:clock:1.0 bram1_clk CLK";
-  ATTRIBUTE X_INTERFACE_MODE OF bram1_clk: SIGNAL IS "slave bram1_clk";
-  ATTRIBUTE X_INTERFACE_PARAMETER OF bram1_clk: SIGNAL IS "XIL_INTERFACENAME bram1_clk, ASSOCIATED_RESET bram1_rst, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, INSERT_VIP 0";
-  ATTRIBUTE X_INTERFACE_INFO OF bram1_rst: SIGNAL IS "xilinx.com:signal:reset:1.0 bram1_rst RST";
-  ATTRIBUTE X_INTERFACE_MODE OF bram1_rst: SIGNAL IS "slave bram1_rst";
-  ATTRIBUTE X_INTERFACE_PARAMETER OF bram1_rst: SIGNAL IS "XIL_INTERFACENAME bram1_rst, POLARITY ACTIVE_LOW, INSERT_VIP 0";
-  ATTRIBUTE X_INTERFACE_INFO OF bram2_clk: SIGNAL IS "xilinx.com:signal:clock:1.0 bram2_clk CLK";
-  ATTRIBUTE X_INTERFACE_MODE OF bram2_clk: SIGNAL IS "slave bram2_clk";
-  ATTRIBUTE X_INTERFACE_PARAMETER OF bram2_clk: SIGNAL IS "XIL_INTERFACENAME bram2_clk, ASSOCIATED_RESET bram2_rst, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, INSERT_VIP 0";
-  ATTRIBUTE X_INTERFACE_INFO OF bram2_rst: SIGNAL IS "xilinx.com:signal:reset:1.0 bram2_rst RST";
-  ATTRIBUTE X_INTERFACE_MODE OF bram2_rst: SIGNAL IS "slave bram2_rst";
-  ATTRIBUTE X_INTERFACE_PARAMETER OF bram2_rst: SIGNAL IS "XIL_INTERFACENAME bram2_rst, POLARITY ACTIVE_LOW, INSERT_VIP 0";
+  ATTRIBUTE X_INTERFACE_INFO OF bram1_addr: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM1_CTRL ADDR";
+  ATTRIBUTE X_INTERFACE_INFO OF bram1_clk: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM1_CTRL CLK";
+  ATTRIBUTE X_INTERFACE_INFO OF bram1_en: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM1_CTRL EN";
+  ATTRIBUTE X_INTERFACE_MODE OF bram1_en: SIGNAL IS "slave BRAM1_CTRL";
+  ATTRIBUTE X_INTERFACE_PARAMETER OF bram1_en: SIGNAL IS "XIL_INTERFACENAME BRAM1_CTRL, MEM_SIZE 65536, MEM_WIDTH 32, MEM_ECC NONE, MASTER_TYPE OTHER, READ_LATENCY 1";
+  ATTRIBUTE X_INTERFACE_INFO OF bram1_rddata: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM1_CTRL DOUT";
+  ATTRIBUTE X_INTERFACE_INFO OF bram1_rst: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM1_CTRL RST";
+  ATTRIBUTE X_INTERFACE_INFO OF bram1_we: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM1_CTRL WE";
+  ATTRIBUTE X_INTERFACE_INFO OF bram1_wrdata: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM1_CTRL DIN";
+  ATTRIBUTE X_INTERFACE_INFO OF bram2_addr: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM2_CTRL ADDR";
+  ATTRIBUTE X_INTERFACE_MODE OF bram2_addr: SIGNAL IS "slave BRAM2_CTRL";
+  ATTRIBUTE X_INTERFACE_PARAMETER OF bram2_addr: SIGNAL IS "XIL_INTERFACENAME BRAM2_CTRL, MEM_SIZE 2048, MEM_WIDTH 32, MEM_ECC NONE, MASTER_TYPE OTHER, READ_LATENCY 1";
+  ATTRIBUTE X_INTERFACE_INFO OF bram2_clk: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM2_CTRL CLK";
+  ATTRIBUTE X_INTERFACE_INFO OF bram2_en: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM2_CTRL EN";
+  ATTRIBUTE X_INTERFACE_INFO OF bram2_rddata: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM2_CTRL DOUT";
+  ATTRIBUTE X_INTERFACE_INFO OF bram2_rst: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM2_CTRL RST";
+  ATTRIBUTE X_INTERFACE_INFO OF bram2_we: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM2_CTRL WE";
+  ATTRIBUTE X_INTERFACE_INFO OF bram2_wrdata: SIGNAL IS "xilinx.com:interface:bram:1.0 BRAM2_CTRL DIN";
   ATTRIBUTE X_INTERFACE_INFO OF clk_n: SIGNAL IS "digilentinc.com:interface:tmds:1.0 interface_tmds CLK_N";
   ATTRIBUTE X_INTERFACE_INFO OF clk_p: SIGNAL IS "digilentinc.com:interface:tmds:1.0 interface_tmds CLK_P";
   ATTRIBUTE X_INTERFACE_MODE OF clk_p: SIGNAL IS "slave interface_tmds";
@@ -249,13 +257,13 @@ BEGIN
       SerialTx => SerialTx,
       SerialRTS => SerialRTS,
       SerialDTR => SerialDTR,
+      bram1_en => bram1_en,
+      bram1_rddata => bram1_rddata,
+      bram1_wrdata => bram1_wrdata,
+      bram1_we => bram1_we,
       bram1_addr => bram1_addr,
       bram1_clk => bram1_clk,
-      bram1_wrdata => bram1_wrdata,
-      bram1_en => bram1_en,
       bram1_rst => bram1_rst,
-      bram1_we => bram1_we,
-      bram1_rddata => bram1_rddata,
       bram2_addr => bram2_addr,
       bram2_clk => bram2_clk,
       bram2_wrdata => bram2_wrdata,
@@ -264,6 +272,7 @@ BEGIN
       bram2_we => bram2_we,
       bram2_rddata => bram2_rddata,
       sysclk => sysclk,
-      clk50M => clk50M
+      clk50M => clk50M,
+      clk40M => clk40M
     );
 END zybo2030_ibm2030_0_0_arch;

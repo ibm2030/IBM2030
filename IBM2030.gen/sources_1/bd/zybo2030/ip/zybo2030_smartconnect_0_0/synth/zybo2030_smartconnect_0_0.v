@@ -48,11 +48,11 @@
 
 
 // IP VLNV: xilinx.com:ip:smartconnect:1.0
-// IP Revision: 27
+// IP Revision: 28
 
-(* X_CORE_INFO = "bd_c662,Vivado 2025.1" *)
+(* X_CORE_INFO = "bd_c662,Vivado 2025.2" *)
 (* CHECK_LICENSE_TYPE = "zybo2030_smartconnect_0_0,bd_c662,{}" *)
-(* CORE_GENERATION_INFO = "zybo2030_smartconnect_0_0,bd_c662,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=smartconnect,x_ipVersion=1.0,x_ipCoreRevision=27,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED}" *)
+(* CORE_GENERATION_INFO = "zybo2030_smartconnect_0_0,bd_c662,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=smartconnect,x_ipVersion=1.0,x_ipCoreRevision=28,x_ipLanguage=VHDL,x_ipSimLanguage=VHDL}" *)
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module zybo2030_smartconnect_0_0 (
   aclk,

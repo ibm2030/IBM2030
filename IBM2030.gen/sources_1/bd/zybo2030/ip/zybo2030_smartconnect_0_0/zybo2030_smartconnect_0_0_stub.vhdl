@@ -1,9 +1,9 @@
 -- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 -- Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
--- Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
--- Date        : Mon Oct 13 16:06:53 2025
--- Host        : lznb204 running 64-bit major release  (build 9200)
+-- Tool Version: Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
+-- Date        : Tue Nov 25 21:38:03 2025
+-- Host        : synergy running 64-bit Linux Mint 22.2
 -- Command     : write_vhdl -force -mode synth_stub -rename_top zybo2030_smartconnect_0_0 -prefix
 --               zybo2030_smartconnect_0_0_ zybo2030_smartconnect_0_0_stub.vhdl
 -- Design      : zybo2030_smartconnect_0_0
@@ -98,7 +98,7 @@ entity zybo2030_smartconnect_0_0 is
   attribute CHECK_LICENSE_TYPE : string;
   attribute CHECK_LICENSE_TYPE of zybo2030_smartconnect_0_0 : entity is "zybo2030_smartconnect_0_0,bd_c662,{}";
   attribute CORE_GENERATION_INFO : string;
-  attribute CORE_GENERATION_INFO of zybo2030_smartconnect_0_0 : entity is "zybo2030_smartconnect_0_0,bd_c662,{x_ipProduct=Vivado 2025.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=smartconnect,x_ipVersion=1.0,x_ipCoreRevision=27,x_ipLanguage=VHDL,x_ipSimLanguage=MIXED}";
+  attribute CORE_GENERATION_INFO of zybo2030_smartconnect_0_0 : entity is "zybo2030_smartconnect_0_0,bd_c662,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=smartconnect,x_ipVersion=1.0,x_ipCoreRevision=28,x_ipLanguage=VHDL,x_ipSimLanguage=VHDL}";
   attribute DowngradeIPIdentifiedWarnings : string;
   attribute DowngradeIPIdentifiedWarnings of zybo2030_smartconnect_0_0 : entity is "yes";
 end zybo2030_smartconnect_0_0;
@@ -200,6 +200,6 @@ architecture stub of zybo2030_smartconnect_0_0 is
   attribute X_INTERFACE_INFO of M01_AXI_rvalid : signal is "xilinx.com:interface:aximm:1.0 M01_AXI RVALID";
   attribute X_INTERFACE_INFO of M01_AXI_rready : signal is "xilinx.com:interface:aximm:1.0 M01_AXI RREADY";
   attribute X_CORE_INFO : string;
-  attribute X_CORE_INFO of stub : architecture is "bd_c662,Vivado 2025.1";
+  attribute X_CORE_INFO of stub : architecture is "bd_c662,Vivado 2025.2";
 begin
 end;

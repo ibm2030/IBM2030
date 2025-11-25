@@ -48,7 +48,7 @@
 
 
 // IP VLNV: xilinx.com:ip:sc_switchboard:1.0
-// IP Revision: 8
+// IP Revision: 9
 
 `timescale 1ns/1ps
 
@@ -100,7 +100,7 @@ output wire [0 : 0] m_sc_info;
 (* X_INTERFACE_INFO = "xilinx.com:interface:sc:1.0 M00_SC PAYLD" *)
 output wire [54 : 0] m_sc_payld;
 
-  sc_switchboard_v1_0_8_top #(
+  sc_switchboard_v1_0_9_top #(
     .C_PAYLD_WIDTH(55),
     .K_MAX_INFO_WIDTH(1),
     .C_S_PIPELINES(0),

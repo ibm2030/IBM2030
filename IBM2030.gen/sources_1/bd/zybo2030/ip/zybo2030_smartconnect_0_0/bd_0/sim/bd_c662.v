@@ -1207,8 +1207,7 @@ module clk_map_imp_RHE69S
   assign S00_ACLK = swbd_aclk;
   assign S00_ARESETN[0] = swbd_aresetn;
   assign swbd_aclk = aclk;
-  bd_c662_one_0 one
-       (.dout(one_dout));
+  assign one_dout = 1'h1;
   bd_c662_psr_aclk_0 psr_aclk
        (.aux_reset_in(aresetn),
         .dcm_locked(1'b1),

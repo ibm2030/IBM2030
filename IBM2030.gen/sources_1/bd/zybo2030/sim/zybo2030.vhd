@@ -1,9 +1,9 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 --Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
---Date        : Tue Oct 14 13:28:34 2025
---Host        : lznb204 running 64-bit major release  (build 9200)
+--Tool Version: Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
+--Date        : Tue Nov 25 22:13:21 2025
+--Host        : synergy running 64-bit Linux Mint 22.2
 --Command     : generate_target zybo2030.bd
 --Design      : zybo2030
 --Purpose     : IP block netlist
@@ -108,13 +108,13 @@ architecture STRUCTURE of zybo2030 is
     SerialTx : out STD_LOGIC;
     SerialRTS : out STD_LOGIC;
     SerialDTR : out STD_LOGIC;
+    bram1_en : in STD_LOGIC;
+    bram1_rddata : out STD_LOGIC_VECTOR ( 31 downto 0 );
+    bram1_wrdata : in STD_LOGIC_VECTOR ( 31 downto 0 );
+    bram1_we : in STD_LOGIC_VECTOR ( 3 downto 0 );
     bram1_addr : in STD_LOGIC_VECTOR ( 15 downto 2 );
     bram1_clk : in STD_LOGIC;
-    bram1_wrdata : in STD_LOGIC_VECTOR ( 31 downto 0 );
-    bram1_en : in STD_LOGIC;
     bram1_rst : in STD_LOGIC;
-    bram1_we : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    bram1_rddata : out STD_LOGIC_VECTOR ( 31 downto 0 );
     bram2_addr : in STD_LOGIC_VECTOR ( 10 downto 2 );
     bram2_clk : in STD_LOGIC;
     bram2_wrdata : in STD_LOGIC_VECTOR ( 31 downto 0 );
@@ -123,7 +123,8 @@ architecture STRUCTURE of zybo2030 is
     bram2_we : in STD_LOGIC_VECTOR ( 3 downto 0 );
     bram2_rddata : out STD_LOGIC_VECTOR ( 31 downto 0 );
     sysclk : in STD_LOGIC;
-    clk50M : in STD_LOGIC
+    clk50M : in STD_LOGIC;
+    clk40M : in STD_LOGIC
   );
   end component zybo2030_ibm2030_0_0;
   component zybo2030_axi_bram_ctrl_0_1 is
@@ -229,7 +230,8 @@ architecture STRUCTURE of zybo2030 is
     reset : in STD_LOGIC;
     clk_in1 : in STD_LOGIC;
     clk_out1 : out STD_LOGIC;
-    clk_out2 : out STD_LOGIC
+    clk_out2 : out STD_LOGIC;
+    clk_out3 : out STD_LOGIC
   );
   end component zybo2030_clk_wiz_0_0;
   component zybo2030_rst_ps7_0_50M_0 is
@@ -374,26 +376,27 @@ architecture STRUCTURE of zybo2030 is
     PixelClk : in STD_LOGIC
   );
   end component zybo2030_rgb2dvi_0_0;
-  signal axi_bram_ctrl_1_bram_addr_a : STD_LOGIC_VECTOR ( 10 downto 0 );
-  signal axi_bram_ctrl_1_bram_clk_a : STD_LOGIC;
-  signal axi_bram_ctrl_1_bram_en_a : STD_LOGIC;
-  signal axi_bram_ctrl_1_bram_rst_a : STD_LOGIC;
-  signal axi_bram_ctrl_1_bram_we_a : STD_LOGIC_VECTOR ( 3 downto 0 );
-  signal axi_bram_ctrl_1_bram_wrdata_a : STD_LOGIC_VECTOR ( 31 downto 0 );
-  signal axi_bram_ctrl_2_bram_addr_a : STD_LOGIC_VECTOR ( 15 downto 0 );
-  signal axi_bram_ctrl_2_bram_clk_a : STD_LOGIC;
-  signal axi_bram_ctrl_2_bram_en_a : STD_LOGIC;
-  signal axi_bram_ctrl_2_bram_rst_a : STD_LOGIC;
-  signal axi_bram_ctrl_2_bram_we_a : STD_LOGIC_VECTOR ( 3 downto 0 );
-  signal axi_bram_ctrl_2_bram_wrdata_a : STD_LOGIC_VECTOR ( 31 downto 0 );
+  signal axi_bram_ctrl_0_BRAM_PORTA_ADDR : STD_LOGIC_VECTOR ( 15 downto 0 );
+  signal axi_bram_ctrl_0_BRAM_PORTA_CLK : STD_LOGIC;
+  signal axi_bram_ctrl_0_BRAM_PORTA_DIN : STD_LOGIC_VECTOR ( 31 downto 0 );
+  signal axi_bram_ctrl_0_BRAM_PORTA_DOUT : STD_LOGIC_VECTOR ( 31 downto 0 );
+  signal axi_bram_ctrl_0_BRAM_PORTA_EN : STD_LOGIC;
+  signal axi_bram_ctrl_0_BRAM_PORTA_RST : STD_LOGIC;
+  signal axi_bram_ctrl_0_BRAM_PORTA_WE : STD_LOGIC_VECTOR ( 3 downto 0 );
+  signal axi_bram_ctrl_1_BRAM_PORTA_ADDR : STD_LOGIC_VECTOR ( 10 downto 0 );
+  signal axi_bram_ctrl_1_BRAM_PORTA_CLK : STD_LOGIC;
+  signal axi_bram_ctrl_1_BRAM_PORTA_DIN : STD_LOGIC_VECTOR ( 31 downto 0 );
+  signal axi_bram_ctrl_1_BRAM_PORTA_DOUT : STD_LOGIC_VECTOR ( 31 downto 0 );
+  signal axi_bram_ctrl_1_BRAM_PORTA_EN : STD_LOGIC;
+  signal axi_bram_ctrl_1_BRAM_PORTA_RST : STD_LOGIC;
+  signal axi_bram_ctrl_1_BRAM_PORTA_WE : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal clk_wiz_0_clk_out1 : STD_LOGIC;
   signal clk_wiz_0_clk_out2 : STD_LOGIC;
+  signal clk_wiz_0_clk_out3 : STD_LOGIC;
   signal ibm2030_0_blue0 : STD_LOGIC;
   signal ibm2030_0_blue1 : STD_LOGIC;
   signal ibm2030_0_blue2 : STD_LOGIC;
   signal ibm2030_0_blue3 : STD_LOGIC;
-  signal ibm2030_0_bram1_rddata : STD_LOGIC_VECTOR ( 31 downto 0 );
-  signal ibm2030_0_bram2_rddata : STD_LOGIC_VECTOR ( 31 downto 0 );
   signal ibm2030_0_green0 : STD_LOGIC;
   signal ibm2030_0_green1 : STD_LOGIC;
   signal ibm2030_0_green2 : STD_LOGIC;
@@ -531,13 +534,13 @@ architecture STRUCTURE of zybo2030 is
 begin
 axi_bram_ctrl_0: component zybo2030_axi_bram_ctrl_2_0
      port map (
-      bram_addr_a(15 downto 0) => axi_bram_ctrl_2_bram_addr_a(15 downto 0),
-      bram_clk_a => axi_bram_ctrl_2_bram_clk_a,
-      bram_en_a => axi_bram_ctrl_2_bram_en_a,
-      bram_rddata_a(31 downto 0) => ibm2030_0_bram1_rddata(31 downto 0),
-      bram_rst_a => axi_bram_ctrl_2_bram_rst_a,
-      bram_we_a(3 downto 0) => axi_bram_ctrl_2_bram_we_a(3 downto 0),
-      bram_wrdata_a(31 downto 0) => axi_bram_ctrl_2_bram_wrdata_a(31 downto 0),
+      bram_addr_a(15 downto 0) => axi_bram_ctrl_0_BRAM_PORTA_ADDR(15 downto 0),
+      bram_clk_a => axi_bram_ctrl_0_BRAM_PORTA_CLK,
+      bram_en_a => axi_bram_ctrl_0_BRAM_PORTA_EN,
+      bram_rddata_a(31 downto 0) => axi_bram_ctrl_0_BRAM_PORTA_DOUT(31 downto 0),
+      bram_rst_a => axi_bram_ctrl_0_BRAM_PORTA_RST,
+      bram_we_a(3 downto 0) => axi_bram_ctrl_0_BRAM_PORTA_WE(3 downto 0),
+      bram_wrdata_a(31 downto 0) => axi_bram_ctrl_0_BRAM_PORTA_DIN(31 downto 0),
       s_axi_aclk => processing_system7_0_FCLK_CLK0,
       s_axi_araddr(15 downto 0) => smartconnect_0_M00_AXI_ARADDR(15 downto 0),
       s_axi_aresetn => rst_ps7_0_50M_peripheral_aresetn(0),
@@ -562,13 +565,13 @@ axi_bram_ctrl_0: component zybo2030_axi_bram_ctrl_2_0
     );
 axi_bram_ctrl_1: component zybo2030_axi_bram_ctrl_0_1
      port map (
-      bram_addr_a(10 downto 0) => axi_bram_ctrl_1_bram_addr_a(10 downto 0),
-      bram_clk_a => axi_bram_ctrl_1_bram_clk_a,
-      bram_en_a => axi_bram_ctrl_1_bram_en_a,
-      bram_rddata_a(31 downto 0) => ibm2030_0_bram2_rddata(31 downto 0),
-      bram_rst_a => axi_bram_ctrl_1_bram_rst_a,
-      bram_we_a(3 downto 0) => axi_bram_ctrl_1_bram_we_a(3 downto 0),
-      bram_wrdata_a(31 downto 0) => axi_bram_ctrl_1_bram_wrdata_a(31 downto 0),
+      bram_addr_a(10 downto 0) => axi_bram_ctrl_1_BRAM_PORTA_ADDR(10 downto 0),
+      bram_clk_a => axi_bram_ctrl_1_BRAM_PORTA_CLK,
+      bram_en_a => axi_bram_ctrl_1_BRAM_PORTA_EN,
+      bram_rddata_a(31 downto 0) => axi_bram_ctrl_1_BRAM_PORTA_DOUT(31 downto 0),
+      bram_rst_a => axi_bram_ctrl_1_BRAM_PORTA_RST,
+      bram_we_a(3 downto 0) => axi_bram_ctrl_1_BRAM_PORTA_WE(3 downto 0),
+      bram_wrdata_a(31 downto 0) => axi_bram_ctrl_1_BRAM_PORTA_DIN(31 downto 0),
       s_axi_aclk => processing_system7_0_FCLK_CLK0,
       s_axi_araddr(10 downto 0) => smartconnect_0_M01_AXI_ARADDR(10 downto 0),
       s_axi_aresetn => rst_ps7_0_50M_peripheral_aresetn(0),
@@ -596,6 +599,7 @@ clk_wiz_0: component zybo2030_clk_wiz_0_0
       clk_in1 => sysclk,
       clk_out1 => clk_wiz_0_clk_out1,
       clk_out2 => clk_wiz_0_clk_out2,
+      clk_out3 => clk_wiz_0_clk_out3,
       reset => rst_ps7_0_50M_peripheral_reset(0)
     );
 ibm2030_0: component zybo2030_ibm2030_0_0
@@ -619,20 +623,21 @@ ibm2030_0: component zybo2030_ibm2030_0_0
       blue1 => ibm2030_0_blue1,
       blue2 => ibm2030_0_blue2,
       blue3 => ibm2030_0_blue3,
-      bram1_addr(15 downto 2) => axi_bram_ctrl_2_bram_addr_a(13 downto 0),
-      bram1_clk => axi_bram_ctrl_2_bram_clk_a,
-      bram1_en => axi_bram_ctrl_2_bram_en_a,
-      bram1_rddata(31 downto 0) => ibm2030_0_bram1_rddata(31 downto 0),
-      bram1_rst => axi_bram_ctrl_2_bram_rst_a,
-      bram1_we(3 downto 0) => axi_bram_ctrl_2_bram_we_a(3 downto 0),
-      bram1_wrdata(31 downto 0) => axi_bram_ctrl_2_bram_wrdata_a(31 downto 0),
-      bram2_addr(10 downto 2) => axi_bram_ctrl_1_bram_addr_a(8 downto 0),
-      bram2_clk => axi_bram_ctrl_1_bram_clk_a,
-      bram2_en => axi_bram_ctrl_1_bram_en_a,
-      bram2_rddata(31 downto 0) => ibm2030_0_bram2_rddata(31 downto 0),
-      bram2_rst => axi_bram_ctrl_1_bram_rst_a,
-      bram2_we(3 downto 0) => axi_bram_ctrl_1_bram_we_a(3 downto 0),
-      bram2_wrdata(31 downto 0) => axi_bram_ctrl_1_bram_wrdata_a(31 downto 0),
+      bram1_addr(15 downto 2) => axi_bram_ctrl_0_BRAM_PORTA_ADDR(13 downto 0),
+      bram1_clk => axi_bram_ctrl_0_BRAM_PORTA_CLK,
+      bram1_en => axi_bram_ctrl_0_BRAM_PORTA_EN,
+      bram1_rddata(31 downto 0) => axi_bram_ctrl_0_BRAM_PORTA_DOUT(31 downto 0),
+      bram1_rst => axi_bram_ctrl_0_BRAM_PORTA_RST,
+      bram1_we(3 downto 0) => axi_bram_ctrl_0_BRAM_PORTA_WE(3 downto 0),
+      bram1_wrdata(31 downto 0) => axi_bram_ctrl_0_BRAM_PORTA_DIN(31 downto 0),
+      bram2_addr(10 downto 2) => axi_bram_ctrl_1_BRAM_PORTA_ADDR(8 downto 0),
+      bram2_clk => axi_bram_ctrl_1_BRAM_PORTA_CLK,
+      bram2_en => axi_bram_ctrl_1_BRAM_PORTA_EN,
+      bram2_rddata(31 downto 0) => axi_bram_ctrl_1_BRAM_PORTA_DOUT(31 downto 0),
+      bram2_rst => axi_bram_ctrl_1_BRAM_PORTA_RST,
+      bram2_we(3 downto 0) => axi_bram_ctrl_1_BRAM_PORTA_WE(3 downto 0),
+      bram2_wrdata(31 downto 0) => axi_bram_ctrl_1_BRAM_PORTA_DIN(31 downto 0),
+      clk40M => clk_wiz_0_clk_out3,
       clk50M => clk_wiz_0_clk_out2,
       clk_n => NLW_ibm2030_0_clk_n_UNCONNECTED,
       clk_p => NLW_ibm2030_0_clk_p_UNCONNECTED,
