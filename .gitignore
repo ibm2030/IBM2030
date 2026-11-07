@@ -1,68 +1,27 @@
-xst/
-_xmsgs/
-iseconfig/
-isim/
-*.cache/
-*.hw/
-*.runs/
-*.sdk/
-*.tmp/
-import_ise_summary.txt
-*.gise
-*.xise
-*.cmd_log
-*.lso
-*.prj
-*.syr
-*.xst
-*.xml
+# Logs and journals from any tool
 *.log
-*.xise
-*.bgn
-*.bld
-*.drc
-*.ncd
-*.ngr
-*.ngd
-*.ngc
-*.pad
-*.par
-*.pcf
-*.ptwx
-*.stx
-*.twr
-*.twx
-*.unroutes
-*.ut
-*.xpi
-*.xwbt
-*.html
-*_map.*
-*_ngdbuild.
-*_pad.*
-*._par.
-*.xrpt
-*_beh.*
-fuse*
-*.cmd
-xilinxsim.*
-_ngo/
-xlnx_auto*
-
-
-# --- Zybo Z7 / Vivado 2026.1 / Vitis / PetaLinux ---
-# Board files and IP definitions are XML sources, not build reports
-!board_files/**/*.xml
-!ip_repo/**/*.xml
-
-# Vivado generated output (regenerated from .bd/.xci)
-IBM2030.gen/
-IBM2030.ip_user_files/
-IBM2030.sim/
-.Xil/
 *.jou
 
-# Vitis workspace state and build output (keep vitis-comp.json, CMake files, sources)
+# Editor backups
+*~
+
+# --- Vivado ---------------------------------------------------------------
+# Generated output; regenerated from the .xpr, .bd and .xci sources
+*.cache/
+*.gen/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
+.Xil/
+# IP output products that older Vivado versions wrote next to the .xci
+/IBM2030.srcs/**/ip/*/*.xml
+# WebTalk usage reports
+/webtalk_pn.xml
+/usage_statistics_webtalk.html
+
+# --- Vitis (workspace = repo root) -----------------------------------------
+# Keep vitis-comp.json, CMake files and sources; ignore state and build output
 /_ide/
 /.rigel_lopper/
 /ibm2030/*
@@ -72,5 +31,44 @@ IBM2030.sim/
 /zybo2030/_ide/
 /zybo2030/peta2030/
 /zybo2030/compile_commands.json
-/zybo2030/*.bin
-/zybo2030/*.BIN
+/zybo2030/*.[bB][iI][nN]
+
+# --- ISE (legacy Spartan-3 flow: IBM2030.xise, digilentSP3.ucf) -------------
+*.tmp/
+_ngo/
+_xmsgs/
+iseconfig/
+xst/
+xlnx_auto*
+import_ise_summary.txt
+*.bgn
+*.bld
+*.cmd_log
+*.drc
+*.gise
+*.lso
+*.ncd
+*.ngc
+*.ngd
+*.ngr
+*.pad
+*.par
+*.pcf
+*.prj
+*.ptwx
+*.stx
+*.syr
+*.twr
+*.twx
+*.unroutes
+*.ut
+*.xpi
+*.xrpt
+*.xst
+*.xwbt
+*_map.*
+*_pad.*
+/ibm2030_summary.xml
+/ibm2030_usage.xml
+/ibm2030_summary.html
+/ibm2030_envsettings.html
