@@ -1,0 +1,8 @@
+/include/ "system-conf.dtsi"
+/ {
+	aliases {
+		/* /dev/axi1 and /dev/axi2 via the axibram kernel module */
+		axi1 = &axi_bram_ctrl_0;
+		axi2 = &axi_bram_ctrl_1;
+	};
+};

@@ -1,0 +1,60 @@
+# Copyright (C) 2021-2022, Xilinx, Inc.  All rights reserved.
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.  All rights reserved.
+#
+# SPDX-License-Identifier: MIT
+#
+
+choice
+	prompt "Subsystem Architecture (NO EDIT!)"
+	default SUBSYSTEM_ARCH_ARM
+	help
+	  This option is to control the processor targeted by System Configuration.
+	  WARNING: Do not edit this option.
+
+config SUBSYSTEM_ARCH_AARCH64
+	bool "aarch64"
+	help
+	  Choose this option to specify AARCH64 as the SUBSYSTEM architecture
+
+config SUBSYSTEM_ARCH_ARM
+	bool "arm"
+	help
+	  Choose this option to specify ARM as the SUBSYSTEM architecture
+
+config SUBSYSTEM_ARCH_MICROBLAZE
+	bool "microblaze"
+	help
+	  Choose this option to specify MicroBlaze as the SUBSYSTEM architecture
+endchoice
+
+config SUBSYSTEM_ENDIAN_LITTLE
+	bool
+	default y
+
+if SUBSYSTEM_SDT_FLOW
+
+source /mnt/LJW2025/Xilinx/petalinux/zynq_petalinux/project-spec/configs/configs/Kconfig.bootcompselection
+
+endif
+
+if SUBSYSTEM_DISTRO_PETALINUX
+
+source /mnt/LJW2025/Xilinx/petalinux/zynq_petalinux/project-spec/configs/configs/Kconfig.linuxcompselection
+
+source /mnt/LJW2025/Xilinx/petalinux/zynq_petalinux/project-spec/configs/configs/Kconfig.autoconfigsettings
+
+endif
+
+source /mnt/LJW2025/Xilinx/petalinux/zynq_petalinux/project-spec/configs/configs/Kconfig.syshw
+
+source /mnt/LJW2025/Xilinx/petalinux/zynq_petalinux/project-spec/configs/configs/Kconfig.dtgsettings
+
+source /mnt/LJW2025/Xilinx/petalinux/zynq_petalinux/project-spec/configs/configs/Kconfig.bootcompconfigurations
+
+if SUBSYSTEM_DISTRO_PETALINUX
+
+source /mnt/LJW2025/Xilinx/petalinux/zynq_petalinux/project-spec/configs/configs/Kconfig.imagepkgconfigurations
+
+endif
+
+source /mnt/LJW2025/Xilinx/petalinux/zynq_petalinux/project-spec/configs/configs/Kconfig.yoctobuildsettings

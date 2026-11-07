@@ -49,3 +49,28 @@ xilinxsim.*
 _ngo/
 xlnx_auto*
 
+
+# --- Zybo Z7 / Vivado 2026.1 / Vitis / PetaLinux ---
+# Board files and IP definitions are XML sources, not build reports
+!board_files/**/*.xml
+!ip_repo/**/*.xml
+
+# Vivado generated output (regenerated from .bd/.xci)
+IBM2030.gen/
+IBM2030.ip_user_files/
+IBM2030.sim/
+.Xil/
+*.jou
+
+# Vitis workspace state and build output (keep vitis-comp.json, CMake files, sources)
+/_ide/
+/.rigel_lopper/
+/ibm2030/*
+!/ibm2030/vitis-comp.json
+!/ibm2030/.gitignore
+/zybo2030/build/
+/zybo2030/_ide/
+/zybo2030/peta2030/
+/zybo2030/compile_commands.json
+/zybo2030/*.bin
+/zybo2030/*.BIN

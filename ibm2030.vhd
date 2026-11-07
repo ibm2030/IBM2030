@@ -81,13 +81,14 @@ entity ibm2030 is
 --				ps2_data : inout std_logic; -- Keyboard/Mouse data (not used)
 
             -- VGA output
-            red0, red1, red2, red3, blue0, blue1, blue2, blue3, green0, green1, green2, green3, vga_hs, vga_vs : out std_logic;   -- PMOD JC (J1),JD (J2) V15 W15 T11 T10 W14 Y14 T12 U12 T14 T15 P14 R14 U14 U15
+            red, blue, green : out std_logic_vector(3 downto 0);   -- PMOD JC (J1),JD (J2) V15 W15 T11 T10 W14 Y14 T12 U12 T14 T15 P14 R14 U14 U15
+            vga_hs, vga_vs : out std_logic;
             
 			-- HDMI output
-			d_p : out std_logic_vector(2 downto 0);     -- B19,C20,D19
-			d_n : out std_logic_vector(2 downto 0);     -- A20,B20,D20
-			clk_p : out std_logic;                      -- H16
-			clk_n : out std_logic;                      -- H17
+--			d_p : out std_logic_vector(2 downto 0);     -- B19,C20,D19
+--			d_n : out std_logic_vector(2 downto 0);     -- A20,B20,D20
+--			clk_p : out std_logic;                      -- H16
+--			clk_n : out std_logic;                      -- H17
             				
 			-- Serial I/O PMOD JA
 			SerialRx : in std_logic;           -- JA4 K14
@@ -151,7 +152,11 @@ attribute X_INTERFACE_INFO of bram2_wrdata : signal is "xilinx.com:interface:bra
 attribute X_INTERFACE_INFO of bram2_en : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL EN"; 
 attribute X_INTERFACE_INFO of bram2_rst : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL RST"; 
 attribute X_INTERFACE_INFO of bram2_we : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL WE"; 
-attribute X_INTERFACE_INFO of bram2_rddata : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL DOUT"; 
+attribute X_INTERFACE_INFO of bram2_rddata : signal is "xilinx.com:interface:bram_rtl:1.0 BRAM2_CTRL DOUT";
+
+attribute X_INTERFACE_PARAMETER : string;
+attribute X_INTERFACE_PARAMETER of MAX7219_CLK : signal is "FREQ_HZ 1000000";
+attribute X_INTERFACE_PARAMETER of MAX6951_CLK : signal is "FREQ_HZ 1000000";
 
 
 -- Temporary HDMI output stub
@@ -518,9 +523,9 @@ begin
 		
 	);
 	-- For now we only have 1 bit per colour, not 4
-	red0 <= vga_r; red1 <= vga_r; red2 <= vga_r; red3 <= vga_r;
-	green0 <= vga_g; green1 <= vga_g; green2 <= vga_g; green3 <= vga_g;
-	blue0 <= vga_b; blue1 <= vga_b; blue2 <= vga_b; blue3 <= vga_b;
+	red <= (others => vga_r);
+	green <= (others => vga_g);
+	blue <= (others => vga_b);
 
    -- LEDs are set here		
 	led(0) <= IND_LOAD;

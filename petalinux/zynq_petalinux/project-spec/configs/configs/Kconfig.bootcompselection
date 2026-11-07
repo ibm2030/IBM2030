@@ -1,0 +1,212 @@
+# Copyright (C) 2024-2025, Advanced Micro Devices, Inc.  All rights reserved.
+#
+# SPDX-License-Identifier: MIT
+#
+
+if SUBSYSTEM_ARCH_ARM || SUBSYSTEM_ARCH_AARCH64
+
+menu "Boot Components Selection"
+
+if SYSTEM_VERSAL || SYSTEM_VERSAL-2VE-2VM
+choice
+prompt "PLM"
+config SUBSYSTEM_COMPONENT_PLM_FROM_SOURCE
+	bool "PLM From Source"
+	help
+	 Use the Embeddedsw Source code to build the PLM.
+
+config SUBSYSTEM_COMPONENT_PLM_FROM_BASE_PDI
+        bool "PLM From Base PDI"
+        help
+	 Use the PLM comes from Base PDI instead of built one.
+	 No additional plm elf will be packed as part of boot.bin.
+
+config SUBSYSTEM_COMPONENT_PLM_FROM_SDT_PATH
+        bool "PLM From SDT Path"
+        help
+	 Use the PLM comes from SDT dir/artifactory instead of built one.
+
+config SUBSYSTEM_COMPONENT_PLM_FROM_LOCAL_PATH
+        bool "PLM From local Path"
+        help
+	 Use the PLM from specified local path instead of build one.
+endchoice
+
+if SUBSYSTEM_COMPONENT_PLM_FROM_SDT_PATH
+config SUBSYSTEM_COMPONENT_PLM_ELF_NAME
+	string "PLM elf File Name"
+	default "plm.elf"
+	help
+	 Specify the Plm elf file name from System Device Tree Directory.
+endif
+
+if SUBSYSTEM_COMPONENT_PLM_FROM_LOCAL_PATH
+config SUBSYSTEM_COMPONENT_PLM_ELF_PATH
+	string "PLM elf File Path"
+	default ""
+	help
+	 Specify Full Path of Plm elf file. Ex: /home/<user>/plm.elf.
+endif
+endif
+
+if SYSTEM_VERSAL
+choice
+prompt "PSMFW"
+config SUBSYSTEM_COMPONENT_PSMFW_FROM_SOURCE
+        bool "PSMFW From Source"
+        help
+         Use the Embeddedsw Source code to build the PSMFW.
+
+config SUBSYSTEM_COMPONENT_PSMFW_FROM_BASE_PDI
+        bool "PSMFW From Base PDI"
+        help
+         Use the PSMFW comes from Base PDI instead of built one.
+	 No additional psmfw elf will be packed as part of boot.bin.
+
+config SUBSYSTEM_COMPONENT_PSMFW_FROM_SDT_PATH
+        bool "PSMFW From SDT Path"
+        help
+         Use the PSMFW comes from SDT dir/artifactory instead of built one.
+
+config SUBSYSTEM_COMPONENT_PSMFW_FROM_LOCAL_PATH
+        bool "PSMFW From local Path"
+        help
+         Use the PSMFW from specified local path instead of build one.
+
+endchoice
+
+if SUBSYSTEM_COMPONENT_PSMFW_FROM_SDT_PATH
+config SUBSYSTEM_COMPONENT_PSMFW_ELF_NAME
+        string "PSMFW elf File Name"
+        default "psmfw.elf"
+        help
+         Specify the Psm elf file name from System Device Tree Directory.
+endif
+
+if SUBSYSTEM_COMPONENT_PSMFW_FROM_LOCAL_PATH
+config SUBSYSTEM_COMPONENT_PSMFW_ELF_PATH
+        string "PSMFW elf File Path"
+        default ""
+        help
+         Specify Full Path of Psm elf file. Ex: /home/<user>/psmfw.elf.
+endif
+endif
+
+if SYSTEM_VERSAL-2VE-2VM
+choice
+prompt "ASU"
+config SUBSYSTEM_COMPONENT_ASU_FROM_SOURCE
+        bool "ASU From Source"
+        help
+         Use the Embeddedsw Source code to build the ASU.
+
+config SUBSYSTEM_COMPONENT_ASU_FROM_BASE_PDI
+        bool "ASU From Base PDI"
+        help
+         Use the ASU comes from Base PDI instead of built one.
+	 No additional asu elf will be packed as part of boot.bin.
+
+config SUBSYSTEM_COMPONENT_ASU_FROM_SDT_PATH
+        bool "ASU From SDT Path"
+        help
+         Use the ASU comes from SDT dir/artifactory instead of built one.
+
+config SUBSYSTEM_COMPONENT_ASU_FROM_LOCAL_PATH
+        bool "ASU From local Path"
+        help
+         Use the ASU from specified local path instead of build one.
+
+endchoice
+
+if SUBSYSTEM_COMPONENT_ASU_FROM_SDT_PATH
+config SUBSYSTEM_COMPONENT_ASU_ELF_NAME
+        string "ASU elf File Name"
+        default "asufw.elf"
+        help
+         Specify the Asu elf file name from System Device Tree Directory.
+endif
+
+if SUBSYSTEM_COMPONENT_ASU_FROM_LOCAL_PATH
+config SUBSYSTEM_COMPONENT_ASU_ELF_PATH
+        string "ASU elf File Path"
+        default ""
+        help
+         Specify Full Path of Asu elf file. Ex: /home/<user>/asufw.elf.
+endif
+endif
+
+if SUBSYSTEM_ARCH_ARM || SYSTEM_ZYNQMP
+choice
+prompt "FSBL"
+config SUBSYSTEM_COMPONENT_FSBL_FROM_SOURCE
+	bool "FSBL From Source"
+	help
+	 Use the Embeddedsw Source code to build the FSBL.
+
+config SUBSYSTEM_COMPONENT_FSBL_FROM_SDT_PATH
+        bool "FSBL From SDT Path"
+        help
+	 Use the FSBL comes from SDT dir/artifactory instead of built one.
+
+config SUBSYSTEM_COMPONENT_FSBL_FROM_LOCAL_PATH
+        bool "FSBL From Local Path"
+        help
+	 Use the FSBL from specified local path instead of build one.
+endchoice
+
+if SUBSYSTEM_COMPONENT_FSBL_FROM_SDT_PATH
+config SUBSYSTEM_COMPONENT_FSBL_ELF_NAME
+	string "FSBL elf File Name"
+	default "fsbl.elf"
+	help
+	 Specify the FSBL elf file name from System Device Tree Directory.
+endif
+
+if SUBSYSTEM_COMPONENT_FSBL_FROM_LOCAL_PATH
+config SUBSYSTEM_COMPONENT_FSBL_ELF_PATH
+	string "FSBL elf File Path"
+	default ""
+	help
+	 Specify Full Path of FSBL elf file. Ex: /home/<user>/fsbl.elf.
+endif
+endif
+
+if SYSTEM_ZYNQMP
+choice
+prompt "PMUFW"
+config SUBSYSTEM_COMPONENT_PMUFW_FROM_SOURCE
+        bool "PMUFW From Source"
+        help
+         Use the Embeddedsw Source code to build the PMUFW.
+
+config SUBSYSTEM_COMPONENT_PMUFW_FROM_SDT_PATH
+        bool "PMUFW From SDT Path"
+        help
+         Use the PMUFW comes from SDT dir/artifactory instead of built one.
+
+config SUBSYSTEM_COMPONENT_PMUFW_FROM_LOCAL_PATH
+        bool "PMUFW From Local Path"
+        help
+         Use the PMUFW from specified local path instead of build one.
+endchoice
+
+if SUBSYSTEM_COMPONENT_PMUFW_FROM_SDT_PATH
+config SUBSYSTEM_COMPONENT_PMUFW_ELF_NAME
+        string "PMUFW elf File Name"
+        default "pmufw.elf"
+        help
+         Specify the PMUFW elf file name from System Device Tree Directory.
+endif
+
+if SUBSYSTEM_COMPONENT_PMUFW_FROM_LOCAL_PATH
+config SUBSYSTEM_COMPONENT_PMUFW_ELF_PATH
+        string "PMUFW elf File Path"
+        default ""
+        help
+         Specify Full Path of PMUFW elf file. Ex: /home/<user>/pmufw.elf.
+endif
+endif
+
+endmenu
+
+endif

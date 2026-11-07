@@ -1,0 +1,91 @@
+device_id: 7z020
+hw_design_name: zybo2030_wrapper
+processor:
+    ps7_cortexa9_0:
+        arch: arm
+        ip_name: ps7_cortexa9
+        slaves_strings: axi_bram_ctrl_0 axi_bram_ctrl_1 ps7_afi_0 ps7_afi_1 ps7_afi_2 ps7_afi_3 ps7_coresight_comp_0 ps7_ddr_0 ps7_ddrc_0 ps7_dev_cfg_0 ps7_dma_ns ps7_dma_s ps7_ethernet_0 ps7_globaltimer_0 ps7_gpio_0 ps7_gpv_0 ps7_intc_dist_0 ps7_iop_bus_config_0 ps7_l2cachec_0 ps7_ocmc_0 ps7_pl310_0 ps7_pmu_0 ps7_qspi_0 ps7_qspi_linear_0 ps7_ram_0 ps7_ram_1 ps7_scuc_0 ps7_scugic_0 ps7_scutimer_0 ps7_scuwdt_0 ps7_sd_0 ps7_slcr_0 ps7_uart_1 ps7_usb_0 ps7_xadc_0 v_tc_0 v_tpg_0
+        slaves:
+            ps7_ddr_0:
+                device_type: memory
+                ip_name: ps7_ddr
+                baseaddr: 0x0
+                highaddr: 0x3FFFFFFF
+            ps7_uart_1:
+                device_type: serial
+                ip_name: ps7_uart
+                is_pl: 0
+            ps7_ethernet_0:
+                device_type: ethernet
+                ip_name: ps7_ethernet
+            ps7_qspi_0:
+                device_type: flash
+                ip_name: ps7_qspi
+            ps7_sd_0:
+                device_type: sd
+                ip_name: ps7_sdio
+            ps7_usb_0:
+                device_type: usb
+                ip_name: ps7_usb
+            axi_bram_ctrl_0:
+                ip_name: axi_bram_ctrl
+            axi_bram_ctrl_1:
+                ip_name: axi_bram_ctrl
+            ps7_afi_0:
+                ip_name: ps7_afi
+            ps7_afi_1:
+                ip_name: ps7_afi
+            ps7_afi_2:
+                ip_name: ps7_afi
+            ps7_afi_3:
+                ip_name: ps7_afi
+            ps7_coresight_comp_0:
+                ip_name: ps7_coresight_comp
+            ps7_ddrc_0:
+                ip_name: ps7_ddrc
+            ps7_dev_cfg_0:
+                ip_name: ps7_dev_cfg
+            ps7_dma_ns:
+                ip_name: ps7_dma
+            ps7_dma_s:
+                ip_name: ps7_dma
+            ps7_globaltimer_0:
+                ip_name: ps7_globaltimer
+            ps7_gpio_0:
+                ip_name: ps7_gpio
+            ps7_gpv_0:
+                ip_name: ps7_gpv
+            ps7_intc_dist_0:
+                ip_name: ps7_intc_dist
+            ps7_iop_bus_config_0:
+                ip_name: ps7_iop_bus_config
+            ps7_l2cachec_0:
+                ip_name: ps7_l2cachec
+            ps7_ocmc_0:
+                ip_name: ps7_ocmc
+            ps7_pl310_0:
+                ip_name: ps7_pl310
+            ps7_pmu_0:
+                ip_name: ps7_pmu
+            ps7_qspi_linear_0:
+                ip_name: ps7_qspi_linear
+            ps7_ram_0:
+                ip_name: ps7_ram
+            ps7_ram_1:
+                ip_name: ps7_ram
+            ps7_scuc_0:
+                ip_name: ps7_scuc
+            ps7_scugic_0:
+                ip_name: ps7_scugic
+            ps7_scutimer_0:
+                ip_name: ps7_scutimer
+            ps7_scuwdt_0:
+                ip_name: ps7_scuwdt
+            ps7_slcr_0:
+                ip_name: ps7_slcr
+            ps7_xadc_0:
+                ip_name: ps7_xadc
+            v_tc_0:
+                ip_name: v_tc
+            v_tpg_0:
+                ip_name: v_tpg

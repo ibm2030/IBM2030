@@ -229,6 +229,42 @@
                 "SV": "xilinx.com:ip:axi_bram_ctrl:4.1",
                 "TM": "both",
                 "TU": "memory"
+            },
+            "V5": {
+                "VT": "AC",
+                "BA": "0x43C00000",
+                "HA": "0x43C0FFFF",
+                "BP": "C_BASEADDR",
+                "HP": "C_HIGHADDR",
+                "MA": "Data",
+                "MX": "/processing_system7_0",
+                "MI": "M_AXI_GP0",
+                "MS": "SEG_v_tc_0_Reg",
+                "MV": "xilinx.com:ip:processing_system7:5.5",
+                "SX": "/v_tc_0",
+                "SI": "ctrl",
+                "SS": "Reg",
+                "SV": "xilinx.com:ip:v_tc:6.2",
+                "TM": "both",
+                "TU": "register"
+            },
+            "V6": {
+                "VT": "AC",
+                "BA": "0x43C10000",
+                "HA": "0x43C1FFFF",
+                "BP": "C_S_AXI_CTRL_BASEADDR",
+                "HP": "C_S_AXI_CTRL_HIGHADDR",
+                "MA": "Data",
+                "MX": "/processing_system7_0",
+                "MI": "M_AXI_GP0",
+                "MS": "SEG_v_tpg_0_Reg",
+                "MV": "xilinx.com:ip:processing_system7:5.5",
+                "SX": "/v_tpg_0",
+                "SI": "s_axi_CTRL",
+                "SS": "Reg",
+                "SV": "xilinx.com:ip:v_tpg:8.2",
+                "TM": "both",
+                "TU": "register"
             }
         },
         "edges": [
@@ -247,6 +283,16 @@
             },
             {
                 "src": "V4",
+                "trg": "V2",
+                "EH": "2"
+            },
+            {
+                "src": "V5",
+                "trg": "V2",
+                "EH": "2"
+            },
+            {
+                "src": "V6",
                 "trg": "V2",
                 "EH": "2"
             }

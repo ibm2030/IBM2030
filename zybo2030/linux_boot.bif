@@ -1,0 +1,8 @@
+//arch = zynq; split = false; format = BIN
+// Linux boot: FSBL -> bitstream -> U-Boot (U-Boot then runs boot.scr / image.ub from SD)
+the_ROM_image:
+{
+	[bootloader]/home/ljw/Documents/IBM/IBM2030/ibm2030/export/ibm2030/sw/boot/fsbl.elf
+	/home/ljw/Documents/IBM/IBM2030/IBM2030.runs/impl_1/zybo2030_wrapper.bit
+	/mnt/LJW2025/Xilinx/petalinux/zynq_petalinux/images/linux/u-boot.elf
+}

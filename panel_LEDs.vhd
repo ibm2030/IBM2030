@@ -58,7 +58,7 @@ use work.all;
 entity panel_LEDs is
 	Generic (
 --        Device : LED_DEVICE_TYPE := MAX6951;
-        Clock_divider : integer := 25 -- Default for 50MHz clock is 2, for 25MHz = 40ns = 20ns + 20ns. 25 gives 2MHz.
+        Clock_divider : integer := 25 -- 50MHz => 1MHz SPI/I2C clock
         );
     Port (
 		-- Panel Lamps
@@ -152,6 +152,8 @@ entity panel_LEDs is
         );
 end panel_LEDs;
 
+
+
 architecture behavioral of panel_LEDs is
 
 -- All the signals we handle
@@ -162,6 +164,10 @@ signal shift_reg64 : std_logic_vector(63 downto 0);
 signal reg_counter : integer range 0 to 11 := 0;
 signal bit_counter16 : integer range 0 to 16 := 0;
 signal bit_counter64 : integer range 0 to 64 := 0;
+
+attribute X_INTERFACE_PARAMETER : string;
+attribute X_INTERFACE_PARAMETER of MAX7219_CLK : signal is "FREQ_HZ 1000000";
+attribute X_INTERFACE_PARAMETER of MAX6951_CLK : signal is "FREQ_HZ 1000000";
 
 -- MAX7219 data is 8b address and 8b data
 -- Address is:
