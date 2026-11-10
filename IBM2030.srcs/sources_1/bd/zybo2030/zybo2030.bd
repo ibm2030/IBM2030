@@ -6,7 +6,7 @@
       "gen_directory": "../../../../IBM2030.gen/sources_1/bd/zybo2030",
       "name": "zybo2030",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
-      "synth_flow_mode": "Hierarchical",
+      "synth_flow_mode": "None",
       "tool_version": "2026.1",
       "validated": "true"
     },
@@ -397,19 +397,27 @@
             "parameters": {
               "MEM_SIZE": {
                 "value": "65536",
-                "value_src": "ip_prop"
+                "value_src": "constant"
               },
               "MEM_WIDTH": {
                 "value": "32",
-                "value_src": "ip_prop"
+                "value_src": "constant"
               },
               "MEM_ECC": {
                 "value": "NONE",
-                "value_src": "user_prop"
+                "value_src": "constant"
+              },
+              "MASTER_TYPE": {
+                "value": "BRAM_CTRL",
+                "value_src": "constant"
+              },
+              "READ_WRITE_MODE": {
+                "value": "READ_WRITE",
+                "value_src": "constant"
               },
               "READ_LATENCY": {
                 "value": "1",
-                "value_src": "user_prop"
+                "value_src": "constant"
               }
             },
             "port_maps": {
@@ -439,7 +447,7 @@
                 "physical_name": "bram1_addr",
                 "direction": "I",
                 "left": "15",
-                "right": "2"
+                "right": "0"
               },
               "CLK": {
                 "physical_name": "bram1_clk",
@@ -458,19 +466,27 @@
             "parameters": {
               "MEM_SIZE": {
                 "value": "2048",
-                "value_src": "ip_prop"
+                "value_src": "constant"
               },
               "MEM_WIDTH": {
                 "value": "32",
-                "value_src": "ip_prop"
+                "value_src": "constant"
               },
               "MEM_ECC": {
                 "value": "NONE",
-                "value_src": "user_prop"
+                "value_src": "constant"
+              },
+              "MASTER_TYPE": {
+                "value": "BRAM_CTRL",
+                "value_src": "constant"
+              },
+              "READ_WRITE_MODE": {
+                "value": "READ_WRITE",
+                "value_src": "constant"
               },
               "READ_LATENCY": {
                 "value": "1",
-                "value_src": "user_prop"
+                "value_src": "constant"
               }
             },
             "port_maps": {
@@ -500,7 +516,7 @@
                 "physical_name": "bram2_addr",
                 "direction": "I",
                 "left": "10",
-                "right": "2"
+                "right": "0"
               },
               "CLK": {
                 "physical_name": "bram2_clk",
@@ -1927,6 +1943,9 @@
           "CLKOUT7_DRIVES": {
             "value": "BUFGCE"
           },
+          "ENABLE_CLOCK_MONITOR": {
+            "value": "false"
+          },
           "FEEDBACK_SOURCE": {
             "value": "FDBK_AUTO"
           },
@@ -1967,7 +1986,7 @@
             "value": "MMCM"
           },
           "PRIM_SOURCE": {
-            "value": "Single_ended_clock_capable_pin"
+            "value": "No_buffer"
           },
           "SECONDARY_SOURCE": {
             "value": "Single_ended_clock_capable_pin"
@@ -2233,7 +2252,12 @@
         "xci_name": "zybo2030_v_axi4s_vid_out_0_1",
         "xci_path": "ip/zybo2030_v_axi4s_vid_out_0_1/zybo2030_v_axi4s_vid_out_0_1.xci",
         "inst_hier_path": "v_axi4s_vid_out_0",
-        "has_run_ip_tcl": "true"
+        "has_run_ip_tcl": "true",
+        "parameters": {
+          "C_HAS_ASYNC_CLK": {
+            "value": "1"
+          }
+        }
       },
       "v_tc_0": {
         "vlnv": "xilinx.com:ip:v_tc:6.2",
@@ -2252,8 +2276,29 @@
           "SYNC_EN": {
             "value": "false"
           },
+          "active_video_generation": {
+            "value": "true"
+          },
+          "enable_detection": {
+            "value": "false"
+          },
+          "enable_generation": {
+            "value": "true"
+          },
           "frame_syncs": {
             "value": "1"
+          },
+          "horizontal_blank_generation": {
+            "value": "true"
+          },
+          "horizontal_sync_generation": {
+            "value": "true"
+          },
+          "vertical_blank_generation": {
+            "value": "true"
+          },
+          "vertical_sync_generation": {
+            "value": "true"
           }
         }
       },
@@ -2500,7 +2545,9 @@
       "clk_wiz_0_clk_out1": {
         "ports": [
           "clk_wiz_0/clk_out1",
-          "rgb2dvi_0/PixelClk"
+          "rgb2dvi_0/PixelClk",
+          "v_axi4s_vid_out_0/vid_io_out_clk",
+          "v_tc_0/clk"
         ]
       },
       "clk_wiz_0_clk_out2": {
@@ -2679,15 +2726,14 @@
       "sysclk_1": {
         "ports": [
           "sysclk",
-          "ibm2030_0/sysclk",
-          "v_tc_0/clk",
-          "clk_wiz_0/clk_in1"
+          "clk_wiz_0/clk_in1",
+          "ibm2030_0/sysclk"
         ]
       },
       "v_axi4s_vid_out_0_vtg_ce": {
         "ports": [
           "v_axi4s_vid_out_0/vtg_ce",
-          "v_tc_0/clken"
+          "v_tc_0/gen_clken"
         ]
       },
       "v_tc_0_fsync_out": {

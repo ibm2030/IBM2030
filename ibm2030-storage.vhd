@@ -145,21 +145,24 @@ LS_WE <= not StorageOut.MainStorage and StorageOut.WritePulse;
 LS_ADDR <= StorageOut.MSAR(1 to 3) & StorageOut.MSAR(8 to 15);
 
 -- Converting 9b bytes to/from 32b for AXI
--- Generate parity during writes
--- Is the parity vector the right way around? See Table 1-16 in the BRAM document UG473
-AXI1_with_Parity <= 
-      EvenParity(bram1.wrdata(31 downto 24)) & bram1.wrdata(31 downto 24)
-    & EvenParity(bram1.wrdata(23 downto 16)) & bram1.wrdata(23 downto 16)
-    & EvenParity(bram1.wrdata(15 downto  8)) & bram1.wrdata(15 downto  8)
-    & EvenParity(bram1.wrdata( 7 downto  0)) & bram1.wrdata( 7 downto  0);
-AXI2_with_Parity <= 
-      EvenParity(bram2.wrdata(31 downto 24)) & bram2.wrdata(31 downto 24)
-    & EvenParity(bram2.wrdata(23 downto 16)) & bram2.wrdata(23 downto 16)
-    & EvenParity(bram2.wrdata(15 downto  8)) & bram2.wrdata(15 downto  8)
-    & EvenParity(bram2.wrdata( 7 downto  0)) & bram2.wrdata( 7 downto  0);
+-- Port A (CPU) maps StorageOut.WriteData(0 to 8) onto DINA(8 downto 0), so in each
+-- 9-bit lane bits 8..1 hold data bits 0..7 (MSB first) and bit 0 holds the P bit.
+-- Port B lane j (bits 9j+8 downto 9j) is the port A byte at address 4k+j, so the
+-- AXI side must use the same layout: data in the upper 8 bits, parity in the LSB.
+-- Generate parity during writes (EvenParity returns the bit that makes the total odd)
+AXI1_with_Parity <=
+      bram1.wrdata(31 downto 24) & EvenParity(bram1.wrdata(31 downto 24))
+    & bram1.wrdata(23 downto 16) & EvenParity(bram1.wrdata(23 downto 16))
+    & bram1.wrdata(15 downto  8) & EvenParity(bram1.wrdata(15 downto  8))
+    & bram1.wrdata( 7 downto  0) & EvenParity(bram1.wrdata( 7 downto  0));
+AXI2_with_Parity <=
+      bram2.wrdata(31 downto 24) & EvenParity(bram2.wrdata(31 downto 24))
+    & bram2.wrdata(23 downto 16) & EvenParity(bram2.wrdata(23 downto 16))
+    & bram2.wrdata(15 downto  8) & EvenParity(bram2.wrdata(15 downto  8))
+    & bram2.wrdata( 7 downto  0) & EvenParity(bram2.wrdata( 7 downto  0));
 -- Strip parity during reads
-bram1_rddata <= MS_Data(34 downto 27) & MS_Data(25 downto 18) & MS_Data(16 downto 9) & MS_Data(7 downto 0);
-bram2_rddata <= LS_Data(34 downto 27) & LS_Data(25 downto 18) & LS_Data(16 downto 9) & LS_Data(7 downto 0);
+bram1_rddata <= MS_Data(35 downto 28) & MS_Data(26 downto 19) & MS_Data(17 downto 10) & MS_Data(8 downto 1);
+bram2_rddata <= LS_Data(35 downto 28) & LS_Data(26 downto 19) & LS_Data(17 downto 10) & LS_Data(8 downto 1);
 
 MainStorage: blk_mem_64k_9
     port map(

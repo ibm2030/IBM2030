@@ -16,7 +16,7 @@
       },
       "project_parameters": {
         "ARCHITECTURE": [ { "value": "zynq", "resolve_type": "generated", "usage": "all" } ],
-        "BASE_BOARD_PART": [ { "value": "", "resolve_type": "generated", "usage": "all" } ],
+        "BASE_BOARD_PART": [ { "value": "digilentinc.com:zybo-z7-20:part0:1.0", "resolve_type": "generated", "usage": "all" } ],
         "BOARD_CONNECTIONS": [ { "value": "", "resolve_type": "generated", "usage": "all" } ],
         "DEVICE": [ { "value": "xc7z020", "resolve_type": "generated", "usage": "all" } ],
         "PACKAGE": [ { "value": "clg400", "resolve_type": "generated", "usage": "all" } ],
@@ -35,7 +35,7 @@
         "SELECTEDSIMMODEL": [ { "value": "" } ],
         "SHAREDDIR": [ { "value": "../../ipshared" } ],
         "SWVERSION": [ { "value": "2026.1" } ],
-        "SYNTHESISFLOW": [ { "value": "OOC_HIERARCHICAL" } ]
+        "SYNTHESISFLOW": [ { "value": "GLOBAL" } ]
       }
     },
     "boundary": {
@@ -64,14 +64,14 @@
         "SerialTx": [ { "direction": "out", "driver_value": "0x1" } ],
         "SerialRTS": [ { "direction": "out", "driver_value": "0x1" } ],
         "SerialDTR": [ { "direction": "out", "driver_value": "0x1" } ],
-        "bram1_addr": [ { "direction": "in", "size_left": "15", "size_right": "2" } ],
+        "bram1_addr": [ { "direction": "in", "size_left": "15", "size_right": "0" } ],
         "bram1_clk": [ { "direction": "in" } ],
         "bram1_wrdata": [ { "direction": "in", "size_left": "31", "size_right": "0", "driver_value": "8" } ],
         "bram1_en": [ { "direction": "in" } ],
         "bram1_rst": [ { "direction": "in" } ],
         "bram1_we": [ { "direction": "in", "size_left": "3", "size_right": "0" } ],
         "bram1_rddata": [ { "direction": "out", "size_left": "31", "size_right": "0" } ],
-        "bram2_addr": [ { "direction": "in", "size_left": "10", "size_right": "2" } ],
+        "bram2_addr": [ { "direction": "in", "size_left": "10", "size_right": "0" } ],
         "bram2_clk": [ { "direction": "in" } ],
         "bram2_wrdata": [ { "direction": "in", "size_left": "31", "size_right": "0", "driver_value": "8" } ],
         "bram2_en": [ { "direction": "in" } ],
@@ -88,12 +88,12 @@
           "abstraction_type": "xilinx.com:interface:bram_rtl:1.0",
           "mode": "slave",
           "parameters": {
-            "MEM_SIZE": [ { "value": "65536", "value_src": "ip_propagated", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ],
-            "MEM_WIDTH": [ { "value": "32", "value_src": "ip_propagated", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ],
-            "MEM_ECC": [ { "value": "NONE", "value_src": "user_prop", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
-            "MASTER_TYPE": [ { "value": "BRAM_CTRL", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
-            "READ_WRITE_MODE": [ { "value": "READ_WRITE", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
-            "READ_LATENCY": [ { "value": "1", "value_src": "user_prop", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ]
+            "MEM_SIZE": [ { "value": "65536", "value_src": "constant", "value_permission": "bd_and_user", "format": "long", "usage": "all" } ],
+            "MEM_WIDTH": [ { "value": "32", "value_src": "constant", "value_permission": "bd_and_user", "format": "long", "usage": "all" } ],
+            "MEM_ECC": [ { "value": "NONE", "value_src": "constant", "value_permission": "bd_and_user", "usage": "all" } ],
+            "MASTER_TYPE": [ { "value": "BRAM_CTRL", "value_src": "constant", "value_permission": "bd_and_user", "usage": "all" } ],
+            "READ_WRITE_MODE": [ { "value": "READ_WRITE", "value_src": "constant", "value_permission": "bd_and_user", "usage": "all" } ],
+            "READ_LATENCY": [ { "value": "1", "value_src": "constant", "value_permission": "bd_and_user", "format": "long", "usage": "all" } ]
           },
           "port_maps": {
             "EN": [ { "physical_name": "bram1_en" } ],
@@ -110,12 +110,12 @@
           "abstraction_type": "xilinx.com:interface:bram_rtl:1.0",
           "mode": "slave",
           "parameters": {
-            "MEM_SIZE": [ { "value": "2048", "value_src": "ip_propagated", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ],
-            "MEM_WIDTH": [ { "value": "32", "value_src": "ip_propagated", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ],
-            "MEM_ECC": [ { "value": "NONE", "value_src": "user_prop", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
-            "MASTER_TYPE": [ { "value": "BRAM_CTRL", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
-            "READ_WRITE_MODE": [ { "value": "READ_WRITE", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
-            "READ_LATENCY": [ { "value": "1", "value_src": "user_prop", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ]
+            "MEM_SIZE": [ { "value": "2048", "value_src": "constant", "value_permission": "bd_and_user", "format": "long", "usage": "all" } ],
+            "MEM_WIDTH": [ { "value": "32", "value_src": "constant", "value_permission": "bd_and_user", "format": "long", "usage": "all" } ],
+            "MEM_ECC": [ { "value": "NONE", "value_src": "constant", "value_permission": "bd_and_user", "usage": "all" } ],
+            "MASTER_TYPE": [ { "value": "BRAM_CTRL", "value_src": "constant", "value_permission": "bd_and_user", "usage": "all" } ],
+            "READ_WRITE_MODE": [ { "value": "READ_WRITE", "value_src": "constant", "value_permission": "bd_and_user", "usage": "all" } ],
+            "READ_LATENCY": [ { "value": "1", "value_src": "constant", "value_permission": "bd_and_user", "format": "long", "usage": "all" } ]
           },
           "port_maps": {
             "EN": [ { "physical_name": "bram2_en" } ],
@@ -166,5 +166,5 @@
       }
     }
   },
-  "checksum": "17eaad72"
+  "checksum": "38e897b2"
 }

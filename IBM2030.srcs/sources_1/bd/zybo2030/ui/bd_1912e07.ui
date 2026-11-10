@@ -1,100 +1,100 @@
 {
    "ActiveEmotionalView":"Default View",
-   "Default View_ScaleFactor":"1.0",
-   "Default View_TopLeft":"-506,-218",
+   "Default View_ScaleFactor":"0.854015",
+   "Default View_TopLeft":"-122,-198",
    "ExpandedHierarchyInLayout":"",
    "PinnedBlocks":"",
    "PinnedPorts":"",
    "guistr":"# # String gsaved with Nlview 7.8.0 2024-04-26 e1825d835c VDI=44 GEI=38 GUI=JA:24.0 TLS
 #  -string -flagsOSRD
-preplace port DDR -pg 1 -lvl 6 -x 2110 -y 40 -defaultsOSRD
-preplace port FIXED_IO -pg 1 -lvl 6 -x 2110 -y 70 -defaultsOSRD
-preplace port hdmi_tx -pg 1 -lvl 6 -x 2110 -y 960 -defaultsOSRD
-preplace port port-id_vga_hs -pg 1 -lvl 6 -x 2110 -y 550 -defaultsOSRD
-preplace port port-id_vga_vs -pg 1 -lvl 6 -x 2110 -y 580 -defaultsOSRD
-preplace port port-id_MAX7318_SCL -pg 1 -lvl 6 -x 2110 -y 160 -defaultsOSRD
-preplace port port-id_MAX7219_CLK -pg 1 -lvl 6 -x 2110 -y 190 -defaultsOSRD
-preplace port port-id_MAX7318_SDA -pg 1 -lvl 6 -x 2110 -y 100 -defaultsOSRD
-preplace port port-id_MAX7219_LOAD -pg 1 -lvl 6 -x 2110 -y 370 -defaultsOSRD
-preplace port port-id_MAX7219_DIN -pg 1 -lvl 6 -x 2110 -y 220 -defaultsOSRD
-preplace port port-id_MAX6951_CLK -pg 1 -lvl 6 -x 2110 -y 250 -defaultsOSRD
-preplace port port-id_MAX6951_CS0 -pg 1 -lvl 6 -x 2110 -y 280 -defaultsOSRD
-preplace port port-id_MAX6951_CS1 -pg 1 -lvl 6 -x 2110 -y 310 -defaultsOSRD
-preplace port port-id_MAX6951_CS2 -pg 1 -lvl 6 -x 2110 -y 340 -defaultsOSRD
-preplace port port-id_MAX6951_CS3 -pg 1 -lvl 6 -x 2110 -y 400 -defaultsOSRD
-preplace port port-id_MAX6951_DIN -pg 1 -lvl 6 -x 2110 -y 430 -defaultsOSRD
-preplace port port-id_sysclk -pg 1 -lvl 0 -x -40 -y 690 -defaultsOSRD
-preplace port port-id_serialRx -pg 1 -lvl 0 -x -40 -y 450 -defaultsOSRD
-preplace port port-id_serialTx -pg 1 -lvl 6 -x 2110 -y 840 -defaultsOSRD
-preplace portBus pb -pg 1 -lvl 0 -x -40 -y 390 -defaultsOSRD
-preplace portBus sw -pg 1 -lvl 0 -x -40 -y 420 -defaultsOSRD
-preplace portBus led -pg 1 -lvl 6 -x 2110 -y 130 -defaultsOSRD
-preplace portBus vga_b -pg 1 -lvl 6 -x 2110 -y 490 -defaultsOSRD
-preplace portBus vga_r -pg 1 -lvl 6 -x 2110 -y 460 -defaultsOSRD
-preplace portBus vga_g -pg 1 -lvl 6 -x 2110 -y 520 -defaultsOSRD
-preplace inst ibm2030_0 -pg 1 -lvl 4 -x 1400 -y 470 -defaultsOSRD
-preplace inst axi_bram_ctrl_1 -pg 1 -lvl 3 -x 1000 -y 560 -defaultsOSRD
+preplace port DDR -pg 1 -lvl 6 -x 2140 -y 40 -defaultsOSRD
+preplace port FIXED_IO -pg 1 -lvl 6 -x 2140 -y 70 -defaultsOSRD
+preplace port hdmi_tx -pg 1 -lvl 6 -x 2140 -y 960 -defaultsOSRD
+preplace port port-id_vga_hs -pg 1 -lvl 6 -x 2140 -y 550 -defaultsOSRD
+preplace port port-id_vga_vs -pg 1 -lvl 6 -x 2140 -y 580 -defaultsOSRD
+preplace port port-id_MAX7318_SCL -pg 1 -lvl 6 -x 2140 -y 160 -defaultsOSRD
+preplace port port-id_MAX7219_CLK -pg 1 -lvl 6 -x 2140 -y 190 -defaultsOSRD
+preplace port port-id_MAX7318_SDA -pg 1 -lvl 6 -x 2140 -y 100 -defaultsOSRD
+preplace port port-id_MAX7219_LOAD -pg 1 -lvl 6 -x 2140 -y 370 -defaultsOSRD
+preplace port port-id_MAX7219_DIN -pg 1 -lvl 6 -x 2140 -y 220 -defaultsOSRD
+preplace port port-id_MAX6951_CLK -pg 1 -lvl 6 -x 2140 -y 250 -defaultsOSRD
+preplace port port-id_MAX6951_CS0 -pg 1 -lvl 6 -x 2140 -y 280 -defaultsOSRD
+preplace port port-id_MAX6951_CS1 -pg 1 -lvl 6 -x 2140 -y 310 -defaultsOSRD
+preplace port port-id_MAX6951_CS2 -pg 1 -lvl 6 -x 2140 -y 340 -defaultsOSRD
+preplace port port-id_MAX6951_CS3 -pg 1 -lvl 6 -x 2140 -y 400 -defaultsOSRD
+preplace port port-id_MAX6951_DIN -pg 1 -lvl 6 -x 2140 -y 430 -defaultsOSRD
+preplace port port-id_sysclk -pg 1 -lvl 0 -x -50 -y 690 -defaultsOSRD
+preplace port port-id_serialRx -pg 1 -lvl 0 -x -50 -y 450 -defaultsOSRD
+preplace port port-id_serialTx -pg 1 -lvl 6 -x 2140 -y 840 -defaultsOSRD
+preplace portBus pb -pg 1 -lvl 0 -x -50 -y 390 -defaultsOSRD
+preplace portBus sw -pg 1 -lvl 0 -x -50 -y 420 -defaultsOSRD
+preplace portBus led -pg 1 -lvl 6 -x 2140 -y 130 -defaultsOSRD
+preplace portBus vga_b -pg 1 -lvl 6 -x 2140 -y 490 -defaultsOSRD
+preplace portBus vga_r -pg 1 -lvl 6 -x 2140 -y 460 -defaultsOSRD
+preplace portBus vga_g -pg 1 -lvl 6 -x 2140 -y 520 -defaultsOSRD
+preplace inst ibm2030_0 -pg 1 -lvl 4 -x 1500 -y 470 -defaultsOSRD
+preplace inst axi_bram_ctrl_1 -pg 1 -lvl 3 -x 1030 -y 560 -defaultsOSRD
 preplace inst processing_system7_0 -pg 1 -lvl 1 -x 210 -y 100 -defaultsOSRD
-preplace inst clk_wiz_0 -pg 1 -lvl 3 -x 1000 -y 780 -defaultsOSRD
+preplace inst clk_wiz_0 -pg 1 -lvl 3 -x 1030 -y 780 -defaultsOSRD
 preplace inst rst_ps7_0_50M -pg 1 -lvl 1 -x 210 -y 310 -defaultsOSRD
 preplace inst smartconnect_0 -pg 1 -lvl 2 -x 620 -y 270 -defaultsOSRD
-preplace inst ilslice_0 -pg 1 -lvl 5 -x 1890 -y 150 -defaultsOSRD
-preplace inst axi_bram_ctrl_0 -pg 1 -lvl 3 -x 1000 -y 280 -defaultsOSRD
-preplace inst rgb2dvi_0 -pg 1 -lvl 5 -x 1890 -y 960 -defaultsOSRD
-preplace inst v_axi4s_vid_out_0 -pg 1 -lvl 4 -x 1400 -y 960 -defaultsOSRD
+preplace inst ilslice_0 -pg 1 -lvl 5 -x 2010 -y 150 -defaultsOSRD
+preplace inst axi_bram_ctrl_0 -pg 1 -lvl 3 -x 1030 -y 280 -defaultsOSRD
+preplace inst rgb2dvi_0 -pg 1 -lvl 5 -x 2010 -y 960 -defaultsOSRD
+preplace inst v_axi4s_vid_out_0 -pg 1 -lvl 4 -x 1500 -y 960 -defaultsOSRD
 preplace inst v_tc_0 -pg 1 -lvl 1 -x 210 -y 940 -defaultsOSRD
 preplace inst v_tpg_0 -pg 1 -lvl 2 -x 620 -y 1030 -defaultsOSRD
-preplace inst axis_subset_converter_0 -pg 1 -lvl 3 -x 1000 -y 1030 -defaultsOSRD
-preplace netloc Net 1 4 2 1570J 90 1990J
-preplace netloc Net1 1 0 4 10 1110 410 940 800 950 1150
-preplace netloc clk_wiz_0_clk_out1 1 3 2 1180 810 1710J
-preplace netloc clk_wiz_0_clk_out2 1 3 1 1170 520n
-preplace netloc clk_wiz_0_clk_out3 1 3 1 1190 540n
-preplace netloc ibm2030_0_MAX6951_CLK 1 4 2 1610J 250 NJ
-preplace netloc ibm2030_0_MAX6951_CS0 1 4 2 1620J 280 NJ
-preplace netloc ibm2030_0_MAX6951_CS1 1 4 2 1630J 310 NJ
-preplace netloc ibm2030_0_MAX6951_CS2 1 4 2 1640J 340 NJ
-preplace netloc ibm2030_0_MAX6951_CS3 1 4 2 1650J 400 NJ
-preplace netloc ibm2030_0_MAX6951_DIN 1 4 2 1660J 430 NJ
-preplace netloc ibm2030_0_MAX7219_CLK 1 4 2 1600J 230 2000J
-preplace netloc ibm2030_0_MAX7219_DIN 1 4 2 1590J 220 NJ
+preplace inst axis_subset_converter_0 -pg 1 -lvl 3 -x 1030 -y 1030 -defaultsOSRD
+preplace netloc Net 1 4 2 1690J 90 2110J
+preplace netloc Net1 1 0 4 20 1090 410 940 830 940 1200
+preplace netloc clk_wiz_0_clk_out1 1 0 5 0 780 N 780 790 880 1190 800 1830J
+preplace netloc clk_wiz_0_clk_out2 1 3 1 1210 590n
+preplace netloc clk_wiz_0_clk_out3 1 3 1 1180 610n
+preplace netloc ibm2030_0_MAX6951_CLK 1 4 2 1730J 250 NJ
+preplace netloc ibm2030_0_MAX6951_CS0 1 4 2 1740J 280 NJ
+preplace netloc ibm2030_0_MAX6951_CS1 1 4 2 1750J 310 NJ
+preplace netloc ibm2030_0_MAX6951_CS2 1 4 2 1760J 340 NJ
+preplace netloc ibm2030_0_MAX6951_CS3 1 4 2 1770J 400 NJ
+preplace netloc ibm2030_0_MAX6951_DIN 1 4 2 1780J 430 NJ
+preplace netloc ibm2030_0_MAX7219_CLK 1 4 2 1720J 230 2120J
+preplace netloc ibm2030_0_MAX7219_DIN 1 4 2 1710J 220 NJ
 preplace netloc ibm2030_0_MAX7219_LOAD 1 4 2 NJ 370 NJ
-preplace netloc ibm2030_0_MAX7318_SCL 1 4 2 1580J 210 1990J
-preplace netloc ibm2030_0_SerialTx 1 4 2 NJ 630 2000J
-preplace netloc ibm2030_0_blue 1 4 2 1680 490 NJ
-preplace netloc ibm2030_0_green 1 4 2 1690 520 NJ
-preplace netloc ibm2030_0_led 1 4 1 1560J 150n
-preplace netloc ibm2030_0_red 1 4 2 1670 460 NJ
-preplace netloc ibm2030_0_vga_hs 1 4 2 1700 550 NJ
-preplace netloc ibm2030_0_vga_vs 1 4 2 1710 580 NJ
-preplace netloc ilslice_0_Dout 1 5 1 1990J 130n
-preplace netloc pb_1 1 0 4 -20J 440 NJ 440 NJ 440 NJ
-preplace netloc processing_system7_0_FCLK_CLK0 1 0 4 0 410 440 370 820 940 N
+preplace netloc ibm2030_0_MAX7318_SCL 1 4 2 1700J 210 2110J
+preplace netloc ibm2030_0_SerialTx 1 4 2 NJ 630 2120J
+preplace netloc ibm2030_0_blue 1 4 2 1800 490 NJ
+preplace netloc ibm2030_0_green 1 4 2 1810 520 NJ
+preplace netloc ibm2030_0_led 1 4 1 1680J 150n
+preplace netloc ibm2030_0_red 1 4 2 1790 460 NJ
+preplace netloc ibm2030_0_vga_hs 1 4 2 1820 550 NJ
+preplace netloc ibm2030_0_vga_vs 1 4 2 1830 580 NJ
+preplace netloc ilslice_0_Dout 1 5 1 2110J 130n
+preplace netloc pb_1 1 0 4 -30J 460 NJ 460 NJ 460 1200J
+preplace netloc processing_system7_0_FCLK_CLK0 1 0 4 -10 410 430 370 860 920 N
 preplace netloc processing_system7_0_FCLK_RESET0_N 1 0 2 20 210 400
-preplace netloc rst_ps7_0_50M_interconnect_aresetn 1 1 2 450J 360 840
-preplace netloc rst_ps7_0_50M_mb_reset 1 1 4 410J 180 810 870 1150 820 1690
+preplace netloc rst_ps7_0_50M_interconnect_aresetn 1 1 2 450J 360 880
+preplace netloc rst_ps7_0_50M_mb_reset 1 1 4 410J 180 850 870 1200 810 1810
 preplace netloc serialRx_1 1 0 4 NJ 450 NJ 450 NJ 450 1190J
-preplace netloc sw_1 1 0 4 NJ 420 NJ 420 NJ 420 1150J
-preplace netloc sysclk_1 1 0 4 -10J 690 NJ 690 850 480 1170
-preplace netloc v_axi4s_vid_out_0_vtg_ce 1 0 5 10 770 NJ 770 790J 860 1190J 830 1560
+preplace netloc sw_1 1 0 4 NJ 420 NJ 420 NJ 420 1210J
 preplace netloc v_tc_0_fsync_out 1 1 1 400 960n
-preplace netloc v_tpg_0_fid 1 2 2 790 1110 1190J
-preplace netloc axi_bram_ctrl_0_BRAM_PORTA 1 3 1 1150 280n
-preplace netloc axi_bram_ctrl_1_BRAM_PORTA 1 3 1 1160 420n
-preplace netloc axis_subset_converter_0_M_AXIS 1 3 1 1170 900n
-preplace netloc processing_system7_0_DDR 1 1 5 430J 40 NJ 40 NJ 40 NJ 40 NJ
+preplace netloc v_tpg_0_fid 1 2 2 840 950 1180J
+preplace netloc sysclk_1 1 0 4 N 690 NJ 690 880 640 1190J
+preplace netloc v_axi4s_vid_out_0_vtg_ce 1 0 5 20 790 NJ 790 800J 860 1210J 820 1680
+preplace netloc axi_bram_ctrl_0_BRAM_PORTA 1 3 1 1210 280n
+preplace netloc axi_bram_ctrl_1_BRAM_PORTA 1 3 1 1180 490n
+preplace netloc axis_subset_converter_0_M_AXIS 1 3 1 1210 880n
+preplace netloc processing_system7_0_DDR 1 1 5 400J 40 NJ 40 NJ 40 NJ 40 NJ
 preplace netloc processing_system7_0_FIXED_IO 1 1 5 NJ 70 NJ 70 NJ 70 NJ 70 NJ
 preplace netloc processing_system7_0_M_AXI_GP0 1 1 1 450 110n
 preplace netloc rgb2dvi_0_TMDS 1 5 1 NJ 960
-preplace netloc smartconnect_0_M00_AXI 1 2 1 840 240n
-preplace netloc smartconnect_0_M01_AXI 1 2 1 830 260n
-preplace netloc smartconnect_0_M02_AXI 1 0 3 20 630 NJ 630 800
+preplace netloc smartconnect_0_M00_AXI 1 2 1 880 240n
+preplace netloc smartconnect_0_M01_AXI 1 2 1 870 260n
+preplace netloc smartconnect_0_M02_AXI 1 0 3 10 520 NJ 520 800
 preplace netloc smartconnect_0_M03_AXI 1 1 2 450 400 790
-preplace netloc v_axi4s_vid_out_0_vid_io_out 1 4 1 1610J 890n
-preplace netloc v_tc_0_vtiming_out 1 1 3 N 920 NJ 920 N
+preplace netloc v_axi4s_vid_out_0_vid_io_out 1 4 1 1730J 890n
+preplace netloc v_tc_0_vtiming_out 1 1 3 440 900 NJ 900 N
 preplace netloc v_tpg_0_m_axis_video 1 2 1 N 1010
-levelinfo -pg 1 -40 210 620 1000 1400 1890 2110
-pagesize -pg 1 -db -bbox -sgen -150 -420 2270 1460
+levelinfo -pg 1 -50 210 620 1030 1500 2010 2140
+pagesize -pg 1 -db -bbox -sgen -160 -420 2340 1460
 "
 }
 {

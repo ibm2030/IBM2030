@@ -108,7 +108,7 @@ entity ibm2030 is
 --			rclk : out std_logic);
 
             -- AXI interface from PS to storag
-            bram1_addr : in std_logic_vector(15 downto 2);
+            bram1_addr : in std_logic_vector(15 downto 0); -- byte address from axi_bram_ctrl_0 (64K)
 	        bram1_clk : in std_logic;
         	bram1_wrdata : in std_logic_vector(31 downto 0);
 	        bram1_en : in std_logic;
@@ -116,7 +116,7 @@ entity ibm2030 is
 	        bram1_we : in std_logic_vector(3 downto 0);
             bram1_rddata : out std_logic_vector(31 downto 0);
 	        
-        	bram2_addr : in std_logic_vector(10 downto 2);
+        	bram2_addr : in std_logic_vector(10 downto 0); -- byte address from axi_bram_ctrl_1 (2K)
 	        bram2_clk : in std_logic;
 	        bram2_wrdata : in std_logic_vector(31 downto 0);
 	        bram2_en : in std_logic;
@@ -157,6 +157,10 @@ attribute X_INTERFACE_INFO of bram2_rddata : signal is "xilinx.com:interface:bra
 attribute X_INTERFACE_PARAMETER : string;
 attribute X_INTERFACE_PARAMETER of MAX7219_CLK : signal is "FREQ_HZ 1000000";
 attribute X_INTERFACE_PARAMETER of MAX6951_CLK : signal is "FREQ_HZ 1000000";
+-- Declare the BRAM interfaces as driven by AXI BRAM Controllers, so a module refresh
+-- does not reset MASTER_TYPE to OTHER (BD 41-237 critical warning)
+attribute X_INTERFACE_PARAMETER of bram1_clk : signal is "XIL_INTERFACENAME BRAM1_CTRL, MEM_SIZE 65536, MEM_WIDTH 32, MEM_ECC NONE, MASTER_TYPE BRAM_CTRL, READ_WRITE_MODE READ_WRITE, READ_LATENCY 1";
+attribute X_INTERFACE_PARAMETER of bram2_clk : signal is "XIL_INTERFACENAME BRAM2_CTRL, MEM_SIZE 2048, MEM_WIDTH 32, MEM_ECC NONE, MASTER_TYPE BRAM_CTRL, READ_WRITE_MODE READ_WRITE, READ_LATENCY 1";
 
 
 -- Temporary HDMI output stub
@@ -270,7 +274,15 @@ attribute keep of n1050Inputs : signal is "true";
 attribute mark_debug of n1050Control : signal is "true";
 attribute keep of n1050Control : signal is "true";
 
+-- 32-bit word addresses for the AXI BRAM ports. The AXI BRAM controllers supply
+-- byte addresses, so drop the two low bits before they reach port B of the BRAMs.
+signal bram1_word_addr : std_logic_vector(15 downto 2);
+signal bram2_word_addr : std_logic_vector(10 downto 2);
+
 begin
+
+	bram1_word_addr <= bram1_addr(15 downto 2);
+	bram2_word_addr <= bram2_addr(10 downto 2);
 
 	cpu : entity work.cpu port map (
 	
@@ -403,7 +415,7 @@ begin
             MPX_TAGS_I.MTR_IN => '0',
             
             -- Storage interface
-	        bram1.addr => bram1_addr,
+	        bram1.addr => bram1_word_addr,
 	        bram1.clk => bram1_clk,
             bram1.wrdata => bram1_wrdata,
 	        bram1.en => bram1_en,
@@ -411,7 +423,7 @@ begin
 	        bram1.we => bram1_we,    
 	        bram1_rddata => bram1_rddata,
 
-	        bram2.addr => bram2_addr,
+	        bram2.addr => bram2_word_addr,
 	        bram2.clk => bram2_clk,
             bram2.wrdata => bram2_wrdata,
 	        bram2.en => bram2_en,

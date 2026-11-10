@@ -80,23 +80,23 @@
         "GEN_INTERLACED": [ { "value": "false", "resolve_type": "user", "format": "bool", "enabled": false, "usage": "all" } ],
         "GEN_CPARITY": [ { "value": "0", "resolve_type": "user", "usage": "all" } ],
         "GEN_VIDEO_FORMAT": [ { "value": "RGB", "resolve_type": "user", "usage": "all" } ],
-        "horizontal_sync_generation": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "enable_detection": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "vertical_blank_generation": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "horizontal_sync_generation": [ { "value": "true", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "enable_detection": [ { "value": "false", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "vertical_blank_generation": [ { "value": "true", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "GEN_FIELDID_EN": [ { "value": "false", "resolve_type": "user", "format": "bool", "enabled": false, "usage": "all" } ],
-        "horizontal_blank_detection": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "active_chroma_detection": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "horizontal_sync_detection": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "enable_generation": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "auto_generation_mode": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "vertical_sync_generation": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "horizontal_blank_detection": [ { "value": "true", "resolve_type": "user", "format": "bool", "enabled": false, "usage": "all" } ],
+        "active_chroma_detection": [ { "value": "false", "resolve_type": "user", "format": "bool", "enabled": false, "usage": "all" } ],
+        "horizontal_sync_detection": [ { "value": "true", "resolve_type": "user", "format": "bool", "enabled": false, "usage": "all" } ],
+        "enable_generation": [ { "value": "true", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "auto_generation_mode": [ { "value": "false", "resolve_type": "user", "format": "bool", "enabled": false, "usage": "all" } ],
+        "vertical_sync_generation": [ { "value": "true", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "active_chroma_generation": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "DET_FIELDID_EN": [ { "value": "false", "resolve_type": "user", "format": "bool", "enabled": false, "usage": "all" } ],
-        "vertical_blank_detection": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "active_video_generation": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "vertical_sync_detection": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "horizontal_blank_generation": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "active_video_detection": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "vertical_blank_detection": [ { "value": "true", "resolve_type": "user", "format": "bool", "enabled": false, "usage": "all" } ],
+        "active_video_generation": [ { "value": "true", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "vertical_sync_detection": [ { "value": "true", "resolve_type": "user", "format": "bool", "enabled": false, "usage": "all" } ],
+        "horizontal_blank_generation": [ { "value": "true", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "active_video_detection": [ { "value": "true", "resolve_type": "user", "format": "bool", "enabled": false, "usage": "all" } ],
         "frame_syncs": [ { "value": "1", "value_src": "user", "resolve_type": "user", "format": "long", "usage": "all" } ]
       },
       "model_parameters": {
@@ -170,7 +170,7 @@
         "C_NUM_FSYNCS": [ { "value": "1", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_INTERLACE_EN": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_GEN_AUTO_SWITCH": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
-        "C_DETECT_EN": [ { "value": "1", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "C_DETECT_EN": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_SYNC_EN": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_GENERATE_EN": [ { "value": "1", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_DET_HSYNC_EN": [ { "value": "1", "resolve_type": "generated", "format": "long", "usage": "all" } ],
@@ -209,7 +209,7 @@
         "SELECTEDSIMMODEL": [ { "value": "" } ],
         "SHAREDDIR": [ { "value": "../../ipshared" } ],
         "SWVERSION": [ { "value": "2026.1" } ],
-        "SYNTHESISFLOW": [ { "value": "OUT_OF_CONTEXT" } ]
+        "SYNTHESISFLOW": [ { "value": "GLOBAL" } ]
       }
     },
     "boundary": {
@@ -218,14 +218,8 @@
         "clken": [ { "direction": "in", "driver_value": "1" } ],
         "s_axi_aclk": [ { "direction": "in" } ],
         "s_axi_aclken": [ { "direction": "in", "driver_value": "1" } ],
-        "det_clken": [ { "direction": "in", "driver_value": "1" } ],
         "gen_clken": [ { "direction": "in", "driver_value": "1" } ],
         "sof_state": [ { "direction": "in", "driver_value": "0" } ],
-        "hsync_in": [ { "direction": "in", "driver_value": "0" } ],
-        "hblank_in": [ { "direction": "in", "driver_value": "0" } ],
-        "vsync_in": [ { "direction": "in", "driver_value": "0" } ],
-        "vblank_in": [ { "direction": "in", "driver_value": "0" } ],
-        "active_video_in": [ { "direction": "in", "driver_value": "0" } ],
         "hsync_out": [ { "direction": "out" } ],
         "hblank_out": [ { "direction": "out" } ],
         "vsync_out": [ { "direction": "out" } ],
@@ -354,18 +348,6 @@
             "WVALID": [ { "physical_name": "s_axi_wvalid" } ]
           }
         },
-        "vtiming_in": {
-          "vlnv": "xilinx.com:interface:video_timing:2.0",
-          "abstraction_type": "xilinx.com:interface:video_timing_rtl:2.0",
-          "mode": "slave",
-          "port_maps": {
-            "ACTIVE_VIDEO": [ { "physical_name": "active_video_in" } ],
-            "HBLANK": [ { "physical_name": "hblank_in" } ],
-            "HSYNC": [ { "physical_name": "hsync_in" } ],
-            "VBLANK": [ { "physical_name": "vblank_in" } ],
-            "VSYNC": [ { "physical_name": "vsync_in" } ]
-          }
-        },
         "vtiming_out": {
           "vlnv": "xilinx.com:interface:video_timing:2.0",
           "abstraction_type": "xilinx.com:interface:video_timing_rtl:2.0",
@@ -386,10 +368,10 @@
             "ASSOCIATED_BUSIF": [ { "value": "vtiming_in:vtiming_out", "value_src": "constant", "value_permission": "bd", "usage": "all" } ],
             "ASSOCIATED_RESET": [ { "value": "resetn", "value_src": "constant", "value_permission": "bd", "usage": "all" } ],
             "ASSOCIATED_CLKEN": [ { "value": "clken", "value_src": "constant", "value_permission": "bd", "usage": "all" } ],
-            "FREQ_HZ": [ { "value": "125000000", "value_src": "user_prop", "value_permission": "bd", "resolve_type": "user", "format": "long", "usage": "all" } ],
+            "FREQ_HZ": [ { "value": "125000000", "value_src": "ip_propagated", "value_permission": "bd", "resolve_type": "user", "format": "long", "usage": "all" } ],
             "FREQ_TOLERANCE_HZ": [ { "value": "0", "value_permission": "bd", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ],
-            "PHASE": [ { "value": "0.0", "value_permission": "bd", "resolve_type": "generated", "format": "float", "is_ips_inferred": true, "is_static_object": false } ],
-            "CLK_DOMAIN": [ { "value": "zybo2030_sysclk", "value_src": "default_prop", "value_permission": "bd", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
+            "PHASE": [ { "value": "0.0", "value_src": "ip_propagated", "value_permission": "bd", "resolve_type": "generated", "format": "float", "is_ips_inferred": true, "is_static_object": false } ],
+            "CLK_DOMAIN": [ { "value": "zybo2030_clk_wiz_0_0_clk_out1", "value_src": "default_prop", "value_permission": "bd", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
             "ASSOCIATED_PORT": [ { "value": "", "value_permission": "bd", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
             "INSERT_VIP": [ { "value": "0", "resolve_type": "user", "format": "long", "usage": "simulation.rtl", "is_ips_inferred": true, "is_static_object": false } ]
           },
@@ -435,5 +417,5 @@
       }
     }
   },
-  "checksum": "5d0436d3"
+  "checksum": "5755a994"
 }

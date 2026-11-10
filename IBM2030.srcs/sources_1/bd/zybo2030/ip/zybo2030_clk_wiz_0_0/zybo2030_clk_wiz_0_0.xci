@@ -13,7 +13,7 @@
         "USER_CLK_FREQ1": [ { "value": "100.0", "resolve_type": "user", "format": "float", "usage": "all" } ],
         "USER_CLK_FREQ2": [ { "value": "100.0", "resolve_type": "user", "format": "float", "usage": "all" } ],
         "USER_CLK_FREQ3": [ { "value": "100.0", "resolve_type": "user", "format": "float", "usage": "all" } ],
-        "ENABLE_CLOCK_MONITOR": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "ENABLE_CLOCK_MONITOR": [ { "value": "false", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "OPTIMIZE_CLOCKING_STRUCTURE_EN": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "ENABLE_USER_CLOCK0": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "ENABLE_USER_CLOCK1": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
@@ -115,7 +115,7 @@
         "CLKOUT5_MATCHED_ROUTING": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "CLKOUT6_MATCHED_ROUTING": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "CLKOUT7_MATCHED_ROUTING": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "PRIM_SOURCE": [ { "value": "Single_ended_clock_capable_pin", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
+        "PRIM_SOURCE": [ { "value": "No_buffer", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
         "CLKOUT1_DRIVES": [ { "value": "BUFGCE", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
         "CLKOUT2_DRIVES": [ { "value": "BUFGCE", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
         "CLKOUT3_DRIVES": [ { "value": "BUFGCE", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
@@ -314,7 +314,7 @@
         "C_SECONDARY_IN_FREQ": [ { "value": "100.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_SECONDARY_IN_TIMEPERIOD": [ { "value": "10.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_FEEDBACK_SOURCE": [ { "value": "FDBK_AUTO", "resolve_type": "generated", "usage": "all" } ],
-        "C_PRIM_SOURCE": [ { "value": "Single_ended_clock_capable_pin", "resolve_type": "generated", "usage": "all" } ],
+        "C_PRIM_SOURCE": [ { "value": "No_buffer", "resolve_type": "generated", "usage": "all" } ],
         "C_PHASESHIFT_MODE": [ { "value": "WAVEFORM", "resolve_type": "generated", "usage": "all" } ],
         "C_SECONDARY_SOURCE": [ { "value": "Single_ended_clock_capable_pin", "resolve_type": "generated", "usage": "all" } ],
         "C_CLKFB_IN_SIGNALING": [ { "value": "SINGLE", "resolve_type": "generated", "usage": "all" } ],
@@ -604,7 +604,7 @@
         "SELECTEDSIMMODEL": [ { "value": "" } ],
         "SHAREDDIR": [ { "value": "../../ipshared" } ],
         "SWVERSION": [ { "value": "2026.1" } ],
-        "SYNTHESISFLOW": [ { "value": "OUT_OF_CONTEXT" } ]
+        "SYNTHESISFLOW": [ { "value": "GLOBAL" } ]
       }
     },
     "boundary": {
@@ -637,7 +637,7 @@
             "FREQ_HZ": [ { "value": "125000000", "value_src": "user_prop", "value_permission": "bd", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ],
             "FREQ_TOLERANCE_HZ": [ { "value": "0", "value_permission": "bd", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ],
             "PHASE": [ { "value": "0.0", "value_permission": "bd", "resolve_type": "generated", "format": "float", "is_ips_inferred": true, "is_static_object": false } ],
-            "CLK_DOMAIN": [ { "value": "zybo2030_sysclk", "value_src": "default_prop", "value_permission": "bd", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
+            "CLK_DOMAIN": [ { "value": "zybo2030_sysclk", "value_permission": "bd", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
             "ASSOCIATED_BUSIF": [ { "value": "", "value_permission": "bd", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
             "ASSOCIATED_PORT": [ { "value": "", "value_permission": "bd", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
             "ASSOCIATED_RESET": [ { "value": "", "value_permission": "bd", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
@@ -705,5 +705,5 @@
       }
     }
   },
-  "checksum": "bf2ee9d9"
+  "checksum": "d76c216b"
 }
