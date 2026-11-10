@@ -183,7 +183,7 @@ void main(int argc, char *argv[]) {
 			else fputs("Unrecognised card type found, not EBCDIC?\n",stderr);
 		}
 		else
-			exit(0);
+			break;
 	}
     fprintf(stdout,";\n");
 }

@@ -3750,6 +3750,8 @@ CONFIG_Init-manager-sysvinit=y
 #
 CONFIG_axibram=y
 # CONFIG_gpio-demo is not set
+CONFIG_ls-dump=y
+CONFIG_ms-dump=y
 # CONFIG_peekpoke is not set
 
 #

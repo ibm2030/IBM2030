@@ -4,3 +4,5 @@
 CONFIG_gpio-demo
 CONFIG_peekpoke
 CONFIG_axibram
+CONFIG_ls-dump
+CONFIG_ms-dump

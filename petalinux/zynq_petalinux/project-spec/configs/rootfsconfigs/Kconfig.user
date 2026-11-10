@@ -7,6 +7,14 @@ config gpio-demo
 	 bool "gpio-demo"
 	 help
 	
+config ls-dump  
+	 bool "ls-dump"
+	 help
+	
+config ms-dump  
+	 bool "ms-dump"
+	 help
+	
 config peekpoke  
 	 bool "peekpoke"
 	 help
