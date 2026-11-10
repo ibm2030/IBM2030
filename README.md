@@ -143,10 +143,11 @@ If U-Boot reports that the ramdisk image is corrupted, the copy on the card is b
 3. Power on and log in.
 4. Check that `/dev/axi1` (main storage) and `/dev/axi2` (local storage) exist and that `dmesg | grep axibram` shows the driver loaded.
 
-### 6. From the command line
+### 6. From the Zybo command line
  1. The device /dev/axi1 is mapped to the 64k of Main Storage for reading and writing
  2. The device /dev/axi2 is mapped to the 2k of Local Storage for reading and writing
- 3. The utility dump\_ls will print the contents of the 2k local storage area in a readable format
+ 3. The utility ms\_dump will print, modify, save and load the contents of the 64k Main Storage, ms\_dump -h for help
+ 4. The utility ls\_dump will print and modify the contents of the 2k Local Storage area in a readable format, ls\_dump -h for help
 
 Apologies for the varied quality of the VHDL.  This project has taken over 10 years and I have not necessarily re-visited code that was written early on.  So there is a variety of styles and conventions.  In my defence, it works (or seems to).
 
